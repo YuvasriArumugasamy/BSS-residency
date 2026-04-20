@@ -5,7 +5,7 @@ const Booking = require('../models/Booking');
 // POST /api/bookings — Create new booking
 router.post('/', async (req, res) => {
   try {
-    const { name, phone, email, roomType, checkIn, checkOut, guests, message } = req.body;
+    const { name, phone, email, roomType, checkIn, checkOut, guests, rooms, message } = req.body;
 
     if (!name || !phone || !roomType || !checkIn || !checkOut || !guests) {
       return res.status(400).json({ success: false, message: 'Please fill all required fields.' });
@@ -15,7 +15,18 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ success: false, message: 'Check-out must be after check-in.' });
     }
 
-    const booking = new Booking({ name, phone, email, roomType, checkIn, checkOut, guests, message });
+    const roomCount = Math.max(1, Number(rooms) || 1);
+    const booking = new Booking({
+      name,
+      phone,
+      email,
+      roomType,
+      checkIn,
+      checkOut,
+      guests,
+      rooms: roomCount,
+      message,
+    });
     await booking.save();
 
     res.status(201).json({ success: true, message: 'Booking received! We will confirm shortly.', booking });
