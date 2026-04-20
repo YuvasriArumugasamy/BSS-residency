@@ -20,12 +20,12 @@ export const MAP = {
 // Nearby places list (similar to reference screenshot)
 export const NEARBY_PLACES = [
   { name: 'Tiger Falls', distance: '0.38 km' },
-  { name: 'குற்றாலம் சாரல்', distance: '0.76 km' },
-  { name: 'Raghu don Courtrallam', distance: '1.14 km' },
-  { name: 'Arulmigu Thiru Kuttralanathar Temple', distance: '1.31 km' },
-  { name: 'Thendral Cottage', distance: '1.32 km' },
-  { name: 'Courtallam Main Waterfalls', distance: '1.38 km' },
-  { name: 'Main Falls Arch', distance: '1.39 km' },
+  { name: 'Main Falls', distance: '1.2 km' },
+  { name: 'Old Courtallam Falls', distance: '2.1 km' },
+  { name: 'Five Falls', distance: '2.8 km' },
+  { name: 'Peraruvi', distance: '3.5 km' },
+  { name: 'Shenbagadevi', distance: '4.2 km' },
+  { name: 'Honey Falls', distance: '5.1 km' },
 ];
 
 // Room types with pricing
