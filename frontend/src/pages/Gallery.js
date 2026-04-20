@@ -1,15 +1,21 @@
 import React, { useState } from 'react';
 import buildingImg from '../assets/building.png';
 import roomImg from '../assets/room.jpg';
+import roomAc1 from '../assets/room-ac-1.jpg';
+import roomAc2 from '../assets/room-ac-2.jpg';
+import roomAc3 from '../assets/room-ac-3.jpg';
+import roomFamily from '../assets/room-family.jpg';
+import { waLink } from '../constants';
 import './Gallery.css';
 
 const photos = [
-  { id: 1, src: buildingImg, caption: 'BSS Residency — Exterior View', category: 'Exterior' },
-  { id: 2, src: roomImg,     caption: 'AC Room — Premium Comfort',    category: 'Rooms' },
-  { id: 3, src: buildingImg, caption: 'Building Facade — Evening',     category: 'Exterior' },
-  { id: 4, src: roomImg,     caption: 'Clean & Comfortable Bedding',   category: 'Rooms' },
-  { id: 5, src: buildingImg, caption: 'Parking Area — Ample Space',    category: 'Facilities' },
-  { id: 6, src: roomImg,     caption: 'Room Interior — Marble Finish', category: 'Rooms' },
+  { id: 1, src: buildingImg, caption: 'BSS Residency — Exterior View',  category: 'Exterior' },
+  { id: 2, src: roomAc2,     caption: 'A/C Room — Premium Comfort',      category: 'Rooms' },
+  { id: 3, src: roomAc1,     caption: 'Four Bed A/C Room',               category: 'Rooms' },
+  { id: 4, src: roomImg,     caption: 'Clean & Comfortable Bedding',     category: 'Rooms' },
+  { id: 5, src: roomFamily,  caption: 'Double Bed Room — Cosy Interiors', category: 'Rooms' },
+  { id: 6, src: roomAc3,     caption: 'Spacious Family Room',            category: 'Rooms' },
+  { id: 7, src: buildingImg, caption: 'Parking Area — Ample Space',      category: 'Facilities' },
 ];
 
 const categories = ['All', 'Exterior', 'Rooms', 'Facilities'];
@@ -24,14 +30,13 @@ export default function Gallery() {
     <main className="gallery-page">
       <section className="page-hero">
         <div className="page-hero-content">
-          <p className="section-label" style={{ color: '#93C5FD' }}>Visual Tour</p>
+          <p className="section-label gold">Visual Tour</p>
           <h1>Our <em>Gallery</em></h1>
           <p>Take a look inside BSS Residency — rooms, facilities, and surroundings.</p>
         </div>
       </section>
 
       <section className="gallery-section container">
-        {/* Filter tabs */}
         <div className="filter-tabs">
           {categories.map(c => (
             <button
@@ -44,7 +49,6 @@ export default function Gallery() {
           ))}
         </div>
 
-        {/* Grid */}
         <div className="photo-grid">
           {filtered.map(photo => (
             <div
@@ -65,7 +69,7 @@ export default function Gallery() {
         <div className="gallery-note">
           <p>📸 More photos coming soon! Share yours with us on WhatsApp.</p>
           <a
-            href="https://wa.me/91XXXXXXXXXX"
+            href={waLink('Hello BSS Residency! I would like to share/request gallery photos.')}
             className="btn-wa"
             target="_blank" rel="noreferrer"
           >
@@ -74,7 +78,6 @@ export default function Gallery() {
         </div>
       </section>
 
-      {/* Lightbox */}
       {lightbox && (
         <div className="lightbox" onClick={() => setLightbox(null)}>
           <div className="lightbox-inner" onClick={e => e.stopPropagation()}>

@@ -1,40 +1,18 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import roomImg from '../assets/room.jpg';
+import roomAc1 from '../assets/room-ac-1.jpg';
+import roomAc2 from '../assets/room-ac-2.jpg';
+import roomAc3 from '../assets/room-ac-3.jpg';
+import roomFamily from '../assets/room-family.jpg';
+import { ROOMS, waLink } from '../constants';
 import './Rooms.css';
 
-const rooms = [
-  {
-    icon: '❄️', type: 'Standard', name: 'AC Room',
-    desc: 'Beat the heat with our modern inverter air-conditioned rooms. Featuring premium mattresses, marble flooring, and all essential amenities for a comfortable stay.',
-    features: ['DC Inverter AC', '24hr Hot Water', 'LED TV', 'Daily Housekeeping', 'Attached Bathroom', 'Power Backup'],
-    img: null,
-  },
-  {
-    icon: '🌿', type: 'Classic', name: 'Non-AC Room',
-    desc: "Experience Courtallam's naturally cool climate in our well-ventilated rooms. Fresh air, clean surroundings, and all the comforts you need at a great value.",
-    features: ['Ceiling Fan', '24hr Hot Water', 'LED TV', 'Daily Housekeeping', 'Attached Bathroom', 'Natural Ventilation'],
-    img: null,
-  },
-  {
-    icon: '👨‍👩‍👧‍👦', type: 'Family', name: 'Family Room',
-    desc: 'Spacious family rooms designed with extra beds and ample space. Perfect for families visiting Courtallam together — plenty of room for everyone to relax.',
-    features: ['Extra Beds', 'AC / Non-AC Options', '24hr Hot Water', 'LED TV', 'Spacious Layout', 'Housekeeping'],
-    img: null,
-  },
-  {
-    icon: '🛏️', type: 'Dormitory', name: 'Dormitory',
-    desc: 'Clean, safe, and affordable shared accommodation. Ideal for pilgrims, solo travellers, and groups looking for budget-friendly lodging near Courtallam Falls.',
-    features: ['Bunk Beds', 'Common Bathroom', '24hr Hot Water', 'Secure Lockers', 'Fan', 'CCTV Security'],
-    img: null,
-  },
-  {
-    icon: '👑', type: 'Luxury', name: 'Suite Room',
-    desc: 'Our finest accommodation. Expansive suites with premium furnishings, a separate sitting area, and superior amenities for guests who expect the very best.',
-    features: ['Premium AC', 'King Size Bed', 'Sitting Area', 'Premium Toiletries', 'LED TV', 'Priority Service'],
-    img: roomImg,
-  },
-];
+const imgMap = {
+  'double-bed': roomFamily,
+  'double-bed-ac': roomAc2,
+  'four-bed': roomAc1,
+  'four-bed-ac': roomAc3,
+};
 
 export default function Rooms() {
   return (
@@ -42,31 +20,61 @@ export default function Rooms() {
       {/* Page Hero */}
       <section className="page-hero">
         <div className="page-hero-content">
-          <p className="section-label" style={{ color: '#93C5FD' }}>Accommodations</p>
-          <h1>Our <em>Room Types</em></h1>
-          <p>5 types of rooms — from budget dormitory to luxury suite. Something for every guest.</p>
+          <p className="section-label gold">Accommodations</p>
+          <h1>Our <em>Rooms & Tariff</em></h1>
+          <p>Four room types — clean, comfortable, and priced right. Something for every guest.</p>
         </div>
+      </section>
+
+      {/* Tariff summary table */}
+      <section className="tariff-summary container">
+        <h2>Room Tariff</h2>
+        <div className="divider-gold center" />
+        <div className="tariff-table-wrap">
+          <table className="tariff-table">
+            <thead>
+              <tr>
+                <th>Room Type</th>
+                <th>Category</th>
+                <th>Price / Night</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {ROOMS.map((r) => (
+                <tr key={r.key}>
+                  <td>
+                    <span className="tt-icon">{r.icon}</span>
+                    <strong>{r.name}</strong>
+                  </td>
+                  <td><span className="tt-pill">{r.type}</span></td>
+                  <td className="tt-price">₹{r.price.toLocaleString('en-IN')}</td>
+                  <td>
+                    <Link to="/booking" className="btn-gold-sm">Book Now</Link>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p className="tariff-note">All rates are per night. Taxes as applicable. Rates may vary during festival/peak seasons.</p>
       </section>
 
       {/* Rooms List */}
       <section className="rooms-list container">
-        {rooms.map((room, i) => (
-          <div key={room.name} className={`room-detail-card ${i % 2 === 1 ? 'reverse' : ''}`}>
+        {ROOMS.map((room, i) => (
+          <div key={room.key} className={`room-detail-card ${i % 2 === 1 ? 'reverse' : ''}`}>
             <div className="room-detail-img">
-              {room.img ? (
-                <img src={room.img} alt={room.name} />
-              ) : (
-                <div className="img-placeholder">
-                  <span>{room.icon}</span>
-                  <p>Photo coming soon</p>
-                </div>
-              )}
+              <img src={imgMap[room.key]} alt={room.name} />
               <div className="room-type-badge">{room.type}</div>
+              <div className="room-price-badge">
+                ₹{room.price.toLocaleString('en-IN')}<span>/ night</span>
+              </div>
             </div>
             <div className="room-detail-info">
               <span className="r-icon-lg">{room.icon}</span>
               <h2>{room.name}</h2>
-              <div className="divider-blue" />
+              <div className="divider-gold" />
               <p className="r-desc">{room.desc}</p>
               <ul className="r-features-grid">
                 {room.features.map((f) => (
@@ -74,13 +82,16 @@ export default function Rooms() {
                 ))}
               </ul>
               <div className="r-price-note">
-                <span>💬 Contact for best tariff</span>
+                <div className="r-price-inline">
+                  <span className="r-price-inline-amt">₹{room.price.toLocaleString('en-IN')}</span>
+                  <span className="r-price-inline-unit">/ night</span>
+                </div>
                 <a
-                  href={`https://wa.me/91XXXXXXXXXX?text=Hello!%20I%20would%20like%20to%20book%20a%20${encodeURIComponent(room.name)}%20at%20BSS%20Residency.`}
+                  href={waLink(`Hello! I would like to book a ${room.name} at BSS Residency.`)}
                   className="btn-wa-sm"
                   target="_blank" rel="noreferrer"
                 >
-                  Book via WhatsApp
+                  💬 WhatsApp
                 </a>
                 <Link to="/booking" className="btn-primary-sm">Book Online</Link>
               </div>
@@ -93,11 +104,11 @@ export default function Rooms() {
       <section className="pricing-note-section">
         <div className="container">
           <div className="pricing-note-card">
-            <h3>📋 Tariff Information</h3>
-            <p>Room rates at BSS Residency vary by season, room type, and special occasions. For the most accurate and current pricing, please contact us directly on WhatsApp or call us. We guarantee the best rates when you book directly with us.</p>
+            <h3>📋 Quick Booking</h3>
+            <p>Prefer to book instantly? Chat with us on WhatsApp or call for immediate confirmation. We guarantee the best rates when you book directly with us.</p>
             <div className="pricing-actions">
-              <a href="https://wa.me/91XXXXXXXXXX?text=Hello%20BSS%20Residency!%20Please%20share%20the%20current%20room%20tariff." className="btn-wa" target="_blank" rel="noreferrer">💬 Get Tariff on WhatsApp</a>
-              <Link to="/booking" className="btn-primary">Book Now</Link>
+              <a href={waLink('Hello BSS Residency! Please share the current room tariff.')} className="btn-wa" target="_blank" rel="noreferrer">💬 WhatsApp Us</a>
+              <Link to="/booking" className="btn-gold">Book Now</Link>
             </div>
           </div>
         </div>

@@ -2,23 +2,10 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import buildingImg from '../assets/building.png';
 import roomImg from '../assets/room.jpg';
+import roomAcImg from '../assets/room-ac-2.jpg';
+import logo from '../assets/logo.png';
+import { AMENITIES, ROOMS, CONTACT, waLink } from '../constants';
 import './Home.css';
-
-const amenities = [
-  { icon: '🍽️', label: 'Restaurant' },
-  { icon: '🅿️', label: 'Free Parking' },
-  { icon: '🚿', label: '24hr Hot Water' },
-  { icon: '🔒', label: 'CCTV Security' },
-  { icon: '💧', label: 'Near Courtallam Falls' },
-];
-
-const rooms = [
-  { icon: '❄️', name: 'AC Room', desc: 'Cool comfort with modern air conditioning.' },
-  { icon: '🌿', name: 'Non-AC Room', desc: 'Natural breeze — calm & refreshing.' },
-  { icon: '👨‍👩‍👧‍👦', name: 'Family Room', desc: 'Spacious stay for the whole family.' },
-  { icon: '🛏️', name: 'Dormitory', desc: 'Budget-friendly shared accommodation.' },
-  { icon: '👑', name: 'Suite Room', desc: 'Premium luxury for discerning guests.' },
-];
 
 export default function Home() {
   return (
@@ -30,6 +17,9 @@ export default function Home() {
           <div className="hero-overlay" />
         </div>
         <div className="hero-content fade-up">
+          <span className="hero-logo-wrap">
+            <img src={logo} alt="BSS Residency" />
+          </span>
           <span className="hero-badge">✦ Courtallam's Premium Stay ✦</span>
           <h1>
             Welcome to<br />
@@ -37,8 +27,8 @@ export default function Home() {
           </h1>
           <p>Experience premium comfort steps away from the majestic Courtallam Falls</p>
           <div className="hero-btns">
-            <Link to="/booking" className="btn-primary">Book Your Stay</Link>
-            <Link to="/rooms" className="btn-outline-white">Explore Rooms</Link>
+            <Link to="/booking" className="btn-gold">Book Your Stay</Link>
+            <Link to="/rooms" className="btn-outline-light">Explore Rooms</Link>
           </div>
         </div>
         <div className="hero-scroll">
@@ -49,7 +39,7 @@ export default function Home() {
 
       {/* Amenities strip */}
       <section className="amenities-strip">
-        {amenities.map((a) => (
+        {AMENITIES.map((a) => (
           <div key={a.label} className="amenity">
             <span className="a-icon">{a.icon}</span>
             <span className="a-label">{a.label}</span>
@@ -69,38 +59,46 @@ export default function Home() {
         <div className="about-text">
           <p className="section-label">About Us</p>
           <h2>A Sanctuary in the<br /><em>Heart of Courtallam</em></h2>
-          <div className="divider-blue" />
-          <p>BSS Residency stands at 215, Ramanuja Nagar — moments from the legendary Courtallam Falls. We offer modern rooms with premium amenities, ideal for families, pilgrims, and leisure travellers.</p>
-          <p>With 5 room types ranging from budget dormitories to luxury suites, we have the perfect accommodation for every guest and every budget.</p>
+          <div className="divider-gold" />
+          <p>BSS Residency is located just 100 metres from the legendary Courtallam Falls — moments from the bus stand and Anna Statue. We offer modern rooms with premium amenities, ideal for families, pilgrims, and leisure travellers.</p>
+          <p>From comfortable non-A/C doubles to spacious four-bed A/C rooms, we have the perfect accommodation for every guest and every budget.</p>
           <div className="about-stats">
-            <div className="stat"><span className="stat-n">5</span><span className="stat-l">Room Types</span></div>
-            <div className="stat"><span className="stat-n">24/7</span><span className="stat-l">Service</span></div>
-            <div className="stat"><span className="stat-n">⭐</span><span className="stat-l">Premium</span></div>
+            <div className="stat"><span className="stat-n">4</span><span className="stat-l">Room Types</span></div>
+            <div className="stat"><span className="stat-n">4.6★</span><span className="stat-l">Rating</span></div>
+            <div className="stat"><span className="stat-n">100m</span><span className="stat-l">to Falls</span></div>
           </div>
           <Link to="/booking" className="btn-primary">Reserve Now</Link>
         </div>
       </section>
 
-      {/* Room preview */}
+      {/* Tariff / room preview */}
       <section className="rooms-preview">
         <div className="container">
-          <p className="section-label" style={{ textAlign: 'center' }}>Accommodations</p>
-          <h2 style={{ textAlign: 'center', marginBottom: '0.5rem' }}>Our <em>Room Types</em></h2>
-          <p style={{ textAlign: 'center', color: 'var(--gray-400)', marginBottom: '3rem', fontSize: '0.9rem' }}>
-            Choose the perfect room for your stay
+          <p className="section-label" style={{ textAlign: 'center' }}>Tariff</p>
+          <h2 style={{ textAlign: 'center', marginBottom: '0.5rem' }}>Our <em>Rooms & Prices</em></h2>
+          <p className="rooms-preview-sub">
+            Best rates guaranteed when you book directly with us
           </p>
           <div className="rooms-grid">
-            {rooms.map((r) => (
-              <div key={r.name} className="room-card-home">
+            {ROOMS.map((r) => (
+              <div key={r.key} className="room-card-home">
                 <span className="r-icon">{r.icon}</span>
                 <h3>{r.name}</h3>
-                <p>{r.desc}</p>
-                <Link to="/rooms" className="r-link">View Details →</Link>
+                <span className="r-type-pill">{r.type}</span>
+                <div className="r-price">
+                  <span className="r-price-currency">₹</span>
+                  <span className="r-price-amount">{r.price.toLocaleString('en-IN')}</span>
+                  <span className="r-price-unit">/ night</span>
+                </div>
+                <Link to="/booking" className="r-book-btn">Book This Room</Link>
               </div>
             ))}
           </div>
-          <div style={{ textAlign: 'center', marginTop: '2.5rem' }}>
-            <Link to="/booking" className="btn-primary">Book a Room</Link>
+          <div className="tariff-foot">
+            <Link to="/rooms" className="btn-primary">View All Rooms</Link>
+            <a href={waLink('Hello BSS Residency! I would like to make a booking.')} className="btn-wa" target="_blank" rel="noreferrer">
+              💬 WhatsApp Us
+            </a>
           </div>
         </div>
       </section>
@@ -110,20 +108,20 @@ export default function Home() {
         <div className="showcase-text">
           <p className="section-label">Room Interior</p>
           <h2>Comfort in Every<br /><em>Detail</em></h2>
-          <div className="divider-blue" />
-          <p>Our AC rooms feature premium mattresses, clean marble tiles, branded pillows, and modern AC units — all maintained to the highest standard of cleanliness and comfort.</p>
+          <div className="divider-gold" />
+          <p>Our A/C rooms feature premium mattresses, clean marble tiles, branded pillows, and modern A/C units — all maintained to the highest standard of cleanliness and comfort.</p>
           <ul className="showcase-features">
-            <li>✅ DC Inverter AC</li>
-            <li>✅ Premium mattress</li>
-            <li>✅ Marble tile flooring</li>
-            <li>✅ Attached bathroom</li>
-            <li>✅ 24hr hot water</li>
-            <li>✅ Daily housekeeping</li>
+            <li><span className="tick">✓</span> DC Inverter A/C</li>
+            <li><span className="tick">✓</span> Premium mattress</li>
+            <li><span className="tick">✓</span> Marble tile flooring</li>
+            <li><span className="tick">✓</span> Attached bathroom</li>
+            <li><span className="tick">✓</span> 24hr hot water</li>
+            <li><span className="tick">✓</span> Daily housekeeping</li>
           </ul>
           <Link to="/booking" className="btn-primary" style={{ marginTop: '1.5rem', display: 'inline-block' }}>Book This Room</Link>
         </div>
         <div className="showcase-img">
-          <img src={roomImg} alt="BSS Residency AC Room" />
+          <img src={roomAcImg || roomImg} alt="BSS Residency A/C Room" />
         </div>
       </section>
 
@@ -133,9 +131,12 @@ export default function Home() {
           <h2>Ready to Experience Courtallam?</h2>
           <p>Book directly with us for the best rates. Instant confirmation via WhatsApp.</p>
           <div className="cta-btns">
-            <Link to="/booking" className="btn-primary">Book Now</Link>
-            <a href="https://wa.me/91XXXXXXXXXX?text=Hello%20BSS%20Residency!%20I%20would%20like%20to%20make%20a%20booking." className="btn-wa" target="_blank" rel="noreferrer">
+            <Link to="/booking" className="btn-gold">Book Now</Link>
+            <a href={waLink('Hello BSS Residency! I would like to make a booking.')} className="btn-wa" target="_blank" rel="noreferrer">
               💬 WhatsApp Us
+            </a>
+            <a href={`tel:${CONTACT.phonePrimary.replace(/\s/g, '')}`} className="btn-outline-light">
+              📞 {CONTACT.phonePrimary}
             </a>
           </div>
         </div>

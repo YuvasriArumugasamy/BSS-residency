@@ -1,6 +1,6 @@
 /* ADMIN LOGIN */
 .admin-login-page {
-  min-height: 100vh; background: linear-gradient(135deg, var(--dark) 0%, #1e3a8a 100%);
+  min-height: 100vh; background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
   display: flex; align-items: center; justify-content: center; padding: 2rem;
 }
 .login-card {

@@ -8,8 +8,20 @@ const bookingSchema = new mongoose.Schema(
     roomType: {
       type: String,
       required: true,
-      enum: ['AC Room', 'Non-AC Room', 'Family Room', 'Dormitory', 'Suite Room'],
+      enum: [
+        'Double Bed',
+        'Double Bed A/C',
+        'Four Bed',
+        'Four Bed A/C',
+        // legacy values kept for backward compatibility
+        'AC Room',
+        'Non-AC Room',
+        'Family Room',
+        'Dormitory',
+        'Suite Room',
+      ],
     },
+    rooms: { type: Number, default: 1, min: 1 },
     checkIn: { type: Date, required: true },
     checkOut: { type: Date, required: true },
     guests: { type: Number, required: true, min: 1 },

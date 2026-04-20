@@ -1,5 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import logo from '../assets/logo.png';
+import { CONTACT, ROOMS, MAP, waLink } from '../constants';
 import './Footer.css';
 
 export default function Footer() {
@@ -7,12 +9,21 @@ export default function Footer() {
     <footer className="footer">
       <div className="footer-inner">
         <div className="footer-brand">
-          <div className="footer-logo">
-            <span className="logo-bss">BSS</span> Residency
+          <div className="footer-logo-row">
+            <span className="footer-logo-circle">
+              <img src={logo} alt="BSS Residency" />
+            </span>
+            <div className="footer-logo-text">
+              <span className="logo-bss">BSS</span>
+              <span className="logo-rest">Residency</span>
+            </div>
           </div>
-          <p>215, Ramanuja Nagar, Courtallam,<br />Tamil Nadu – 627 802</p>
+          <p className="footer-addr">
+            {CONTACT.addressLine1},<br />
+            {CONTACT.addressLine2}
+          </p>
           <a
-            href="https://wa.me/91XXXXXXXXXX"
+            href={waLink('Hello BSS Residency!')}
             className="footer-wa"
             target="_blank"
             rel="noreferrer"
@@ -31,28 +42,33 @@ export default function Footer() {
         </div>
 
         <div className="footer-links">
-          <h4>Room Types</h4>
-          <span>AC Room</span>
-          <span>Non-AC Room</span>
-          <span>Family Room</span>
-          <span>Dormitory</span>
-          <span>Suite Room</span>
+          <h4>Our Rooms</h4>
+          {ROOMS.map((r) => (
+            <span key={r.key}>
+              {r.name} — ₹{r.price.toLocaleString('en-IN')}
+            </span>
+          ))}
         </div>
 
         <div className="footer-contact">
           <h4>Contact</h4>
-          <p>📍 Courtallam, Tamil Nadu</p>
-          <p>💬 +91 XXXXXXXXXX</p>
-          <p>🕐 Check-in: 12:00 PM</p>
-          <p>🕐 Check-out: 11:00 AM</p>
-          <a href="https://maps.app.goo.gl/HoVrP5LYitnw8qJ1A" target="_blank" rel="noreferrer" className="map-link">
+          <p>📞 {CONTACT.phonePrimary}</p>
+          <p>📞 {CONTACT.phoneSecondary}</p>
+          <p>🕐 Check-in: {CONTACT.checkIn}</p>
+          <p>🕐 Check-out: {CONTACT.checkOut}</p>
+          <a
+            href={MAP.directUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="map-link"
+          >
             View on Google Maps →
           </a>
         </div>
       </div>
 
       <div className="footer-bottom">
-        <p>© 2025 BSS Residency, Courtallam. All rights reserved.</p>
+        <p>© {new Date().getFullYear()} BSS Residency, Courtallam. All rights reserved.</p>
         <Link to="/admin/login" className="admin-link">Admin</Link>
       </div>
     </footer>
