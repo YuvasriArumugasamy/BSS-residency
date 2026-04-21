@@ -124,5 +124,19 @@
   .footer-bottom { flex-direction: column; gap: 0.5rem; text-align: center; }
 }
 @media (max-width: 480px) {
-  .footer-inner { grid-template-columns: 1fr; }
+  .footer {
+    padding: 3rem 1.5rem 0;
+  }
+  .footer-inner { 
+    grid-template-columns: 1fr; 
+    gap: 2.5rem;
+  }
+  .footer-contact p, .footer-links span, .footer-links a {
+    font-size: 0.95rem;
+    color: rgba(255,255,255,0.9);
+  }
+  .footer-contact h4, .footer-links h4 {
+    font-size: 0.85rem;
+    margin-bottom: 1.25rem;
+  }
 }
