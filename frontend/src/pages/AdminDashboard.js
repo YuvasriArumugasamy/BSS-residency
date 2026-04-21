@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api/api';
 import './Admin.css';
 
 const STATUS_COLORS = { Pending: 'orange', Confirmed: 'green', Cancelled: 'red' };
@@ -28,8 +28,8 @@ export default function AdminDashboard() {
     const headers = { username: auth.username, password: auth.password };
     try {
       const [statsRes, bookingsRes] = await Promise.all([
-        axios.get('/api/admin/stats', { headers }),
-        axios.get('/api/admin/bookings', {
+        api.get('/api/admin/stats', { headers }),
+        api.get('/api/admin/bookings', {
           headers,
           params: { ...filter, page, limit: LIMIT },
         }),
@@ -48,14 +48,14 @@ export default function AdminDashboard() {
 
   const updateStatus = async (id, status) => {
     const headers = { username: auth.username, password: auth.password };
-    await axios.patch(`/api/admin/bookings/${id}`, { status }, { headers });
+    await api.patch(`/api/admin/bookings/${id}`, { status }, { headers });
     fetchData();
   };
 
   const deleteBooking = async (id) => {
     if (!window.confirm('Delete this booking?')) return;
     const headers = { username: auth.username, password: auth.password };
-    await axios.delete(`/api/admin/bookings/${id}`, { headers });
+    await api.delete(`/api/admin/bookings/${id}`, { headers });
     fetchData();
   };
 

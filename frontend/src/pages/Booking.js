@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import axios from 'axios';
+import api from '../api/api';
 import { Link } from 'react-router-dom';
 import { ROOMS, CONTACT, waLink } from '../constants';
 import './Booking.css';
@@ -76,7 +76,7 @@ export default function Booking() {
     setLoading(true);
     try {
       // Backend still accepts the form; submit a compatible payload
-      const res = await axios.post('/api/bookings', {
+      const res = await api.post('/api/bookings', {
         ...form,
         guests: Number(form.guests),
       });

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api/api';
 import './Admin.css';
 
 export default function AdminLogin() {
@@ -13,7 +13,7 @@ export default function AdminLogin() {
     e.preventDefault();
     setLoading(true); setError('');
     try {
-      const res = await axios.post('/api/admin/login', form);
+      const res = await api.post('/api/admin/login', form);
       if (res.data.success) {
         sessionStorage.setItem('bss_admin', JSON.stringify({ username: form.username, password: form.password }));
         navigate('/admin/dashboard');
