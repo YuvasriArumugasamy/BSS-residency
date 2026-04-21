@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../api/axios';
 import './Booking.css';
 
 const roomTypes = ['AC Room', 'Non-AC Room', 'Family Room', 'Dormitory', 'Suite Room'];
@@ -30,7 +30,7 @@ export default function Booking() {
     }
     setLoading(true);
     try {
-      const res = await axios.post('/api/bookings', form);
+      const res = await api.post('/api/bookings', form);
       setResult({ success: true, message: res.data.message });
       setForm(initForm);
       // Also open WhatsApp
