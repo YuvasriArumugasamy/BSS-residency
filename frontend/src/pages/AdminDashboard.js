@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../api/api';
+import api from '../api/axios';
 import './Admin.css';
 
 const STATUS_COLORS = { Pending: 'orange', Confirmed: 'green', Cancelled: 'red' };

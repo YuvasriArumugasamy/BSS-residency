@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import api from '../api/api';
+import api from '../api/axios';
 import { Link } from 'react-router-dom';
 import { ROOMS, CONTACT, waLink } from '../constants';
 import './Booking.css';
