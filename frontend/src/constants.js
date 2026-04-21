@@ -3,7 +3,8 @@
 export const CONTACT = {
   phonePrimary: '+91 88385 99755',
   phoneSecondary: '+91 93449 89393',
-  whatsapp: '918838599755', // for wa.me links
+  whatsapp: '919344989393', // for wa.me links
+  instagram: 'coutrallam_bss_residency',
   addressLine1: 'Bus Stand, Near Anna Statue',
   addressLine2: 'Courtallam, Tamil Nadu – 627 802',
   checkIn: '11:00 AM',

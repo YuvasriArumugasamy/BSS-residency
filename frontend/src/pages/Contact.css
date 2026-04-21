@@ -1,55 +1,147 @@
 .contact-page { padding-top: 72px; background: var(--secondary); }
 
 .page-hero {
-  background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
+  background: linear-gradient(135deg, #000 0%, #1a1a1a 50%, #0d0d0d 100%);
+  background-size: 200% 200%;
+  animation: gradientShift 8s ease infinite;
   padding: 5rem 2rem; text-align: center; color: var(--white);
   border-bottom: 3px solid var(--accent);
+  position: relative;
+  overflow: hidden;
 }
-.page-hero h1 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 400; margin-top: 0.5rem; color: var(--white); }
+.page-hero::before {
+  content: '';
+  position: absolute; top: 50%; left: 50%;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(212,168,87,0.08) 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  animation: pulse 6s ease-in-out infinite;
+  pointer-events: none;
+}
+.page-hero h1 {
+  font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 400; margin-top: 0.5rem; color: var(--white);
+  animation: fadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
+  position: relative;
+}
 .page-hero h1 em { font-style: italic; color: var(--accent); }
-.page-hero p { color: rgba(255,255,255,0.75); margin-top: 1rem; }
-.section-label { font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 700; }
-.section-label.gold { color: var(--accent); }
+.page-hero p {
+  color: rgba(255,255,255,0.75); margin-top: 1rem;
+  animation: fadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both;
+  position: relative;
+}
+.section-label {
+  font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 700;
+}
+.section-label.gold {
+  color: var(--accent);
+  animation: fadeDown 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  position: relative;
+}
 
 .contact-section { padding: 4rem 2rem 5rem; }
 .contact-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 3rem; }
 
-.contact-info { display: flex; flex-direction: column; gap: 1.2rem; }
+/* =========================================
+   CONTACT CARDS — Staggered Entrance
+   ========================================= */
+.contact-info {
+  display: flex; flex-direction: column; gap: 1.2rem;
+}
 .contact-card {
   display: flex; gap: 1.2rem; align-items: flex-start;
   background: var(--white); border: 1px solid var(--line);
   border-radius: 12px; padding: 1.5rem;
-  transition: box-shadow 0.2s, border-color 0.2s, transform 0.2s;
+  transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  animation: fadeLeft 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  position: relative;
+  overflow: hidden;
 }
+.contact-card:nth-child(1) { animation-delay: 0.05s; }
+.contact-card:nth-child(2) { animation-delay: 0.1s; }
+.contact-card:nth-child(3) { animation-delay: 0.15s; }
+.contact-card:nth-child(4) { animation-delay: 0.2s; }
+.contact-card:nth-child(5) { animation-delay: 0.25s; }
+.contact-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; width: 3px; height: 0;
+  background: linear-gradient(180deg, var(--accent), var(--accent-dark));
+  transition: height 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  border-radius: 0 2px 2px 0;
+}
+.contact-card:hover::before { height: 100%; }
 .contact-card:hover {
   border-color: var(--accent);
-  box-shadow: 0 6px 22px rgba(212,168,87,0.12);
-  transform: translateY(-2px);
+  box-shadow: 0 10px 35px rgba(212,168,87,0.12);
+  transform: translateY(-4px) translateX(4px);
 }
-.c-icon { font-size: 1.8rem; flex-shrink: 0; }
-.contact-card h3 { font-size: 1rem; margin-bottom: 0.4rem; color: var(--primary); font-family: 'Playfair Display', serif; }
+.c-icon {
+  font-size: 1.8rem; flex-shrink: 0;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.contact-card:hover .c-icon { transform: scale(1.25) rotate(-10deg); }
+.contact-card h3 {
+  font-size: 1rem; margin-bottom: 0.4rem; color: var(--primary);
+  font-family: 'Playfair Display', serif;
+  transition: color 0.3s;
+}
+.contact-card:hover h3 { color: var(--accent-dark); }
 .contact-card p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.7; }
-.contact-card p a { color: var(--text-dark); font-weight: 600; }
+.contact-card p a { color: var(--text-dark); font-weight: 600; transition: color 0.3s; }
 .contact-card p a:hover { color: var(--accent-dark); }
 .c-note { color: var(--text-light) !important; font-size: 0.78rem !important; margin-top: 0.2rem; }
-.c-link { font-size: 0.82rem; color: var(--accent-dark); display: inline-block; margin-top: 0.5rem; font-weight: 600; }
-.c-link:hover { text-decoration: underline; }
-.btn-wa-inline {
-  display: inline-block; margin-top: 0.75rem;
-  background: #25D366; color: white;
-  padding: 0.5rem 1.2rem; border-radius: 6px;
-  font-size: 0.82rem; font-weight: 600; transition: background 0.2s;
+.c-link {
+  font-size: 0.82rem; color: var(--accent-dark); display: inline-block; margin-top: 0.5rem; font-weight: 600;
+  transition: all 0.3s;
 }
-.btn-wa-inline:hover { background: #1ebe59; }
+.c-link:hover { text-decoration: underline; transform: translateX(4px); }
+.btn-wa-inline {
+  display: inline-block;
+  background: #25D366; color: white;
+  padding: 0.5rem 1rem; border-radius: 6px;
+  font-size: 0.78rem; font-weight: 600;
+  transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.btn-wa-inline:hover {
+  background: #1ebe59;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(37,211,102,0.25);
+}
 
-/* Map */
-.map-section { display: flex; flex-direction: column; gap: 1.2rem; }
+.contact-card-actions {
+  display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.75rem;
+}
+
+.btn-insta-inline {
+  display: inline-block;
+  background: linear-gradient(45deg, #f09433, #dc2743, #bc1888);
+  color: white;
+  padding: 0.5rem 1rem; border-radius: 6px;
+  font-size: 0.78rem; font-weight: 600;
+  transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.btn-insta-inline:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(220, 39, 67, 0.25);
+}
+
+/* =========================================
+   MAP — Glowing Frame
+   ========================================= */
+.map-section {
+  display: flex; flex-direction: column; gap: 1.2rem;
+  animation: fadeRight 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
+}
 .map-embed-wrap {
   position: relative; width: 100%; height: 340px;
   border-radius: 12px; overflow: hidden;
   border: 1px solid var(--line);
   box-shadow: 0 6px 24px rgba(0,0,0,0.08);
   background: var(--neutral);
+  transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.map-embed-wrap:hover {
+  box-shadow: 0 10px 40px rgba(212,168,87,0.2);
+  border-color: var(--accent);
 }
 .map-embed-wrap iframe { width: 100%; height: 100%; border: 0; display: block; }
 .map-cta-overlay {
@@ -58,17 +150,30 @@
   padding: 0.6rem 1.1rem; border-radius: 8px;
   font-size: 0.82rem; font-weight: 700;
   box-shadow: 0 4px 14px rgba(0,0,0,0.15);
-  transition: background 0.2s, color 0.2s;
+  transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  animation: fadeUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.5s both;
 }
-.map-cta-overlay:hover { background: var(--accent); color: var(--primary); }
+.map-cta-overlay:hover {
+  background: var(--accent); color: var(--primary);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 22px rgba(212,168,87,0.3);
+}
 
-/* Nearby card */
+/* =========================================
+   NEARBY PLACES — Animated List
+   ========================================= */
 .nearby-card {
   background: var(--white);
   border: 1px solid var(--line);
   border-radius: 12px;
   padding: 1.5rem;
   box-shadow: 0 3px 16px rgba(0,0,0,0.04);
+  animation: slideInUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both;
+  transition: all 0.4s;
+}
+.nearby-card:hover {
+  box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+  border-color: var(--accent);
 }
 .nearby-head {
   display: flex; align-items: center; justify-content: space-between;
@@ -80,27 +185,47 @@
   font-family: 'Playfair Display', serif; font-weight: 600;
   display: flex; align-items: center; gap: 0.4rem;
 }
-.loc-pin { font-size: 1.1rem; }
+.loc-pin {
+  font-size: 1.1rem;
+  animation: bounce 2s ease-in-out infinite;
+}
 .nearby-count {
   font-size: 0.72rem; letter-spacing: 0.1em;
   padding: 0.25rem 0.7rem; border-radius: 999px;
   background: var(--secondary); color: var(--accent-dark);
   border: 1px solid var(--accent);
   text-transform: uppercase; font-weight: 700;
+  animation: scaleIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.3s both;
 }
 .nearby-list { list-style: none; display: flex; flex-direction: column; }
 .nearby-item {
   display: flex; align-items: center; gap: 0.75rem;
   padding: 0.8rem 0.25rem; border-bottom: 1px dashed var(--line);
   font-size: 0.92rem;
+  transition: all 0.3s;
+  animation: fadeLeft 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
+.nearby-item:nth-child(1) { animation-delay: 0.1s; }
+.nearby-item:nth-child(2) { animation-delay: 0.15s; }
+.nearby-item:nth-child(3) { animation-delay: 0.2s; }
+.nearby-item:nth-child(4) { animation-delay: 0.25s; }
+.nearby-item:nth-child(5) { animation-delay: 0.3s; }
+.nearby-item:nth-child(6) { animation-delay: 0.35s; }
 .nearby-item:last-child { border-bottom: none; }
+.nearby-item:hover { transform: translateX(6px); background: var(--secondary); border-radius: 6px; }
 .nearby-dot {
   width: 10px; height: 10px; border-radius: 50%;
   background: var(--accent); flex-shrink: 0;
   box-shadow: 0 0 0 3px rgba(212,168,87,0.25);
+  transition: all 0.3s;
+  position: relative;
 }
-.nearby-name { flex: 1; color: var(--text-dark); font-weight: 500; }
+.nearby-item:hover .nearby-dot {
+  transform: scale(1.3);
+  box-shadow: 0 0 0 5px rgba(212,168,87,0.35);
+}
+.nearby-name { flex: 1; color: var(--text-dark); font-weight: 500; transition: color 0.3s; }
+.nearby-item:hover .nearby-name { color: var(--accent-dark); }
 .nearby-dist {
   font-family: 'Playfair Display', serif;
   color: var(--accent-dark); font-weight: 700;
@@ -108,17 +233,31 @@
   background: var(--secondary);
   padding: 0.15rem 0.55rem; border-radius: 999px;
   white-space: nowrap;
+  transition: all 0.3s;
+}
+.nearby-item:hover .nearby-dist {
+  background: var(--accent); color: var(--primary);
 }
 .nearby-more {
   display: inline-block; margin-top: 1rem;
   color: var(--accent-dark); font-size: 0.85rem; font-weight: 600;
+  transition: all 0.3s;
 }
-.nearby-more:hover { text-decoration: underline; }
+.nearby-more:hover { text-decoration: underline; transform: translateX(4px); }
 
+/* =========================================
+   AMENITIES LIST — Grid Animation
+   ========================================= */
 .amenities-list {
   background: var(--neutral);
   border-radius: 12px; padding: 1.5rem;
   border: 1px solid var(--line);
+  animation: slideInUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.3s both;
+  transition: all 0.4s;
+}
+.amenities-list:hover {
+  box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+  border-color: var(--accent);
 }
 .amenities-list h3 {
   font-size: 1.05rem; color: var(--primary); margin-bottom: 1rem;
@@ -130,9 +269,38 @@
   font-size: 0.88rem; color: var(--text-dark);
   background: var(--white); padding: 0.6rem 0.85rem;
   border-radius: 8px; border: 1px solid var(--line);
+  transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  animation: scaleIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
+.am-item:nth-child(1) { animation-delay: 0.15s; }
+.am-item:nth-child(2) { animation-delay: 0.2s; }
+.am-item:nth-child(3) { animation-delay: 0.25s; }
+.am-item:nth-child(4) { animation-delay: 0.3s; }
+.am-item:nth-child(5) { animation-delay: 0.35s; }
+.am-item:nth-child(6) { animation-delay: 0.4s; }
+.am-item:nth-child(7) { animation-delay: 0.45s; }
+.am-item:nth-child(8) { animation-delay: 0.5s; }
+.am-item:hover {
+  border-color: var(--accent); background: var(--secondary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(212,168,87,0.12);
+}
+.am-item span:first-child {
+  transition: transform 0.3s;
+}
+.am-item:hover span:first-child { transform: scale(1.2); }
 
 @media (max-width: 900px) {
   .contact-grid { grid-template-columns: 1fr; gap: 2rem; }
   .map-embed-wrap { height: 280px; }
+  .contact-section { padding: 3rem 1.25rem; }
+}
+
+@media (max-width: 480px) {
+  .contact-card { padding: 1.2rem; gap: 0.8rem; }
+  .c-icon { font-size: 1.5rem; }
+  .contact-card h3 { font-size: 0.95rem; }
+  .btn-wa-inline, .btn-insta-inline { flex: 1; text-align: center; }
+  .am-grid { grid-template-columns: 1fr; }
+  .page-hero { padding: 4rem 1.25rem; }
 }

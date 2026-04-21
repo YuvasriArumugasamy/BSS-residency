@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import logo from '../assets/logo.png';
+import { MAP, CONTACT, waLink } from '../constants';
 import './Navbar.css';
 
 export default function Navbar() {
@@ -14,7 +15,18 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  // Close menu on route change
   useEffect(() => setMenuOpen(false), [location]);
+
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [menuOpen]);
 
   const links = [
     { to: '/', label: 'Home' },
@@ -24,7 +36,8 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
+    <>
+      <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
       <div className="nav-inner">
         <Link to="/" className="nav-logo">
           <span className="nav-logo-circle">
@@ -36,7 +49,7 @@ export default function Navbar() {
           </span>
         </Link>
 
-        <ul className={`nav-links ${menuOpen ? 'open' : ''}`}>
+        <ul className="nav-links">
           {links.map((l) => (
             <li key={l.to}>
               <Link
@@ -49,7 +62,18 @@ export default function Navbar() {
           ))}
         </ul>
 
-        <Link to="/booking" className="nav-cta">Book Now</Link>
+        <div className="nav-actions">
+          <a
+            href={MAP.directUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="nav-map-btn"
+            title="View on Google Maps"
+          >
+            <i className="fa-solid fa-location-dot"></i> Map
+          </a>
+          <Link to="/booking" className="nav-cta">Book Now</Link>
+        </div>
 
         <button
           className={`hamburger ${menuOpen ? 'open' : ''}`}
@@ -59,18 +83,54 @@ export default function Navbar() {
           <span /><span /><span />
         </button>
       </div>
+    </nav>
 
       {/* Mobile overlay */}
       {menuOpen && (
-        <div className="mobile-menu fade-in">
-          {links.map((l) => (
-            <Link key={l.to} to={l.to} className={location.pathname === l.to ? 'active' : ''}>
-              {l.label}
-            </Link>
-          ))}
-          <Link to="/booking" className="mobile-book-btn">Book Now</Link>
+        <div className="mobile-menu">
+          <div className="mobile-menu-content">
+            {links.map((l) => (
+              <Link key={l.to} to={l.to} className={`mobile-link ${location.pathname === l.to ? 'active' : ''}`}>
+                {l.label}
+              </Link>
+            ))}
+            <Link to="/booking" className="mobile-book-btn">Book Your Stay</Link>
+
+            <div className="mobile-extras">
+              <a
+                href={waLink('Hello BSS Residency! I would like to make a booking.')}
+                target="_blank"
+                rel="noreferrer"
+                className="mobile-extra-link wa"
+              >
+                <i className="fa-brands fa-whatsapp"></i> WhatsApp Us
+              </a>
+              <a
+                href={`https://instagram.com/${CONTACT.instagram}`}
+                target="_blank"
+                rel="noreferrer"
+                className="mobile-extra-link insta"
+              >
+                <i className="fa-brands fa-square-instagram"></i> Follow us on Instagram
+              </a>
+              <a
+                href={MAP.directUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="mobile-extra-link"
+              >
+                📍 View on Google Maps
+              </a>
+              <a
+                href={`tel:${CONTACT.phonePrimary.replace(/\s/g, '')}`}
+                className="mobile-extra-link"
+              >
+                📞 {CONTACT.phonePrimary}
+              </a>
+            </div>
+          </div>
         </div>
       )}
-    </nav>
+    </>
   );
 }

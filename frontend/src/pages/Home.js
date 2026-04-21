@@ -4,8 +4,45 @@ import buildingImg from '../assets/building.png';
 import roomImg from '../assets/room.jpg';
 import roomAcImg from '../assets/room-ac-2.jpg';
 import logo from '../assets/logo.png';
+import roomGal1 from '../assets/room-ac-1.jpg';
+import roomGal2 from '../assets/room-gallery-2.jpg';
+import roomGal3 from '../assets/room-gallery-3.jpg';
+import roomGal4 from '../assets/room-gallery-4.jpg';
 import { AMENITIES, ROOMS, CONTACT, waLink } from '../constants';
 import './Home.css';
+
+function ImageCarousel({ images, alt }) {
+  const [index, setIndex] = React.useState(0);
+
+  React.useEffect(() => {
+    const timer = setInterval(() => {
+      setIndex((prev) => (prev + 1) % images.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [images.length]);
+
+  return (
+    <div className="carousel-container">
+      {images.map((img, i) => (
+        <img
+          key={i}
+          src={img}
+          alt={`${alt} ${i + 1}`}
+          className={`carousel-img ${i === index ? 'active' : ''}`}
+        />
+      ))}
+      <div className="carousel-dots">
+        {images.map((_, i) => (
+          <span
+            key={i}
+            className={`dot ${i === index ? 'active' : ''}`}
+            onClick={() => setIndex(i)}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export default function Home() {
   return (
@@ -96,9 +133,7 @@ export default function Home() {
           </div>
           <div className="tariff-foot">
             <Link to="/rooms" className="btn-primary">View All Rooms</Link>
-            <a href={waLink('Hello BSS Residency! I would like to make a booking.')} className="btn-wa" target="_blank" rel="noreferrer">
-              💬 WhatsApp Us
-            </a>
+            <Link to="/booking" className="btn-gold">Book Your Stay</Link>
           </div>
         </div>
       </section>
@@ -121,7 +156,7 @@ export default function Home() {
           <Link to="/booking" className="btn-primary" style={{ marginTop: '1.5rem', display: 'inline-block' }}>Book This Room</Link>
         </div>
         <div className="showcase-img">
-          <img src={roomAcImg || roomImg} alt="BSS Residency A/C Room" />
+          <ImageCarousel images={[roomGal1, roomGal2, roomGal3, roomGal4]} alt="BSS Residency A/C Room" />
         </div>
       </section>
 
@@ -132,9 +167,6 @@ export default function Home() {
           <p>Book directly with us for the best rates. Instant confirmation via WhatsApp.</p>
           <div className="cta-btns">
             <Link to="/booking" className="btn-gold">Book Now</Link>
-            <a href={waLink('Hello BSS Residency! I would like to make a booking.')} className="btn-wa" target="_blank" rel="noreferrer">
-              💬 WhatsApp Us
-            </a>
             <a href={`tel:${CONTACT.phonePrimary.replace(/\s/g, '')}`} className="btn-outline-light">
               📞 {CONTACT.phonePrimary}
             </a>

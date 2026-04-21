@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import FloatingContact from './components/FloatingContact';
 import Home from './pages/Home';
 import Rooms from './pages/Rooms';
 import Gallery from './pages/Gallery';
@@ -9,10 +10,12 @@ import Booking from './pages/Booking';
 import Contact from './pages/Contact';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
+import ScrollObserver from './components/ScrollObserver';
 
 function App() {
   return (
     <Router>
+      <ScrollObserver />
       <Routes>
         {/* Admin routes - no navbar/footer */}
         <Route path="/admin/login" element={<AdminLogin />} />
@@ -30,6 +33,7 @@ function App() {
               <Route path="/contact" element={<Contact />} />
             </Routes>
             <Footer />
+            <FloatingContact />
           </>
         } />
       </Routes>

@@ -295,7 +295,7 @@ export default function Booking() {
                           <span className="btn-spinner" />Submitting...
                         </>
                       ) : (
-                        '💬 Confirm Booking via WhatsApp'
+                        <><i className="fa-brands fa-whatsapp"></i> Confirm Booking via WhatsApp</>
                       )}
                     </button>
                   </div>
@@ -358,15 +358,24 @@ export default function Booking() {
             <div className="info-card gold-card">
               <h3>Quick Booking</h3>
               <p>Prefer to book directly? Call or WhatsApp us.</p>
-              <a
-                href={waLink('Hello BSS Residency! I would like to make a booking.')}
-                className="btn-wa"
-                target="_blank"
-                rel="noreferrer"
-                style={{ display: 'block', textAlign: 'center', marginTop: '0.8rem' }}
-              >
-                💬 Open WhatsApp
-              </a>
+              <div className="quick-actions">
+                <a
+                  href={waLink('Hello BSS Residency! I would like to make a booking.')}
+                  className="btn-wa"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <i className="fa-brands fa-whatsapp"></i> WhatsApp
+                </a>
+                <a
+                  href={`https://instagram.com/${CONTACT.instagram}`}
+                  className="btn-insta-small"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <i className="fa-brands fa-square-instagram"></i> Instagram
+                </a>
+              </div>
               <a
                 href={`tel:${CONTACT.phonePrimary.replace(/\s/g, '')}`}
                 className="btn-dark-inline"

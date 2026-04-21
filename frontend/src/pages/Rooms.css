@@ -1,20 +1,46 @@
 .rooms-page { padding-top: 72px; background: var(--secondary); }
 
 .page-hero {
-  background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
+  background: linear-gradient(135deg, #000 0%, #1a1a1a 50%, #0d0d0d 100%);
+  background-size: 200% 200%;
+  animation: gradientShift 8s ease infinite;
   padding: 5rem 2rem; text-align: center; color: var(--white);
   border-bottom: 3px solid var(--accent);
+  position: relative;
+  overflow: hidden;
+}
+.page-hero::before {
+  content: '';
+  position: absolute; top: 50%; left: 50%;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(212,168,87,0.08) 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  animation: pulse 6s ease-in-out infinite;
+  pointer-events: none;
 }
 .page-hero h1 {
   font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 400;
   margin-top: 0.5rem; color: var(--white);
+  animation: fadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
+  position: relative;
 }
 .page-hero h1 em { font-style: italic; color: var(--accent); }
-.page-hero p { color: rgba(255,255,255,0.75); margin-top: 1rem; }
-.section-label.gold { color: var(--accent); }
+.page-hero p {
+  color: rgba(255,255,255,0.75); margin-top: 1rem;
+  animation: fadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both;
+  position: relative;
+}
+.section-label.gold {
+  color: var(--accent);
+  animation: fadeDown 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  position: relative;
+}
 
 /* Tariff summary table */
-.tariff-summary { padding: 4rem 2rem 2rem; }
+.tariff-summary {
+  padding: 4rem 2rem 2rem;
+  animation: fadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
 .tariff-summary h2 {
   text-align: center; font-size: clamp(1.6rem, 3vw, 2.2rem);
   color: var(--primary); font-weight: 400;
@@ -31,6 +57,11 @@
   border-radius: 12px;
   border: 1px solid var(--line);
   box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+  animation: slideInUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
+  transition: box-shadow 0.3s;
+}
+.tariff-table-wrap:hover {
+  box-shadow: 0 8px 35px rgba(0,0,0,0.08);
 }
 .tariff-table {
   width: 100%; border-collapse: collapse; min-width: 540px;
@@ -45,32 +76,66 @@
   padding: 1.1rem 1.25rem; border-top: 1px solid var(--line);
   font-size: 0.95rem; color: var(--text-dark);
   vertical-align: middle;
+  transition: all 0.3s;
 }
-.tariff-table tbody tr:hover { background: var(--secondary); }
-.tt-icon { font-size: 1.3rem; margin-right: 0.5rem; }
+.tariff-table tbody tr {
+  transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.tariff-table tbody tr:hover {
+  background: var(--secondary);
+  transform: scale(1.01);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+.tt-icon { font-size: 1.3rem; margin-right: 0.5rem; transition: transform 0.3s; }
+.tariff-table tbody tr:hover .tt-icon { transform: scale(1.2); }
 .tt-pill {
   display: inline-block; font-size: 0.72rem; letter-spacing: 0.08em;
   padding: 0.25rem 0.75rem; border-radius: 999px;
   background: var(--neutral); color: var(--text-dark); font-weight: 600;
+  transition: all 0.3s;
+}
+.tariff-table tbody tr:hover .tt-pill {
+  background: var(--accent); color: var(--primary);
 }
 .tt-price {
   font-size: 1.15rem; font-weight: 700;
   color: var(--accent-dark); font-family: 'Playfair Display', serif;
+  transition: color 0.3s;
 }
+.tariff-table tbody tr:hover .tt-price { color: var(--primary); }
 .btn-gold-sm {
   background: var(--accent); color: var(--primary);
   padding: 0.5rem 1rem; border-radius: 6px;
   font-size: 0.78rem; font-weight: 700; white-space: nowrap;
-  transition: all 0.2s; display: inline-block;
+  transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
 }
-.btn-gold-sm:hover { background: var(--primary); color: var(--accent); }
+.btn-gold-sm::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: var(--primary);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  z-index: 0;
+}
+.btn-gold-sm:hover::before { transform: scaleX(1); transform-origin: left; }
+.btn-gold-sm:hover { color: var(--accent); }
+.btn-gold-sm span, .btn-gold-sm { position: relative; z-index: 1; }
 
 .tariff-note {
   text-align: center; font-size: 0.82rem;
   color: var(--text-light); margin-top: 1rem; font-style: italic;
 }
 
-.rooms-list { padding: 3rem 2rem 5rem; display: flex; flex-direction: column; gap: 4rem; }
+/* =========================================
+   ROOM DETAIL CARDS — Animated Entrances
+   ========================================= */
+.rooms-list {
+  padding: 3rem 2rem 5rem; display: flex; flex-direction: column; gap: 4rem;
+}
 
 .room-detail-card {
   display: grid; grid-template-columns: 1fr 1fr;
@@ -80,17 +145,39 @@
   border-radius: 14px;
   padding: 1.5rem;
   box-shadow: 0 4px 22px rgba(0,0,0,0.04);
+  transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  animation: slideInUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.room-detail-card:nth-child(1) { animation-delay: 0.05s; }
+.room-detail-card:nth-child(2) { animation-delay: 0.15s; }
+.room-detail-card:nth-child(3) { animation-delay: 0.25s; }
+.room-detail-card:nth-child(4) { animation-delay: 0.35s; }
+.room-detail-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 50px rgba(0,0,0,0.1);
+  border-color: var(--accent);
 }
 .room-detail-card.reverse { direction: rtl; }
 .room-detail-card.reverse > * { direction: ltr; }
 
-.room-detail-img { position: relative; border-radius: 10px; overflow: hidden; }
-.room-detail-img img { width: 100%; height: 340px; object-fit: cover; }
+.room-detail-img {
+  position: relative; border-radius: 10px; overflow: hidden;
+}
+.room-detail-img img {
+  width: 100%; height: 340px; object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.room-detail-card:hover .room-detail-img img { transform: scale(1.06); }
 .room-type-badge {
   position: absolute; top: 1rem; left: 1rem;
   background: var(--primary); color: var(--accent);
   padding: 0.3rem 0.9rem; border-radius: 999px;
   font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+  animation: fadeDown 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.3s both;
+  transition: all 0.3s;
+}
+.room-detail-card:hover .room-type-badge {
+  background: var(--accent); color: var(--primary);
 }
 .room-price-badge {
   position: absolute; bottom: 1rem; right: 1rem;
@@ -99,23 +186,48 @@
   font-family: 'Playfair Display', serif;
   font-size: 1.1rem; font-weight: 700;
   box-shadow: 0 6px 18px rgba(212,168,87,0.4);
+  animation: scaleIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.4s both;
+  transition: all 0.3s;
+}
+.room-detail-card:hover .room-price-badge {
+  transform: scale(1.08);
+  box-shadow: 0 8px 25px rgba(212,168,87,0.5);
 }
 .room-price-badge span { font-size: 0.7rem; font-weight: 500; margin-left: 0.25rem; color: rgba(0,0,0,0.6); }
 
 .room-detail-info { display: flex; flex-direction: column; gap: 0; padding: 0 1rem; }
-.r-icon-lg { font-size: 2.5rem; margin-bottom: 0.5rem; }
-.room-detail-info h2 { font-size: 1.9rem; font-weight: 400; color: var(--primary); margin-bottom: 1rem; }
+.r-icon-lg {
+  font-size: 2.5rem; margin-bottom: 0.5rem;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.room-detail-card:hover .r-icon-lg { transform: scale(1.2) rotate(-5deg); }
+.room-detail-info h2 {
+  font-size: 1.9rem; font-weight: 400; color: var(--primary); margin-bottom: 1rem;
+  transition: color 0.3s;
+}
+.room-detail-card:hover .room-detail-info h2 { color: var(--accent-dark); }
 .r-desc { font-size: 0.95rem; color: var(--text-muted); line-height: 1.8; margin-bottom: 1.5rem; }
 .r-features-grid {
   list-style: none; display: grid; grid-template-columns: 1fr 1fr;
   gap: 0.5rem; margin-bottom: 1.5rem;
 }
-.r-features-grid li { font-size: 0.88rem; color: var(--text-dark); display: flex; align-items: center; gap: 0.4rem; }
-.check { color: var(--accent-dark); font-weight: 700; }
+.r-features-grid li {
+  font-size: 0.88rem; color: var(--text-dark);
+  display: flex; align-items: center; gap: 0.4rem;
+  transition: all 0.3s;
+}
+.r-features-grid li:hover { color: var(--accent-dark); transform: translateX(5px); }
+.check { color: var(--accent-dark); font-weight: 700; transition: transform 0.3s; }
+.r-features-grid li:hover .check { transform: scale(1.3); }
 .r-price-note {
   display: flex; align-items: center; flex-wrap: wrap; gap: 0.75rem;
   padding: 1rem 1.25rem; background: var(--secondary); border-radius: 10px;
   border-left: 3px solid var(--accent);
+  transition: all 0.3s;
+}
+.r-price-note:hover {
+  background: rgba(212,168,87,0.08);
+  border-left-color: var(--accent-dark);
 }
 .r-price-inline { display: flex; align-items: baseline; gap: 0.25rem; flex: 1; }
 .r-price-inline-amt {
@@ -127,35 +239,79 @@
   background: #25D366; color: white;
   padding: 0.5rem 1rem; border-radius: 6px;
   font-size: 0.8rem; font-weight: 600; white-space: nowrap;
-  transition: background 0.2s;
+  transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
-.btn-wa-sm:hover { background: #1ebe59; }
+.btn-wa-sm:hover {
+  background: #1ebe59;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(37,211,102,0.3);
+}
 .btn-primary-sm {
   background: var(--primary); color: var(--white);
   padding: 0.5rem 1rem; border-radius: 6px;
   font-size: 0.8rem; font-weight: 600; white-space: nowrap;
-  transition: all 0.2s;
+  transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
-.btn-primary-sm:hover { background: var(--accent); color: var(--primary); }
+.btn-primary-sm:hover {
+  background: var(--accent); color: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(212,168,87,0.3);
+}
 
-.pricing-note-section { background: var(--neutral); padding: 4rem 0; }
+/* =========================================
+   PRICING NOTE — Pop-in Effect
+   ========================================= */
+.pricing-note-section {
+  background: var(--neutral); padding: 4rem 0;
+  overflow: hidden;
+}
 .pricing-note-card {
   background: var(--white); border-radius: 12px; padding: 2.5rem;
   border: 1px solid var(--line); text-align: center;
   box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  animation: scaleIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  transition: all 0.4s;
 }
-.pricing-note-card h3 { font-size: 1.4rem; color: var(--primary); margin-bottom: 1rem; }
+.pricing-note-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.1);
+  border-color: var(--accent);
+}
+.pricing-note-card h3 {
+  font-size: 1.4rem; color: var(--primary); margin-bottom: 1rem;
+  transition: color 0.3s;
+}
+.pricing-note-card:hover h3 { color: var(--accent-dark); }
 .pricing-note-card p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.8; max-width: 600px; margin: 0 auto 2rem; }
-.pricing-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
-.btn-wa { background: #25D366; color: white; padding: 0.85rem 2rem; border-radius: 6px; font-size: 0.9rem; font-weight: 600; transition: background 0.2s; display: inline-block; }
-.btn-wa:hover { background: #1ebe59; }
+.pricing-actions {
+  display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+}
+.btn-wa {
+  background: #25D366; color: white;
+  padding: 0.85rem 2rem; border-radius: 6px;
+  font-size: 0.9rem; font-weight: 600;
+  transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+}
+.btn-wa:hover {
+  background: #1ebe59;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 22px rgba(37,211,102,0.3);
+}
 .btn-gold {
   background: var(--accent); color: var(--primary);
   padding: 0.85rem 2rem; border-radius: 6px;
   font-size: 0.92rem; font-weight: 700;
-  transition: all 0.2s; display: inline-block;
+  transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  display: inline-block;
 }
-.btn-gold:hover { background: var(--primary); color: var(--accent); }
+.btn-gold:hover {
+  background: var(--primary); color: var(--accent);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 22px rgba(0,0,0,0.2);
+}
 
 @media (max-width: 900px) {
   .room-detail-card, .room-detail-card.reverse {
@@ -163,4 +319,14 @@
   }
   .room-detail-info { padding: 0; }
   .room-detail-img img { height: 260px; }
+}
+
+@media (max-width: 480px) {
+  .room-detail-info h2 { font-size: 1.6rem; }
+  .room-price-badge { font-size: 1rem; padding: 0.45rem 0.8rem; }
+  .r-price-inline-amt { font-size: 1.3rem; }
+  .room-detail-img img { height: 220px; }
+  .r-price-note { flex-direction: column; align-items: stretch; text-align: center; }
+  .r-price-inline { justify-content: center; }
+  .btn-wa-sm, .btn-primary-sm { width: 100%; text-align: center; padding: 0.75rem; }
 }

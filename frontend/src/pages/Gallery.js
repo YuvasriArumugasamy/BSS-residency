@@ -5,7 +5,7 @@ import roomAc1 from '../assets/room-ac-1.jpg';
 import roomAc2 from '../assets/room-ac-2.jpg';
 import roomAc3 from '../assets/room-ac-3.jpg';
 import roomFamily from '../assets/room-family.jpg';
-import { waLink } from '../constants';
+import { waLink, CONTACT } from '../constants';
 import './Gallery.css';
 
 const photos = [
@@ -68,13 +68,22 @@ export default function Gallery() {
 
         <div className="gallery-note">
           <p>📸 More photos coming soon! Share yours with us on WhatsApp.</p>
-          <a
-            href={waLink('Hello BSS Residency! I would like to share/request gallery photos.')}
-            className="btn-wa"
-            target="_blank" rel="noreferrer"
-          >
-            💬 Send Your Photos
-          </a>
+          <div className="gallery-actions">
+            <a
+              href={waLink('Hello BSS Residency! I would like to share/request gallery photos.')}
+              className="btn-wa"
+              target="_blank" rel="noreferrer"
+            >
+              Send Your Photos
+            </a>
+            <a
+              href={`https://instagram.com/${CONTACT.instagram}`}
+              className="btn-insta-sm"
+              target="_blank" rel="noreferrer"
+            >
+              <i className="fa-brands fa-square-instagram"></i> Instagram
+            </a>
+          </div>
         </div>
       </section>
 

@@ -16,7 +16,7 @@ export default function Contact() {
           {/* Info cards */}
           <div className="contact-info">
             <div className="contact-card">
-              <span className="c-icon">📍</span>
+              <span className="c-icon"><i className="fa-solid fa-location-dot"></i></span>
               <div>
                 <h3>Address</h3>
                 <p>
@@ -54,19 +54,42 @@ export default function Contact() {
             </div>
 
             <div className="contact-card">
-              <span className="c-icon">💬</span>
+              <span className="c-icon"><i className="fa-brands fa-whatsapp"></i></span>
               <div>
                 <h3>WhatsApp Booking</h3>
                 <p>{CONTACT.phonePrimary}</p>
                 <p className="c-note">Fastest response — 24/7</p>
-                <a
-                  href={waLink('Hello BSS Residency! I would like to make a booking.')}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="btn-wa-inline"
-                >
-                  💬 Chat Now
-                </a>
+                <div className="contact-card-actions">
+                  <a
+                    href={waLink('Hello BSS Residency! I would like to make a booking.')}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="btn-wa-inline"
+                  >
+                    <i className="fa-brands fa-whatsapp"></i> WhatsApp
+                  </a>
+                  <a
+                    href={`https://instagram.com/${CONTACT.instagram}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="btn-insta-inline"
+                  >
+                    <i className="fa-brands fa-square-instagram"></i> Instagram
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <div className="contact-card">
+              <span className="c-icon"><i className="fa-brands fa-square-instagram"></i></span>
+              <div>
+                <h3>Instagram</h3>
+                <p>
+                  <a href={`https://instagram.com/${CONTACT.instagram}`} target="_blank" rel="noreferrer">
+                    @{CONTACT.instagram}
+                  </a>
+                </p>
+                <p className="c-note">Follow us for latest updates & photos</p>
               </div>
             </div>
 
@@ -104,7 +127,7 @@ export default function Contact() {
             <div className="nearby-card">
               <div className="nearby-head">
                 <h3>
-                  <span className="loc-pin">📍</span> Nearby Places
+                  <i className="fa-solid fa-location-dot"></i> Nearby Places
                 </h3>
                 <span className="nearby-count">{NEARBY_PLACES.length} spots</span>
               </div>

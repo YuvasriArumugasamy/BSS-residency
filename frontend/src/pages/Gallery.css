@@ -1,28 +1,80 @@
 .gallery-page { padding-top: 72px; background: var(--secondary); }
 
 .page-hero {
-  background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
+  background: linear-gradient(135deg, #000 0%, #1a1a1a 50%, #0d0d0d 100%);
+  background-size: 200% 200%;
+  animation: gradientShift 8s ease infinite;
   padding: 5rem 2rem; text-align: center; color: var(--white);
   border-bottom: 3px solid var(--accent);
+  position: relative;
+  overflow: hidden;
 }
-.page-hero h1 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 400; margin-top: 0.5rem; color: var(--white); }
+.page-hero::before {
+  content: '';
+  position: absolute; top: 50%; left: 50%;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(212,168,87,0.08) 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  animation: pulse 6s ease-in-out infinite;
+  pointer-events: none;
+}
+.page-hero h1 {
+  font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 400; margin-top: 0.5rem; color: var(--white);
+  animation: fadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
+  position: relative;
+}
 .page-hero h1 em { font-style: italic; color: var(--accent); }
-.page-hero p { color: rgba(255,255,255,0.75); margin-top: 1rem; }
-.section-label { font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent-dark); font-weight: 700; }
+.page-hero p {
+  color: rgba(255,255,255,0.75); margin-top: 1rem;
+  animation: fadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both;
+  position: relative;
+}
+.section-label {
+  font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent-dark); font-weight: 700;
+}
 .section-label.gold { color: var(--accent); }
 
-.gallery-section { padding: 4rem 2rem 5rem; }
+.gallery-section {
+  padding: 4rem 2rem 5rem;
+  animation: fadeIn 0.5s ease both;
+}
 
-.filter-tabs { display: flex; gap: 0.5rem; margin-bottom: 2.5rem; flex-wrap: wrap; }
+/* =========================================
+   FILTER TABS — Pill Animations
+   ========================================= */
+.filter-tabs {
+  display: flex; gap: 0.5rem; margin-bottom: 2.5rem; flex-wrap: wrap;
+  animation: fadeUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
 .filter-tab {
   padding: 0.5rem 1.4rem; border-radius: 999px;
   border: 2px solid var(--line); background: var(--white);
   font-size: 0.85rem; font-weight: 600; color: var(--text-muted);
-  cursor: pointer; transition: all 0.2s;
+  cursor: pointer;
+  transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  position: relative;
+  overflow: hidden;
 }
-.filter-tab:hover { border-color: var(--accent); color: var(--accent-dark); }
-.filter-tab.active { background: var(--primary); border-color: var(--primary); color: var(--accent); }
+.filter-tab::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: var(--primary);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  z-index: 0;
+  border-radius: 999px;
+}
+.filter-tab:hover { border-color: var(--accent); color: var(--accent-dark); transform: translateY(-2px); }
+.filter-tab.active {
+  background: var(--primary); border-color: var(--primary); color: var(--accent);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+  transform: translateY(-2px);
+}
 
+/* =========================================
+   PHOTO GRID — Staggered Masonry-style Entrance
+   ========================================= */
 .photo-grid {
   display: grid; grid-template-columns: repeat(3, 1fr);
   gap: 1rem; margin-bottom: 3rem;
@@ -32,56 +84,143 @@
   aspect-ratio: 4/3; cursor: pointer;
   border: 1px solid var(--line);
   box-shadow: 0 4px 18px rgba(0,0,0,0.06);
+  transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  animation: scaleIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
-.photo-card img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
-.photo-card:hover img { transform: scale(1.06); }
+.photo-card:nth-child(1) { animation-delay: 0.05s; }
+.photo-card:nth-child(2) { animation-delay: 0.1s; }
+.photo-card:nth-child(3) { animation-delay: 0.15s; }
+.photo-card:nth-child(4) { animation-delay: 0.2s; }
+.photo-card:nth-child(5) { animation-delay: 0.25s; }
+.photo-card:nth-child(6) { animation-delay: 0.3s; }
+.photo-card:nth-child(7) { animation-delay: 0.35s; }
+.photo-card:nth-child(8) { animation-delay: 0.4s; }
+.photo-card:nth-child(9) { animation-delay: 0.45s; }
+.photo-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 14px 40px rgba(0,0,0,0.15);
+  border-color: var(--accent);
+  z-index: 2;
+}
+.photo-card img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.photo-card:hover img { transform: scale(1.1); }
 .photo-overlay {
   position: absolute; inset: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 50%);
+  background: linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.3) 40%, transparent 70%);
   display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
-  padding: 1.2rem; opacity: 0; transition: opacity 0.3s;
+  padding: 1.2rem; opacity: 0;
+  transition: opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .photo-card:hover .photo-overlay { opacity: 1; }
-.photo-zoom { font-size: 2rem; margin-bottom: 0.5rem; color: var(--accent); }
-.photo-overlay p { color: var(--white); font-size: 0.85rem; text-align: center; font-weight: 500; }
+.photo-zoom {
+  font-size: 2rem; margin-bottom: 0.5rem; color: var(--accent);
+  transition: transform 0.3s;
+  animation: pulse 2s ease-in-out infinite;
+}
+.photo-card:hover .photo-zoom { transform: scale(1.2); }
+.photo-overlay p {
+  color: var(--white); font-size: 0.85rem; text-align: center; font-weight: 500;
+  transform: translateY(10px);
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.photo-card:hover .photo-overlay p { transform: translateY(0); }
 .photo-cat-tag {
   position: absolute; top: 0.75rem; left: 0.75rem;
   background: var(--primary); color: var(--accent);
   padding: 0.25rem 0.75rem; border-radius: 999px;
   font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em;
+  transition: all 0.3s;
+  transform: translateX(-120%);
 }
+.photo-card:hover .photo-cat-tag { transform: translateX(0); }
 
+/* =========================================
+   GALLERY NOTE — Animated CTA
+   ========================================= */
 .gallery-note {
   text-align: center; padding: 2.5rem;
   background: var(--neutral); border-radius: 12px;
   border: 1px solid var(--line);
+  animation: slideInUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  transition: all 0.4s;
+}
+.gallery-note:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+  border-color: var(--accent);
 }
 .gallery-note p { color: var(--text-dark); font-size: 0.95rem; margin-bottom: 1rem; font-weight: 500; }
-.btn-wa { background: #25D366; color: white; padding: 0.75rem 1.8rem; border-radius: 8px; font-size: 0.88rem; font-weight: 600; display: inline-block; transition: background 0.2s; }
-.btn-wa:hover { background: #1ebe59; }
+.btn-wa {
+  background: #25D366; color: white;
+  padding: 0.75rem 1.8rem; border-radius: 8px;
+  font-size: 0.88rem; font-weight: 600; display: inline-block;
+  transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.btn-wa:hover {
+  background: #1ebe59;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 22px rgba(37,211,102,0.3);
+}
 
-/* Lightbox */
+.gallery-actions {
+  display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 1rem;
+}
+
+.btn-insta-sm {
+  background: linear-gradient(45deg, #f09433, #dc2743, #bc1888);
+  color: white; padding: 0.75rem 1.8rem; border-radius: 8px;
+  font-size: 0.88rem; font-weight: 600; display: inline-block;
+  transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.btn-insta-sm:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 22px rgba(220, 39, 67, 0.3);
+}
+
+/* =========================================
+   LIGHTBOX — Cinema-style Opening
+   ========================================= */
 .lightbox {
-  position: fixed; inset: 0; background: rgba(0,0,0,0.92);
+  position: fixed; inset: 0; background: rgba(0,0,0,0.95);
   z-index: 999; display: flex; align-items: center; justify-content: center;
-  animation: fadeIn 0.2s ease;
+  animation: fadeIn 0.3s ease;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
 .lightbox-inner {
   position: relative; max-width: 90vw; max-height: 90vh;
   display: flex; flex-direction: column; align-items: center;
+  animation: scaleIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
-.lightbox-inner img { max-height: 80vh; max-width: 85vw; object-fit: contain; border-radius: 8px; }
-.lb-caption { color: rgba(255,255,255,0.85); font-size: 0.9rem; margin-top: 1rem; text-align: center; }
+.lightbox-inner img {
+  max-height: 80vh; max-width: 85vw; object-fit: contain; border-radius: 8px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+.lb-caption {
+  color: rgba(255,255,255,0.85); font-size: 0.9rem; margin-top: 1rem; text-align: center;
+  animation: fadeUp 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both;
+}
 .lb-close {
   position: absolute; top: -2.5rem; right: 0;
   background: none; border: none; color: var(--accent); font-size: 1.5rem;
-  cursor: pointer; opacity: 0.8; transition: opacity 0.2s;
+  cursor: pointer; opacity: 0.8;
+  transition: all 0.3s;
 }
-.lb-close:hover { opacity: 1; }
+.lb-close:hover { opacity: 1; transform: rotate(90deg) scale(1.2); color: var(--white); }
 
 @media (max-width: 768px) {
   .photo-grid { grid-template-columns: repeat(2, 1fr); }
+  .gallery-section { padding: 3rem 1.25rem; }
+  .page-hero { padding: 4rem 1.25rem; }
 }
+
 @media (max-width: 480px) {
   .photo-grid { grid-template-columns: 1fr; }
+  .filter-tabs { justify-content: center; }
+  .filter-tab { padding: 0.4rem 1rem; font-size: 0.75rem; }
+  .gallery-actions { flex-direction: column; }
+  .btn-wa, .btn-insta-sm { width: 100%; text-align: center; }
 }

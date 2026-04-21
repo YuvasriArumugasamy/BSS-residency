@@ -28,7 +28,7 @@ export default function Footer() {
             target="_blank"
             rel="noreferrer"
           >
-            💬 WhatsApp Us
+            <i className="fa-brands fa-whatsapp"></i> WhatsApp Us
           </a>
         </div>
 
@@ -56,6 +56,7 @@ export default function Footer() {
           <p>📞 {CONTACT.phoneSecondary}</p>
           <p>🕐 Check-in: {CONTACT.checkIn}</p>
           <p>🕐 Check-out: {CONTACT.checkOut}</p>
+          <p>📸 <a href={`https://instagram.com/${CONTACT.instagram}`} target="_blank" rel="noreferrer" style={{color:'inherit', textDecoration:'none'}}>@{CONTACT.instagram}</a></p>
           <a
             href={MAP.directUrl}
             target="_blank"

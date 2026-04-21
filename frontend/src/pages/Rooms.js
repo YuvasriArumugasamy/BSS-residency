@@ -91,7 +91,7 @@ export default function Rooms() {
                   className="btn-wa-sm"
                   target="_blank" rel="noreferrer"
                 >
-                  💬 WhatsApp
+                  <i className="fa-brands fa-whatsapp"></i> WhatsApp
                 </a>
                 <Link to="/booking" className="btn-primary-sm">Book Online</Link>
               </div>
@@ -107,7 +107,7 @@ export default function Rooms() {
             <h3>📋 Quick Booking</h3>
             <p>Prefer to book instantly? Chat with us on WhatsApp or call for immediate confirmation. We guarantee the best rates when you book directly with us.</p>
             <div className="pricing-actions">
-              <a href={waLink('Hello BSS Residency! Please share the current room tariff.')} className="btn-wa" target="_blank" rel="noreferrer">💬 WhatsApp Us</a>
+              <a href={waLink('Hello BSS Residency! Please share the current room tariff.')} className="btn-wa" target="_blank" rel="noreferrer"><i className="fa-brands fa-whatsapp"></i> WhatsApp Us</a>
               <Link to="/booking" className="btn-gold">Book Now</Link>
             </div>
           </div>
