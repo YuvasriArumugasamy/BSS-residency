@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Booking = require('../models/Booking');
+const Room = require('../models/Room');
 
 // Simple auth middleware
 const adminAuth = (req, res, next) => {
@@ -81,6 +82,82 @@ router.get('/stats', adminAuth, async (req, res) => {
       { $group: { _id: '$roomType', count: { $sum: 1 } } }
     ]);
     res.json({ success: true, stats: { total, pending, confirmed, cancelled, byRoom } });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// ---------- Rooms ----------
+
+// GET /api/admin/rooms — List all rooms (optional status filter)
+router.get('/rooms', adminAuth, async (req, res) => {
+  try {
+    const { status } = req.query;
+    const filter = {};
+    if (status) filter.status = status;
+    const rooms = await Room.find(filter).sort({ roomNumber: 1 });
+    res.json({ success: true, total: rooms.length, rooms });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// POST /api/admin/rooms — Create a new room
+router.post('/rooms', adminAuth, async (req, res) => {
+  try {
+    const { roomNumber, type, price, status, notes } = req.body;
+    if (!roomNumber || !type || price === undefined || price === null || price === '') {
+      return res.status(400).json({ success: false, message: 'roomNumber, type and price are required.' });
+    }
+
+    const existing = await Room.findOne({ roomNumber: roomNumber.trim() });
+    if (existing) {
+      return res.status(409).json({ success: false, message: 'Room number already exists.' });
+    }
+
+    const room = await Room.create({
+      roomNumber: roomNumber.trim(),
+      type,
+      price: Number(price),
+      status: status || 'Available',
+      notes: notes || '',
+    });
+    res.status(201).json({ success: true, room });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// PATCH /api/admin/rooms/:id — Update a room
+router.patch('/rooms/:id', adminAuth, async (req, res) => {
+  try {
+    const updates = {};
+    ['roomNumber', 'type', 'price', 'status', 'notes'].forEach((k) => {
+      if (req.body[k] !== undefined) updates[k] = req.body[k];
+    });
+    if (updates.price !== undefined) updates.price = Number(updates.price);
+    if (updates.roomNumber) updates.roomNumber = String(updates.roomNumber).trim();
+
+    const room = await Room.findByIdAndUpdate(req.params.id, updates, {
+      new: true,
+      runValidators: true,
+    });
+    if (!room) return res.status(404).json({ success: false, message: 'Room not found' });
+    res.json({ success: true, room });
+  } catch (err) {
+    if (err.code === 11000) {
+      return res.status(409).json({ success: false, message: 'Room number already exists.' });
+    }
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// DELETE /api/admin/rooms/:id — Delete a room
+router.delete('/rooms/:id', adminAuth, async (req, res) => {
+  try {
+    const room = await Room.findByIdAndDelete(req.params.id);
+    if (!room) return res.status(404).json({ success: false, message: 'Room not found' });
+    res.json({ success: true, message: 'Room deleted' });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
