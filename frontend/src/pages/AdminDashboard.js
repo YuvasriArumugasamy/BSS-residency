@@ -25,6 +25,18 @@ const ROOM_TYPES = [
   'Deluxe AC',
   'Suite',
 ];
+// Must stay in sync with backend/models/Booking.js roomType enum (includes legacy values)
+const BOOKING_ROOM_TYPES = [
+  'Double Bed',
+  'Double Bed A/C',
+  'Four Bed',
+  'Four Bed A/C',
+  'AC Room',
+  'Non-AC Room',
+  'Family Room',
+  'Dormitory',
+  'Suite Room',
+];
 const BOOKING_LIMIT = 8;
 
 // ---------- Shared components ----------
@@ -225,7 +237,7 @@ function BookingsView({
             }}
           >
             <option value="">All Rooms</option>
-            {ROOM_TYPES.map((r) => (
+            {BOOKING_ROOM_TYPES.map((r) => (
               <option key={r}>{r}</option>
             ))}
           </select>
