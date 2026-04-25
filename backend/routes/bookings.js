@@ -29,6 +29,12 @@ router.post('/', async (req, res) => {
     });
     await booking.save();
 
+    // Emit real-time event for admin dashboard
+    const io = req.app.get('io');
+    if (io) {
+      io.emit('booking:new', booking);
+    }
+
     res.status(201).json({ success: true, message: 'Booking received! We will confirm shortly.', booking });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Server error.', error: err.message });

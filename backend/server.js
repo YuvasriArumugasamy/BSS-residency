@@ -1,12 +1,15 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const http = require('http');
+const { Server } = require('socket.io');
 require('dotenv').config();
 
 const bookingRoutes = require('./routes/bookings');
 const adminRoutes = require('./routes/admin');
 
 const app = express();
+const server = http.createServer(app);
 
 // Middleware
 const allowedOrigins = [
@@ -25,6 +28,30 @@ app.use(cors({
   credentials: true
 }));
 app.use(express.json());
+
+// Socket.IO
+const io = new Server(server, {
+  cors: {
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV === 'development') {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    credentials: true,
+  },
+});
+
+io.on('connection', (socket) => {
+  console.log('Admin connected:', socket.id);
+  socket.on('disconnect', () => {
+    console.log('Admin disconnected:', socket.id);
+  });
+});
+
+// Attach io to app so routes can emit events
+app.set('io', io);
 
 // Routes
 app.use('/api/bookings', bookingRoutes);
@@ -47,7 +74,7 @@ mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
     console.log('MongoDB Connected');
-    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+    server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
   })
   .catch((err) => {
     console.error('MongoDB Error:', err);
