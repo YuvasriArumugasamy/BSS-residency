@@ -8,6 +8,7 @@ import Rooms from './pages/Rooms';
 import Gallery from './pages/Gallery';
 import Booking from './pages/Booking';
 import Contact from './pages/Contact';
+import BookingStatus from './pages/BookingStatus';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
 import ScrollObserver from './components/ScrollObserver';
@@ -30,6 +31,8 @@ function App() {
               <Route path="/rooms" element={<Rooms />} />
               <Route path="/gallery" element={<Gallery />} />
               <Route path="/booking" element={<Booking />} />
+              <Route path="/booking/status" element={<BookingStatus />} />
+              <Route path="/booking/status/:id" element={<BookingStatus />} />
               <Route path="/contact" element={<Contact />} />
             </Routes>
             <Footer />

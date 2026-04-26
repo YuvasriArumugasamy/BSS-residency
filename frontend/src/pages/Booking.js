@@ -21,8 +21,7 @@ export default function Booking() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [step, setStep] = useState(1); // 1: dates/room, 2: guest details
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [confirmedBooking, setConfirmedBooking] = useState(null);
+  const [pendingBooking, setPendingBooking] = useState(null); // after submit
   const [availability, setAvailability] = useState({});
 
   useEffect(() => {
@@ -92,20 +91,17 @@ export default function Booking() {
     }
     setLoading(true);
     try {
-      // Backend still accepts the form; submit a compatible payload
       const res = await api.post('/api/bookings', {
         ...form,
         guests: Number(form.guests),
       });
-      setResult({ success: true, message: res.data.message });
-      // Open success modal
-      setConfirmedBooking({
-        ...form,
+
+      // Store the confirmed booking data from DB
+      setPendingBooking({
+        ...res.data.booking,
         nights,
         totalPrice,
-        bookingId: res.data.booking?._id?.slice(-6).toUpperCase() || `BSS-${Date.now().toString().slice(-6)}`
       });
-      setShowSuccessModal(true);
       setForm(initForm);
       setStep(1);
     } catch (err) {
@@ -117,6 +113,107 @@ export default function Booking() {
       setLoading(false);
     }
   };
+
+  // --- SUCCESS / PENDING SCREEN ---
+  if (pendingBooking) {
+    const bookingId = pendingBooking._id;
+    const shortId = bookingId?.slice(-6).toUpperCase() || '';
+    const waMsg = `Hello BSS Residency! 🙏\n\nI just submitted a booking request.\nBooking ID: ${bookingId}\nName: ${pendingBooking.name}\nRoom: ${pendingBooking.roomType}\nCheck-in: ${new Date(pendingBooking.checkIn).toLocaleDateString('en-IN')}\nCheck-out: ${new Date(pendingBooking.checkOut).toLocaleDateString('en-IN')}\n\nPlease confirm!`;
+
+    return (
+      <main className="booking-page">
+        <section className="page-hero">
+          <p className="section-label gold">Reservation</p>
+          <h1>Booking <em>Received!</em></h1>
+          <p>We've received your request. Confirmation coming shortly via WhatsApp.</p>
+        </section>
+
+        <section className="booking-section container">
+          <div className="pending-screen">
+            {/* Animated pending icon */}
+            <div className="pending-icon-wrap">
+              <div className="pending-pulse" />
+              <span className="pending-icon">🕐</span>
+            </div>
+
+            <div className="pending-card">
+              <div className="pending-header">
+                <span className="status-badge-large pending">⏳ Pending Confirmation</span>
+                <div className="booking-id-display">
+                  <span>Booking ID</span>
+                  <strong className="bid">{bookingId}</strong>
+                  <small>Short ref: BSS-{shortId}</small>
+                </div>
+              </div>
+
+              <div className="pending-details-grid">
+                <div className="pd-item">
+                  <span>Guest Name</span>
+                  <strong>{pendingBooking.name}</strong>
+                </div>
+                <div className="pd-item">
+                  <span>Phone</span>
+                  <strong>{pendingBooking.phone}</strong>
+                </div>
+                <div className="pd-item full">
+                  <span>Room Type</span>
+                  <strong>{pendingBooking.roomType}</strong>
+                </div>
+                <div className="pd-item">
+                  <span>Check-in</span>
+                  <strong>{new Date(pendingBooking.checkIn).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</strong>
+                </div>
+                <div className="pd-item">
+                  <span>Check-out</span>
+                  <strong>{new Date(pendingBooking.checkOut).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</strong>
+                </div>
+                <div className="pd-item">
+                  <span>Nights</span>
+                  <strong>{pendingBooking.nights}</strong>
+                </div>
+                <div className="pd-item">
+                  <span>Rooms × Guests</span>
+                  <strong>{pendingBooking.rooms} × {pendingBooking.guests}</strong>
+                </div>
+              </div>
+
+              <div className="pending-total">
+                <span>Estimated Total</span>
+                <strong>₹{pendingBooking.totalPrice?.toLocaleString('en-IN')}</strong>
+              </div>
+
+              <p className="pending-note">
+                📋 Please <strong>save your Booking ID</strong> above. The admin will confirm your booking via WhatsApp. You can also check your booking status anytime using the button below.
+              </p>
+
+              <div className="pending-actions">
+                <a
+                  href={waLink(waMsg)}
+                  className="btn-wa-solid"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <i className="fa-brands fa-whatsapp" /> Follow Up on WhatsApp
+                </a>
+                <Link
+                  to={`/booking/status/${bookingId}`}
+                  className="btn-status-check"
+                >
+                  🔍 Check Booking Status
+                </Link>
+                <button
+                  className="btn-back"
+                  onClick={() => setPendingBooking(null)}
+                >
+                  ← New Booking
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    );
+  }
 
   return (
     <main className="booking-page">
@@ -134,7 +231,7 @@ export default function Booking() {
             <div className="steps">
               <div className={`step ${step >= 1 ? 'active' : ''}`}>
                 <span className="step-num">1</span>
-                <span className="step-label">Room & Dates</span>
+                <span className="step-label">Room &amp; Dates</span>
               </div>
               <div className="step-bar" />
               <div className={`step ${step >= 2 ? 'active' : ''}`}>
@@ -152,7 +249,7 @@ export default function Booking() {
             <form onSubmit={handleSubmit} className="booking-form">
               {step === 1 && (
                 <>
-                  <h2>Select Room & Dates</h2>
+                  <h2>Select Room &amp; Dates</h2>
                   <p className="form-subtext">Choose a room type and your stay dates.</p>
 
                   <div className="form-group">
@@ -310,7 +407,7 @@ export default function Booking() {
                           <span className="btn-spinner" />Submitting...
                         </>
                       ) : (
-                        <><i className="fa-brands fa-whatsapp"></i> Confirm Booking via WhatsApp</>
+                        <>📩 Submit Booking Request</>
                       )}
                     </button>
                   </div>
@@ -363,8 +460,10 @@ export default function Booking() {
             <div className="info-card">
               <h3>Booking Info</h3>
               <ul>
-                <li><strong>Early/Late:</strong> On request</li>
+                <li><strong>Check-in:</strong> 11:00 AM onwards</li>
+                <li><strong>Check-out:</strong> Before 10:00 AM</li>
                 <li><strong>Confirmation:</strong> Via WhatsApp</li>
+                <li><strong>Payment:</strong> At property</li>
               </ul>
             </div>
 
@@ -378,7 +477,7 @@ export default function Booking() {
                   target="_blank"
                   rel="noreferrer"
                 >
-                  <i className="fa-brands fa-whatsapp"></i> WhatsApp
+                  <i className="fa-brands fa-whatsapp" /> WhatsApp
                 </a>
                 <a
                   href={`https://instagram.com/${CONTACT.instagram}`}
@@ -386,7 +485,7 @@ export default function Booking() {
                   target="_blank"
                   rel="noreferrer"
                 >
-                  <i className="fa-brands fa-square-instagram"></i> Instagram
+                  <i className="fa-brands fa-square-instagram" /> Instagram
                 </a>
               </div>
               <a
@@ -409,128 +508,12 @@ export default function Booking() {
                 {CONTACT.addressLine1}<br />{CONTACT.addressLine2}
               </p>
               <Link to="/contact" className="map-mini-link">
-                View map & nearby →
+                View map &amp; nearby →
               </Link>
             </div>
           </aside>
         </div>
       </section>
-
-      {/* PREMIUM SUCCESS MODAL */}
-      {showSuccessModal && confirmedBooking && (
-        <div className="modal-overlay receipt-modal-overlay">
-          <div className="modal-container premium-receipt-modal">
-            <button className="close-btn hide-on-print" onClick={() => setShowSuccessModal(false)}>✕</button>
-            
-            {/* Success Animation */}
-            <div className="success-checkmark hide-on-print">
-              <div className="check-icon">
-                <span className="icon-line line-tip"></span>
-                <span className="icon-line line-long"></span>
-                <div className="icon-circle"></div>
-                <div className="icon-fix"></div>
-              </div>
-            </div>
-
-            <div className="receipt-content" id="receipt-content">
-              <div className="receipt-brand">
-                <h3 className="gold-text">BSS Residency</h3>
-                <p>Booking Confirmed</p>
-                <div className="booking-id-badge">ID: {confirmedBooking.bookingId}</div>
-              </div>
-
-              <div className="receipt-body">
-                <div className="receipt-info-grid">
-                  <div className="info-box">
-                    <span>Guest Name</span>
-                    <strong>{confirmedBooking.name}</strong>
-                  </div>
-                  <div className="info-box">
-                    <span>Phone</span>
-                    <strong>{confirmedBooking.phone}</strong>
-                  </div>
-                  <div className="info-box full-width">
-                    <span>Room Type</span>
-                    <strong>{confirmedBooking.roomType}</strong>
-                  </div>
-                  <div className="info-box">
-                    <span>Check-in</span>
-                    <strong>{confirmedBooking.checkIn}</strong>
-                  </div>
-                  <div className="info-box">
-                    <span>Check-out</span>
-                    <strong>{confirmedBooking.checkOut}</strong>
-                  </div>
-                  <div className="info-box">
-                    <span>Rooms</span>
-                    <strong>{confirmedBooking.rooms}</strong>
-                  </div>
-                  <div className="info-box">
-                    <span>Guests</span>
-                    <strong>{confirmedBooking.guests}</strong>
-                  </div>
-                </div>
-
-                <div className="receipt-total-box">
-                  <div className="total-label">
-                    <span>Total Estimated Amount</span>
-                    <small>{confirmedBooking.nights} Night(s)</small>
-                  </div>
-                  <div className="total-amount">
-                    ₹{confirmedBooking.totalPrice?.toLocaleString('en-IN')}
-                  </div>
-                </div>
-              </div>
-
-              <div className="receipt-footer">
-                <p>Please present this receipt at the reception.</p>
-              </div>
-            </div>
-
-            <div className="modal-actions hide-on-print">
-              <button 
-                className="btn-print" 
-                onClick={() => window.print()}
-              >
-                <i className="fa-solid fa-file-pdf"></i> Save / Print
-              </button>
-              <button 
-                className="btn-wa-solid" 
-                onClick={() => {
-                  const msg = `Hello BSS Residency! 🙏\n\nMy Booking Request:\nName: ${confirmedBooking.name}\nPhone: ${confirmedBooking.phone}\nRoom: ${confirmedBooking.roomType}\nCheck-in: ${confirmedBooking.checkIn}\nCheck-out: ${confirmedBooking.checkOut}\n\nPlease confirm!`;
-                  window.open(waLink(msg), '_blank');
-                }}
-              >
-                <i className="fa-brands fa-whatsapp"></i> Send via WhatsApp
-              </button>
-            </div>
-
-            <div className="payment-actions hide-on-print">
-              <button 
-                className="btn-gpay" 
-                onClick={() => {
-                  const upiId = "9344989393@okaxis";
-                  const upiLink = `upi://pay?pa=${upiId}&pn=BSS%20Residency&am=${confirmedBooking.totalPrice}&cu=INR`;
-                  window.open(upiLink, '_blank');
-                }}
-              >
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Google_Pay_Logo_%282020%29.svg/512px-Google_Pay_Logo_%282020%29.svg.png" alt="Google Pay" />
-                <span>Google Pay</span>
-              </button>
-              <button 
-                className="btn-paytm" 
-                onClick={() => {
-                  const upiId = "9344989393@paytm";
-                  const upiLink = `upi://pay?pa=${upiId}&pn=BSS%20Residency&am=${confirmedBooking.totalPrice}&cu=INR`;
-                  window.open(upiLink, '_blank');
-                }}
-              >
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Paytm_Logo_%28standalone%29.svg/512px-Paytm_Logo_%28standalone%29.svg.png" alt="Paytm" />
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </main>
   );
 }

@@ -7,6 +7,42 @@ const Payment = require('../models/Payment');
 const Review = require('../models/Review');
 const Notification = require('../models/Notification');
 
+const WHATSAPP_NUMBER = process.env.WHATSAPP_NUMBER || '919344989393';
+
+// Helper: build a wa.me confirmation link for a booking
+function buildWaConfirmLink(booking) {
+  const checkIn = new Date(booking.checkIn).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+  const checkOut = new Date(booking.checkOut).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+  const msg =
+    `✅ *BSS Residency – Booking Confirmed!*\n\n` +
+    `Dear ${booking.name},\n\n` +
+    `Your booking has been *confirmed*. Here are your details:\n\n` +
+    `🆔 Booking ID: *${booking._id}*\n` +
+    `🛏️ Room: *${booking.roomType}*${booking.roomNumber ? ` (Room #${booking.roomNumber})` : ''}\n` +
+    `📅 Check-in: *${checkIn}*\n` +
+    `📅 Check-out: *${checkOut}*\n` +
+    `👥 Guests: *${booking.guests}*\n\n` +
+    `📍 BSS Residency, Bus Stand, Near Anna Statue, Courtallam – 627 802\n\n` +
+    `We look forward to hosting you! 🙏`;
+
+  // Build link to guest's number
+  const guestPhone = booking.phone.replace(/[^0-9]/g, '');
+  const formattedPhone = guestPhone.startsWith('91') ? guestPhone : `91${guestPhone}`;
+  return `https://wa.me/${formattedPhone}?text=${encodeURIComponent(msg)}`;
+}
+
+function buildWaCancelLink(booking, reason = '') {
+  const msg =
+    `❌ *BSS Residency – Booking Update*\n\n` +
+    `Dear ${booking.name},\n\n` +
+    `We regret to inform you that your booking (ID: *${booking._id}*) has been *cancelled*.\n` +
+    (reason ? `Reason: ${reason}\n` : '') +
+    `\nPlease contact us to rebook or for further assistance.\n📞 +91 88385 99755`;
+  const guestPhone = booking.phone.replace(/[^0-9]/g, '');
+  const formattedPhone = guestPhone.startsWith('91') ? guestPhone : `91${guestPhone}`;
+  return `https://wa.me/${formattedPhone}?text=${encodeURIComponent(msg)}`;
+}
+
 // Simple auth middleware
 const adminAuth = (req, res, next) => {
   const { username, password } = req.headers;
@@ -24,7 +60,7 @@ router.post('/login', (req, res) => {
   const { username, password } = req.body;
   const targetUser = process.env.ADMIN_USERNAME || 'santhosh';
   const targetPass = process.env.ADMIN_PASSWORD || 'santhosh@123';
-  
+
   if (username === targetUser && password === targetPass) {
     res.json({ success: true, message: 'Login successful' });
   } else {
@@ -52,13 +88,17 @@ router.get('/bookings', adminAuth, async (req, res) => {
   }
 });
 
-// PATCH /api/admin/bookings/:id — Update booking status
+// PATCH /api/admin/bookings/:id — Update booking status / roomNumber
 router.patch('/bookings/:id', adminAuth, async (req, res) => {
   try {
-    const { status } = req.body;
+    const { status, roomNumber, cancellationReason } = req.body;
+    const updateFields = {};
+    if (status) updateFields.status = status;
+    if (roomNumber !== undefined) updateFields.roomNumber = roomNumber;
+
     const booking = await Booking.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      { $set: updateFields },
       { new: true }
     );
 
@@ -73,7 +113,15 @@ router.patch('/bookings/:id', adminAuth, async (req, res) => {
       }
     }
 
-    res.json({ success: true, booking });
+    // Build WhatsApp link for admin to send to guest
+    let waLink = null;
+    if (status === 'Confirmed') {
+      waLink = buildWaConfirmLink(booking);
+    } else if (status === 'Cancelled') {
+      waLink = buildWaCancelLink(booking, cancellationReason);
+    }
+
+    res.json({ success: true, booking, waLink });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
@@ -89,7 +137,7 @@ router.delete('/bookings/:id', adminAuth, async (req, res) => {
   }
 });
 
-// GET /api/admin/stats — Dashboard stats for overview
+// GET /api/admin/stats — Dashboard stats
 router.get('/stats', adminAuth, async (req, res) => {
   try {
     const totalBookings = await Booking.countDocuments();
@@ -107,14 +155,14 @@ router.get('/stats', adminAuth, async (req, res) => {
     const availableRooms = await Room.countDocuments({ status: 'Available' });
 
     // Today's activity
-    const todayStart = new Date(); todayStart.setHours(0,0,0,0);
-    const todayEnd = new Date(); todayEnd.setHours(23,59,59,999);
-    
-    const checkInsToday = await Booking.countDocuments({ 
+    const todayStart = new Date(); todayStart.setHours(0, 0, 0, 0);
+    const todayEnd = new Date(); todayEnd.setHours(23, 59, 59, 999);
+
+    const checkInsToday = await Booking.countDocuments({
       checkIn: { $gte: todayStart, $lte: todayEnd },
       status: { $ne: 'Cancelled' }
     });
-    const checkOutsToday = await Booking.countDocuments({ 
+    const checkOutsToday = await Booking.countDocuments({
       checkOut: { $gte: todayStart, $lte: todayEnd },
       status: { $ne: 'Cancelled' }
     });
@@ -124,14 +172,14 @@ router.get('/stats', adminAuth, async (req, res) => {
       { $group: { _id: '$roomType', count: { $sum: 1 } } }
     ]);
 
-    // Revenue history (last 7 days based on real payments)
+    // Revenue history (last 7 days)
     const revenueHistory = [];
     for (let i = 6; i >= 0; i--) {
       const d = new Date();
       d.setDate(d.getDate() - i);
-      const start = new Date(d); start.setHours(0,0,0,0);
-      const end = new Date(d); end.setHours(23,59,59,999);
-      
+      const start = new Date(d); start.setHours(0, 0, 0, 0);
+      const end = new Date(d); end.setHours(23, 59, 59, 999);
+
       const dayPayments = await Payment.find({
         date: { $gte: start, $lte: end },
         status: 'Paid'
@@ -143,14 +191,14 @@ router.get('/stats', adminAuth, async (req, res) => {
       });
     }
 
-    res.json({ 
-      success: true, 
-      stats: { 
+    res.json({
+      success: true,
+      stats: {
         totalBookings, pending, confirmed, cancelled, byRoom,
         totalRevenue, availableRooms, occupiedRooms, totalRooms,
         checkInsToday, checkOutsToday,
         revenueHistory
-      } 
+      }
     });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -211,6 +259,38 @@ router.get('/payments', adminAuth, async (req, res) => {
   try {
     const payments = await Payment.find().sort({ date: -1 });
     res.json({ success: true, payments });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// POST /api/admin/payments — Record a new payment manually
+router.post('/payments', adminAuth, async (req, res) => {
+  try {
+    const { guestName, bookingId, amount, method, status } = req.body;
+    if (!guestName || !amount) {
+      return res.status(400).json({ success: false, message: 'Guest name and amount are required.' });
+    }
+    const payment = new Payment({
+      guestName,
+      bookingId: bookingId || undefined,
+      amount: Number(amount),
+      method: method || 'Cash',
+      status: status || 'Paid',
+      date: new Date(),
+    });
+    await payment.save();
+    res.status(201).json({ success: true, payment });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// DELETE /api/admin/payments/:id — Remove a payment record
+router.delete('/payments/:id', adminAuth, async (req, res) => {
+  try {
+    await Payment.findByIdAndDelete(req.params.id);
+    res.json({ success: true, message: 'Payment deleted' });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }

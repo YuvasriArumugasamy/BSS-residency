@@ -208,7 +208,7 @@ const RoomManagement = ({ rooms, onAddClick, onDeleteRoom, onUpdateRoom }) => {
   );
 };
 
-const BookingManagement = ({ bookings, onUpdateStatus, onUpdateRoomNumber, onDelete, formatDate }) => {
+const BookingManagement = ({ bookings, onConfirm, onCancel, onWhatsApp, onUpdateRoomNumber, onDelete, onAddPayment, formatDate }) => {
   return (
     <div className="card fade-in">
       <div className="admin-table-wrap">
@@ -248,22 +248,55 @@ const BookingManagement = ({ bookings, onUpdateStatus, onUpdateRoomNumber, onDel
                   {formatDate(b.checkIn)} -<br />{formatDate(b.checkOut)}
                 </td>
                 <td>
-                  <select 
-                    value={b.status} 
-                    onChange={(e) => onUpdateStatus(b._id, e.target.value)}
-                    className={`status-pill status-${b.status.replace(' ', '-')}`}
-                    style={{ border: 'none', cursor: 'pointer', outline: 'none' }}
-                  >
-                    <option>Pending</option>
-                    <option>Confirmed</option>
-                    <option>Checked-out</option>
-                    <option>Cancelled</option>
-                  </select>
+                  <span className={`status-pill status-${b.status.replace(' ', '-')}`}>{b.status}</span>
                 </td>
                 <td>
-                  <button className="admin-btn admin-btn-outline" onClick={() => onDelete(b._id)} style={{ padding: '0.4rem', color: '#ff4d4d' }}>
-                    <Trash2 size={16} />
-                  </button>
+                  <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
+                    {/* Confirm button — only for Pending */}
+                    {b.status === 'Pending' && (
+                      <button 
+                        className="admin-btn" 
+                        title="Confirm & notify guest via WhatsApp"
+                        onClick={() => onConfirm(b._id, b)}
+                        style={{ background: '#10b981', color: '#fff', border: 'none', padding: '0.4rem 0.6rem', fontSize: '0.75rem', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.25rem' }}
+                      >
+                        <CheckCircle size={14} /> Confirm
+                      </button>
+                    )}
+                    {/* Cancel button */}
+                    {(b.status === 'Pending' || b.status === 'Confirmed') && (
+                      <button 
+                        className="admin-btn" 
+                        title="Cancel booking"
+                        onClick={() => onCancel(b._id, b)}
+                        style={{ background: '#ef4444', color: '#fff', border: 'none', padding: '0.4rem 0.6rem', fontSize: '0.75rem', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.25rem' }}
+                      >
+                        <XCircle size={14} /> Cancel
+                      </button>
+                    )}
+                    {/* WhatsApp button */}
+                    <button 
+                      className="admin-btn" 
+                      title="Open WhatsApp with guest"
+                      onClick={() => onWhatsApp(b)}
+                      style={{ background: '#25d366', color: '#fff', border: 'none', padding: '0.4rem 0.6rem', fontSize: '0.75rem', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.25rem' }}
+                    >
+                      <MessageSquare size={14} /> WA
+                    </button>
+                    {/* Add Payment */}
+                    <button 
+                      className="admin-btn" 
+                      title="Record payment"
+                      onClick={() => onAddPayment(b)}
+                      style={{ background: '#6366f1', color: '#fff', border: 'none', padding: '0.4rem 0.6rem', fontSize: '0.75rem', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.25rem' }}
+                    >
+                      <CreditCard size={14} />
+                    </button>
+                    {/* Delete */}
+                    <button className="admin-btn admin-btn-outline" onClick={() => onDelete(b._id)} style={{ padding: '0.4rem', color: '#ff4d4d' }}>
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}
@@ -449,6 +482,11 @@ export default function AdminDashboard() {
   const [roomForm, setRoomForm] = useState({ roomNumber: '', type: 'AC Double Bed', price: '', status: 'Available' });
   const [editingRoomId, setEditingRoomId] = useState(null);
 
+  // Payment Modal State
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [paymentForm, setPaymentForm] = useState({ guestName: '', bookingId: '', amount: '', method: 'Cash', status: 'Paid' });
+  const [paymentLoading, setPaymentLoading] = useState(false);
+
   const fetchData = useCallback(async () => {
     if (!auth) return;
     setLoading(true);
@@ -523,8 +561,84 @@ export default function AdminDashboard() {
 
   const handleUpdateStatus = async (id, status) => {
     const headers = { username: auth.username, password: auth.password };
-    await api.patch(`/api/admin/bookings/${id}`, { status }, { headers });
+    const res = await api.patch(`/api/admin/bookings/${id}`, { status }, { headers });
+    // If backend returns a waLink (on confirm/cancel), open it automatically
+    if (res.data?.waLink) {
+      window.open(res.data.waLink, '_blank');
+    }
     fetchData();
+  };
+
+  // Confirm a booking → update status + auto-open WhatsApp
+  const handleConfirmBooking = async (id, booking) => {
+    if (!window.confirm(`Confirm booking for ${booking.name}? WhatsApp will open to notify the guest.`)) return;
+    const headers = { username: auth.username, password: auth.password };
+    try {
+      const res = await api.patch(`/api/admin/bookings/${id}`, { status: 'Confirmed' }, { headers });
+      if (res.data?.waLink) {
+        window.open(res.data.waLink, '_blank');
+      }
+      fetchData();
+    } catch (err) {
+      alert('Error confirming booking: ' + err.message);
+    }
+  };
+
+  // Cancel a booking → update status + auto-open WhatsApp
+  const handleCancelBooking = async (id, booking) => {
+    const reason = window.prompt(`Cancellation reason for ${booking.name} (optional):`, '') || '';
+    if (reason === null) return; // user hit Cancel on prompt
+    const headers = { username: auth.username, password: auth.password };
+    try {
+      const res = await api.patch(`/api/admin/bookings/${id}`, { status: 'Cancelled', cancellationReason: reason }, { headers });
+      if (res.data?.waLink) {
+        window.open(res.data.waLink, '_blank');
+      }
+      fetchData();
+    } catch (err) {
+      alert('Error cancelling booking: ' + err.message);
+    }
+  };
+
+  // Open WhatsApp for a booking
+  const handleWhatsAppBooking = (booking) => {
+    const checkIn = new Date(booking.checkIn).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+    const checkOut = new Date(booking.checkOut).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+    const msg = `Hello ${booking.name}! 👋\n\nRegarding your booking at *BSS Residency*:\nID: ${booking._id}\nRoom: ${booking.roomType}\nCheck-in: ${checkIn}\nCheck-out: ${checkOut}\nStatus: ${booking.status}`;
+    const phone = booking.phone.replace(/[^0-9]/g, '');
+    const formatted = phone.startsWith('91') ? phone : `91${phone}`;
+    window.open(`https://wa.me/${formatted}?text=${encodeURIComponent(msg)}`, '_blank');
+  };
+
+  // Open Add Payment modal for a specific booking
+  const openAddPaymentModal = (booking) => {
+    setPaymentForm({
+      guestName: booking.name,
+      bookingId: booking._id,
+      amount: '',
+      method: 'Cash',
+      status: 'Paid',
+    });
+    setIsPaymentModalOpen(true);
+  };
+
+  const handlePaymentSubmit = async (e) => {
+    e.preventDefault();
+    if (!paymentForm.amount || Number(paymentForm.amount) <= 0) {
+      alert('Please enter a valid amount.');
+      return;
+    }
+    setPaymentLoading(true);
+    const headers = { username: auth.username, password: auth.password };
+    try {
+      await api.post('/api/admin/payments', paymentForm, { headers });
+      setIsPaymentModalOpen(false);
+      fetchData();
+    } catch (err) {
+      alert('Error recording payment: ' + err.message);
+    } finally {
+      setPaymentLoading(false);
+    }
   };
 
   const handleUpdateRoomNumber = async (id, roomNumber) => {
@@ -552,7 +666,16 @@ export default function AdminDashboard() {
     switch(activeTab) {
       case 'overview': return <DashboardOverview stats={stats} bookings={bookings} />;
       case 'rooms': return <RoomManagement rooms={rooms} onAddClick={openAddModal} onDeleteRoom={handleDeleteRoom} onUpdateRoom={openEditModal} />;
-      case 'bookings': return <BookingManagement bookings={bookings} onUpdateStatus={handleUpdateStatus} onUpdateRoomNumber={handleUpdateRoomNumber} onDelete={handleDeleteBooking} formatDate={formatDate} />;
+      case 'bookings': return <BookingManagement 
+        bookings={bookings} 
+        onConfirm={handleConfirmBooking}
+        onCancel={handleCancelBooking}
+        onWhatsApp={handleWhatsAppBooking}
+        onUpdateRoomNumber={handleUpdateRoomNumber} 
+        onDelete={handleDeleteBooking} 
+        onAddPayment={openAddPaymentModal}
+        formatDate={formatDate} 
+      />;
       case 'guests': 
         return (
           <div className="card fade-in">
@@ -678,6 +801,62 @@ export default function AdminDashboard() {
           </div>
           <button type="submit" className="admin-btn admin-btn-primary" style={{ width: '100%' }}>
             {editingRoomId ? "Update Room" : "Create Room"}
+          </button>
+        </form>
+      </Modal>
+
+      {/* Payment Modal */}
+      <Modal
+        title="Record Payment"
+        isOpen={isPaymentModalOpen}
+        onClose={() => setIsPaymentModalOpen(false)}
+      >
+        <form onSubmit={handlePaymentSubmit}>
+          <div className="form-group">
+            <label>Guest Name</label>
+            <input
+              type="text" required
+              value={paymentForm.guestName}
+              onChange={e => setPaymentForm({ ...paymentForm, guestName: e.target.value })}
+              placeholder="Guest full name"
+            />
+          </div>
+          <div className="form-row">
+            <div className="form-group">
+              <label>Amount (₹)</label>
+              <input
+                type="number" required min="1"
+                value={paymentForm.amount}
+                onChange={e => setPaymentForm({ ...paymentForm, amount: e.target.value })}
+                placeholder="e.g. 2600"
+              />
+            </div>
+            <div className="form-group">
+              <label>Payment Method</label>
+              <select
+                value={paymentForm.method}
+                onChange={e => setPaymentForm({ ...paymentForm, method: e.target.value })}
+              >
+                <option>Cash</option>
+                <option>UPI</option>
+                <option>Card</option>
+                <option>Net Banking</option>
+              </select>
+            </div>
+          </div>
+          <div className="form-group">
+            <label>Status</label>
+            <select
+              value={paymentForm.status}
+              onChange={e => setPaymentForm({ ...paymentForm, status: e.target.value })}
+            >
+              <option>Paid</option>
+              <option>Pending</option>
+              <option>Refunded</option>
+            </select>
+          </div>
+          <button type="submit" className="admin-btn admin-btn-primary" style={{ width: '100%' }} disabled={paymentLoading}>
+            {paymentLoading ? 'Saving...' : '💾 Record Payment'}
           </button>
         </form>
       </Modal>
