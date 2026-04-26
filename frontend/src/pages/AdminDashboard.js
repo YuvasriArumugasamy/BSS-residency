@@ -771,11 +771,11 @@ export default function AdminDashboard() {
             <div className="form-group">
               <label>Room Type</label>
               <select value={roomForm.type} onChange={e => setRoomForm({...roomForm, type: e.target.value})}>
-                <option>AC Double Bed</option>
-                <option>Non-AC Double Bed</option>
-                <option>Three Bed</option>
+                <option>Double Bed</option>
+                <option>Double Bed A/C</option>
                 <option>Four Bed</option>
                 <option>Four Bed A/C</option>
+                <option>Three Bed</option>
                 <option>Deluxe AC</option>
                 <option>Suite</option>
               </select>

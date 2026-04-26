@@ -256,8 +256,10 @@ export default function Booking() {
                     <label>Room Type <span className="req">*</span></label>
                     <div className="room-picker">
                       {ROOMS.map((r) => {
-                        const count = availability[r.name] || 0;
-                        const isSoldOut = count === 0;
+                        const count = availability[r.name];
+                        // If no room data in DB at all, treat all as available (don't block booking)
+                        const hasDbData = Object.keys(availability).length > 0;
+                        const isSoldOut = hasDbData && count === 0;
                         return (
                           <button
                             type="button"
@@ -273,8 +275,10 @@ export default function Booking() {
                               <div className="rp-availability">
                                 {isSoldOut ? (
                                   <span className="status-badge sold-out">Sold Out</span>
+                                ) : count > 0 ? (
+                                  <span className="status-badge available">{count} Available</span>
                                 ) : (
-                                  <span className="status-badge available">{count} Left</span>
+                                  <span className="status-badge available">Available</span>
                                 )}
                               </div>
                             </div>
