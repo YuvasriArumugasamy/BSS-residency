@@ -1,6 +1,14 @@
 import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
 export default function ScrollObserver() {
+  const { pathname } = useLocation();
+
+  // Scroll to top on route change
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {

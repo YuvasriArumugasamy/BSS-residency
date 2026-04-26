@@ -93,15 +93,6 @@ export default function Contact() {
               </div>
             </div>
 
-            <div className="contact-card">
-              <span className="c-icon">🕐</span>
-              <div>
-                <h3>Check-in / Check-out</h3>
-                <p>Check-in: <strong>{CONTACT.checkIn}</strong></p>
-                <p>Check-out: <strong>{CONTACT.checkOut}</strong></p>
-                <p className="c-note">Early / late check-in available on request</p>
-              </div>
-            </div>
           </div>
 
           {/* Map + nearby */}

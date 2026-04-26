@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import api from '../api/axios';
 import { Link } from 'react-router-dom';
 import { ROOMS, CONTACT, waLink } from '../constants';
@@ -21,6 +21,23 @@ export default function Booking() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [step, setStep] = useState(1); // 1: dates/room, 2: guest details
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [confirmedBooking, setConfirmedBooking] = useState(null);
+  const [availability, setAvailability] = useState({});
+
+  useEffect(() => {
+    const fetchAvailability = async () => {
+      try {
+        const res = await api.get('/api/bookings/availability');
+        if (res.data.success) {
+          setAvailability(res.data.availability);
+        }
+      } catch (err) {
+        console.error('Failed to fetch availability', err);
+      }
+    };
+    fetchAvailability();
+  }, []);
 
   const today = new Date().toISOString().split('T')[0];
 
@@ -81,28 +98,14 @@ export default function Booking() {
         guests: Number(form.guests),
       });
       setResult({ success: true, message: res.data.message });
-      // WhatsApp summary
-      const msg = [
-        'Hello BSS Residency! 🙏',
-        '',
-        'Booking Request:',
-        `Name: ${form.name}`,
-        `Phone: ${form.phone}`,
-        form.email ? `Email: ${form.email}` : null,
-        `Room: ${form.roomType}`,
-        `Rooms: ${form.rooms}`,
-        `Check-in: ${form.checkIn}`,
-        `Check-out: ${form.checkOut}`,
-        `Nights: ${nights}`,
-        `Guests: ${form.guests}`,
-        totalPrice ? `Estimated Total: ₹${totalPrice.toLocaleString('en-IN')}` : null,
-        form.message ? `Notes: ${form.message}` : null,
-        '',
-        'Please confirm my booking. Thank you!',
-      ]
-        .filter(Boolean)
-        .join('\n');
-      window.open(waLink(msg), '_blank');
+      // Open success modal
+      setConfirmedBooking({
+        ...form,
+        nights,
+        totalPrice,
+        bookingId: res.data.booking?._id?.slice(-6).toUpperCase() || `BSS-${Date.now().toString().slice(-6)}`
+      });
+      setShowSuccessModal(true);
       setForm(initForm);
       setStep(1);
     } catch (err) {
@@ -155,21 +158,33 @@ export default function Booking() {
                   <div className="form-group">
                     <label>Room Type <span className="req">*</span></label>
                     <div className="room-picker">
-                      {ROOMS.map((r) => (
-                        <button
-                          type="button"
-                          key={r.key}
-                          className={`room-pick-card ${form.roomType === r.name ? 'active' : ''}`}
-                          onClick={() => pickRoom(r.name)}
-                        >
-                          <span className="rp-icon">{r.icon}</span>
-                          <div className="rp-info">
-                            <strong>{r.name}</strong>
-                            <span className="rp-type">{r.type}</span>
-                          </div>
-                          <span className="rp-price">₹{r.price.toLocaleString('en-IN')}</span>
-                        </button>
-                      ))}
+                      {ROOMS.map((r) => {
+                        const count = availability[r.name] || 0;
+                        const isSoldOut = count === 0;
+                        return (
+                          <button
+                            type="button"
+                            key={r.key}
+                            className={`room-pick-card ${form.roomType === r.name ? 'active' : ''} ${isSoldOut ? 'sold-out' : ''}`}
+                            onClick={() => !isSoldOut && pickRoom(r.name)}
+                            disabled={isSoldOut}
+                          >
+                            <span className="rp-icon">{r.icon}</span>
+                            <div className="rp-info">
+                              <strong>{r.name}</strong>
+                              <span className="rp-type">{r.type}</span>
+                              <div className="rp-availability">
+                                {isSoldOut ? (
+                                  <span className="status-badge sold-out">Sold Out</span>
+                                ) : (
+                                  <span className="status-badge available">{count} Left</span>
+                                )}
+                              </div>
+                            </div>
+                            <span className="rp-price">₹{r.price.toLocaleString('en-IN')}</span>
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
 
@@ -348,8 +363,6 @@ export default function Booking() {
             <div className="info-card">
               <h3>Booking Info</h3>
               <ul>
-                <li><strong>Check-in:</strong> {CONTACT.checkIn}</li>
-                <li><strong>Check-out:</strong> {CONTACT.checkOut}</li>
                 <li><strong>Early/Late:</strong> On request</li>
                 <li><strong>Confirmation:</strong> Via WhatsApp</li>
               </ul>
@@ -402,6 +415,122 @@ export default function Booking() {
           </aside>
         </div>
       </section>
+
+      {/* PREMIUM SUCCESS MODAL */}
+      {showSuccessModal && confirmedBooking && (
+        <div className="modal-overlay receipt-modal-overlay">
+          <div className="modal-container premium-receipt-modal">
+            <button className="close-btn hide-on-print" onClick={() => setShowSuccessModal(false)}>✕</button>
+            
+            {/* Success Animation */}
+            <div className="success-checkmark hide-on-print">
+              <div className="check-icon">
+                <span className="icon-line line-tip"></span>
+                <span className="icon-line line-long"></span>
+                <div className="icon-circle"></div>
+                <div className="icon-fix"></div>
+              </div>
+            </div>
+
+            <div className="receipt-content" id="receipt-content">
+              <div className="receipt-brand">
+                <h3 className="gold-text">BSS Residency</h3>
+                <p>Booking Confirmed</p>
+                <div className="booking-id-badge">ID: {confirmedBooking.bookingId}</div>
+              </div>
+
+              <div className="receipt-body">
+                <div className="receipt-info-grid">
+                  <div className="info-box">
+                    <span>Guest Name</span>
+                    <strong>{confirmedBooking.name}</strong>
+                  </div>
+                  <div className="info-box">
+                    <span>Phone</span>
+                    <strong>{confirmedBooking.phone}</strong>
+                  </div>
+                  <div className="info-box full-width">
+                    <span>Room Type</span>
+                    <strong>{confirmedBooking.roomType}</strong>
+                  </div>
+                  <div className="info-box">
+                    <span>Check-in</span>
+                    <strong>{confirmedBooking.checkIn}</strong>
+                  </div>
+                  <div className="info-box">
+                    <span>Check-out</span>
+                    <strong>{confirmedBooking.checkOut}</strong>
+                  </div>
+                  <div className="info-box">
+                    <span>Rooms</span>
+                    <strong>{confirmedBooking.rooms}</strong>
+                  </div>
+                  <div className="info-box">
+                    <span>Guests</span>
+                    <strong>{confirmedBooking.guests}</strong>
+                  </div>
+                </div>
+
+                <div className="receipt-total-box">
+                  <div className="total-label">
+                    <span>Total Estimated Amount</span>
+                    <small>{confirmedBooking.nights} Night(s)</small>
+                  </div>
+                  <div className="total-amount">
+                    ₹{confirmedBooking.totalPrice?.toLocaleString('en-IN')}
+                  </div>
+                </div>
+              </div>
+
+              <div className="receipt-footer">
+                <p>Please present this receipt at the reception.</p>
+              </div>
+            </div>
+
+            <div className="modal-actions hide-on-print">
+              <button 
+                className="btn-print" 
+                onClick={() => window.print()}
+              >
+                <i className="fa-solid fa-file-pdf"></i> Save / Print
+              </button>
+              <button 
+                className="btn-wa-solid" 
+                onClick={() => {
+                  const msg = `Hello BSS Residency! 🙏\n\nMy Booking Request:\nName: ${confirmedBooking.name}\nPhone: ${confirmedBooking.phone}\nRoom: ${confirmedBooking.roomType}\nCheck-in: ${confirmedBooking.checkIn}\nCheck-out: ${confirmedBooking.checkOut}\n\nPlease confirm!`;
+                  window.open(waLink(msg), '_blank');
+                }}
+              >
+                <i className="fa-brands fa-whatsapp"></i> Send via WhatsApp
+              </button>
+            </div>
+
+            <div className="payment-actions hide-on-print">
+              <button 
+                className="btn-gpay" 
+                onClick={() => {
+                  const upiId = "9344989393@okaxis";
+                  const upiLink = `upi://pay?pa=${upiId}&pn=BSS%20Residency&am=${confirmedBooking.totalPrice}&cu=INR`;
+                  window.open(upiLink, '_blank');
+                }}
+              >
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Google_Pay_Logo_%282020%29.svg/512px-Google_Pay_Logo_%282020%29.svg.png" alt="Google Pay" />
+                <span>Google Pay</span>
+              </button>
+              <button 
+                className="btn-paytm" 
+                onClick={() => {
+                  const upiId = "9344989393@paytm";
+                  const upiLink = `upi://pay?pa=${upiId}&pn=BSS%20Residency&am=${confirmedBooking.totalPrice}&cu=INR`;
+                  window.open(upiLink, '_blank');
+                }}
+              >
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Paytm_Logo_%28standalone%29.svg/512px-Paytm_Logo_%28standalone%29.svg.png" alt="Paytm" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }

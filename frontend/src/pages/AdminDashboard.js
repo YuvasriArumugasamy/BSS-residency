@@ -1,20 +1,482 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { 
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area 
+} from 'recharts';
+import { 
+  LayoutDashboard, Bed, CalendarCheck, Users, CreditCard, PieChart, Settings, MessageSquare, Bell, LogOut, ExternalLink, RefreshCcw, Plus, Trash2, Edit3, WhatsApp, CheckCircle, XCircle, Clock, X
+} from 'lucide-react';
 import api from '../api/axios';
 import './Admin.css';
 
-const STATUS_COLORS = { Pending: 'orange', Confirmed: 'green', Cancelled: 'red' };
+// --- SHARED COMPONENTS ---
+
+const Modal = ({ title, isOpen, onClose, children }) => {
+  if (!isOpen) return null;
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-container" onClick={e => e.stopPropagation()}>
+        <div className="modal-header">
+          <h2>{title}</h2>
+          <button className="close-btn" onClick={onClose}><X size={24} /></button>
+        </div>
+        {children}
+      </div>
+    </div>
+  );
+};
+
+const Sidebar = ({ activeTab, setActiveTab, onLogout, username }) => {
+  const navItems = [
+    { id: 'overview', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
+    { id: 'rooms', label: 'Rooms', icon: <Bed size={20} /> },
+    { id: 'bookings', label: 'Bookings', icon: <CalendarCheck size={20} /> },
+    { id: 'guests', label: 'Guests', icon: <Users size={20} /> },
+    { id: 'payments', label: 'Payments', icon: <CreditCard size={20} /> },
+    { id: 'reports', label: 'Reports', icon: <PieChart size={20} /> },
+    { id: 'settings', label: 'Settings', icon: <Settings size={20} /> },
+    { id: 'reviews', label: 'Reviews', icon: <MessageSquare size={20} /> },
+    { id: 'notifications', label: 'Notifications', icon: <Bell size={20} /> },
+  ];
+
+  return (
+    <div className="admin-sidebar">
+      <div className="sidebar-logo">
+        <span className="logo-bss">BSS</span> <span>Residency</span>
+      </div>
+      <nav className="sidebar-nav">
+        {navItems.map(item => (
+          <div 
+            key={item.id} 
+            className={`nav-item ${activeTab === item.id ? 'active' : ''}`}
+            onClick={() => {
+              setActiveTab(item.id);
+              document.body.classList.remove('sidebar-open');
+            }}
+          >
+            {item.icon}
+            <span>{item.label}</span>
+          </div>
+        ))}
+      </nav>
+      <div className="sidebar-footer">
+        <div className="user-snippet">
+          <div className="user-avatar">{username?.charAt(0).toUpperCase()}</div>
+          <div className="user-info">
+            <div className="user-name">{username}</div>
+            <div className="user-role">Administrator</div>
+          </div>
+        </div>
+        <div className="nav-item" onClick={onLogout} style={{ marginTop: '1rem', color: '#ff4d4d' }}>
+          <LogOut size={18} />
+          <span>Logout</span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// --- VIEWS ---
+
+const DashboardOverview = ({ stats, bookings }) => {
+  if (!stats) return <div className="spinner" />;
+
+  const statCards = [
+    { label: 'Total Rooms', value: stats.totalRooms, color: 'purple' },
+    { label: 'Total Bookings', value: stats.totalBookings, color: 'blue' },
+    { label: 'Available Rooms', value: stats.availableRooms, color: 'green' },
+    { label: 'Today Check-ins', value: stats.checkInsToday, color: 'orange' },
+    { label: 'Today Check-outs', value: stats.checkOutsToday, color: 'red' },
+  ];
+
+  const formatDate = (d) => new Date(d).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' });
+
+  return (
+    <div className="view-content fade-in">
+      <div className="stats-grid">
+        {statCards.map(s => (
+          <div key={s.label} className="stat-card">
+            <span className="stat-label">{s.label}</span>
+            <span className="stat-value">{s.value}</span>
+            <div style={{ fontSize: '0.75rem', color: '#68d391' }}>Real-time update</div>
+          </div>
+        ))}
+      </div>
+
+      <div className="dash-layout">
+        <div className="card">
+          <div className="card-header">
+            <h3>Revenue Summary</h3>
+            <span style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--admin-primary)' }}>
+              ₹{stats.totalRevenue?.toLocaleString('en-IN')}
+            </span>
+          </div>
+          <div style={{ width: '100%', height: 250 }}>
+            <ResponsiveContainer>
+              <AreaChart data={stats.revenueHistory}>
+                <defs>
+                  <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="var(--admin-primary)" stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor="var(--admin-primary)" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#eee" />
+                <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fontSize: 12 }} />
+                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12 }} />
+                <Tooltip />
+                <Area type="monotone" dataKey="amount" stroke="var(--admin-primary)" fillOpacity={1} fill="url(#colorRev)" strokeWidth={3} />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        <div className="card">
+          <div className="card-header">
+            <h3>Recent Bookings</h3>
+          </div>
+          <div className="admin-table-wrap">
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>Guest</th>
+                  <th>Room</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {bookings.slice(0, 5).map(b => (
+                  <tr key={b._id}>
+                    <td><div style={{ fontWeight: 600 }}>{b.name}</div><div style={{ fontSize: '0.7rem', color: '#888' }}>{formatDate(b.checkIn)}</div></td>
+                    <td>{b.roomType}</td>
+                    <td><span className={`status-pill status-${b.status}`}>{b.status}</span></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const RoomManagement = ({ rooms, onAddClick, onDeleteRoom, onUpdateRoom }) => {
+  return (
+    <div className="view-content fade-in">
+      <div className="card-header" style={{ marginBottom: '1.5rem' }}>
+        <p style={{ color: '#666' }}>Manage your inventory and pricing</p>
+        <button onClick={onAddClick} className="admin-btn admin-btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <Plus size={18} /> Add Room
+        </button>
+      </div>
+
+      <div className="stats-grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))' }}>
+        {rooms.length === 0 ? (
+           <div style={{ padding: '2rem', textAlign: 'center', color: '#888' }}>No rooms added yet.</div>
+        ) : rooms.map(room => (
+          <div key={room._id} className="card room-card">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
+              <div>
+                <div style={{ fontSize: '1.25rem', fontWeight: 800 }}>#{room.roomNumber}</div>
+                <div style={{ fontSize: '0.85rem', color: '#666' }}>{room.type}</div>
+              </div>
+              <span className={`status-pill status-${room.status}`}>{room.status}</span>
+            </div>
+            <div style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--admin-primary)', marginBottom: '1rem' }}>
+              ₹{room.price}/night
+            </div>
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <button 
+                className="admin-btn admin-btn-outline" 
+                onClick={() => onUpdateRoom(room)}
+                style={{ flex: 1, height: '36px', padding: 0 }}
+              >
+                <Edit3 size={16} />
+              </button>
+              <button 
+                className="admin-btn admin-btn-outline" 
+                onClick={() => onDeleteRoom(room._id)}
+                style={{ flex: 1, height: '36px', padding: 0, color: '#ff4d4d' }}
+              >
+                <Trash2 size={16} />
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const BookingManagement = ({ bookings, onUpdateStatus, onUpdateRoomNumber, onDelete, formatDate }) => {
+  return (
+    <div className="card fade-in">
+      <div className="admin-table-wrap">
+        <table className="admin-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Guest</th>
+              <th>Phone</th>
+              <th>Room</th>
+              <th>Check-in/out</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {bookings.length === 0 ? (
+               <tr><td colSpan="7" style={{ textAlign: 'center', padding: '2rem', color: '#888' }}>No bookings found.</td></tr>
+            ) : bookings.map((b, i) => (
+              <tr key={b._id}>
+                <td>{i + 1}</td>
+                <td><div style={{ fontWeight: 600 }}>{b.name}</div><div style={{ fontSize: '0.75rem', color: '#888' }}>{b.email}</div></td>
+                <td>{b.phone}</td>
+                <td>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                    <div style={{ fontWeight: 600 }}>{b.roomType}</div>
+                    <input 
+                      type="text" 
+                      placeholder="Room #" 
+                      value={b.roomNumber || ''} 
+                      onChange={(e) => onUpdateRoomNumber(b._id, e.target.value)}
+                      style={{ width: '70px', fontSize: '0.75rem', padding: '2px 5px', borderRadius: '4px', border: '1px solid #ddd' }}
+                    />
+                  </div>
+                </td>
+                <td style={{ fontSize: '0.85rem' }}>
+                  {formatDate(b.checkIn)} -<br />{formatDate(b.checkOut)}
+                </td>
+                <td>
+                  <select 
+                    value={b.status} 
+                    onChange={(e) => onUpdateStatus(b._id, e.target.value)}
+                    className={`status-pill status-${b.status.replace(' ', '-')}`}
+                    style={{ border: 'none', cursor: 'pointer', outline: 'none' }}
+                  >
+                    <option>Pending</option>
+                    <option>Confirmed</option>
+                    <option>Checked-out</option>
+                    <option>Cancelled</option>
+                  </select>
+                </td>
+                <td>
+                  <button className="admin-btn admin-btn-outline" onClick={() => onDelete(b._id)} style={{ padding: '0.4rem', color: '#ff4d4d' }}>
+                    <Trash2 size={16} />
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};
+
+const Payments = ({ payments, totalRevenue }) => {
+  return (
+    <div className="view-content fade-in">
+      <div className="stats-grid">
+        <div className="stat-card">
+          <span className="stat-label">Total Revenue</span>
+          <span className="stat-value">₹{totalRevenue?.toLocaleString('en-IN') || 0}</span>
+        </div>
+        <div className="stat-card">
+          <span className="stat-label">Active Payments</span>
+          <span className="stat-value">{payments.length}</span>
+        </div>
+      </div>
+      <div className="card">
+        <h3>Transaction History</h3>
+        <div className="admin-table-wrap">
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th>Guest</th>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Method</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {payments.length === 0 ? (
+                 <tr><td colSpan="5" style={{ textAlign: 'center', padding: '2rem', color: '#888' }}>No payment records.</td></tr>
+              ) : payments.map(p => (
+                <tr key={p._id}>
+                  <td style={{ fontWeight: 600 }}>{p.guestName}</td>
+                  <td>{new Date(p.date).toLocaleDateString()}</td>
+                  <td style={{ fontWeight: 700 }}>₹{p.amount}</td>
+                  <td>{p.method}</td>
+                  <td><span className={`status-pill status-${p.status === 'Paid' ? 'Confirmed' : (p.status === 'Pending' ? 'Pending' : 'Cancelled')}`}>{p.status}</span></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const Reports = ({ stats }) => {
+  return (
+    <div className="view-content fade-in">
+      <div className="dash-layout">
+        <div className="card">
+          <div className="card-header">
+            <h3>Occupancy by Room Type</h3>
+          </div>
+          <div style={{ width: '100%', height: 300 }}>
+            <ResponsiveContainer>
+              <BarChart data={stats?.byRoom || []}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#eee" />
+                <XAxis dataKey="_id" axisLine={false} tickLine={false} />
+                <YAxis axisLine={false} tickLine={false} />
+                <Tooltip />
+                <Bar dataKey="count" fill="var(--admin-primary)" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+        <div className="card">
+          <div className="card-header">
+            <h3>Key Metrics</h3>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            <div className="stat-card">
+              <span className="stat-label">Avg Rev / Booking</span>
+              <span className="stat-value">₹{(stats?.totalRevenue / (stats?.totalBookings || 1)).toFixed(0)}</span>
+            </div>
+            <div className="stat-card">
+              <span className="stat-label">Confirmation Rate</span>
+              <span className="stat-value">{( (stats?.confirmed / (stats?.totalBookings || 1)) * 100 ).toFixed(1)}%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const SettingsView = () => (
+  <div className="card fade-in" style={{ maxWidth: '800px' }}>
+    <h3 style={{ marginBottom: '1.5rem' }}>General Settings</h3>
+    <form className="settings-form" style={{ display: 'grid', gap: '1.5rem' }}>
+      <div className="grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+        <div className="form-group">
+          <label>Lodge Name</label>
+          <input type="text" defaultValue="BSS Residency" />
+        </div>
+        <div className="form-group">
+          <label>Contact Email</label>
+          <input type="email" defaultValue="contact@bssresidency.com" />
+        </div>
+      </div>
+      <div className="form-group">
+        <label>Google Maps Embed URL</label>
+        <textarea defaultValue="https://www.google.com/maps?q=BSS%20Residency%20Courtallam..." />
+      </div>
+      <div className="grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+        <div className="form-group">
+          <label>WhatsApp Number</label>
+          <input type="text" defaultValue="919344989393" />
+        </div>
+      </div>
+      <button type="button" className="admin-btn admin-btn-primary">Save Changes</button>
+    </form>
+  </div>
+);
+
+const ReviewsView = ({ reviews }) => {
+  return (
+    <div className="view-content fade-in">
+      {reviews.length === 0 ? (
+         <div className="card">No guest reviews yet.</div>
+      ) : reviews.map(r => (
+        <div key={r._id} className="card" style={{ marginBottom: '1rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+            <span style={{ fontWeight: 700 }}>{r.guestName}</span>
+            <span style={{ color: '#d4a857' }}>{'★'.repeat(r.rating)}</span>
+          </div>
+          <p style={{ color: '#555', fontSize: '0.9rem' }}>"{r.comment}"</p>
+          <div style={{ fontSize: '0.75rem', color: '#999', marginTop: '0.5rem' }}>{new Date(r.date).toLocaleDateString()}</div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+const NotificationsView = ({ notifications }) => {
+  return (
+    <div className="view-content fade-in">
+      {notifications.length === 0 ? (
+         <div className="card">No notifications yet.</div>
+      ) : notifications.map(a => (
+        <div key={a._id} className="card" style={{ marginBottom: '1rem', borderLeft: '4px solid var(--admin-primary)', display: 'flex', gap: '1rem', alignItems: 'center' }}>
+          <div style={{ background: '#fdfaf4', padding: '0.75rem', borderRadius: '50%', color: 'var(--admin-primary)' }}>
+            {a.type === 'booking' ? <CalendarCheck size={20} /> : (a.type === 'wa' ? <MessageSquare size={20} /> : <Clock size={20} />)}
+          </div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontWeight: 700, fontSize: '0.95rem' }}>{a.title}</div>
+            <div style={{ fontSize: '0.85rem', color: '#666' }}>{a.message}</div>
+          </div>
+          <div style={{ fontSize: '0.75rem', color: '#aaa' }}>{new Date(a.date).toLocaleTimeString()}</div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+// --- MAIN DASHBOARD ---
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
   const [auth, setAuth] = useState(null);
+  const [activeTab, setActiveTab] = useState('overview');
   const [stats, setStats] = useState(null);
   const [bookings, setBookings] = useState([]);
-  const [total, setTotal] = useState(0);
+  const [rooms, setRooms] = useState([]);
+  const [guests, setGuests] = useState([]);
+  const [payments, setPayments] = useState([]);
+  const [reviews, setReviews] = useState([]);
+  const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState({ status: '', roomType: '' });
-  const [page, setPage] = useState(1);
-  const LIMIT = 8;
+
+  // Modal State
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [roomForm, setRoomForm] = useState({ roomNumber: '', type: 'AC Double Bed', price: '', status: 'Available' });
+  const [editingRoomId, setEditingRoomId] = useState(null);
+
+  const fetchData = useCallback(async () => {
+    if (!auth) return;
+    setLoading(true);
+    const headers = { username: auth.username, password: auth.password };
+    try {
+      const [statsRes, bookingsRes, roomsRes, guestsRes, paymentsRes, reviewsRes, notifRes] = await Promise.all([
+        api.get('/api/admin/stats', { headers }),
+        api.get('/api/admin/bookings', { headers, params: { page: 1, limit: 100 } }),
+        api.get('/api/admin/rooms', { headers }),
+        api.get('/api/admin/guests', { headers }),
+        api.get('/api/admin/payments', { headers }),
+        api.get('/api/admin/reviews', { headers }),
+        api.get('/api/admin/notifications', { headers })
+      ]);
+      setStats(statsRes.data.stats);
+      setBookings(bookingsRes.data.bookings);
+      setRooms(roomsRes.data.rooms);
+      setGuests(guestsRes.data.guests);
+      setPayments(paymentsRes.data.payments);
+      setReviews(reviewsRes.data.reviews);
+      setNotifications(notifRes.data.notifications);
+    } catch (err) {
+      console.error(err);
+      navigate('/admin/login');
+    } finally {
+      setLoading(false);
+    }
+  }, [auth, navigate]);
 
   useEffect(() => {
     const stored = sessionStorage.getItem('bss_admin');
@@ -22,162 +484,203 @@ export default function AdminDashboard() {
     setAuth(JSON.parse(stored));
   }, [navigate]);
 
-  const fetchData = useCallback(async () => {
-    if (!auth) return;
-    setLoading(true);
-    const headers = { username: auth.username, password: auth.password };
-    try {
-      const [statsRes, bookingsRes] = await Promise.all([
-        api.get('/api/admin/stats', { headers }),
-        api.get('/api/admin/bookings', {
-          headers,
-          params: { ...filter, page, limit: LIMIT },
-        }),
-      ]);
-      setStats(statsRes.data.stats);
-      setBookings(bookingsRes.data.bookings);
-      setTotal(bookingsRes.data.total);
-    } catch {
-      navigate('/admin/login');
-    } finally {
-      setLoading(false);
-    }
-  }, [auth, filter, page, navigate]);
-
   useEffect(() => { fetchData(); }, [fetchData]);
 
-  const updateStatus = async (id, status) => {
+  const handleRoomSubmit = async (e) => {
+    e.preventDefault();
+    const headers = { username: auth.username, password: auth.password };
+    try {
+      if (editingRoomId) {
+        await api.patch(`/api/admin/rooms/${editingRoomId}`, roomForm, { headers });
+      } else {
+        await api.post('/api/admin/rooms', roomForm, { headers });
+      }
+      setIsModalOpen(false);
+      fetchData();
+    } catch (err) {
+      alert('Error saving room: ' + err.message);
+    }
+  };
+
+  const openAddModal = () => {
+    setRoomForm({ roomNumber: '', type: 'AC Double Bed', price: '', status: 'Available' });
+    setEditingRoomId(null);
+    setIsModalOpen(true);
+  };
+
+  const openEditModal = (room) => {
+    setRoomForm({ roomNumber: room.roomNumber, type: room.type, price: room.price, status: room.status });
+    setEditingRoomId(room._id);
+    setIsModalOpen(true);
+  };
+
+  const handleDeleteRoom = async (id) => {
+    if (!window.confirm('Delete this room?')) return;
+    const headers = { username: auth.username, password: auth.password };
+    await api.delete(`/api/admin/rooms/${id}`, { headers });
+    fetchData();
+  };
+
+  const handleUpdateStatus = async (id, status) => {
     const headers = { username: auth.username, password: auth.password };
     await api.patch(`/api/admin/bookings/${id}`, { status }, { headers });
     fetchData();
   };
 
-  const deleteBooking = async (id) => {
-    if (!window.confirm('Delete this booking?')) return;
+  const handleUpdateRoomNumber = async (id, roomNumber) => {
+    const headers = { username: auth.username, password: auth.password };
+    await api.patch(`/api/admin/bookings/${id}`, { roomNumber }, { headers });
+    // Local update for better UX before refresh
+    setBookings(prev => prev.map(b => b._id === id ? { ...b, roomNumber } : b));
+  };
+
+  const handleDeleteBooking = async (id) => {
+    if (!window.confirm('Are you sure?')) return;
     const headers = { username: auth.username, password: auth.password };
     await api.delete(`/api/admin/bookings/${id}`, { headers });
     fetchData();
   };
 
-  const logout = () => { sessionStorage.removeItem('bss_admin'); navigate('/admin/login'); };
+  const logout = () => { 
+    sessionStorage.removeItem('bss_admin'); 
+    navigate('/admin/login'); 
+  };
 
   const formatDate = (d) => d ? new Date(d).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
 
-  return (
-    <div className="admin-dashboard">
-      {/* Header */}
-      <header className="admin-header">
-        <div className="admin-logo"><span className="logo-bss">BSS</span> Admin Panel</div>
-        <div className="admin-header-right">
-          <span className="admin-user">👤 {auth?.username}</span>
-          <button onClick={logout} className="logout-btn">Logout</button>
-          <a href="/" className="view-site-btn" target="_blank" rel="noreferrer">View Site ↗</a>
-        </div>
-      </header>
-
-      <div className="admin-body">
-        {/* Stats */}
-        {stats && (
-          <div className="stats-row">
-            {[
-              { label: 'Total Bookings', value: stats.total, color: 'blue' },
-              { label: 'Pending', value: stats.pending, color: 'orange' },
-              { label: 'Confirmed', value: stats.confirmed, color: 'green' },
-              { label: 'Cancelled', value: stats.cancelled, color: 'red' },
-            ].map(s => (
-              <div key={s.label} className={`stat-card stat-${s.color}`}>
-                <span className="sc-value">{s.value}</span>
-                <span className="sc-label">{s.label}</span>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Filters */}
-        <div className="filters-row">
-          <h2 className="section-title">Bookings</h2>
-          <div className="filters">
-            <select value={filter.status} onChange={e => { setFilter(p => ({ ...p, status: e.target.value })); setPage(1); }}>
-              <option value="">All Status</option>
-              <option>Pending</option>
-              <option>Confirmed</option>
-              <option>Cancelled</option>
-            </select>
-            <select value={filter.roomType} onChange={e => { setFilter(p => ({ ...p, roomType: e.target.value })); setPage(1); }}>
-              <option value="">All Rooms</option>
-              {['AC Room','Non-AC Room','Family Room','Dormitory','Suite Room'].map(r => <option key={r}>{r}</option>)}
-            </select>
-            <button onClick={fetchData} className="refresh-btn">🔄 Refresh</button>
-          </div>
-        </div>
-
-        {/* Table */}
-        {loading ? (
-          <div className="spinner" />
-        ) : bookings.length === 0 ? (
-          <div className="empty-state">No bookings found.</div>
-        ) : (
-          <>
-            <div className="table-wrap">
-              <table className="bookings-table">
+  const renderView = () => {
+    switch(activeTab) {
+      case 'overview': return <DashboardOverview stats={stats} bookings={bookings} />;
+      case 'rooms': return <RoomManagement rooms={rooms} onAddClick={openAddModal} onDeleteRoom={handleDeleteRoom} onUpdateRoom={openEditModal} />;
+      case 'bookings': return <BookingManagement bookings={bookings} onUpdateStatus={handleUpdateStatus} onUpdateRoomNumber={handleUpdateRoomNumber} onDelete={handleDeleteBooking} formatDate={formatDate} />;
+      case 'guests': 
+        return (
+          <div className="card fade-in">
+            <div className="admin-table-wrap">
+              <table className="admin-table">
                 <thead>
                   <tr>
-                    <th>#</th>
-                    <th>Guest</th>
+                    <th>Guest Name</th>
                     <th>Phone</th>
-                    <th>Room</th>
-                    <th>Check-in</th>
-                    <th>Check-out</th>
-                    <th>Guests</th>
-                    <th>Status</th>
-                    <th>Booked On</th>
-                    <th>Actions</th>
+                    <th>Total Stays</th>
+                    <th>Level</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {bookings.map((b, i) => (
-                    <tr key={b._id}>
-                      <td>{(page - 1) * LIMIT + i + 1}</td>
-                      <td><strong>{b.name}</strong>{b.email && <><br /><small>{b.email}</small></>}</td>
-                      <td>
-                        <a href={`https://wa.me/${b.phone.replace(/\D/g,'')}`} target="_blank" rel="noreferrer" className="wa-link">
-                          {b.phone}
-                        </a>
-                      </td>
-                      <td>{b.roomType}</td>
-                      <td>{formatDate(b.checkIn)}</td>
-                      <td>{formatDate(b.checkOut)}</td>
-                      <td>{b.guests}</td>
-                      <td>
-                        <select
-                          value={b.status}
-                          onChange={e => updateStatus(b._id, e.target.value)}
-                          className={`status-select status-${STATUS_COLORS[b.status]}`}
-                        >
-                          <option>Pending</option>
-                          <option>Confirmed</option>
-                          <option>Cancelled</option>
-                        </select>
-                      </td>
-                      <td>{formatDate(b.createdAt)}</td>
-                      <td>
-                        <button onClick={() => deleteBooking(b._id)} className="del-btn" title="Delete">🗑️</button>
-                      </td>
+                  {guests.length === 0 ? (
+                    <tr><td colSpan="4" style={{ textAlign: 'center', padding: '2rem' }}>No guest records.</td></tr>
+                  ) : guests.map(g => (
+                    <tr key={g._id}>
+                      <td style={{ fontWeight: 600 }}>{g.name}</td>
+                      <td>{g.phone}</td>
+                      <td>{g.totalStays}</td>
+                      <td><span style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: 'var(--admin-primary)', fontWeight: 700 }}>{g.loyaltyLevel}</span></td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
+          </div>
+        );
+      case 'payments': return <Payments payments={payments} totalRevenue={stats?.totalRevenue} />;
+      case 'reports': return <Reports stats={stats} />;
+      case 'settings': return <SettingsView />;
+      case 'reviews': return <ReviewsView reviews={reviews} />;
+      case 'notifications': return <NotificationsView notifications={notifications} />;
+      default: return <div className="card">Coming Soon...</div>;
+    }
+  };
 
-            {/* Pagination */}
-            <div className="pagination">
-              <button disabled={page === 1} onClick={() => setPage(p => p - 1)}>← Prev</button>
-              <span>Page {page} of {Math.ceil(total / LIMIT)}</span>
-              <button disabled={page >= Math.ceil(total / LIMIT)} onClick={() => setPage(p => p + 1)}>Next →</button>
+  return (
+    <div className="admin-dashboard">
+      <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} onLogout={logout} username={auth?.username} />
+      
+      <main className="admin-main">
+        {/* Mobile Header */}
+        <header className="admin-mobile-header">
+          <div className="mobile-logo">BSS <span>Residency</span></div>
+          <button className="mobile-menu-btn" onClick={() => document.body.classList.toggle('sidebar-open')}>
+            <div className="hamburger"></div>
+          </button>
+        </header>
+
+        <header className="view-header">
+          <div className="view-header-flex">
+            <div className="view-header-titles">
+              <h1>{activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}</h1>
+              <p>Work with real occupancy and data logs</p>
             </div>
-          </>
-        )}
-      </div>
+            <div className="view-header-actions">
+              <button onClick={fetchData} className="admin-btn admin-btn-outline header-btn">
+                <RefreshCcw size={16} /> <span>Refresh</span>
+              </button>
+              <a href={process.env.REACT_APP_SITE_URL || 'http://localhost:3000'} target="_blank" rel="noreferrer" className="admin-btn admin-btn-primary header-btn">
+                <ExternalLink size={16} /> <span>View Site</span>
+              </a>
+            </div>
+          </div>
+        </header>
+
+        {loading ? (
+          <div style={{ display: 'flex', justifyContent: 'center', padding: '5rem' }}>
+            <RefreshCcw size={40} className="spinner" />
+          </div>
+        ) : renderView()}
+      </main>
+
+      {/* Room Modal */}
+      <Modal 
+        title={editingRoomId ? "Edit Room" : "Add New Room"} 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)}
+      >
+        <form onSubmit={handleRoomSubmit}>
+          <div className="form-row">
+            <div className="form-group">
+              <label>Room Number</label>
+              <input 
+                type="text" required 
+                value={roomForm.roomNumber} 
+                onChange={e => setRoomForm({...roomForm, roomNumber: e.target.value})} 
+                placeholder="e.g. 101"
+              />
+            </div>
+            <div className="form-group">
+              <label>Room Type</label>
+              <select value={roomForm.type} onChange={e => setRoomForm({...roomForm, type: e.target.value})}>
+                <option>AC Double Bed</option>
+                <option>Non-AC Double Bed</option>
+                <option>Three Bed</option>
+                <option>Four Bed</option>
+                <option>Four Bed A/C</option>
+                <option>Deluxe AC</option>
+                <option>Suite</option>
+              </select>
+            </div>
+          </div>
+          <div className="form-row">
+            <div className="form-group">
+              <label>Price (₹)</label>
+              <input 
+                type="number" required 
+                value={roomForm.price} 
+                onChange={e => setRoomForm({...roomForm, price: e.target.value})} 
+              />
+            </div>
+            <div className="form-group">
+              <label>Status</label>
+              <select value={roomForm.status} onChange={e => setRoomForm({...roomForm, status: e.target.value})}>
+                <option>Available</option>
+                <option>Occupied</option>
+                <option>Maintenance</option>
+              </select>
+            </div>
+          </div>
+          <button type="submit" className="admin-btn admin-btn-primary" style={{ width: '100%' }}>
+            {editingRoomId ? "Update Room" : "Create Room"}
+          </button>
+        </form>
+      </Modal>
     </div>
   );
 }

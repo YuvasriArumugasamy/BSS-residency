@@ -54,8 +54,6 @@ export default function Footer() {
           <h4>Contact</h4>
           <p>📞 {CONTACT.phonePrimary}</p>
           <p>📞 {CONTACT.phoneSecondary}</p>
-          <p>🕐 Check-in: {CONTACT.checkIn}</p>
-          <p>🕐 Check-out: {CONTACT.checkOut}</p>
           <p>📸 <a href={`https://instagram.com/${CONTACT.instagram}`} target="_blank" rel="noreferrer" style={{color:'inherit', textDecoration:'none'}}>@{CONTACT.instagram}</a></p>
           <a
             href={MAP.directUrl}

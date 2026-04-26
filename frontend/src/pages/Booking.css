@@ -189,6 +189,27 @@
   transition: color 0.3s;
 }
 .room-pick-card:hover .rp-price { color: var(--primary); }
+.room-pick-card.sold-out {
+  opacity: 0.6;
+  background: #f8f9fa;
+  cursor: not-allowed;
+  border-color: #eee;
+}
+.room-pick-card.sold-out:hover {
+  transform: none;
+  box-shadow: none;
+}
+.rp-availability { margin-top: 0.4rem; }
+.status-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  letter-spacing: 0.02em;
+}
+.status-badge.available { background: #e6fffa; color: #234e52; }
+.status-badge.sold-out { background: #fff5f5; color: #c53030; }
 
 /* =========================================
    BUTTONS — Enhanced Animations
@@ -413,4 +434,130 @@
 
 @media (max-width: 480px) {
   .quick-actions { flex-direction: column; }
+}
+
+/* =========================================
+   PREMIUM RECEIPT MODAL & PRINT STYLES
+   ========================================= */
+.receipt-modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1000; padding: 1rem;
+}
+.premium-receipt-modal {
+  background: var(--white); width: 100%; max-width: 420px;
+  border-radius: 16px; position: relative;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+  animation: scaleIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+}
+.premium-receipt-modal .close-btn {
+  position: absolute; top: 1rem; right: 1rem; z-index: 10;
+  background: rgba(0,0,0,0.05); border: none; width: 32px; height: 32px;
+  border-radius: 50%; font-size: 1rem; cursor: pointer; color: var(--text-dark);
+  transition: all 0.3s;
+}
+.premium-receipt-modal .close-btn:hover { background: rgba(0,0,0,0.1); color: #000; transform: rotate(90deg); }
+
+.receipt-content { 
+  background: #fff; padding-bottom: 1rem; 
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* Animated Checkmark */
+.success-checkmark {
+  width: 60px; height: 60px; margin: 0 auto; padding-top: 1.5rem; padding-bottom: 0.5rem;
+}
+.check-icon {
+  width: 60px; height: 60px; position: relative; border-radius: 50%;
+  box-sizing: content-box; border: 3px solid #4CAF50;
+}
+.check-icon::before {
+  top: 3px; left: -2px; width: 30px; transform-origin: 100% 50%; border-radius: 100px 0 0 100px;
+}
+.check-icon::after {
+  top: 0; left: 30px; width: 60px; transform-origin: 0 50%; border-radius: 0 100px 100px 0; animation: rotateCircle 4.25s ease-in;
+}
+.check-icon::before, .check-icon::after {
+  content: ''; height: 80px; position: absolute; background: #fff; transform: rotate(-45deg);
+}
+.icon-line {
+  height: 5px; background-color: #4CAF50; display: block; border-radius: 2px;
+  position: absolute; z-index: 10;
+}
+.icon-line.line-tip {
+  top: 46px; left: 14px; width: 25px; transform: rotate(45deg);
+  animation: iconLineTip 0.75s;
+}
+.icon-line.line-long {
+  top: 38px; right: 8px; width: 47px; transform: rotate(-45deg);
+  animation: iconLineLong 0.75s;
+}
+.icon-circle {
+  top: -3px; left: -3px; z-index: 10; width: 60px; height: 60px; border-radius: 50%;
+  position: absolute; box-sizing: content-box; border: 3px solid rgba(76, 175, 80, .5);
+}
+.icon-fix {
+  top: 8px; width: 5px; left: 26px; z-index: 1; height: 85px; position: absolute;
+  transform: rotate(-45deg); background-color: #fff;
+}
+@keyframes iconLineTip { 0% { width: 0; left: 1px; top: 19px; } 54% { width: 0; left: 1px; top: 19px; } 70% { width: 50px; left: -8px; top: 37px; } 84% { width: 17px; left: 21px; top: 48px; } 100% { width: 25px; left: 14px; top: 46px; } }
+@keyframes iconLineLong { 0% { width: 0; right: 46px; top: 54px; } 65% { width: 0; right: 46px; top: 54px; } 84% { width: 55px; right: 0px; top: 35px; } 100% { width: 47px; right: 8px; top: 38px; } }
+
+.receipt-brand { text-align: center; padding: 0 2rem 1.5rem; border-bottom: 2px dashed #eee; margin-bottom: 1.5rem; position: relative; z-index: 5; }
+.receipt-brand h3 { font-family: 'Inter', sans-serif; font-size: 1.6rem; color: #000; margin: 0 0 0.2rem 0; font-weight: 700; }
+.receipt-brand p { font-size: 0.9rem; color: #4CAF50; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin: 0; }
+.booking-id-badge { display: inline-block; background: #fff; padding: 0.4rem 1.5rem; border-radius: 50px; font-size: 0.85rem; font-weight: 600; margin-top: 0.75rem; color: #555; border: 1px solid #d4a857; }
+
+.receipt-body { padding: 0 2rem; }
+.receipt-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+.info-box { display: flex; flex-direction: column; gap: 0.2rem; }
+.info-box.full-width { grid-column: 1 / -1; }
+.info-box span { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+.info-box strong { font-size: 0.95rem; color: var(--text-dark); font-weight: 700; }
+
+.receipt-total-box { background: #d4a857; color: #fff; padding: 1.25rem; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+.total-label { display: flex; flex-direction: column; }
+.total-label span { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: rgba(255,255,255,0.9); }
+.total-label small { display: none; }
+.total-amount { font-family: 'Inter', sans-serif; font-size: 1.8rem; font-weight: 700; }
+
+.receipt-footer { text-align: center; margin-top: 2rem; padding: 0 2rem; }
+.receipt-footer p { font-size: 0.8rem; color: var(--text-light); font-style: italic; margin-bottom: 1rem; }
+
+.modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; padding: 1rem 2rem 0.5rem; background: #fff; border-top: none; }
+.payment-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; padding: 0.5rem 2rem 1.5rem; background: #fff; }
+.btn-print { background: #fff; color: #333; border: 1.5px solid #d4a857; border-radius: 12px; padding: 0.85rem; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+.btn-print:hover { background: var(--line); border-color: #ccc; transform: translateY(-2px); }
+.btn-wa-solid { background: #25D366; color: #fff; border: none; border-radius: 8px; padding: 0.85rem; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+.btn-wa-solid:hover { background: #1ebe59; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(37,211,102,0.3); }
+
+.btn-gpay { 
+  background: #fff; color: #5f6368; border: 1.5px solid #eee; border-radius: 12px; 
+  padding: 1rem; cursor: pointer; transition: all 0.3s; 
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5rem;
+}
+.btn-gpay img { height: 40px; object-fit: contain; }
+.btn-gpay span { font-size: 0.8rem; font-weight: 600; color: #5f6368; }
+.btn-gpay:hover { background: #f8f9fa; border-color: #ddd; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+
+.btn-paytm { 
+  background: #fff; border: 1.5px solid #eee; border-radius: 12px; 
+  padding: 1rem; cursor: pointer; transition: all 0.3s; 
+  display: flex; align-items: center; justify-content: center;
+}
+.btn-paytm img { height: 35px; width: 100%; object-fit: contain; }
+.btn-paytm:hover { background: #f0fbff; border-color: #00BAF2; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,186,242,0.1); }
+
+@media print {
+  body { background: #fff !important; margin: 0; padding: 0; }
+  .booking-page > *:not(.receipt-modal-overlay) { display: none !important; }
+  .receipt-modal-overlay { position: static; background: none; padding: 0; backdrop-filter: none; }
+  .premium-receipt-modal { box-shadow: none; border: none; max-width: 100%; margin: 0; height: auto; display: block; }
+  .receipt-content { overflow: visible; padding: 0; }
+  .hide-on-print { display: none !important; }
+  .modal-actions, .payment-actions { display: none !important; }
 }

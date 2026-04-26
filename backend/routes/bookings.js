@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Booking = require('../models/Booking');
+const Room = require('../models/Room');
 
 // POST /api/bookings — Create new booking
 router.post('/', async (req, res) => {
@@ -32,6 +33,23 @@ router.post('/', async (req, res) => {
     res.status(201).json({ success: true, message: 'Booking received! We will confirm shortly.', booking });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Server error.', error: err.message });
+  }
+});
+
+// GET /api/bookings/availability — Get availability by room type
+router.get('/availability', async (req, res) => {
+  try {
+    const rooms = await Room.find({ status: 'Available' });
+    const availability = {};
+    
+    // Group available counts by type
+    rooms.forEach(r => {
+      availability[r.type] = (availability[r.type] || 0) + 1;
+    });
+
+    res.json({ success: true, availability });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
   }
 });
 
