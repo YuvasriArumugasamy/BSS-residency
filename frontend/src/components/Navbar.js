@@ -99,34 +99,12 @@ export default function Navbar() {
 
             <div className="mobile-extras">
               <a
-                href={waLink('Hello BSS Residency! I would like to make a booking.')}
-                target="_blank"
-                rel="noreferrer"
-                className="mobile-extra-link wa"
-              >
-                <i className="fa-brands fa-whatsapp"></i> WhatsApp Us
-              </a>
-              <a
-                href={`https://instagram.com/${CONTACT.instagram}`}
-                target="_blank"
-                rel="noreferrer"
-                className="mobile-extra-link insta"
-              >
-                <i className="fa-brands fa-square-instagram"></i> Follow us on Instagram
-              </a>
-              <a
                 href={MAP.directUrl}
                 target="_blank"
                 rel="noreferrer"
                 className="mobile-extra-link"
               >
                 📍 View on Google Maps
-              </a>
-              <a
-                href={`tel:${CONTACT.phonePrimary.replace(/\s/g, '')}`}
-                className="mobile-extra-link"
-              >
-                📞 {CONTACT.phonePrimary}
               </a>
             </div>
           </div>
