@@ -284,7 +284,7 @@
   background: #fff;
   border: 1.5px solid #e0e0e0;
   border-radius: 10px;
-  padding: 0.6rem 1rem;
+  padding: 0.8rem 1.5rem;
   cursor: pointer;
   font-weight: 600;
   transition: box-shadow 0.2s;
@@ -296,7 +296,7 @@
 
 .btn-gpay img,
 .btn-paytm img {
-  height: 24px;
+  height: 42px;
   width: auto;
   object-fit: contain;
 }
@@ -307,7 +307,7 @@
   background: #fff;
   border: 1.5px solid #e0e0e0;
   border-radius: 10px;
-  padding: 0.6rem 1rem;
+  padding: 0.8rem 1.5rem;
   cursor: pointer;
   transition: box-shadow 0.2s;
 }
@@ -426,12 +426,125 @@
   font-weight: 600;
 }
 
+/* ---- Review Section ---- */
+.bstatus-review-section {
+  padding: 2rem;
+  background: #fff;
+  border-top: 1px solid #f0f0f0;
+}
+
+.bstatus-review-section h3 {
+  font-size: 1.1rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  color: #1a1a1a;
+}
+
+.review-success {
+  background: #f0fdf4;
+  color: #166534;
+  padding: 1rem;
+  border-radius: 12px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.rating-select {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.star {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: #e0e0e0;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s, transform 0.1s;
+}
+
+.star.active {
+  color: #ffc107;
+}
+
+.star:hover {
+  transform: scale(1.1);
+}
+
+.bstatus-review-section textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 1rem;
+  border-radius: 12px;
+  border: 1.5px solid #e0e0e0;
+  font-family: inherit;
+  font-size: 0.95rem;
+  resize: vertical;
+  margin-bottom: 1.5rem;
+  outline: none;
+}
+
+.bstatus-review-section textarea:focus {
+  border-color: #c9a84c;
+}
+
+.btn-submit-review {
+  background: #c9a84c;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 0.75rem 2rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-submit-review:hover {
+  background: #b8962f;
+}
+
+.btn-submit-review:disabled {
+  background: #e0e0e0;
+  cursor: not-allowed;
+}
+
 /* ---- Print styles ---- */
 @media print {
-  .bstatus-search-wrap,
+  /* Hide everything */
+  body * {
+    visibility: hidden;
+  }
+  /* Show only the result card and its children */
+  .bstatus-result, 
+  .bstatus-result * {
+    visibility: visible;
+  }
+  /* Position it correctly */
+  .bstatus-result {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+    border: 1px solid #eee;
+  }
+  /* Hide buttons and unnecessary sections within the result card during print */
+  .bstatus-confirmed-actions,
   .bstatus-actions,
-  .btn-print,
-  .payment-btns {
+  .bstatus-review-section,
+  .btn-print {
+    display: none !important;
+  }
+  /* Remove padding from the section for print */
+  .bstatus-section {
+    padding: 0;
+  }
+  /* Hide layout components */
+  .navbar, .footer, .bstatus-search-wrap {
     display: none !important;
   }
 }

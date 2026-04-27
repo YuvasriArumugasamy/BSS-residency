@@ -46,8 +46,8 @@ function buildWaCancelLink(booking, reason = '') {
 // Simple auth middleware
 const adminAuth = (req, res, next) => {
   const { username, password } = req.headers;
-  const targetUser = process.env.ADMIN_USERNAME || 'santhosh';
-  const targetPass = process.env.ADMIN_PASSWORD || 'santhosh@123';
+  const targetUser = 'santhosh';
+  const targetPass = 'santhosh@123';
   if (username === targetUser && password === targetPass) {
     next();
   } else {
@@ -58,8 +58,8 @@ const adminAuth = (req, res, next) => {
 // POST /api/admin/login — Verify credentials
 router.post('/login', (req, res) => {
   const { username, password } = req.body;
-  const targetUser = process.env.ADMIN_USERNAME || 'santhosh';
-  const targetPass = process.env.ADMIN_PASSWORD || 'santhosh@123';
+  const targetUser = 'santhosh';
+  const targetPass = 'santhosh@123';
 
   if (username === targetUser && password === targetPass) {
     res.json({ success: true, message: 'Login successful' });
@@ -301,6 +301,15 @@ router.get('/reviews', adminAuth, async (req, res) => {
   try {
     const reviews = await Review.find().sort({ date: -1 });
     res.json({ success: true, reviews });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+router.delete('/reviews/:id', adminAuth, async (req, res) => {
+  try {
+    await Review.findByIdAndDelete(req.params.id);
+    res.json({ success: true, message: 'Review deleted' });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }

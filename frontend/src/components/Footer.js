@@ -38,6 +38,7 @@ export default function Footer() {
           <Link to="/rooms">Rooms</Link>
           <Link to="/gallery">Gallery</Link>
           <Link to="/booking">Book Now</Link>
+          <Link to="/booking/status">Track Status</Link>
           <Link to="/contact">Contact</Link>
         </div>
 

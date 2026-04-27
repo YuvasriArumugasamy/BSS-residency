@@ -1098,7 +1098,6 @@
 
 /* Standardize button behavior in rows (tablet/desktop) */
 @media (min-width: 481px) {
-
   .cta-btns,
   .tariff-foot,
   .hero-btns {
@@ -1110,14 +1109,525 @@
 }
 
 @media (max-width: 480px) {
-
   .btn-primary,
   .btn-wa,
   .btn-insta,
   .btn-gold,
   .btn-outline-light {
     width: 100% !important;
-    text-align: center;
-    margin-bottom: 0;
   }
 }
+
+/* ---- Testimonials (Pixel-Perfect Google Style) ---- */
+/* ---- Testimonials (Pixel-Perfect Google Style) ---- */
+.testimonials {
+  padding: 4rem 0; 
+  background: #eeeeee; /* Light grey from user image */
+  margin-bottom: 4rem;
+  overflow: hidden;
+}
+
+.carousel-container {
+  position: relative;
+  width: 100%;
+  max-width: 1200px; /* Keep it centered and contained */
+  margin: 0 auto;
+  padding: 0 60px; /* Space for buttons */
+}
+
+.reviews-carousel {
+  display: flex;
+  overflow-x: auto;
+  gap: 2rem;
+  padding: 2rem 0;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.reviews-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.google-review-card {
+  flex: 0 0 calc((100% - 4rem) / 3); /* Exactly 3 cards on desktop */
+  scroll-snap-align: center;
+  background: #ffffff;
+  padding: 2.2rem;
+  border-radius: 12px;
+  border: 1px solid #e8e8e8;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+@media (max-width: 1024px) {
+  .carousel-container {
+    max-width: 100%;
+    padding: 0 50px;
+  }
+  .google-review-card {
+    flex: 0 0 calc((100% - 2rem) / 2); /* Exactly 2 cards on tablet */
+  }
+}
+
+@media (max-width: 768px) {
+  .testimonials {
+    padding: 3rem 0;
+  }
+  .carousel-container {
+    padding: 0 40px;
+  }
+  .google-review-card {
+    flex: 0 0 100%; /* Exactly 1 card on mobile */
+  }
+  .reviews-carousel {
+    gap: 0;
+    padding: 1.5rem 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .testimonials {
+    padding: 2.5rem 0;
+  }
+  .carousel-container {
+    padding: 0 40px; /* Keep enough space for buttons */
+  }
+  .google-review-card {
+    padding: 1.5rem;
+  }
+  .carousel-nav {
+    width: 36px;
+    height: 36px;
+    font-size: 1.2rem;
+  }
+  .carousel-nav.prev { left: 2px; }
+  .carousel-nav.next { right: 2px; }
+}
+
+/* Center reviews if there are only a few */
+.reviews-carousel:not(:has(> :nth-child(4))) {
+  justify-content: center;
+}
+
+.reviews-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.carousel-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #ddd;
+  color: #333;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  cursor: pointer;
+  z-index: 100;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+}
+
+.carousel-nav.prev { left: 15px; }
+.carousel-nav.next { right: 15px; }
+
+.carousel-nav:hover {
+  background: #d4a857;
+  color: #fff;
+  border-color: #d4a857;
+  transform: translateY(-50%) scale(1.15);
+}
+
+
+
+.google-review-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+  border-color: #d4a857;
+}
+
+/* Review Modal Styles - Fixed Visibility */
+.review-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+  padding: 20px;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.review-modal-content {
+  background: #ffffff;
+  width: 100%;
+  max-width: 500px;
+  border-radius: 20px;
+  position: relative;
+  padding: 35px;
+  box-shadow: 0 40px 100px rgba(0,0,0,0.5);
+  animation: slideInUp 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  display: block;
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1.5rem;
+  background: #f0f0f0;
+  border: none;
+  font-size: 1.8rem;
+  color: #555;
+  cursor: pointer;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.modal-close-btn:hover {
+  background: #e0e0e0;
+  transform: rotate(90deg);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+}
+
+.modal-user-side {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.modal-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
+.modal-user-side h3 {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #202124;
+}
+
+.modal-google-side {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.modal-google-icon-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.modal-google-icon-wrap img {
+  width: 24px;
+}
+
+.modal-google-text {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #5f6368;
+}
+
+.modal-meta-row {
+  margin-top: 1rem;
+}
+
+.modal-stars {
+  display: flex;
+  gap: 2px;
+  margin-bottom: 4px;
+}
+
+.modal-stars .filled {
+  color: #fbbc04;
+  font-size: 1.4rem;
+}
+
+.modal-date-text {
+  font-size: 0.9rem;
+  color: #70757a;
+}
+
+.modal-body {
+  margin-top: 1.5rem;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: #3c4043;
+  max-height: 50vh;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+.modal-body::-webkit-scrollbar {
+  width: 5px;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+  background: #ddd;
+  border-radius: 10px;
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideIn { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+.gr-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 1rem;
+}
+
+.gr-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 500;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.gr-name-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.gr-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #000;
+}
+
+.gr-google-logo {
+  width: 18px;
+  height: 18px;
+  margin-left: auto;
+}
+
+.gr-content {
+  margin-bottom: 1rem;
+}
+
+.gr-text {
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #3c4043;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.gr-read-more {
+  background: none;
+  border: none;
+  color: #1a73e8;
+  padding: 0;
+  font-size: 0.95rem;
+  cursor: pointer;
+  margin-top: 4px;
+}
+
+.gr-footer {
+  margin-top: auto;
+}
+
+.gr-stars {
+  display: flex;
+  gap: 2px;
+  margin-bottom: 4px;
+}
+
+.gr-star {
+  font-size: 1.1rem;
+  color: #e0e0e0;
+}
+
+.gr-star.filled {
+  color: #fbbc04;
+}
+
+.gr-time {
+  font-size: 0.85rem;
+  color: #70757a;
+}
+
+
+/* =========================================
+   PEARLS BRAND SECTION
+   ========================================= */
+.pearls-section {
+  background: #4a1c1c; /* Deep Maroon like the image */
+  padding: 6rem 2rem;
+  margin-top: 4rem; /* Top-லிருந்து கீழே இறக்கியுள்ளேன் */
+  border-radius: 40px 40px 0 0; /* மேல் பகுதியை வளைவாக்கியுள்ளேன் */
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+
+.pearls-header {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto 4rem;
+}
+
+.section-label-light {
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #d4a857;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.pearls-header h2 {
+  font-size: clamp(2rem, 4vw, 3rem);
+  margin-bottom: 1.5rem;
+  font-family: 'Playfair Display', serif;
+}
+
+.pearls-header h2 em {
+  color: #d4a857;
+  font-style: italic;
+}
+
+.pearls-intro {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  opacity: 0.9;
+  font-style: italic;
+}
+
+.pearls-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-bottom: 4rem;
+}
+
+.pearl-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(212, 168, 87, 0.2);
+  padding: 2rem;
+  border-radius: 12px;
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  transition: all 0.4s ease;
+  backdrop-filter: blur(5px);
+  animation: fadeUp 0.6s ease both;
+}
+
+.pearl-card:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-10px);
+  border-color: #d4a857;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+}
+
+.pearl-letter {
+  font-size: 3.5rem;
+  font-weight: 900;
+  color: #d4a857;
+  font-family: 'Playfair Display', serif;
+  line-height: 1;
+  text-shadow: 2px 2px 0px rgba(0,0,0,0.2);
+}
+
+.pearl-content h3 {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+  color: #d4a857;
+}
+
+.pearl-content p {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  opacity: 0.8;
+}
+
+.pearls-footer {
+  text-align: center;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.pearls-footer h3 {
+  font-size: 1.2rem;
+  letter-spacing: 0.1em;
+  color: #d4a857;
+}
+
+@media (max-width: 768px) {
+  .pearls-grid {
+    grid-template-columns: 1fr;
+  }
+  .pearl-card {
+    padding: 1.5rem;
+  }
+  .pearl-letter {
+    font-size: 2.5rem;
+  }
+}
+
+/* Review Card Read More Button */
+.gr-read-more {
+  background: none;
+  border: none;
+  color: #d4a857;
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 0;
+  margin-top: 0.8rem;
+  cursor: pointer;
+  display: inline-block;
+  transition: all 0.3s ease;
+  border-bottom: 1px solid transparent;
+}
+
+.gr-read-more:hover {
+  color: #000;
+  border-bottom: 1px solid #000;
+}
+

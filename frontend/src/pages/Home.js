@@ -9,7 +9,17 @@ import roomGal2 from '../assets/room-gallery-2.jpg';
 import roomGal3 from '../assets/room-gallery-3.jpg';
 import roomGal4 from '../assets/room-gallery-4.jpg';
 import { AMENITIES, ROOMS, CONTACT, waLink } from '../constants';
+import api from '../api/axios';
 import './Home.css';
+
+const PEARLS_ITEMS = [
+  { letter: 'P', title: 'Peaceful stay', desc: 'A calm and serene environment for your relaxation.' },
+  { letter: 'E', title: 'Excellent service', desc: 'Top-notch facilities and dedicated staff at your service.' },
+  { letter: 'A', title: 'Affordable cost', desc: 'Premium luxury that fits perfectly within your budget.' },
+  { letter: 'R', title: 'Reliability', desc: 'A name you can trust for consistency and quality.' },
+  { letter: 'L', title: 'Lucky', desc: 'May your stay bring you joy and good fortune.' },
+  { letter: 'S', title: 'Safety', desc: '24/7 security and a safe environment for your family.' },
+];
 
 function ImageCarousel({ images, alt }) {
   const [index, setIndex] = React.useState(0);
@@ -45,7 +55,23 @@ function ImageCarousel({ images, alt }) {
 }
 
 export default function Home() {
+  const [reviews, setReviews] = React.useState([]);
+  const [selectedReview, setSelectedReview] = React.useState(null);
+
+  React.useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const res = await api.get('/api/bookings/public/reviews');
+        setReviews(res.data.reviews);
+      } catch (err) {
+        console.error('Error fetching reviews:', err);
+      }
+    };
+    fetchReviews();
+  }, []);
+
   return (
+    <>
     <main className="home">
       {/* Hero */}
       <section className="hero">
@@ -108,6 +134,33 @@ export default function Home() {
         </div>
       </section>
 
+      {/* PEARLS Brand Section */}
+      <section className="pearls-section">
+        <div className="container">
+          <div className="pearls-header fade-up">
+            <p className="section-label-light">Why Choose Us</p>
+            <h2>The <em>PEARLS</em> of BSS Residency</h2>
+            <p className="pearls-intro">"Comfort and Quality is our promise to every guest."</p>
+          </div>
+
+          <div className="pearls-grid">
+            {PEARLS_ITEMS.map((item, idx) => (
+              <div key={item.letter} className="pearl-card" style={{ animationDelay: `${idx * 0.1}s` }}>
+                <div className="pearl-letter">{item.letter}</div>
+                <div className="pearl-content">
+                  <h3>{item.title}</h3>
+                  <p>{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="pearls-footer fade-up">
+            <h3>BSS RESIDENCY — <em>Premium Guesthouse</em></h3>
+          </div>
+        </div>
+      </section>
+
       {/* Tariff / room preview */}
       <section className="rooms-preview">
         <div className="container">
@@ -160,6 +213,91 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Reviews / Testimonials */}
+      {reviews.length > 0 && (
+        <section className="testimonials">
+          <p className="section-label" style={{ textAlign: 'center' }}>Guest Experiences</p>
+          <h2 style={{ textAlign: 'center', marginBottom: '3rem' }}>What Our <em>Guests Say</em></h2>
+          
+          <div className="carousel-container">
+            <button className="carousel-nav prev" onClick={() => {
+              const track = document.querySelector('.reviews-carousel');
+              track.scrollBy({ left: -380, behavior: 'smooth' });
+            }}>
+              ‹
+            </button>
+            
+            <div className="reviews-carousel">
+              {reviews.map((r, idx) => {
+                const initial = r.guestName ? r.guestName.charAt(0).toUpperCase() : '?';
+                const colors = ['#1a73e8', '#d93025', '#188038', '#f29900', '#a142f4', '#00acc1'];
+                const bgColor = colors[initial.charCodeAt(0) % colors.length];
+                
+                const formattedDate = new Date(r.date).toLocaleDateString('en-GB', {
+                  day: '2-digit',
+                  month: '2-digit',
+                  year: 'numeric'
+                });
+                
+                return (
+                  <div 
+                    key={r._id} 
+                    className="google-review-card" 
+                    onClick={() => setSelectedReview(r)}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    <div className="gr-header">
+                      <div className="gr-avatar" style={{ backgroundColor: bgColor }}>{initial}</div>
+                      <div className="gr-name-wrap">
+                        <span className="gr-name">{r.guestName}</span>
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="G" className="gr-google-logo" />
+                      </div>
+                    </div>
+                    
+                    <div className="gr-content">
+                      <p className="gr-text">
+                        {r.comment && r.comment.length > 150 
+                          ? `${r.comment.substring(0, 150)}...` 
+                          : r.comment}
+                      </p>
+                      {r.comment && r.comment.length > 150 && (
+                        <button 
+                          className="gr-read-more"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedReview(r);
+                          }}
+                        >
+                          Read More
+                        </button>
+                      )}
+                    </div>
+                    
+                    <div className="gr-footer">
+                      <div className="gr-stars">
+                        {[...Array(5)].map((_, i) => (
+                          <span key={i} className={i < r.rating ? 'gr-star filled' : 'gr-star'}>★</span>
+                        ))}
+                      </div>
+                      <div className="gr-time">{formattedDate} on Google</div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            <button className="carousel-nav next" onClick={() => {
+              const track = document.querySelector('.reviews-carousel');
+              track.scrollBy({ left: 380, behavior: 'smooth' });
+            }}>
+              ›
+            </button>
+          </div>
+
+        </section>
+      )}
+
+
       {/* CTA Banner */}
       <section className="cta-banner">
         <div className="cta-inner container">
@@ -173,6 +311,46 @@ export default function Home() {
           </div>
         </div>
       </section>
+
     </main>
+
+    {/* Review Modal Popup - Moved outside main to avoid transform issues */}
+    {selectedReview && (
+      <div className="review-modal-overlay" onClick={() => setSelectedReview(null)}>
+        <div className="review-modal-content" onClick={e => e.stopPropagation()}>
+          <button className="modal-close-btn" onClick={() => setSelectedReview(null)}>×</button>
+          <div className="modal-header">
+            <div className="modal-user-side">
+              <div className="modal-avatar" style={{ 
+                backgroundColor: ['#1a73e8', '#d93025', '#188038', '#f29900'][(selectedReview.guestName || 'G').charCodeAt(0) % 4] 
+              }}>
+                {(selectedReview.guestName || 'G').charAt(0).toUpperCase()}
+              </div>
+              <h3>{selectedReview.guestName || 'Guest'}</h3>
+            </div>
+            <div className="modal-google-side">
+              <div className="modal-google-icon-wrap">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="G" />
+                <span className="modal-google-text">Google</span>
+              </div>
+            </div>
+          </div>
+          <div className="modal-meta-row">
+            <div className="modal-stars">
+              {[...Array(5)].map((_, i) => (
+                <span key={i} className={i < (selectedReview.rating || 5) ? 'filled' : ''}>★</span>
+              ))}
+            </div>
+            <div className="modal-date-text">
+              {selectedReview.date ? new Date(selectedReview.date).toLocaleDateString('en-GB') : 'Recently'} on Google
+            </div>
+          </div>
+          <div className="modal-body">
+            <p>{selectedReview.comment || 'No comment provided.'}</p>
+          </div>
+        </div>
+      </div>
+    )}
+    </>
   );
 }

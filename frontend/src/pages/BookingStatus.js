@@ -2,6 +2,8 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import api from '../api/axios';
 import { waLink, CONTACT } from '../constants';
+import gpayLogo from '../assets/gpay.png';
+import paytmLogo from '../assets/paytm.png';
 import './BookingStatus.css';
 
 const ROOM_PRICES = {
@@ -20,6 +22,9 @@ export default function BookingStatus() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [searched, setSearched] = useState(false);
+  const [reviewForm, setReviewForm] = useState({ rating: 5, comment: '' });
+  const [reviewLoading, setReviewLoading] = useState(false);
+  const [reviewSuccess, setReviewSuccess] = useState('');
 
   // Auto-search if ID comes from URL
   useEffect(() => {
@@ -53,6 +58,25 @@ export default function BookingStatus() {
     e.preventDefault();
     navigate(`/booking/status/${inputId.trim()}`);
     fetchBooking(inputId.trim());
+  };
+
+  const handleReviewSubmit = async (e) => {
+    e.preventDefault();
+    if (!reviewForm.comment.trim()) return;
+    setReviewLoading(true);
+    try {
+      await api.post('/api/bookings/public/reviews', {
+        guestName: booking.name,
+        rating: reviewForm.rating,
+        comment: reviewForm.comment
+      });
+      setReviewSuccess('Thank you! Your review has been submitted.');
+      setReviewForm({ rating: 5, comment: '' });
+    } catch (err) {
+      alert('Error submitting review: ' + err.message);
+    } finally {
+      setReviewLoading(false);
+    }
   };
 
   // Compute nights and total
@@ -179,7 +203,7 @@ export default function BookingStatus() {
             {/* Booking ID */}
             <div className="bid-display">
               <span>Booking ID</span>
-              <code className="bid-code">{booking._id}</code>
+              <code className="bid-code">{booking.bookingId || booking._id}</code>
             </div>
 
             {/* Details Grid */}
@@ -244,10 +268,9 @@ export default function BookingStatus() {
                     }}
                   >
                     <img
-                      src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Google_Pay_Logo_%282020%29.svg/512px-Google_Pay_Logo_%282020%29.svg.png"
+                      src={gpayLogo}
                       alt="Google Pay"
                     />
-                    <span>Google Pay</span>
                   </button>
                   <button
                     className="btn-paytm"
@@ -257,7 +280,7 @@ export default function BookingStatus() {
                     }}
                   >
                     <img
-                      src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Paytm_Logo_%28standalone%29.svg/512px-Paytm_Logo_%28standalone%29.svg.png"
+                      src={paytmLogo}
                       alt="Paytm"
                     />
                   </button>
@@ -267,6 +290,43 @@ export default function BookingStatus() {
                 <button className="btn-print" onClick={() => window.print()}>
                   <i className="fa-solid fa-file-pdf" /> Save / Print Receipt
                 </button>
+              </div>
+            )}
+
+            {/* Review Form — only for confirmed or checked-out bookings */}
+            {(booking.status === 'Confirmed' || booking.status === 'Checked-out') && (
+              <div className="bstatus-review-section">
+                <h3>⭐ Rate Your Stay</h3>
+                {reviewSuccess ? (
+                  <div className="review-success">✅ {reviewSuccess}</div>
+                ) : (
+                  <form onSubmit={handleReviewSubmit}>
+                    <p style={{ fontSize: '0.85rem', color: '#666', marginBottom: '1rem' }}>
+                      How was your experience at BSS Residency?
+                    </p>
+                    <div className="rating-select">
+                      {[1, 2, 3, 4, 5].map((num) => (
+                        <button
+                          key={num}
+                          type="button"
+                          className={reviewForm.rating >= num ? 'star active' : 'star'}
+                          onClick={() => setReviewForm({ ...reviewForm, rating: num })}
+                        >
+                          ★
+                        </button>
+                      ))}
+                    </div>
+                    <textarea
+                      placeholder="Share your experience with us..."
+                      value={reviewForm.comment}
+                      onChange={(e) => setReviewForm({ ...reviewForm, comment: e.target.value })}
+                      required
+                    />
+                    <button type="submit" className="btn-submit-review" disabled={reviewLoading}>
+                      {reviewLoading ? 'Submitting...' : 'Submit Review'}
+                    </button>
+                  </form>
+                )}
               </div>
             )}
 

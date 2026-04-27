@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const bookingSchema = new mongoose.Schema(
   {
+    bookingId: { type: String, unique: true },
     name: { type: String, required: true, trim: true },
     phone: { type: String, required: true, trim: true },
     email: { type: String, trim: true, default: '' },

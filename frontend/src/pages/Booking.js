@@ -5,7 +5,9 @@ import { ROOMS, CONTACT, waLink } from '../constants';
 import './Booking.css';
 
 const initForm = {
-  name: '',
+  salutation: 'Mr.',
+  firstName: '',
+  lastName: '',
   phone: '',
   email: '',
   roomType: '',
@@ -16,13 +18,18 @@ const initForm = {
   message: '',
 };
 
+const GST_FIXED = 200;
+
 export default function Booking() {
   const [form, setForm] = useState(initForm);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
-  const [step, setStep] = useState(1); // 1: dates/room, 2: guest details
-  const [pendingBooking, setPendingBooking] = useState(null); // after submit
+  const [step, setStep] = useState(1);
+  const [pendingBooking, setPendingBooking] = useState(null);
   const [availability, setAvailability] = useState({});
+  const [showSpecialReq, setShowSpecialReq] = useState(false);
+  const [policyChecked, setPolicyChecked] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     const fetchAvailability = async () => {
@@ -53,10 +60,26 @@ export default function Booking() {
     return diff > 0 ? diff : 0;
   }, [form.checkIn, form.checkOut]);
 
-  const totalPrice = useMemo(() => {
+  const roomCharges = useMemo(() => {
     if (!selectedRoom || !nights) return 0;
     return selectedRoom.price * nights * Math.max(1, Number(form.rooms) || 1);
   }, [selectedRoom, nights, form.rooms]);
+
+  const gstAmount = GST_FIXED;
+  const totalPrice = useMemo(() => roomCharges + gstAmount, [roomCharges, gstAmount]);
+  const advanceAmount = 500; // Flat ₹500 advance
+
+  const formatDate = (dateStr) => {
+    if (!dateStr) return '—';
+    const d = new Date(dateStr);
+    return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+  };
+
+  const copyToClipboard = (text) => {
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -85,25 +108,33 @@ export default function Booking() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.name || !form.phone) {
+    if (!form.firstName || !form.phone) {
       setResult({ success: false, message: 'Please enter your name and phone number.' });
+      return;
+    }
+    if (!policyChecked) {
+      setResult({ success: false, message: 'Please accept the booking policy to proceed.' });
       return;
     }
     setLoading(true);
     try {
+      const fullName = `${form.salutation} ${form.firstName} ${form.lastName}`.trim();
       const res = await api.post('/api/bookings', {
         ...form,
+        name: fullName,
         guests: Number(form.guests),
       });
 
-      // Store the confirmed booking data from DB
       setPendingBooking({
         ...res.data.booking,
         nights,
         totalPrice,
+        roomCharges,
+        gstAmount,
       });
       setForm(initForm);
       setStep(1);
+      setPolicyChecked(false);
     } catch (err) {
       setResult({
         success: false,
@@ -116,21 +147,20 @@ export default function Booking() {
 
   // --- SUCCESS / PENDING SCREEN ---
   if (pendingBooking) {
-    const bookingId = pendingBooking._id;
-    const shortId = bookingId?.slice(-6).toUpperCase() || '';
-    const waMsg = `Hello BSS Residency! 🙏\n\nI just submitted a booking request.\nBooking ID: ${bookingId}\nName: ${pendingBooking.name}\nRoom: ${pendingBooking.roomType}\nCheck-in: ${new Date(pendingBooking.checkIn).toLocaleDateString('en-IN')}\nCheck-out: ${new Date(pendingBooking.checkOut).toLocaleDateString('en-IN')}\n\nPlease confirm!`;
+    const bookingId = pendingBooking.bookingId || pendingBooking._id;
+    const shortId = bookingId?.toString().slice(-6).toUpperCase() || '';
+    const waMsg = `Hello BSS Residency! 🙏\n\nI just submitted a booking request.\nBooking ID: ${bookingId}\nName: ${pendingBooking.name}\nRoom: ${pendingBooking.roomType}\nCheck-in: ${new Date(pendingBooking.checkIn).toLocaleDateString('en-IN')}\nCheck-out: ${new Date(pendingBooking.checkOut).toLocaleDateString('en-IN')}\n\nI have paid the advance of ₹500 via UPI. Please confirm!`;
 
     return (
       <main className="booking-page">
         <section className="page-hero">
           <p className="section-label gold">Reservation</p>
           <h1>Booking <em>Received!</em></h1>
-          <p>We've received your request. Confirmation coming shortly via WhatsApp.</p>
+          <p>Pay advance to confirm your stay at BSS Residency.</p>
         </section>
 
         <section className="booking-section container">
           <div className="pending-screen">
-            {/* Animated pending icon */}
             <div className="pending-icon-wrap">
               <div className="pending-pulse" />
               <span className="pending-icon">🕐</span>
@@ -138,11 +168,70 @@ export default function Booking() {
 
             <div className="pending-card">
               <div className="pending-header">
-                <span className="status-badge-large pending">⏳ Pending Confirmation</span>
+                <span className="status-badge-large pending">⏳ Pending Advance Payment</span>
                 <div className="booking-id-display">
                   <span>Booking ID</span>
                   <strong className="bid">{bookingId}</strong>
                   <small>Short ref: BSS-{shortId}</small>
+                </div>
+              </div>
+
+              {/* Premium Payment Section */}
+              <div className="payment-checkout-card">
+                <div className="pc-badge">Action Required: Secure Your Booking</div>
+                <h3 className="pc-title">Pay Advance ₹{advanceAmount}</h3>
+                <p className="pc-subtitle">Scan QR code or use the UPI ID below to pay via GPay, PhonePe, or Paytm.</p>
+                
+                <div className="pc-grid">
+                  <div className="pc-qr-wrap">
+                    <a 
+                      href={`upi://pay?pa=santhoshgk9498@oksbi&pn=Santhosh%20G&am=${advanceAmount}&cu=INR`}
+                      className="pc-qr-link"
+                      title="Click to pay with GPay / UPI"
+                    >
+                      <div className="pc-qr-frame">
+                        <img 
+                          src="/images/qr-code.png" 
+                          alt="Payment QR Code" 
+                          className="pc-qr-img" 
+                          onError={(e) => e.target.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=santhoshgk9498@oksbi%26pn=Santhosh%20G%26am=${advanceAmount}%26cu=INR`} 
+                        />
+                      </div>
+                      <span className="pc-qr-label">Tap or Scan to Pay</span>
+                    </a>
+                  </div>
+
+                  <div className="pc-info-wrap">
+                    <div className="upi-copy-box">
+                      <div className="ucb-label">UPI ID</div>
+                      <div className="ucb-value-row">
+                        <strong className="ucb-id">santhoshgk9498@oksbi</strong>
+                        <button 
+                          type="button" 
+                          className={`copy-btn ${copied ? 'copied' : ''}`}
+                          onClick={() => copyToClipboard('santhoshgk9498@oksbi')}
+                        >
+                          {copied ? '✓ Copied' : '📋 Copy'}
+                        </button>
+                      </div>
+                      <p className="ucb-name">Verified Name: <strong>Santhosh G</strong></p>
+                    </div>
+
+                    <div className="payment-steps-new">
+                      <div className="psn-item">
+                        <span className="psn-num">1</span>
+                        <span>Pay <strong>₹{advanceAmount}</strong> advance</span>
+                      </div>
+                      <div className="psn-item">
+                        <span className="psn-num">2</span>
+                        <span>Take <strong>Screenshot</strong></span>
+                      </div>
+                      <div className="psn-item">
+                        <span className="psn-num">3</span>
+                        <span>Share on <strong>WhatsApp</strong></span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -177,9 +266,19 @@ export default function Booking() {
                 </div>
               </div>
 
-              <div className="pending-total">
-                <span>Estimated Total</span>
-                <strong>₹{pendingBooking.totalPrice?.toLocaleString('en-IN')}</strong>
+              <div className="pending-price-breakdown">
+                <div className="pb-row">
+                  <span>Room Charges</span>
+                  <span>₹{pendingBooking.roomCharges?.toLocaleString('en-IN')}</span>
+                </div>
+                <div className="pb-row">
+                  <span>GST (12%)</span>
+                  <span>₹{pendingBooking.gstAmount?.toLocaleString('en-IN')}</span>
+                </div>
+                <div className="pb-total">
+                  <span>Total Amount</span>
+                  <strong>₹{pendingBooking.totalPrice?.toLocaleString('en-IN')}</strong>
+                </div>
               </div>
 
               <p className="pending-note">
@@ -195,18 +294,21 @@ export default function Booking() {
                 >
                   <i className="fa-brands fa-whatsapp" /> Follow Up on WhatsApp
                 </a>
-                <Link
-                  to={`/booking/status/${bookingId}`}
-                  className="btn-status-check"
-                >
-                  🔍 Check Booking Status
-                </Link>
-                <button
-                  className="btn-back"
-                  onClick={() => setPendingBooking(null)}
-                >
-                  ← New Booking
-                </button>
+                
+                <div className="pending-sub-actions">
+                  <Link
+                    to={`/booking/status/${bookingId}`}
+                    className="btn-status-check"
+                  >
+                    🔍 Check Status
+                  </Link>
+                  <button
+                    className="btn-new-booking"
+                    onClick={() => setPendingBooking(null)}
+                  >
+                    ← New Booking
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -220,23 +322,25 @@ export default function Booking() {
       <section className="page-hero">
         <p className="section-label gold">Reservations</p>
         <h1>Book Your <em>Stay</em></h1>
-        <p>Fill the form below. We'll confirm your booking on WhatsApp instantly.</p>
+        <p>Complete the form below to book your room at BSS Residency, Courtallam.</p>
       </section>
 
       <section className="booking-section container">
-        <div className="booking-grid">
-          {/* Form */}
-          <div className="booking-form-wrap">
+        <div className="booking-grid-new">
+
+          {/* LEFT COLUMN — Form */}
+          <div className="booking-main-col">
+
             {/* Step indicator */}
-            <div className="steps">
-              <div className={`step ${step >= 1 ? 'active' : ''}`}>
-                <span className="step-num">1</span>
-                <span className="step-label">Room &amp; Dates</span>
+            <div className="steps-bar">
+              <div className={`step-item ${step >= 1 ? 'active' : ''} ${step > 1 ? 'done' : ''}`}>
+                <div className="step-circle">{step > 1 ? '✓' : '1'}</div>
+                <span>Room & Dates</span>
               </div>
-              <div className="step-bar" />
-              <div className={`step ${step >= 2 ? 'active' : ''}`}>
-                <span className="step-num">2</span>
-                <span className="step-label">Your Details</span>
+              <div className="step-connector" />
+              <div className={`step-item ${step >= 2 ? 'active' : ''}`}>
+                <div className="step-circle">2</div>
+                <span>Guest Information</span>
               </div>
             </div>
 
@@ -246,52 +350,70 @@ export default function Booking() {
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="booking-form">
-              {step === 1 && (
-                <>
-                  <h2>Select Room &amp; Dates</h2>
-                  <p className="form-subtext">Choose a room type and your stay dates.</p>
+            <form onSubmit={handleSubmit} className="booking-form-new">
 
+              {/* STEP 1 — Room & Dates */}
+              {step === 1 && (
+                <div className="form-card animate-in">
+                  <div className="form-card-header">
+                    <span className="form-card-icon">🏠</span>
+                    <div>
+                      <h2>Select Room & Dates</h2>
+                      <p className="form-subtext">Choose your room type and stay duration.</p>
+                    </div>
+                  </div>
+
+                  {/* Room Picker */}
                   <div className="form-group">
                     <label>Room Type <span className="req">*</span></label>
-                    <div className="room-picker">
+                    <div className="room-picker-new">
                       {ROOMS.map((r) => {
                         const count = availability[r.name];
-                        // If no room data in DB at all, treat all as available (don't block booking)
                         const hasDbData = Object.keys(availability).length > 0;
                         const isSoldOut = hasDbData && count === 0;
                         return (
                           <button
                             type="button"
                             key={r.key}
-                            className={`room-pick-card ${form.roomType === r.name ? 'active' : ''} ${isSoldOut ? 'sold-out' : ''}`}
+                            className={`room-card-new ${form.roomType === r.name ? 'active' : ''} ${isSoldOut ? 'sold-out' : ''}`}
                             onClick={() => !isSoldOut && pickRoom(r.name)}
                             disabled={isSoldOut}
                           >
-                            <span className="rp-icon">{r.icon}</span>
-                            <div className="rp-info">
-                              <strong>{r.name}</strong>
-                              <span className="rp-type">{r.type}</span>
-                              <div className="rp-availability">
+                            <div className="rc-top">
+                              <span className="rc-icon">{r.icon}</span>
+                              <div className="rc-badge-wrap">
                                 {isSoldOut ? (
-                                  <span className="status-badge sold-out">Sold Out</span>
+                                  <span className="rc-badge sold-out">Sold Out</span>
                                 ) : count > 0 ? (
-                                  <span className="status-badge available">{count} Available</span>
+                                  <span className="rc-badge available">{count} Available</span>
                                 ) : (
-                                  <span className="status-badge available">Available</span>
+                                  <span className="rc-badge available">Available</span>
                                 )}
                               </div>
                             </div>
-                            <span className="rp-price">₹{r.price.toLocaleString('en-IN')}</span>
+                            <div className="rc-info">
+                              <strong>{r.name}</strong>
+                              <span className="rc-type">{r.type}</span>
+                            </div>
+                            <div className="rc-price">
+                              <span className="rc-rate">₹{r.price.toLocaleString('en-IN')}</span>
+                              <span className="rc-per">/ night</span>
+                            </div>
+                            {form.roomType === r.name && (
+                              <span className="rc-check">✓</span>
+                            )}
                           </button>
                         );
                       })}
                     </div>
                   </div>
 
-                  <div className="form-row">
+                  {/* Dates */}
+                  <div className="form-row-2">
                     <div className="form-group">
-                      <label>Check-in Date <span className="req">*</span></label>
+                      <label>
+                        <span className="label-icon">📅</span> Check-in Date <span className="req">*</span>
+                      </label>
                       <input
                         name="checkIn"
                         value={form.checkIn}
@@ -299,10 +421,13 @@ export default function Booking() {
                         type="date"
                         min={today}
                         required
+                        className="input-styled"
                       />
                     </div>
                     <div className="form-group">
-                      <label>Check-out Date <span className="req">*</span></label>
+                      <label>
+                        <span className="label-icon">📅</span> Check-out Date <span className="req">*</span>
+                      </label>
                       <input
                         name="checkOut"
                         value={form.checkOut}
@@ -310,11 +435,19 @@ export default function Booking() {
                         type="date"
                         min={form.checkIn || today}
                         required
+                        className="input-styled"
                       />
                     </div>
                   </div>
 
-                  <div className="form-row">
+                  {/* Nights indicator */}
+                  {nights > 0 && (
+                    <div className="nights-badge">
+                      🌙 {nights} Night{nights > 1 ? 's' : ''} stay
+                    </div>
+                  )}
+
+                  <div className="form-row-2">
                     <div className="form-group">
                       <label>Number of Rooms</label>
                       <input
@@ -323,7 +456,8 @@ export default function Booking() {
                         onChange={handleChange}
                         type="number"
                         min="1"
-                        max="10"
+                        max="20"
+                        className="input-styled"
                       />
                     </div>
                     <div className="form-group">
@@ -334,187 +468,305 @@ export default function Booking() {
                         onChange={handleChange}
                         type="number"
                         min="1"
-                        max="20"
+                        max="50"
+                        className="input-styled"
                       />
                     </div>
                   </div>
 
-                  <button type="button" className="submit-btn" onClick={nextStep}>
-                    Continue →
+                  <button type="button" className="btn-continue" onClick={nextStep}>
+                    Continue to Guest Details →
                   </button>
-                </>
+                </div>
               )}
 
+              {/* STEP 2 — Guest Information */}
               {step === 2 && (
-                <>
-                  <h2>Your Details</h2>
-                  <p className="form-subtext">
-                    We'll use this to confirm your booking on WhatsApp.
-                  </p>
+                <div className="form-card animate-in">
+                  <div className="form-card-header">
+                    <span className="form-card-icon">👤</span>
+                    <div>
+                      <h2>Guest Information</h2>
+                      <p className="form-subtext">All fields marked with <span className="req">*</span> are required.</p>
+                    </div>
+                  </div>
 
-                  <div className="form-row">
-                    <div className="form-group">
-                      <label>Full Name <span className="req">*</span></label>
+                  {/* Name Row */}
+                  <div className="form-row-name">
+                    <div className="form-group salutation-group">
+                      <label>Salutation <span className="req">*</span></label>
+                      <select name="salutation" value={form.salutation} onChange={handleChange} className="input-styled">
+                        <option>Mr.</option>
+                        <option>Ms.</option>
+                        <option>Mrs.</option>
+                        <option>Dr.</option>
+                        <option>Prof.</option>
+                      </select>
+                    </div>
+                    <div className="form-group" style={{flex: 1}}>
+                      <label>First Name <span className="req">*</span></label>
                       <input
-                        name="name"
-                        value={form.name}
+                        name="firstName"
+                        value={form.firstName}
                         onChange={handleChange}
-                        placeholder="Your full name"
+                        placeholder="First name"
+                        className="input-styled"
                         required
                       />
                     </div>
-                    <div className="form-group">
-                      <label>Phone Number <span className="req">*</span></label>
+                    <div className="form-group" style={{flex: 1}}>
+                      <label>Last Name</label>
+                      <input
+                        name="lastName"
+                        value={form.lastName}
+                        onChange={handleChange}
+                        placeholder="Last name"
+                        className="input-styled"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Phone */}
+                  <div className="form-group">
+                    <label>
+                      <span className="label-icon">📱</span> Mobile Number <span className="req">*</span>
+                    </label>
+                    <div className="phone-input-wrap">
+                      <span className="phone-country-code">🇮🇳 +91</span>
                       <input
                         name="phone"
                         value={form.phone}
                         onChange={handleChange}
-                        placeholder="+91 XXXXX XXXXX"
+                        placeholder="XXXXX XXXXX"
+                        className="input-styled phone-number-input"
                         required
+                        type="tel"
+                        maxLength={10}
                       />
                     </div>
                   </div>
 
+                  {/* Email */}
                   <div className="form-group">
-                    <label>Email Address</label>
+                    <label>
+                      <span className="label-icon">✉️</span> Email Address
+                    </label>
                     <input
                       name="email"
                       value={form.email}
                       onChange={handleChange}
                       type="email"
-                      placeholder="your@email.com (optional)"
+                      placeholder="your@email.com"
+                      className="input-styled"
                     />
+                    <p className="field-hint">Your booking confirmation will be sent to this email address.</p>
                   </div>
 
+                  {/* Special Requests — Expandable */}
                   <div className="form-group">
-                    <label>Special Requests / Message</label>
-                    <textarea
-                      name="message"
-                      value={form.message}
-                      onChange={handleChange}
-                      rows="3"
-                      placeholder="Any special requirements or questions..."
-                    />
-                  </div>
-
-                  <div className="form-actions">
                     <button
                       type="button"
-                      className="btn-back"
+                      className="special-req-toggle"
+                      onClick={() => setShowSpecialReq(!showSpecialReq)}
+                    >
+                      <span>Special Requests / Notes</span>
+                      <span className={`toggle-icon ${showSpecialReq ? 'open' : ''}`}>
+                        {showSpecialReq ? '−' : '+'}
+                      </span>
+                    </button>
+                    {showSpecialReq && (
+                      <div className="special-req-body">
+                        <textarea
+                          name="message"
+                          value={form.message}
+                          onChange={handleChange}
+                          rows="3"
+                          placeholder="E.g. early check-in request, extra bed needed, any allergies..."
+                          className="input-styled"
+                        />
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Policy Checkbox */}
+                  <div className="policy-section">
+                    <label className="policy-label">
+                      <input
+                        type="checkbox"
+                        checked={policyChecked}
+                        onChange={(e) => setPolicyChecked(e.target.checked)}
+                        className="policy-check"
+                      />
+                      <span>
+                        I agree to the <strong>booking policies</strong> of BSS Residency. I understand that the booking is subject to confirmation via WhatsApp and payment is to be made at the property.
+                      </span>
+                    </label>
+                  </div>
+
+                  <div className="form-actions-new">
+                    <button
+                      type="button"
+                      className="btn-back-new"
                       onClick={() => setStep(1)}
                     >
                       ← Back
                     </button>
-                    <button type="submit" className="submit-btn" disabled={loading}>
+                    <button type="submit" className="btn-book-now" disabled={loading}>
                       {loading ? (
                         <>
                           <span className="btn-spinner" />Submitting...
                         </>
                       ) : (
-                        <>📩 Submit Booking Request</>
+                        <>📩 Confirm Booking</>
                       )}
                     </button>
                   </div>
-                </>
+                </div>
               )}
             </form>
           </div>
 
-          {/* Summary sidebar */}
-          <aside className="booking-sidebar">
-            <div className="summary-card">
-              <h3>Your Booking</h3>
-              <div className="summary-row">
-                <span>Room</span>
-                <strong>{form.roomType || '—'}</strong>
-              </div>
-              <div className="summary-row">
-                <span>Check-in</span>
-                <strong>{form.checkIn || '—'}</strong>
-              </div>
-              <div className="summary-row">
-                <span>Check-out</span>
-                <strong>{form.checkOut || '—'}</strong>
-              </div>
-              <div className="summary-row">
-                <span>Nights</span>
-                <strong>{nights || '—'}</strong>
-              </div>
-              <div className="summary-row">
-                <span>Rooms × Guests</span>
-                <strong>{form.rooms} × {form.guests}</strong>
-              </div>
-              {selectedRoom && (
-                <div className="summary-row">
-                  <span>Rate / night</span>
-                  <strong>₹{selectedRoom.price.toLocaleString('en-IN')}</strong>
+          {/* RIGHT COLUMN — Sticky Sidebar */}
+          <aside className="booking-sidebar-new">
+
+            {/* Hotel Info Card */}
+            <div className="hotel-info-card">
+              <div className="hotel-card-brand">
+                <span className="hotel-logo-icon">🏨</span>
+                <div>
+                  <h3>BSS Residency</h3>
+                  <p>Courtallam, Tamil Nadu</p>
                 </div>
-              )}
-              <div className="summary-total">
-                <span>Estimated total</span>
-                <strong>
-                  {totalPrice ? `₹${totalPrice.toLocaleString('en-IN')}` : '₹—'}
-                </strong>
               </div>
-              <p className="summary-note">
-                Taxes as applicable. Final price confirmed on WhatsApp.
-              </p>
+              <div className="hotel-contact-grid">
+                <div className="hotel-contact-item">
+                  <span className="hci-icon">📍</span>
+                  <span>{CONTACT.addressLine1}, {CONTACT.addressLine2}</span>
+                </div>
+                <div className="hotel-contact-item">
+                  <span className="hci-icon">📞</span>
+                  <a href={`tel:${CONTACT.phonePrimary.replace(/\s/g, '')}`}>
+                    {CONTACT.phonePrimary}
+                  </a>
+                </div>
+                <div className="hotel-contact-item">
+                  <span className="hci-icon">💬</span>
+                  <a href={waLink('Hello BSS Residency!')} target="_blank" rel="noreferrer">
+                    WhatsApp Us
+                  </a>
+                </div>
+              </div>
             </div>
 
-            <div className="info-card">
-              <h3>Booking Info</h3>
+            {/* Booking Summary Card */}
+            <div className="summary-card-new">
+              <h3 className="summary-title">
+                <span>Booking Summary</span>
+                {step === 2 && form.checkIn && (
+                  <button
+                    type="button"
+                    className="change-dates-btn"
+                    onClick={() => setStep(1)}
+                  >
+                    Change
+                  </button>
+                )}
+              </h3>
+
+              {/* Dates */}
+              <div className="summary-dates">
+                <div className="summary-date-box">
+                  <span className="sdb-label">Check-in</span>
+                  <span className="sdb-value">{formatDate(form.checkIn)}</span>
+                  <span className="sdb-sub">From 11:00 AM</span>
+                </div>
+                <div className="summary-nights-badge">
+                  {nights > 0 ? `${nights}N` : '—'}
+                </div>
+                <div className="summary-date-box">
+                  <span className="sdb-label">Check-out</span>
+                  <span className="sdb-value">{formatDate(form.checkOut)}</span>
+                  <span className="sdb-sub">Before 10:00 AM</span>
+                </div>
+              </div>
+
+              {/* Room and Guests */}
+              <div className="summary-details">
+                <div className="sd-row">
+                  <span>Room Type</span>
+                  <strong>{form.roomType || '—'}</strong>
+                </div>
+                <div className="sd-row">
+                  <span>Rooms</span>
+                  <strong>{form.rooms}</strong>
+                </div>
+                <div className="sd-row">
+                  <span>Guests</span>
+                  <strong>{form.guests}</strong>
+                </div>
+              </div>
+
+              {/* Price Breakdown */}
+              {selectedRoom && nights > 0 && (
+                <div className="price-breakdown">
+                  <div className="pb-header">Price Breakdown</div>
+                  <div className="pb-row">
+                    <span>₹{selectedRoom.price.toLocaleString('en-IN')} × {nights} night{nights > 1 ? 's' : ''} × {form.rooms} room{form.rooms > 1 ? 's' : ''}</span>
+                    <span>₹{roomCharges.toLocaleString('en-IN')}</span>
+                  </div>
+                  <div className="pb-row">
+                    <span>GST</span>
+                    <span>₹{gstAmount.toLocaleString('en-IN')}</span>
+                  </div>
+                  <div className="pb-total-row">
+                    <span>Total</span>
+                    <strong>₹{totalPrice.toLocaleString('en-IN')}</strong>
+                  </div>
+                  <p className="pb-note">Inclusive of all taxes. Payment at property.</p>
+                </div>
+              )}
+
+              {(!selectedRoom || !nights) && (
+                <div className="summary-placeholder">
+                  <span>💡 Select a room and dates to see pricing</span>
+                </div>
+              )}
+            </div>
+
+            {/* Policy Info Card */}
+            <div className="policy-info-card">
+              <h4>📋 Booking Policies</h4>
               <ul>
-                <li><strong>Check-in:</strong> 11:00 AM onwards</li>
-                <li><strong>Check-out:</strong> Before 10:00 AM</li>
-                <li><strong>Confirmation:</strong> Via WhatsApp</li>
-                <li><strong>Payment:</strong> At property</li>
+                <li>✅ Check-in: From 11:00 AM</li>
+                <li>✅ Check-out: Before 10:00 AM</li>
+                <li>✅ Confirmation via WhatsApp</li>
+                <li>✅ Payment at property</li>
+                <li>ℹ️ Valid ID proof required at check-in</li>
               </ul>
             </div>
 
-            <div className="info-card gold-card">
-              <h3>Quick Booking</h3>
-              <p>Prefer to book directly? Call or WhatsApp us.</p>
-              <div className="quick-actions">
+            {/* Quick Booking Card */}
+            <div className="quick-book-card">
+              <h4>📞 Need Help?</h4>
+              <p>Prefer to book over the phone? Call or WhatsApp us directly.</p>
+              <div className="quick-btns">
                 <a
                   href={waLink('Hello BSS Residency! I would like to make a booking.')}
-                  className="btn-wa"
+                  className="qb-btn whatsapp"
                   target="_blank"
                   rel="noreferrer"
                 >
                   <i className="fa-brands fa-whatsapp" /> WhatsApp
                 </a>
                 <a
-                  href={`https://instagram.com/${CONTACT.instagram}`}
-                  className="btn-insta-small"
-                  target="_blank"
-                  rel="noreferrer"
+                  href={`tel:${CONTACT.phonePrimary.replace(/\s/g, '')}`}
+                  className="qb-btn call"
                 >
-                  <i className="fa-brands fa-square-instagram" /> Instagram
+                  📞 Call Now
                 </a>
               </div>
-              <a
-                href={`tel:${CONTACT.phonePrimary.replace(/\s/g, '')}`}
-                className="btn-dark-inline"
-              >
-                📞 {CONTACT.phonePrimary}
-              </a>
-              <a
-                href={`tel:+91${CONTACT.phoneSecondary.replace(/[^0-9]/g, '').slice(-10)}`}
-                className="btn-dark-inline"
-              >
-                📞 {CONTACT.phoneSecondary}
-              </a>
             </div>
 
-            <div className="info-card">
-              <h3>Location</h3>
-              <p className="addr">
-                {CONTACT.addressLine1}<br />{CONTACT.addressLine2}
-              </p>
-              <Link to="/contact" className="map-mini-link">
-                View map &amp; nearby →
-              </Link>
-            </div>
           </aside>
         </div>
       </section>

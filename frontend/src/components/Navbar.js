@@ -32,6 +32,7 @@ export default function Navbar() {
     { to: '/', label: 'Home' },
     { to: '/rooms', label: 'Rooms' },
     { to: '/gallery', label: 'Gallery' },
+    { to: '/booking/status', label: 'Track Status' },
     { to: '/contact', label: 'Contact' },
   ];
 

@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { 
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area 
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area
 } from 'recharts';
-import { 
-  LayoutDashboard, Bed, CalendarCheck, Users, CreditCard, PieChart, Settings, MessageSquare, Bell, LogOut, ExternalLink, RefreshCcw, Plus, Trash2, Edit3, WhatsApp, CheckCircle, XCircle, Clock, X
+import {
+  LayoutDashboard, Bed, CalendarCheck, Users, CreditCard, PieChart, Settings, MessageSquare, Bell, LogOut, ExternalLink, RefreshCcw, Plus, Trash2, Edit3, CheckCircle, XCircle, Clock, X, MessageCircle
 } from 'lucide-react';
 import api from '../api/axios';
 import './Admin.css';
@@ -26,7 +26,7 @@ const Modal = ({ title, isOpen, onClose, children }) => {
   );
 };
 
-const Sidebar = ({ activeTab, setActiveTab, onLogout, username }) => {
+const Sidebar = ({ activeTab, setActiveTab, onLogout, username, unreadCount = 0, unreadReviewCount = 0 }) => {
   const navItems = [
     { id: 'overview', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
     { id: 'rooms', label: 'Rooms', icon: <Bed size={20} /> },
@@ -35,8 +35,8 @@ const Sidebar = ({ activeTab, setActiveTab, onLogout, username }) => {
     { id: 'payments', label: 'Payments', icon: <CreditCard size={20} /> },
     { id: 'reports', label: 'Reports', icon: <PieChart size={20} /> },
     { id: 'settings', label: 'Settings', icon: <Settings size={20} /> },
-    { id: 'reviews', label: 'Reviews', icon: <MessageSquare size={20} /> },
-    { id: 'notifications', label: 'Notifications', icon: <Bell size={20} /> },
+    { id: 'reviews', label: 'Reviews', icon: <MessageSquare size={20} />, count: unreadReviewCount },
+    { id: 'notifications', label: 'Notifications', icon: <Bell size={20} />, count: unreadCount },
   ];
 
   return (
@@ -46,15 +46,20 @@ const Sidebar = ({ activeTab, setActiveTab, onLogout, username }) => {
       </div>
       <nav className="sidebar-nav">
         {navItems.map(item => (
-          <div 
-            key={item.id} 
+          <div
+            key={item.id}
             className={`nav-item ${activeTab === item.id ? 'active' : ''}`}
             onClick={() => {
               setActiveTab(item.id);
               document.body.classList.remove('sidebar-open');
             }}
           >
-            {item.icon}
+            <div style={{ position: 'relative', display: 'flex' }}>
+              {item.icon}
+              {item.count > 0 && (
+                <span className="notif-badge">{item.count}</span>
+              )}
+            </div>
             <span>{item.label}</span>
           </div>
         ))}
@@ -116,8 +121,8 @@ const DashboardOverview = ({ stats, bookings }) => {
               <AreaChart data={stats.revenueHistory}>
                 <defs>
                   <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="var(--admin-primary)" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="var(--admin-primary)" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="var(--admin-primary)" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="var(--admin-primary)" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#eee" />
@@ -172,7 +177,7 @@ const RoomManagement = ({ rooms, onAddClick, onDeleteRoom, onUpdateRoom }) => {
 
       <div className="stats-grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))' }}>
         {rooms.length === 0 ? (
-           <div style={{ padding: '2rem', textAlign: 'center', color: '#888' }}>No rooms added yet.</div>
+          <div style={{ padding: '2rem', textAlign: 'center', color: '#888' }}>No rooms added yet.</div>
         ) : rooms.map(room => (
           <div key={room._id} className="card room-card">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
@@ -186,15 +191,15 @@ const RoomManagement = ({ rooms, onAddClick, onDeleteRoom, onUpdateRoom }) => {
               ₹{room.price}/night
             </div>
             <div style={{ display: 'flex', gap: '0.5rem' }}>
-              <button 
-                className="admin-btn admin-btn-outline" 
+              <button
+                className="admin-btn admin-btn-outline"
                 onClick={() => onUpdateRoom(room)}
                 style={{ flex: 1, height: '36px', padding: 0 }}
               >
                 <Edit3 size={16} />
               </button>
-              <button 
-                className="admin-btn admin-btn-outline" 
+              <button
+                className="admin-btn admin-btn-outline"
                 onClick={() => onDeleteRoom(room._id)}
                 style={{ flex: 1, height: '36px', padding: 0, color: '#ff4d4d' }}
               >
@@ -208,9 +213,44 @@ const RoomManagement = ({ rooms, onAddClick, onDeleteRoom, onUpdateRoom }) => {
   );
 };
 
-const BookingManagement = ({ bookings, onConfirm, onCancel, onWhatsApp, onUpdateRoomNumber, onDelete, onAddPayment, formatDate }) => {
+const BookingManagement = ({ bookings = [], onConfirm, onCancel, onWhatsApp, onUpdateRoomNumber, onDelete, onAddPayment, formatDate }) => {
+  const [filter, setFilter] = React.useState('All');
+
+  const safeBookings = Array.isArray(bookings) ? bookings : [];
+  const filteredBookings = filter === 'All'
+    ? safeBookings
+    : safeBookings.filter(b => b && b.status === filter);
+
   return (
-    <div className="card fade-in">
+    <div className="card">
+      <div className="card-header" style={{ marginBottom: '1rem', flexWrap: 'wrap', gap: '1rem' }}>
+        <div className="filter-tabs" style={{ display: 'flex', gap: '0.5rem', background: '#f1f5f9', padding: '0.3rem', borderRadius: '8px' }}>
+          {['All', 'Pending', 'Confirmed', 'Cancelled'].map(tab => (
+            <button
+              key={tab}
+              onClick={() => setFilter(tab)}
+              style={{
+                padding: '0.5rem 1rem',
+                border: 'none',
+                borderRadius: '6px',
+                fontSize: '0.85rem',
+                fontWeight: 600,
+                cursor: 'pointer',
+                background: filter === tab ? 'white' : 'transparent',
+                color: filter === tab ? 'var(--admin-primary)' : '#64748b',
+                boxShadow: filter === tab ? '0 2px 4px rgba(0,0,0,0.05)' : 'none',
+                transition: 'all 0.2s'
+              }}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
+        <div style={{ fontSize: '0.85rem', color: '#64748b' }}>
+          Showing <strong>{filteredBookings.length}</strong> bookings
+        </div>
+      </div>
+
       <div className="admin-table-wrap">
         <table className="admin-table">
           <thead>
@@ -225,20 +265,26 @@ const BookingManagement = ({ bookings, onConfirm, onCancel, onWhatsApp, onUpdate
             </tr>
           </thead>
           <tbody>
-            {bookings.length === 0 ? (
-               <tr><td colSpan="7" style={{ textAlign: 'center', padding: '2rem', color: '#888' }}>No bookings found.</td></tr>
-            ) : bookings.map((b, i) => (
+            {filteredBookings.length === 0 ? (
+              <tr><td colSpan="7" style={{ textAlign: 'center', padding: '2rem', color: '#888' }}>No {filter !== 'All' ? filter.toLowerCase() : ''} bookings found.</td></tr>
+            ) : filteredBookings.map((b, i) => (
               <tr key={b._id}>
                 <td>{i + 1}</td>
-                <td><div style={{ fontWeight: 600 }}>{b.name}</div><div style={{ fontSize: '0.75rem', color: '#888' }}>{b.email}</div></td>
+                <td>
+                  <div style={{ fontWeight: 600 }}>{b.name || 'Unknown'}</div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--admin-primary)', fontWeight: 600 }}>
+                    #{b.bookingId || (b._id ? b._id.toString().slice(-6) : 'N/A')}
+                  </div>
+                  <div style={{ fontSize: '0.7rem', color: '#888' }}>{b.email || ''}</div>
+                </td>
                 <td>{b.phone}</td>
                 <td>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
                     <div style={{ fontWeight: 600 }}>{b.roomType}</div>
-                    <input 
-                      type="text" 
-                      placeholder="Room #" 
-                      value={b.roomNumber || ''} 
+                    <input
+                      type="text"
+                      placeholder="Room #"
+                      value={b.roomNumber || ''}
                       onChange={(e) => onUpdateRoomNumber(b._id, e.target.value)}
                       style={{ width: '70px', fontSize: '0.75rem', padding: '2px 5px', borderRadius: '4px', border: '1px solid #ddd' }}
                     />
@@ -248,54 +294,38 @@ const BookingManagement = ({ bookings, onConfirm, onCancel, onWhatsApp, onUpdate
                   {formatDate(b.checkIn)} -<br />{formatDate(b.checkOut)}
                 </td>
                 <td>
-                  <span className={`status-pill status-${b.status.replace(' ', '-')}`}>{b.status}</span>
+                  <span className={`status-pill status-${b.status?.replace(' ', '-') || 'Pending'}`}>{b.status || 'Pending'}</span>
                 </td>
                 <td>
-                  <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
-                    {/* Confirm button — only for Pending */}
-                    {b.status === 'Pending' && (
-                      <button 
-                        className="admin-btn" 
-                        title="Confirm & notify guest via WhatsApp"
-                        onClick={() => onConfirm(b._id, b)}
-                        style={{ background: '#10b981', color: '#fff', border: 'none', padding: '0.4rem 0.6rem', fontSize: '0.75rem', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.25rem' }}
-                      >
-                        <CheckCircle size={14} /> Confirm
+                  <div className="admin-actions-container">
+                    {/* Status Management */}
+                    <div className="action-stack">
+                      {b.status === 'Pending' && (
+                        <button className="action-btn-main confirm" onClick={() => onConfirm(b._id, b)}>
+                          <CheckCircle size={15} /> Confirm Booking
+                        </button>
+                      )}
+
+                      <button className="action-btn-main whatsapp" onClick={() => onWhatsApp(b)}>
+                        <MessageSquare size={15} /> WhatsApp Guest
                       </button>
-                    )}
-                    {/* Cancel button */}
-                    {(b.status === 'Pending' || b.status === 'Confirmed') && (
-                      <button 
-                        className="admin-btn" 
-                        title="Cancel booking"
-                        onClick={() => onCancel(b._id, b)}
-                        style={{ background: '#ef4444', color: '#fff', border: 'none', padding: '0.4rem 0.6rem', fontSize: '0.75rem', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.25rem' }}
-                      >
-                        <XCircle size={14} /> Cancel
+
+                      {(b.status === 'Pending' || b.status === 'Confirmed') && (
+                        <button className="action-btn-main cancel" onClick={() => onCancel(b._id, b)}>
+                          <XCircle size={15} /> Cancel Booking
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Secondary Utilities */}
+                    <div className="action-footer">
+                      <button className="action-btn-main payment" onClick={() => onAddPayment(b)}>
+                        <CreditCard size={15} /> Add Payment
                       </button>
-                    )}
-                    {/* WhatsApp button */}
-                    <button 
-                      className="admin-btn" 
-                      title="Open WhatsApp with guest"
-                      onClick={() => onWhatsApp(b)}
-                      style={{ background: '#25d366', color: '#fff', border: 'none', padding: '0.4rem 0.6rem', fontSize: '0.75rem', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.25rem' }}
-                    >
-                      <MessageSquare size={14} /> WA
-                    </button>
-                    {/* Add Payment */}
-                    <button 
-                      className="admin-btn" 
-                      title="Record payment"
-                      onClick={() => onAddPayment(b)}
-                      style={{ background: '#6366f1', color: '#fff', border: 'none', padding: '0.4rem 0.6rem', fontSize: '0.75rem', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.25rem' }}
-                    >
-                      <CreditCard size={14} />
-                    </button>
-                    {/* Delete */}
-                    <button className="admin-btn admin-btn-outline" onClick={() => onDelete(b._id)} style={{ padding: '0.4rem', color: '#ff4d4d' }}>
-                      <Trash2 size={16} />
-                    </button>
+                      <button className="action-link delete" onClick={() => onDelete(b._id)}>
+                        <Trash2 size={14} /> Delete
+                      </button>
+                    </div>
                   </div>
                 </td>
               </tr>
@@ -335,7 +365,7 @@ const Payments = ({ payments, totalRevenue }) => {
             </thead>
             <tbody>
               {payments.length === 0 ? (
-                 <tr><td colSpan="5" style={{ textAlign: 'center', padding: '2rem', color: '#888' }}>No payment records.</td></tr>
+                <tr><td colSpan="5" style={{ textAlign: 'center', padding: '2rem', color: '#888' }}>No payment records.</td></tr>
               ) : payments.map(p => (
                 <tr key={p._id}>
                   <td style={{ fontWeight: 600 }}>{p.guestName}</td>
@@ -384,7 +414,7 @@ const Reports = ({ stats }) => {
             </div>
             <div className="stat-card">
               <span className="stat-label">Confirmation Rate</span>
-              <span className="stat-value">{( (stats?.confirmed / (stats?.totalBookings || 1)) * 100 ).toFixed(1)}%</span>
+              <span className="stat-value">{((stats?.confirmed / (stats?.totalBookings || 1)) * 100).toFixed(1)}%</span>
             </div>
           </div>
         </div>
@@ -422,16 +452,36 @@ const SettingsView = () => (
   </div>
 );
 
-const ReviewsView = ({ reviews }) => {
+const ReviewsView = ({ reviews, onDeleteReview }) => {
   return (
     <div className="view-content fade-in">
       {reviews.length === 0 ? (
-         <div className="card">No guest reviews yet.</div>
+        <div className="card">No guest reviews yet.</div>
       ) : reviews.map(r => (
         <div key={r._id} className="card" style={{ marginBottom: '1rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
             <span style={{ fontWeight: 700 }}>{r.guestName}</span>
-            <span style={{ color: '#d4a857' }}>{'★'.repeat(r.rating)}</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              <span style={{ color: '#d4a857' }}>{'★'.repeat(r.rating)}</span>
+              <button 
+                onClick={() => onDeleteReview(r._id)}
+                style={{ 
+                  background: 'none', 
+                  border: 'none', 
+                  color: '#ff4d4d', 
+                  cursor: 'pointer',
+                  padding: '4px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  borderRadius: '4px',
+                  transition: 'background 0.2s'
+                }}
+                className="delete-review-btn"
+                title="Delete Review"
+              >
+                <Trash2 size={18} />
+              </button>
+            </div>
           </div>
           <p style={{ color: '#555', fontSize: '0.9rem' }}>"{r.comment}"</p>
           <div style={{ fontSize: '0.75rem', color: '#999', marginTop: '0.5rem' }}>{new Date(r.date).toLocaleDateString()}</div>
@@ -445,7 +495,7 @@ const NotificationsView = ({ notifications }) => {
   return (
     <div className="view-content fade-in">
       {notifications.length === 0 ? (
-         <div className="card">No notifications yet.</div>
+        <div className="card">No notifications yet.</div>
       ) : notifications.map(a => (
         <div key={a._id} className="card" style={{ marginBottom: '1rem', borderLeft: '4px solid var(--admin-primary)', display: 'flex', gap: '1rem', alignItems: 'center' }}>
           <div style={{ background: '#fdfaf4', padding: '0.75rem', borderRadius: '50%', color: 'var(--admin-primary)' }}>
@@ -475,7 +525,11 @@ export default function AdminDashboard() {
   const [payments, setPayments] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [notifications, setNotifications] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [unreadReviewCount, setUnreadReviewCount] = useState(0);
   const [loading, setLoading] = useState(true);
+  const prevBookingCountRef = useRef(0);
+  const audioRef = useRef(new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3'));
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -506,8 +560,41 @@ export default function AdminDashboard() {
       setRooms(roomsRes.data.rooms);
       setGuests(guestsRes.data.guests);
       setPayments(paymentsRes.data.payments);
-      setReviews(reviewsRes.data.reviews);
-      setNotifications(notifRes.data.notifications);
+      const finalReviews = reviewsRes.data.reviews;
+      const seenReviews = parseInt(localStorage.getItem('bss_seen_reviews_count') || '0');
+      if (activeTab !== 'reviews' && finalReviews.length > seenReviews) {
+        setUnreadReviewCount(finalReviews.length - seenReviews);
+      } else if (activeTab === 'reviews') {
+        localStorage.setItem('bss_seen_reviews_count', finalReviews.length.toString());
+      }
+      setReviews(finalReviews);
+
+      const finalNotifs = notifRes.data.notifications;
+      const seenNotifs = parseInt(localStorage.getItem('bss_seen_notifs_count') || '0');
+      if (activeTab !== 'notifications' && finalNotifs.length > seenNotifs) {
+        setUnreadCount(finalNotifs.length - seenNotifs);
+      } else if (activeTab === 'notifications') {
+        localStorage.setItem('bss_seen_notifs_count', finalNotifs.length.toString());
+      }
+
+      setNotifications(finalNotifs);
+
+      // Check for new bookings to trigger alert
+      const currentCount = bookingsRes.data.bookings.length;
+      if (prevBookingCountRef.current > 0 && currentCount > prevBookingCountRef.current) {
+        // Play sound
+        audioRef.current.play().catch(e => console.log('Audio play blocked:', e));
+        // Browser Alert
+        if (Notification.permission === 'granted') {
+          new Notification('New Booking Received! 🔔', {
+            body: `You have a new booking from ${bookingsRes.data.bookings[0].name}`,
+            icon: '/favicon.ico'
+          });
+        } else {
+          alert('New Booking Received! 🔔 Check the bookings list.');
+        }
+      }
+      prevBookingCountRef.current = currentCount;
     } catch (err) {
       console.error(err);
       navigate('/admin/login');
@@ -517,12 +604,38 @@ export default function AdminDashboard() {
   }, [auth, navigate]);
 
   useEffect(() => {
+    if (activeTab === 'notifications') {
+      setUnreadCount(0);
+      localStorage.setItem('bss_seen_notifs_count', notifications.length.toString());
+    }
+    if (activeTab === 'reviews') {
+      setUnreadReviewCount(0);
+      localStorage.setItem('bss_seen_reviews_count', reviews.length.toString());
+    }
+  }, [activeTab, notifications.length, reviews.length]);
+
+  useEffect(() => {
     const stored = sessionStorage.getItem('bss_admin');
     if (!stored) { navigate('/admin/login'); return; }
     setAuth(JSON.parse(stored));
   }, [navigate]);
 
   useEffect(() => { fetchData(); }, [fetchData]);
+
+  // Request Notification Permission on mount
+  useEffect(() => {
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
+  }, []);
+
+  // Polling: Auto refresh every 30 seconds
+  useEffect(() => {
+    const timer = setInterval(() => {
+      fetchData();
+    }, 30000); // 30 seconds
+    return () => clearInterval(timer);
+  }, [fetchData]);
 
   const handleRoomSubmit = async (e) => {
     e.preventDefault();
@@ -655,28 +768,39 @@ export default function AdminDashboard() {
     fetchData();
   };
 
-  const logout = () => { 
-    sessionStorage.removeItem('bss_admin'); 
-    navigate('/admin/login'); 
+  const handleDeleteReview = async (id) => {
+    if (!window.confirm('Delete this review?')) return;
+    const headers = { username: auth.username, password: auth.password };
+    try {
+      await api.delete(`/api/admin/reviews/${id}`, { headers });
+      fetchData();
+    } catch (err) {
+      alert('Error deleting review: ' + err.message);
+    }
+  };
+
+  const logout = () => {
+    sessionStorage.removeItem('bss_admin');
+    navigate('/admin/login');
   };
 
   const formatDate = (d) => d ? new Date(d).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
 
   const renderView = () => {
-    switch(activeTab) {
+    switch (activeTab) {
       case 'overview': return <DashboardOverview stats={stats} bookings={bookings} />;
       case 'rooms': return <RoomManagement rooms={rooms} onAddClick={openAddModal} onDeleteRoom={handleDeleteRoom} onUpdateRoom={openEditModal} />;
-      case 'bookings': return <BookingManagement 
-        bookings={bookings} 
+      case 'bookings': return <BookingManagement
+        bookings={bookings}
         onConfirm={handleConfirmBooking}
         onCancel={handleCancelBooking}
         onWhatsApp={handleWhatsAppBooking}
-        onUpdateRoomNumber={handleUpdateRoomNumber} 
-        onDelete={handleDeleteBooking} 
+        onUpdateRoomNumber={handleUpdateRoomNumber}
+        onDelete={handleDeleteBooking}
         onAddPayment={openAddPaymentModal}
-        formatDate={formatDate} 
+        formatDate={formatDate}
       />;
-      case 'guests': 
+      case 'guests':
         return (
           <div className="card fade-in">
             <div className="admin-table-wrap">
@@ -708,7 +832,7 @@ export default function AdminDashboard() {
       case 'payments': return <Payments payments={payments} totalRevenue={stats?.totalRevenue} />;
       case 'reports': return <Reports stats={stats} />;
       case 'settings': return <SettingsView />;
-      case 'reviews': return <ReviewsView reviews={reviews} />;
+      case 'reviews': return <ReviewsView reviews={reviews} onDeleteReview={handleDeleteReview} />;
       case 'notifications': return <NotificationsView notifications={notifications} />;
       default: return <div className="card">Coming Soon...</div>;
     }
@@ -716,8 +840,8 @@ export default function AdminDashboard() {
 
   return (
     <div className="admin-dashboard">
-      <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} onLogout={logout} username={auth?.username} />
-      
+      <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} onLogout={logout} username={auth?.username} unreadCount={unreadCount} unreadReviewCount={unreadReviewCount} />
+
       <main className="admin-main">
         {/* Mobile Header */}
         <header className="admin-mobile-header">
@@ -752,25 +876,25 @@ export default function AdminDashboard() {
       </main>
 
       {/* Room Modal */}
-      <Modal 
-        title={editingRoomId ? "Edit Room" : "Add New Room"} 
-        isOpen={isModalOpen} 
+      <Modal
+        title={editingRoomId ? "Edit Room" : "Add New Room"}
+        isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
       >
         <form onSubmit={handleRoomSubmit}>
           <div className="form-row">
             <div className="form-group">
               <label>Room Number</label>
-              <input 
-                type="text" required 
-                value={roomForm.roomNumber} 
-                onChange={e => setRoomForm({...roomForm, roomNumber: e.target.value})} 
+              <input
+                type="text" required
+                value={roomForm.roomNumber}
+                onChange={e => setRoomForm({ ...roomForm, roomNumber: e.target.value })}
                 placeholder="e.g. 101"
               />
             </div>
             <div className="form-group">
               <label>Room Type</label>
-              <select value={roomForm.type} onChange={e => setRoomForm({...roomForm, type: e.target.value})}>
+              <select value={roomForm.type} onChange={e => setRoomForm({ ...roomForm, type: e.target.value })}>
                 <option>Double Bed</option>
                 <option>Double Bed A/C</option>
                 <option>Four Bed</option>
@@ -784,15 +908,15 @@ export default function AdminDashboard() {
           <div className="form-row">
             <div className="form-group">
               <label>Price (₹)</label>
-              <input 
-                type="number" required 
-                value={roomForm.price} 
-                onChange={e => setRoomForm({...roomForm, price: e.target.value})} 
+              <input
+                type="number" required
+                value={roomForm.price}
+                onChange={e => setRoomForm({ ...roomForm, price: e.target.value })}
               />
             </div>
             <div className="form-group">
               <label>Status</label>
-              <select value={roomForm.status} onChange={e => setRoomForm({...roomForm, status: e.target.value})}>
+              <select value={roomForm.status} onChange={e => setRoomForm({ ...roomForm, status: e.target.value })}>
                 <option>Available</option>
                 <option>Occupied</option>
                 <option>Maintenance</option>
