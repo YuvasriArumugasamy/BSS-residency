@@ -629,9 +629,14 @@ export default function AdminDashboard() {
     }
   }, []);
 
-  // Only fetch data on mount or manual refresh
+  // Silent Polling: Auto refresh every 30 seconds for alerts/sound
   useEffect(() => {
-    fetchData();
+    fetchData(); // Initial fetch
+    const interval = setInterval(() => {
+      // Background fetch without showing loading spinner
+      fetchData();
+    }, 30000); 
+    return () => clearInterval(interval);
   }, [fetchData]);
 
   const handleRoomSubmit = async (e) => {
