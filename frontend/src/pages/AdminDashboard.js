@@ -541,9 +541,9 @@ export default function AdminDashboard() {
   const [paymentForm, setPaymentForm] = useState({ guestName: '', bookingId: '', amount: '', method: 'Cash', status: 'Paid' });
   const [paymentLoading, setPaymentLoading] = useState(false);
 
-  const fetchData = useCallback(async () => {
+  const fetchData = useCallback(async (silent = false) => {
     if (!auth) return;
-    setLoading(true);
+    if (!silent) setLoading(true);
     const headers = { username: auth.username, password: auth.password };
     try {
       const [statsRes, bookingsRes, roomsRes, guestsRes, paymentsRes, reviewsRes, notifRes] = await Promise.all([
@@ -597,11 +597,11 @@ export default function AdminDashboard() {
       prevBookingCountRef.current = currentCount;
     } catch (err) {
       console.error(err);
-      navigate('/admin/login');
+      if (!silent) navigate('/admin/login');
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
-  }, [auth, navigate]);
+  }, [auth, navigate, activeTab, notifications.length, reviews.length]);
 
   useEffect(() => {
     if (activeTab === 'notifications') {
@@ -629,10 +629,9 @@ export default function AdminDashboard() {
     }
   }, []);
 
-  // Polling: Auto refresh every 5 seconds
+  // Polling: Auto refresh every 5 seconds (Silent)
   useEffect(() => {
-    fetchData();
-    const interval = setInterval(fetchData, 5000); // Poll every 5 seconds for "real-time" feel
+    const interval = setInterval(() => fetchData(true), 5000); 
     return () => clearInterval(interval);
   }, [fetchData]);
 
