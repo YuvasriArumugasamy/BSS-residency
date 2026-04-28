@@ -254,6 +254,15 @@ router.get('/guests', adminAuth, async (req, res) => {
   }
 });
 
+router.delete('/guests/:id', adminAuth, async (req, res) => {
+  try {
+    await Guest.findByIdAndDelete(req.params.id);
+    res.json({ success: true, message: 'Guest record deleted' });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 // --- PAYMENT ROUTES ---
 router.get('/payments', adminAuth, async (req, res) => {
   try {

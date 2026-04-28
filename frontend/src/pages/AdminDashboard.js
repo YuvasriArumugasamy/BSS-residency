@@ -753,6 +753,18 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleDeleteGuest = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this guest record?')) return;
+    const headers = { username: auth.username, password: auth.password };
+    try {
+      await api.delete(`/api/admin/guests/${id}`, { headers });
+      fetchData();
+    } catch (err) {
+      console.error('Error deleting guest:', err);
+      alert('Failed to delete guest record.');
+    }
+  };
+
   const handleUpdateRoomNumber = async (id, roomNumber) => {
     const headers = { username: auth.username, password: auth.password };
     await api.patch(`/api/admin/bookings/${id}`, { roomNumber }, { headers });
@@ -810,17 +822,27 @@ export default function AdminDashboard() {
                     <th>Phone</th>
                     <th>Total Stays</th>
                     <th>Level</th>
+                    <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {guests.length === 0 ? (
-                    <tr><td colSpan="4" style={{ textAlign: 'center', padding: '2rem' }}>No guest records.</td></tr>
+                    <tr><td colSpan="5" style={{ textAlign: 'center', padding: '2rem' }}>No guest records.</td></tr>
                   ) : guests.map(g => (
                     <tr key={g._id}>
                       <td style={{ fontWeight: 600 }}>{g.name}</td>
                       <td>{g.phone}</td>
                       <td>{g.totalStays}</td>
                       <td><span style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: 'var(--admin-primary)', fontWeight: 700 }}>{g.loyaltyLevel}</span></td>
+                      <td>
+                        <button 
+                          className="action-link delete" 
+                          onClick={() => handleDeleteGuest(g._id)}
+                          style={{ border: 'none', background: 'none', cursor: 'pointer', color: '#e74c3c' }}
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
