@@ -629,8 +629,10 @@ export default function AdminDashboard() {
     }
   }, []);
 
-  // Polling: Disabled as per user request
-  // Data will only refresh when the user clicks the "Refresh" button
+  // Only fetch data on mount or manual refresh
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const handleRoomSubmit = async (e) => {
     e.preventDefault();
