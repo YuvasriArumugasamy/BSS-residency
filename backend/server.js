@@ -53,8 +53,53 @@ if (!process.env.MONGO_URI) {
 
 mongoose
   .connect(process.env.MONGO_URI)
-  .then(() => {
+  .then(async () => {
     console.log('MongoDB Connected');
+    
+    // Auto-seed if database is empty
+    try {
+      const Room = require('./models/Room');
+      const count = await Room.countDocuments();
+      if (count === 0) {
+        console.log('Database empty, seeding initial rooms...');
+        const rooms = [];
+        let roomNum = 1;
+        
+        // 13 Double Bed
+        for (let i = 0; i < 13; i++) {
+            rooms.push({
+                roomNumber: (roomNum++).toString(),
+                type: 'AC Double Bed',
+                price: 1500,
+                status: 'Available',
+                amenities: ['TV', 'Hot Water', 'WiFi']
+            });
+        }
+        // 1 Three Bed
+        rooms.push({
+            roomNumber: (roomNum++).toString(),
+            type: 'Three Bed',
+            price: 2000,
+            status: 'Available',
+            amenities: ['TV', 'Hot Water', 'WiFi']
+        });
+        // 6 Four Bed
+        for (let i = 0; i < 6; i++) {
+            rooms.push({
+                roomNumber: (roomNum++).toString(),
+                type: 'Four Bed',
+                price: 2500,
+                status: 'Available',
+                amenities: ['TV', 'Hot Water', 'WiFi']
+            });
+        }
+        await Room.insertMany(rooms);
+        console.log('Auto-seed complete: Rooms created.');
+      }
+    } catch (seedErr) {
+      console.error('Auto-seed error:', seedErr);
+    }
+
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
   })
   .catch((err) => {
