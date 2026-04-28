@@ -61,12 +61,14 @@ mongoose
       const Guest = require('./models/Guest');
       const Booking = require('./models/Booking');
       const Payment = require('./models/Payment');
+      const Notification = require('./models/Notification');
+      const Review = require('./models/Review');
       
       const bookingCount = await Booking.countDocuments();
       if (bookingCount === 0) {
         console.log('Bookings empty, seeding full initial data...');
         
-        // 1. Create Rooms (if not already there)
+        // ... (existing Room seeding)
         const roomCount = await Room.countDocuments();
         let seededRooms = [];
         if (roomCount === 0) {
@@ -92,7 +94,7 @@ mongoose
             { name: 'Nisha Verma', phone: '9876543213', email: 'nisha@example.com', loyaltyLevel: 'Regular', totalStays: 3 }
         ]);
 
-        // 3. Create Bookings (with valid enums and IDs)
+        // 3. Create Bookings
         const today = new Date();
         const seededBookings = await Booking.insertMany([
             {
@@ -106,25 +108,31 @@ mongoose
                 checkIn: new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1),
                 checkOut: new Date(today.getFullYear(), today.getMonth(), today.getDate() + 3),
                 guests: 1, status: 'Pending'
-            },
-            {
-                bookingId: 'BSS-1003', name: 'Divya Patel', phone: '9876543212', roomType: 'Four Bed A/C',
-                checkIn: new Date(today.getFullYear(), today.getMonth(), today.getDate() - 5),
-                checkOut: new Date(today.getFullYear(), today.getMonth(), today.getDate() - 3),
-                guests: 4, status: 'Checked-out', roomNumber: '14'
             }
         ]);
 
-        // 4. Create Payments (to show Revenue)
+        // 4. Create Payments
         await Payment.insertMany([
-            { guestName: 'Suresh Kumar', bookingId: seededBookings[0]._id, amount: 3000, method: 'UPI', status: 'Paid' },
-            { guestName: 'Divya Patel', bookingId: seededBookings[2]._id, amount: 5000, method: 'Card', status: 'Paid' }
+            { guestName: 'Suresh Kumar', bookingId: seededBookings[0]._id, amount: 3000, method: 'UPI', status: 'Paid' }
         ]);
 
-        // Update room status for confirmed booking
+        // 5. Create Notifications
+        await Notification.insertMany([
+            { title: 'New Booking', message: 'Suresh Kumar booked a room', type: 'booking', date: new Date() },
+            { title: 'Payment Received', message: 'Received ₹3000 from Suresh Kumar', type: 'system', date: new Date() },
+            { title: 'System Alert', message: 'Database backup completed', type: 'system', date: new Date() }
+        ]);
+
+        // 6. Create Reviews
+        await Review.insertMany([
+            { guestName: 'Divya Patel', rating: 5, comment: 'Excellent service and very clean rooms!', date: new Date() },
+            { guestName: 'Suresh Kumar', rating: 4, comment: 'Good stay, friendly staff.', date: new Date() }
+        ]);
+
+        // Update room status
         await Room.findOneAndUpdate({ roomNumber: '1' }, { status: 'Occupied' });
 
-        console.log('Auto-seed complete: Full data populated.');
+        console.log('Auto-seed complete: Notifications and Reviews added.');
       }
     } catch (seedErr) {
       console.error('Auto-seed error:', seedErr);
