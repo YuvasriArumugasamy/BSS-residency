@@ -629,12 +629,8 @@ export default function AdminDashboard() {
     }
   }, []);
 
-  // Polling: Auto refresh every 20 seconds
-  useEffect(() => {
-    fetchData();
-    const interval = setInterval(fetchData, 20000); // 20 seconds
-    return () => clearInterval(interval);
-  }, [fetchData]);
+  // Polling: Disabled as per user request
+  // Data will only refresh when the user clicks the "Refresh" button
 
   const handleRoomSubmit = async (e) => {
     e.preventDefault();
