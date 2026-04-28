@@ -11,6 +11,7 @@ import Contact from './pages/Contact';
 import BookingStatus from './pages/BookingStatus';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
+import CheckIn from './pages/CheckIn';
 import ScrollObserver from './components/ScrollObserver';
 
 function App() {
@@ -34,6 +35,8 @@ function App() {
               <Route path="/booking/status" element={<BookingStatus />} />
               <Route path="/booking/status/:id" element={<BookingStatus />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/checkin" element={<CheckIn />} />
+              <Route path="/checkin/:id" element={<CheckIn />} />
             </Routes>
             <Footer />
             <FloatingContact />

@@ -1,5 +1,5 @@
 import React from 'react';
-import { CONTACT, MAP, NEARBY_PLACES, AMENITIES, waLink } from '../constants';
+import { CONTACT, MAP, NEARBY_PLACES, AMENITIES, waLink, WA_TEMPLATES } from '../constants';
 import './Contact.css';
 
 export default function Contact() {
@@ -32,6 +32,24 @@ export default function Contact() {
                 >
                   Open in Google Maps →
                 </a>
+                <div className="wa-links-group">
+                  <a
+                    href={WA_TEMPLATES.getLocation(CONTACT.whatsapp1)}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="c-link wa-link-text"
+                  >
+                    <i className="fa-brands fa-whatsapp"></i> Get Location (WA 1) →
+                  </a>
+                  <a
+                    href={WA_TEMPLATES.getLocation(CONTACT.whatsapp2)}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="c-link wa-link-text"
+                  >
+                    <i className="fa-brands fa-whatsapp"></i> Get Location (WA 2) →
+                  </a>
+                </div>
               </div>
             </div>
 
@@ -61,12 +79,20 @@ export default function Contact() {
                 <p className="c-note">Fastest response — 24/7</p>
                 <div className="contact-card-actions">
                   <a
-                    href={waLink('Hello BSS Residency! I would like to make a booking.')}
+                    href={waLink('Hello BSS Residency! I would like to make a booking.', CONTACT.whatsapp1)}
                     target="_blank"
                     rel="noreferrer"
                     className="btn-wa-inline"
                   >
-                    <i className="fa-brands fa-whatsapp"></i> WhatsApp
+                    <i className="fa-brands fa-whatsapp"></i> WA (Primary)
+                  </a>
+                  <a
+                    href={waLink('Hello BSS Residency! I would like to make a booking.', CONTACT.whatsapp2)}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="btn-wa-inline secondary"
+                  >
+                    <i className="fa-brands fa-whatsapp"></i> WA (Secondary)
                   </a>
                   <a
                     href={`https://instagram.com/${CONTACT.instagram}`}

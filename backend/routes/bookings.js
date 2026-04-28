@@ -6,6 +6,7 @@ const Room = require('../models/Room');
 const Guest = require('../models/Guest');
 const Review = require('../models/Review');
 const Notification = require('../models/Notification');
+const { sendBookingReceivedEmail, sendNewBookingAdminAlert } = require('../utils/emailService');
 
 // POST /api/bookings — Create new booking
 router.post('/', async (req, res) => {
@@ -57,6 +58,10 @@ router.post('/', async (req, res) => {
     } catch (notifErr) {
       console.error('Error creating notification:', notifErr);
     }
+
+    // 📧 Send Email Notifications (non-blocking)
+    sendBookingReceivedEmail(booking).catch(err => console.error('Email to customer failed:', err));
+    sendNewBookingAdminAlert(booking).catch(err => console.error('Email to admin failed:', err));
 
     // Automation: Update Guest database
     try {
@@ -186,6 +191,59 @@ router.post('/public/reviews', async (req, res) => {
     }
 
     res.status(201).json({ success: true, message: 'Review submitted! Thank you.', review });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// POST /api/bookings/:id/checkin — Online Check-in submission
+router.post('/:id/checkin', async (req, res) => {
+  try {
+    const id = req.params.id;
+    let booking = await Booking.findOne({ bookingId: id });
+    if (!booking && mongoose.Types.ObjectId.isValid(id)) {
+      booking = await Booking.findById(id);
+    }
+    if (!booking) {
+      return res.status(404).json({ success: false, message: 'Booking not found.' });
+    }
+    if (booking.checkedInOnline) {
+      return res.status(400).json({ success: false, message: 'You have already completed online check-in.' });
+    }
+
+    const {
+      fullName, age, gender, address, city, state, pincode,
+      idType, idNumber, idProofImage,
+      numberOfGuests, guestNames, vehicleNumber, specialRequests
+    } = req.body;
+
+    if (!fullName || !idType || !idNumber) {
+      return res.status(400).json({ success: false, message: 'Name, ID type and ID number are required.' });
+    }
+
+    booking.checkedInOnline = true;
+    booking.checkinData = {
+      fullName, age, gender, address, city, state, pincode,
+      idType, idNumber, idProofImage: idProofImage || '',
+      numberOfGuests: numberOfGuests || booking.guests,
+      guestNames: guestNames || [],
+      vehicleNumber: vehicleNumber || '',
+      specialRequests: specialRequests || '',
+      checkinTime: new Date(),
+    };
+
+    await booking.save();
+
+    // Create Notification for admin
+    try {
+      await new Notification({
+        title: '🧾 Online Check-in Completed',
+        message: `${booking.name} has completed online check-in for ${booking.roomType}.`,
+        type: 'booking',
+      }).save();
+    } catch (e) { /* silent */ }
+
+    res.json({ success: true, message: 'Online check-in completed successfully!', booking });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }

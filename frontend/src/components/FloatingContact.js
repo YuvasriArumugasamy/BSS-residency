@@ -1,12 +1,12 @@
 import React from 'react';
-import { waLink } from '../constants';
+import { waLink, WA_TEMPLATES } from '../constants';
 import './FloatingContact.css';
 
 export default function FloatingContact() {
   return (
     <div className="floating-contact">
       <a
-        href={waLink('Hello BSS Residency! I would like to make a booking.')}
+        href={WA_TEMPLATES.getWelcome()}
         target="_blank"
         rel="noreferrer"
         className="float-btn float-wa"

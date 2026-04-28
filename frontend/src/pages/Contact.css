@@ -94,6 +94,8 @@
   transition: all 0.3s;
 }
 .c-link:hover { text-decoration: underline; transform: translateX(4px); }
+.wa-link-text { color: #25D366 !important; margin-top: 0.25rem; font-weight: 700; }
+.wa-link-text:hover { color: #1ebe59 !important; }
 .btn-wa-inline {
   display: inline-block;
   background: #25D366; color: white;

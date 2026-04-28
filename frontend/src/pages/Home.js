@@ -8,7 +8,7 @@ import roomGal1 from '../assets/room-ac-1.jpg';
 import roomGal2 from '../assets/room-gallery-2.jpg';
 import roomGal3 from '../assets/room-gallery-3.jpg';
 import roomGal4 from '../assets/room-gallery-4.jpg';
-import { AMENITIES, ROOMS, CONTACT, waLink } from '../constants';
+import { AMENITIES, ROOMS, CONTACT, waLink, WA_TEMPLATES } from '../constants';
 import api from '../api/axios';
 import './Home.css';
 
@@ -180,7 +180,29 @@ export default function Home() {
                   <span className="r-price-amount">{r.price.toLocaleString('en-IN')}</span>
                   <span className="r-price-unit">/ night</span>
                 </div>
-                <Link to="/booking" className="r-book-btn">Book This Room</Link>
+                <div className="r-actions-home">
+                  <Link to="/booking" className="r-book-btn">Book Now</Link>
+                  <div className="r-wa-group-home">
+                    <a 
+                      href={WA_TEMPLATES.getRoomInfo(r.name, r.price, CONTACT.whatsapp1)} 
+                      target="_blank" 
+                      rel="noreferrer" 
+                      className="r-wa-btn"
+                      title="WhatsApp Number 1"
+                    >
+                      <i className="fa-brands fa-whatsapp"></i>
+                    </a>
+                    <a 
+                      href={WA_TEMPLATES.getRoomInfo(r.name, r.price, CONTACT.whatsapp2)} 
+                      target="_blank" 
+                      rel="noreferrer" 
+                      className="r-wa-btn secondary"
+                      title="WhatsApp Number 2"
+                    >
+                      <i className="fa-brands fa-whatsapp"></i>
+                    </a>
+                  </div>
+                </div>
               </div>
             ))}
           </div>

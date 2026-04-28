@@ -37,6 +37,26 @@ const bookingSchema = new mongoose.Schema(
       enum: ['Pending', 'Confirmed', 'Cancelled', 'Checked-out'],
       default: 'Pending',
     },
+
+    // Online Check-in Fields
+    checkedInOnline: { type: Boolean, default: false },
+    checkinData: {
+      fullName: { type: String, default: '' },
+      age: { type: Number },
+      gender: { type: String, enum: ['Male', 'Female', 'Other', ''], default: '' },
+      address: { type: String, default: '' },
+      city: { type: String, default: '' },
+      state: { type: String, default: '' },
+      pincode: { type: String, default: '' },
+      idType: { type: String, enum: ['Aadhaar', 'Driving License', 'Passport', 'Voter ID', ''], default: '' },
+      idNumber: { type: String, default: '' },
+      idProofImage: { type: String, default: '' }, // base64 image
+      numberOfGuests: { type: Number, default: 1 },
+      guestNames: [{ type: String }],
+      vehicleNumber: { type: String, default: '' },
+      specialRequests: { type: String, default: '' },
+      checkinTime: { type: Date },
+    },
   },
   { timestamps: true }
 );

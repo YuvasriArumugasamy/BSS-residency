@@ -6,6 +6,7 @@ const Guest = require('../models/Guest');
 const Payment = require('../models/Payment');
 const Review = require('../models/Review');
 const Notification = require('../models/Notification');
+const { sendBookingConfirmedEmail, sendBookingCancelledEmail } = require('../utils/emailService');
 
 const WHATSAPP_NUMBER = process.env.WHATSAPP_NUMBER || '919344989393';
 
@@ -117,8 +118,12 @@ router.patch('/bookings/:id', adminAuth, async (req, res) => {
     let waLink = null;
     if (status === 'Confirmed') {
       waLink = buildWaConfirmLink(booking);
+      // 📧 Auto-send confirmation email to customer
+      sendBookingConfirmedEmail(booking).catch(err => console.error('Confirm email failed:', err));
     } else if (status === 'Cancelled') {
       waLink = buildWaCancelLink(booking, cancellationReason);
+      // 📧 Auto-send cancellation email to customer
+      sendBookingCancelledEmail(booking, cancellationReason).catch(err => console.error('Cancel email failed:', err));
     }
 
     res.json({ success: true, booking, waLink });

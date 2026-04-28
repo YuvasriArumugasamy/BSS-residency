@@ -4,7 +4,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area
 } from 'recharts';
 import {
-  LayoutDashboard, Bed, CalendarCheck, Users, CreditCard, PieChart, Settings, MessageSquare, Bell, LogOut, ExternalLink, RefreshCcw, Plus, Trash2, Edit3, CheckCircle, XCircle, Clock, X, MessageCircle
+  LayoutDashboard, Bed, CalendarCheck, Users, CreditCard, PieChart, Settings, MessageSquare, Bell, LogOut, ExternalLink, RefreshCcw, Plus, Trash2, Edit3, CheckCircle, XCircle, Clock, X, MessageCircle, ClipboardCheck
 } from 'lucide-react';
 import api from '../api/axios';
 import './Admin.css';
@@ -213,7 +213,7 @@ const RoomManagement = ({ rooms, onAddClick, onDeleteRoom, onUpdateRoom }) => {
   );
 };
 
-const BookingManagement = ({ bookings = [], onConfirm, onCancel, onWhatsApp, onUpdateRoomNumber, onDelete, onAddPayment, formatDate }) => {
+const BookingManagement = ({ bookings = [], onConfirm, onCancel, onWhatsApp, onUpdateRoomNumber, onDelete, onAddPayment, onViewCheckin, formatDate }) => {
   const [filter, setFilter] = React.useState('All');
 
   const safeBookings = Array.isArray(bookings) ? bookings : [];
@@ -295,6 +295,11 @@ const BookingManagement = ({ bookings = [], onConfirm, onCancel, onWhatsApp, onU
                 </td>
                 <td>
                   <span className={`status-pill status-${b.status?.replace(' ', '-') || 'Pending'}`}>{b.status || 'Pending'}</span>
+                  {b.checkedInOnline && (
+                    <span style={{ display: 'block', marginTop: '4px', fontSize: '0.68rem', background: '#d1fae5', color: '#065f46', borderRadius: '4px', padding: '2px 6px', fontWeight: 700 }}>
+                      🧾 Online CI Done
+                    </span>
+                  )}
                 </td>
                 <td>
                   <div className="admin-actions-container">
@@ -319,6 +324,11 @@ const BookingManagement = ({ bookings = [], onConfirm, onCancel, onWhatsApp, onU
 
                     {/* Secondary Utilities */}
                     <div className="action-footer">
+                      {b.checkedInOnline && (
+                        <button className="action-btn-main checkin" onClick={() => onViewCheckin(b)} style={{ background: '#065f46', borderColor: '#065f46', color: '#fff' }}>
+                          <ClipboardCheck size={15} /> View Check-in
+                        </button>
+                      )}
                       <button className="action-btn-main payment" onClick={() => onAddPayment(b)}>
                         <CreditCard size={15} /> Add Payment
                       </button>
@@ -540,6 +550,10 @@ export default function AdminDashboard() {
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [paymentForm, setPaymentForm] = useState({ guestName: '', bookingId: '', amount: '', method: 'Cash', status: 'Paid' });
   const [paymentLoading, setPaymentLoading] = useState(false);
+  
+  // Check-in Modal State
+  const [isCheckinModalOpen, setIsCheckinModalOpen] = useState(false);
+  const [selectedCheckin, setSelectedCheckin] = useState(null);
 
   const fetchData = useCallback(async () => {
     if (!auth) return;
@@ -737,6 +751,11 @@ export default function AdminDashboard() {
     setIsPaymentModalOpen(true);
   };
 
+  const openCheckinModal = (booking) => {
+    setSelectedCheckin(booking);
+    setIsCheckinModalOpen(true);
+  };
+
   const handlePaymentSubmit = async (e) => {
     e.preventDefault();
     if (!paymentForm.amount || Number(paymentForm.amount) <= 0) {
@@ -812,6 +831,7 @@ export default function AdminDashboard() {
         onUpdateRoomNumber={handleUpdateRoomNumber}
         onDelete={handleDeleteBooking}
         onAddPayment={openAddPaymentModal}
+        onViewCheckin={openCheckinModal}
         formatDate={formatDate}
       />;
       case 'guests':
@@ -1007,6 +1027,73 @@ export default function AdminDashboard() {
             {paymentLoading ? 'Saving...' : '💾 Record Payment'}
           </button>
         </form>
+      </Modal>
+      {/* Online Check-in Modal */}
+      <Modal
+        title="🧾 Online Check-in Details"
+        isOpen={isCheckinModalOpen}
+        onClose={() => setIsCheckinModalOpen(false)}
+      >
+        {selectedCheckin && selectedCheckin.checkinData && (
+          <div className="checkin-details-modal">
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '1.5rem' }}>
+              <div>
+                <label style={{ fontSize: '0.75rem', color: '#888', textTransform: 'uppercase' }}>Full Name</label>
+                <div style={{ fontWeight: 600, fontSize: '1.1rem' }}>{selectedCheckin.checkinData.fullName}</div>
+              </div>
+              <div>
+                <label style={{ fontSize: '0.75rem', color: '#888', textTransform: 'uppercase' }}>Age / Gender</label>
+                <div style={{ fontWeight: 600 }}>{selectedCheckin.checkinData.age || '—'} / {selectedCheckin.checkinData.gender || '—'}</div>
+              </div>
+              <div style={{ gridColumn: '1 / -1' }}>
+                <label style={{ fontSize: '0.75rem', color: '#888', textTransform: 'uppercase' }}>Address</label>
+                <div style={{ fontWeight: 600 }}>
+                  {selectedCheckin.checkinData.address}, {selectedCheckin.checkinData.city}, {selectedCheckin.checkinData.state} - {selectedCheckin.checkinData.pincode}
+                </div>
+              </div>
+              <div>
+                <label style={{ fontSize: '0.75rem', color: '#888', textTransform: 'uppercase' }}>ID Proof ({selectedCheckin.checkinData.idType})</label>
+                <div style={{ fontWeight: 600, color: 'var(--admin-primary)' }}>{selectedCheckin.checkinData.idNumber}</div>
+              </div>
+              <div>
+                <label style={{ fontSize: '0.75rem', color: '#888', textTransform: 'uppercase' }}>Vehicle Number</label>
+                <div style={{ fontWeight: 600 }}>{selectedCheckin.checkinData.vehicleNumber || 'No vehicle'}</div>
+              </div>
+              <div>
+                <label style={{ fontSize: '0.75rem', color: '#888', textTransform: 'uppercase' }}>Additional Guests</label>
+                <div style={{ fontWeight: 600 }}>
+                  {selectedCheckin.checkinData.numberOfGuests} Guests Total
+                  {selectedCheckin.checkinData.guestNames?.length > 0 && (
+                    <div style={{ fontSize: '0.85rem', fontWeight: 400, color: '#666', marginTop: '4px' }}>
+                      Names: {selectedCheckin.checkinData.guestNames.join(', ')}
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div style={{ gridColumn: '1 / -1' }}>
+                <label style={{ fontSize: '0.75rem', color: '#888', textTransform: 'uppercase' }}>Special Requests</label>
+                <div style={{ fontStyle: 'italic', color: '#444' }}>{selectedCheckin.checkinData.specialRequests || 'None'}</div>
+              </div>
+            </div>
+
+            {selectedCheckin.checkinData.idProofImage && (
+              <div style={{ borderTop: '1px solid #eee', paddingTop: '1rem' }}>
+                <label style={{ fontSize: '0.75rem', color: '#888', textTransform: 'uppercase', display: 'block', marginBottom: '0.5rem' }}>ID Proof Image</label>
+                <img 
+                  src={selectedCheckin.checkinData.idProofImage} 
+                  alt="ID Proof" 
+                  style={{ width: '100%', maxHeight: '400px', objectFit: 'contain', borderRadius: '8px', border: '1px solid #ddd' }} 
+                />
+              </div>
+            )}
+            
+            <div style={{ marginTop: '1.5rem', textAlign: 'right' }}>
+              <button className="admin-btn admin-btn-primary" onClick={() => setIsCheckinModalOpen(false)}>
+                Close Details
+              </button>
+            </div>
+          </div>
+        )}
       </Modal>
     </div>
   );

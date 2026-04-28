@@ -332,6 +332,19 @@ export default function BookingStatus() {
 
             {/* Actions */}
             <div className="bstatus-actions">
+              {booking.status === 'Confirmed' && !booking.checkedInOnline && (
+                <Link
+                  to={`/checkin/${booking.bookingId || booking._id}`}
+                  className="btn-checkin-online"
+                >
+                  🧾 Complete Online Check-in
+                </Link>
+              )}
+              {booking.checkedInOnline && (
+                <div className="checkin-done-badge">
+                  ✅ Online Check-in Done
+                </div>
+              )}
               {booking.status === 'Pending' && (
                 <a
                   href={waLink(waConfirmFollowUp)}

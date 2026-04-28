@@ -4,7 +4,7 @@ import roomAc1 from '../assets/room-ac-1.jpg';
 import roomAc2 from '../assets/room-ac-2.jpg';
 import roomAc3 from '../assets/room-ac-3.jpg';
 import roomFamily from '../assets/room-family.jpg';
-import { ROOMS, waLink } from '../constants';
+import { ROOMS, waLink, WA_TEMPLATES, CONTACT } from '../constants';
 import './Rooms.css';
 
 const imgMap = {
@@ -86,13 +86,24 @@ export default function Rooms() {
                   <span className="r-price-inline-amt">₹{room.price.toLocaleString('en-IN')}</span>
                   <span className="r-price-inline-unit">/ night</span>
                 </div>
-                <a
-                  href={waLink(`Hello! I would like to book a ${room.name} at BSS Residency.`)}
-                  className="btn-wa-sm"
-                  target="_blank" rel="noreferrer"
-                >
-                  <i className="fa-brands fa-whatsapp"></i> WhatsApp
-                </a>
+                <div className="wa-btns-group">
+                  <a
+                    href={WA_TEMPLATES.getRoomInfo(room.name, room.price, CONTACT.whatsapp1)}
+                    className="btn-wa-sm"
+                    target="_blank" rel="noreferrer"
+                    title="Chat with Primary Number"
+                  >
+                    <i className="fa-brands fa-whatsapp"></i> WA 1
+                  </a>
+                  <a
+                    href={WA_TEMPLATES.getRoomInfo(room.name, room.price, CONTACT.whatsapp2)}
+                    className="btn-wa-sm secondary"
+                    target="_blank" rel="noreferrer"
+                    title="Chat with Secondary Number"
+                  >
+                    <i className="fa-brands fa-whatsapp"></i> WA 2
+                  </a>
+                </div>
                 <Link to="/booking" className="btn-primary-sm">Book Online</Link>
               </div>
             </div>

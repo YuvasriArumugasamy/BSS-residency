@@ -3,7 +3,9 @@
 export const CONTACT = {
   phonePrimary: '+91 88385 99755',
   phoneSecondary: '+91 93449 89393',
-  whatsapp: '919344989393', // for wa.me links
+  whatsapp1: '918838599755', // Primary
+  whatsapp2: '919344989393', // Secondary
+  whatsapp: '918838599755', // Default for legacy support
   instagram: 'coutrallam_bss_residency',
   addressLine1: 'Bus Stand, Near Anna Statue',
   addressLine2: 'Courtallam, Tamil Nadu – 627 802',
@@ -110,5 +112,13 @@ export const AMENITIES = [
   { icon: '🚿', label: '24hr Hot Water' },
 ];
 
-export const waLink = (text = 'Hello BSS Residency!') =>
-  `https://wa.me/${CONTACT.whatsapp}?text=${encodeURIComponent(text)}`;
+export const waLink = (text = 'Hello BSS Residency!', num = CONTACT.whatsapp) =>
+  `https://wa.me/${num}?text=${encodeURIComponent(text)}`;
+
+// WhatsApp Automation Helpers
+export const WA_TEMPLATES = {
+  getWelcome: (num) => waLink('Hi! I want to know more about room details and availability. 🙏', num),
+  getLocation: (num) => waLink(`Hello BSS Residency! 🙏\nPlease send me the exact location of the lodge.\n\nOur Address:\n${CONTACT.addressLine1}, ${CONTACT.addressLine2}\nMap: ${MAP.directUrl}`, num),
+  getRoomInfo: (roomName, price, num) => waLink(`Hello BSS Residency! 🙏\n\nI am interested in the *${roomName}* room.\nPrice: ₹${price}/night\n\nPlease let me know the availability!`, num),
+  getBookingHelp: (num) => waLink('Hi! I need help with my booking. Can you please assist?', num),
+};
