@@ -60,62 +60,71 @@ mongoose
       const Room = require('./models/Room');
       const Guest = require('./models/Guest');
       const Booking = require('./models/Booking');
+      const Payment = require('./models/Payment');
       
-      const count = await Room.countDocuments();
-      if (count === 0) {
-        console.log('Database empty, seeding initial data...');
+      const bookingCount = await Booking.countDocuments();
+      if (bookingCount === 0) {
+        console.log('Bookings empty, seeding full initial data...');
         
-        // 1. Create Rooms
-        const rooms = [];
-        let roomNum = 1;
-        for (let i = 0; i < 13; i++) {
-            rooms.push({
-                roomNumber: (roomNum++).toString(),
-                type: 'AC Double Bed',
-                price: 1500,
-                status: 'Available',
-                amenities: ['TV', 'Hot Water', 'WiFi']
-            });
+        // 1. Create Rooms (if not already there)
+        const roomCount = await Room.countDocuments();
+        let seededRooms = [];
+        if (roomCount === 0) {
+            const rooms = [];
+            let roomNum = 1;
+            for (let i = 0; i < 13; i++) {
+                rooms.push({ roomNumber: (roomNum++).toString(), type: 'AC Double Bed', price: 1500, status: 'Available', amenities: ['TV', 'Hot Water', 'WiFi'] });
+            }
+            rooms.push({ roomNumber: (roomNum++).toString(), type: 'Four Bed A/C', price: 2000, status: 'Available', amenities: ['TV', 'Hot Water', 'WiFi'] });
+            for (let i = 0; i < 6; i++) {
+                rooms.push({ roomNumber: (roomNum++).toString(), type: 'Four Bed', price: 2500, status: 'Available', amenities: ['TV', 'Hot Water', 'WiFi'] });
+            }
+            seededRooms = await Room.insertMany(rooms);
+        } else {
+            seededRooms = await Room.find();
         }
-        rooms.push({ roomNumber: (roomNum++).toString(), type: 'Three Bed', price: 2000, status: 'Available', amenities: ['TV', 'Hot Water', 'WiFi'] });
-        for (let i = 0; i < 6; i++) {
-            rooms.push({
-                roomNumber: (roomNum++).toString(),
-                type: 'Four Bed',
-                price: 2500,
-                status: 'Available',
-                amenities: ['TV', 'Hot Water', 'WiFi']
-            });
-        }
-        await Room.insertMany(rooms);
 
         // 2. Create Guests
-        const guestData = [
+        const guests = await Guest.insertMany([
             { name: 'Suresh Kumar', phone: '9876543210', email: 'suresh@example.com', loyaltyLevel: 'Regular', totalStays: 5 },
             { name: 'Anand Raj', phone: '9876543211', email: 'anand@example.com', loyaltyLevel: 'New', totalStays: 1 },
-            { name: 'Divya Patel', phone: '9876543212', email: 'divya@example.com', loyaltyLevel: 'VIP', totalStays: 12 }
-        ];
-        await Guest.insertMany(guestData);
+            { name: 'Divya Patel', phone: '9876543212', email: 'divya@example.com', loyaltyLevel: 'VIP', totalStays: 12 },
+            { name: 'Nisha Verma', phone: '9876543213', email: 'nisha@example.com', loyaltyLevel: 'Regular', totalStays: 3 }
+        ]);
 
-        // 3. Create Bookings
+        // 3. Create Bookings (with valid enums and IDs)
         const today = new Date();
-        const bookings = [
+        const seededBookings = await Booking.insertMany([
             {
-                name: 'Suresh Kumar', phone: '9876543210', roomType: 'AC Double Bed',
+                bookingId: 'BSS-1001', name: 'Suresh Kumar', phone: '9876543210', roomType: 'AC Double Bed',
                 checkIn: new Date(today.getFullYear(), today.getMonth(), today.getDate()),
                 checkOut: new Date(today.getFullYear(), today.getMonth(), today.getDate() + 2),
-                guests: 2, status: 'Confirmed', createdAt: new Date(Date.now() - 86400000)
+                guests: 2, status: 'Confirmed', roomNumber: '1', createdAt: new Date(Date.now() - 86400000)
             },
             {
-                name: 'Anand Raj', phone: '9876543211', roomType: 'Three Bed',
+                bookingId: 'BSS-1002', name: 'Anand Raj', phone: '9876543211', roomType: 'Four Bed',
                 checkIn: new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1),
                 checkOut: new Date(today.getFullYear(), today.getMonth(), today.getDate() + 3),
                 guests: 1, status: 'Pending'
+            },
+            {
+                bookingId: 'BSS-1003', name: 'Divya Patel', phone: '9876543212', roomType: 'Four Bed A/C',
+                checkIn: new Date(today.getFullYear(), today.getMonth(), today.getDate() - 5),
+                checkOut: new Date(today.getFullYear(), today.getMonth(), today.getDate() - 3),
+                guests: 4, status: 'Checked-out', roomNumber: '14'
             }
-        ];
-        await Booking.insertMany(bookings);
+        ]);
 
-        console.log('Auto-seed complete: Database populated.');
+        // 4. Create Payments (to show Revenue)
+        await Payment.insertMany([
+            { guestName: 'Suresh Kumar', bookingId: seededBookings[0]._id, amount: 3000, method: 'UPI', status: 'Paid' },
+            { guestName: 'Divya Patel', bookingId: seededBookings[2]._id, amount: 5000, method: 'Card', status: 'Paid' }
+        ]);
+
+        // Update room status for confirmed booking
+        await Room.findOneAndUpdate({ roomNumber: '1' }, { status: 'Occupied' });
+
+        console.log('Auto-seed complete: Full data populated.');
       }
     } catch (seedErr) {
       console.error('Auto-seed error:', seedErr);
