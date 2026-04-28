@@ -543,7 +543,8 @@ export default function AdminDashboard() {
 
   const fetchData = useCallback(async () => {
     if (!auth) return;
-    setLoading(true);
+    // Only show loading spinner on initial load
+    if (!stats) setLoading(true);
     const headers = { username: auth.username, password: auth.password };
     try {
       const [statsRes, bookingsRes, roomsRes, guestsRes, paymentsRes, reviewsRes, notifRes] = await Promise.all([
@@ -596,12 +597,11 @@ export default function AdminDashboard() {
       }
       prevBookingCountRef.current = currentCount;
     } catch (err) {
-      console.error(err);
-      navigate('/admin/login');
+      console.error('Fetch error:', err);
     } finally {
       setLoading(false);
     }
-  }, [auth, navigate]);
+  }, [auth, stats]);
 
   useEffect(() => {
     if (activeTab === 'notifications') {
@@ -629,10 +629,10 @@ export default function AdminDashboard() {
     }
   }, []);
 
-  // Polling: Auto refresh every 5 seconds
+  // Polling: Auto refresh every 20 seconds
   useEffect(() => {
     fetchData();
-    const interval = setInterval(fetchData, 5000); // Poll every 5 seconds for "real-time" feel
+    const interval = setInterval(fetchData, 20000); // 20 seconds
     return () => clearInterval(interval);
   }, [fetchData]);
 
