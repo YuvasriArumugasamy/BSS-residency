@@ -629,12 +629,11 @@ export default function AdminDashboard() {
     }
   }, []);
 
-  // Polling: Auto refresh every 30 seconds
+  // Polling: Auto refresh every 5 seconds
   useEffect(() => {
-    const timer = setInterval(() => {
-      fetchData();
-    }, 30000); // 30 seconds
-    return () => clearInterval(timer);
+    fetchData();
+    const interval = setInterval(fetchData, 5000); // Poll every 5 seconds for "real-time" feel
+    return () => clearInterval(interval);
   }, [fetchData]);
 
   const handleRoomSubmit = async (e) => {
