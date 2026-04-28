@@ -59,13 +59,16 @@ mongoose
     // Auto-seed if database is empty
     try {
       const Room = require('./models/Room');
+      const Guest = require('./models/Guest');
+      const Booking = require('./models/Booking');
+      
       const count = await Room.countDocuments();
       if (count === 0) {
-        console.log('Database empty, seeding initial rooms...');
+        console.log('Database empty, seeding initial data...');
+        
+        // 1. Create Rooms
         const rooms = [];
         let roomNum = 1;
-        
-        // 13 Double Bed
         for (let i = 0; i < 13; i++) {
             rooms.push({
                 roomNumber: (roomNum++).toString(),
@@ -75,15 +78,7 @@ mongoose
                 amenities: ['TV', 'Hot Water', 'WiFi']
             });
         }
-        // 1 Three Bed
-        rooms.push({
-            roomNumber: (roomNum++).toString(),
-            type: 'Three Bed',
-            price: 2000,
-            status: 'Available',
-            amenities: ['TV', 'Hot Water', 'WiFi']
-        });
-        // 6 Four Bed
+        rooms.push({ roomNumber: (roomNum++).toString(), type: 'Three Bed', price: 2000, status: 'Available', amenities: ['TV', 'Hot Water', 'WiFi'] });
         for (let i = 0; i < 6; i++) {
             rooms.push({
                 roomNumber: (roomNum++).toString(),
@@ -94,7 +89,34 @@ mongoose
             });
         }
         await Room.insertMany(rooms);
-        console.log('Auto-seed complete: Rooms created.');
+
+        // 2. Create Guests
+        const guestData = [
+            { name: 'Suresh Kumar', phone: '9876543210', email: 'suresh@example.com', loyaltyLevel: 'Regular', totalStays: 5 },
+            { name: 'Anand Raj', phone: '9876543211', email: 'anand@example.com', loyaltyLevel: 'New', totalStays: 1 },
+            { name: 'Divya Patel', phone: '9876543212', email: 'divya@example.com', loyaltyLevel: 'VIP', totalStays: 12 }
+        ];
+        await Guest.insertMany(guestData);
+
+        // 3. Create Bookings
+        const today = new Date();
+        const bookings = [
+            {
+                name: 'Suresh Kumar', phone: '9876543210', roomType: 'AC Double Bed',
+                checkIn: new Date(today.getFullYear(), today.getMonth(), today.getDate()),
+                checkOut: new Date(today.getFullYear(), today.getMonth(), today.getDate() + 2),
+                guests: 2, status: 'Confirmed', createdAt: new Date(Date.now() - 86400000)
+            },
+            {
+                name: 'Anand Raj', phone: '9876543211', roomType: 'Three Bed',
+                checkIn: new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1),
+                checkOut: new Date(today.getFullYear(), today.getMonth(), today.getDate() + 3),
+                guests: 1, status: 'Pending'
+            }
+        ];
+        await Booking.insertMany(bookings);
+
+        console.log('Auto-seed complete: Database populated.');
       }
     } catch (seedErr) {
       console.error('Auto-seed error:', seedErr);
