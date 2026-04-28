@@ -6,25 +6,24 @@ require('dotenv').config();
 const bookingRoutes = require('./routes/bookings');
 const adminRoutes = require('./routes/admin');
 
+// Models (Pre-load for consistency)
+require('./models/Room');
+require('./models/Guest');
+require('./models/Booking');
+require('./models/Payment');
+
 const app = express();
 
 // Middleware
 const allowedOrigins = [
   process.env.FRONTEND_URL,
+  'https://bss-residency.vercel.app',
   'http://localhost:3000'
 ].filter(Boolean);
 
 app.use(cors({
   origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
-    
-    if (
-      allowedOrigins.indexOf(origin) !== -1 || 
-      process.env.NODE_ENV === 'development' ||
-      origin.includes('localhost') || 
-      origin.includes('127.0.0.1')
-    ) {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1 || origin.endsWith('.vercel.app')) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
