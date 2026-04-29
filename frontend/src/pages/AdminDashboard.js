@@ -877,7 +877,7 @@ export default function AdminDashboard() {
   const handleWhatsAppBooking = (booking) => {
     const checkIn = new Date(booking.checkIn).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
     const checkOut = new Date(booking.checkOut).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
-    const msg = `Hello ${booking.name}! 👋\n\nRegarding your booking at *BSS Residency*:\nID: ${booking._id}\nRoom: ${booking.roomType}\nCheck-in: ${checkIn}\nCheck-out: ${checkOut}\nStatus: ${booking.status}`;
+    const msg = `Hello ${booking.name}! 👋\n\nRegarding your booking at *BSS Residency*:\nID: ${booking.bookingId || booking._id}\nRoom: ${booking.roomType}\nCheck-in: ${checkIn}\nCheck-out: ${checkOut}\nStatus: ${booking.status}`;
     const phone = booking.phone.replace(/[^0-9]/g, '');
     const formatted = phone.startsWith('91') ? phone : `91${phone}`;
     window.open(`https://wa.me/${formatted}?text=${encodeURIComponent(msg)}`, '_blank');

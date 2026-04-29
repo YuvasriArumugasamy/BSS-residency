@@ -19,7 +19,7 @@ function buildWaConfirmLink(booking) {
     `✅ *BSS Residency – Booking Confirmed!*\n\n` +
     `Dear ${booking.name},\n\n` +
     `Your booking has been *confirmed*. Here are your details:\n\n` +
-    `🆔 Booking ID: *${booking._id}*\n` +
+    `🆔 Booking ID: *${booking.bookingId || booking._id}*\n` +
     `🛏️ Room: *${booking.roomType}*${booking.roomNumber ? ` (Room #${booking.roomNumber})` : ''}\n` +
     `📅 Check-in: *${checkIn}*\n` +
     `📅 Check-out: *${checkOut}*\n` +
@@ -37,7 +37,7 @@ function buildWaCancelLink(booking, reason = '') {
   const msg =
     `❌ *BSS Residency – Booking Update*\n\n` +
     `Dear ${booking.name},\n\n` +
-    `We regret to inform you that your booking (ID: *${booking._id}*) has been *cancelled*.\n` +
+    `We regret to inform you that your booking (ID: *${booking.bookingId || booking._id}*) has been *cancelled*.\n` +
     (reason ? `Reason: ${reason}\n` : '') +
     `\nPlease contact us to rebook or for further assistance.\n📞 +91 88385 99755`;
   const guestPhone = booking.phone.replace(/[^0-9]/g, '');
