@@ -1043,7 +1043,7 @@ export default function AdminDashboard() {
               <button onClick={fetchData} className="admin-btn admin-btn-outline header-btn">
                 <RefreshCcw size={16} /> <span>Refresh</span>
               </button>
-              <a href={process.env.REACT_APP_SITE_URL || 'http://localhost:3000'} target="_blank" rel="noreferrer" className="admin-btn admin-btn-primary header-btn">
+              <a href="/" target="_blank" rel="noreferrer" className="admin-btn admin-btn-primary header-btn">
                 <ExternalLink size={16} /> <span>View Site</span>
               </a>
             </div>
