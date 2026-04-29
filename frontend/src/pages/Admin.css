@@ -648,6 +648,13 @@
 /* Utility */
 .logo-gold { color: var(--admin-primary); }
 
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
 @media (max-width: 1024px) {
   .dash-layout { grid-template-columns: 1fr; }
   .admin-main { padding: 1.5rem; }
@@ -828,12 +835,6 @@
   justify-content: center;
 }
 
-.form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-  margin-bottom: 1.5rem;
-}
 
 .form-group {
   margin-bottom: 1.5rem;
