@@ -258,7 +258,6 @@ const BookingManagement = ({ bookings = [], period, setPeriod, onConfirm, onCanc
       </div>
       
       <div className="filter-tabs-row" style={{ marginBottom: '1.5rem', padding: '0 1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-        <span style={{ fontWeight: 700, fontSize: '0.85rem', color: '#475569', whiteSpace: 'nowrap' }}>Filter:</span>
         <div className="filter-tabs" style={{ 
           display: 'flex', 
           gap: '0.6rem', 
