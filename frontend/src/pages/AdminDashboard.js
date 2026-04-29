@@ -126,9 +126,18 @@ const DashboardOverview = ({ stats, bookings }) => {
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#eee" />
-                <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fontSize: 12 }} />
-                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12 }} />
-                <Tooltip />
+                <XAxis 
+                  dataKey="day" 
+                  axisLine={false} 
+                  tickLine={false} 
+                  tick={{ fontSize: 10 }} 
+                  interval="preserveStartEnd"
+                  minTickGap={10}
+                />
+                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10 }} />
+                <Tooltip 
+                  contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+                />
                 <Area type="monotone" dataKey="amount" stroke="var(--admin-primary)" fillOpacity={1} fill="url(#colorRev)" strokeWidth={3} />
               </AreaChart>
             </ResponsiveContainer>
@@ -224,22 +233,23 @@ const BookingManagement = ({ bookings = [], period, setPeriod, onConfirm, onCanc
   return (
     <div className="card">
       <div className="card-header" style={{ marginBottom: '1rem', flexWrap: 'wrap', gap: '1rem' }}>
-        <div className="filter-tabs" style={{ display: 'flex', gap: '0.5rem', background: '#f1f5f9', padding: '0.3rem', borderRadius: '8px' }}>
+        <div className="filter-tabs" style={{ display: 'flex', gap: '0.5rem', background: '#f1f5f9', padding: '0.3rem', borderRadius: '8px', flexWrap: 'wrap' }}>
           {['All', 'Pending', 'Confirmed', 'Cancelled'].map(tab => (
             <button
               key={tab}
               onClick={() => setFilter(tab)}
               style={{
-                padding: '0.5rem 1rem',
+                padding: '0.4rem 0.8rem',
                 border: 'none',
                 borderRadius: '6px',
-                fontSize: '0.85rem',
+                fontSize: '0.75rem',
                 fontWeight: 600,
                 cursor: 'pointer',
                 background: filter === tab ? 'white' : 'transparent',
                 color: filter === tab ? 'var(--admin-primary)' : '#64748b',
                 boxShadow: filter === tab ? '0 2px 4px rgba(0,0,0,0.05)' : 'none',
-                transition: 'all 0.2s'
+                transition: 'all 0.2s',
+                whiteSpace: 'nowrap'
               }}
             >
               {tab}
@@ -448,11 +458,17 @@ const Reports = ({ stats, period, setPeriod, selectedMonth, setSelectedMonth }) 
           </div>
           <div style={{ width: '100%', height: 300 }}>
             <ResponsiveContainer>
-              <BarChart data={stats?.byRoom || []}>
+              <BarChart data={stats?.byRoom || []} margin={{ bottom: 40 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#eee" />
-                <XAxis dataKey="_id" axisLine={false} tickLine={false} />
-                <YAxis axisLine={false} tickLine={false} allowDecimals={false} />
-                <Tooltip />
+                <XAxis 
+                  dataKey="_id" 
+                  axisLine={false} 
+                  tickLine={false} 
+                  tick={{ fontSize: 10, angle: -30, textAnchor: 'end' }} 
+                  interval={0}
+                />
+                <YAxis axisLine={false} tickLine={false} allowDecimals={false} tick={{ fontSize: 10 }} />
+                <Tooltip cursor={{ fill: 'rgba(212, 168, 87, 0.05)' }} />
                 <Bar dataKey="count" fill="var(--admin-primary)" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
