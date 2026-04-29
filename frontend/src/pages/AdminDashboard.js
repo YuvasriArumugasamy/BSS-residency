@@ -235,12 +235,13 @@ const BookingManagement = ({ bookings = [], period, setPeriod, onConfirm, onCanc
         <h3 style={{ margin: 0 }}>Booking Management</h3>
       </div>
       
-      <div className="filter-tabs-row" style={{ marginBottom: '1.5rem', padding: '0 1rem' }}>
+      <div className="filter-tabs-row" style={{ marginBottom: '1.5rem', padding: '0 1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+        <span style={{ fontWeight: 700, fontSize: '0.85rem', color: '#475569', whiteSpace: 'nowrap' }}>Filter:</span>
         <div className="filter-tabs" style={{ 
           display: 'flex', 
           gap: '0.6rem', 
           background: '#f1f5f9', 
-          padding: '0.5rem 0', 
+          padding: '0.5rem', 
           borderRadius: '10px', 
           overflowX: 'auto', 
           flexWrap: 'nowrap', 
@@ -252,7 +253,7 @@ const BookingManagement = ({ bookings = [], period, setPeriod, onConfirm, onCanc
           touchAction: 'pan-x',
           WebkitOverflowScrolling: 'touch'
         }}>
-          <div style={{ minWidth: '20px', height: '1px' }} /> {/* Spacer */}
+          <div style={{ minWidth: '30px', height: '1px' }} /> {/* Large Spacer */}
           {['All', 'Pending', 'Confirmed', 'Cancelled'].map((tab) => (
             <button
               key={tab}
@@ -275,7 +276,7 @@ const BookingManagement = ({ bookings = [], period, setPeriod, onConfirm, onCanc
               {tab}
             </button>
           ))}
-          <div style={{ minWidth: '20px', height: '1px' }} /> {/* Spacer */}
+          <div style={{ minWidth: '30px', height: '1px' }} />
         </div>
       </div>
         <div style={{ fontSize: '0.85rem', color: '#64748b', display: 'flex', alignItems: 'center', gap: '0.8rem', flexWrap: 'wrap' }}>
