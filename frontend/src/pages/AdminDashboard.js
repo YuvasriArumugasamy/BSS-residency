@@ -87,7 +87,7 @@ const DashboardOverview = ({ stats, bookings, period, setPeriod, selectedMonth, 
   if (!stats) return <div className="spinner" />;
 
   const statCards = [
-    { label: 'Total Revenue', value: `₹${stats.totalRevenue?.toLocaleString('en-IN') || 0}`, color: 'gold' },
+    { label: 'Total Rooms', value: stats.totalRooms, color: 'purple' },
     { label: 'Total Bookings', value: stats.totalBookings, color: 'blue' },
     { label: 'Available Rooms', value: stats.availableRooms, color: 'green' },
     { label: 'Today Check-ins', value: stats.checkInsToday, color: 'orange' },
@@ -99,7 +99,8 @@ const DashboardOverview = ({ stats, bookings, period, setPeriod, selectedMonth, 
   return (
     <div className="view-content fade-in">
       <div style={{ marginBottom: '1.5rem', display: 'flex', justifyContent: 'flex-end' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#fff', padding: '0.4rem 0.8rem', borderRadius: '8px', border: '1px solid #e2e8f0', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#fff', padding: '0.4rem 0.8rem', borderRadius: '8px', border: '1px solid #e2e8f0', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+          <Calendar size={16} color="#64748b" />
           <select
             value={period}
             onChange={(e) => setPeriod(e.target.value)}
@@ -108,7 +109,6 @@ const DashboardOverview = ({ stats, bookings, period, setPeriod, selectedMonth, 
             <option value="month">Month View</option>
             <option value="all">All Time</option>
           </select>
-
           {period === 'month' && (
             <input
               type="month"
@@ -122,12 +122,10 @@ const DashboardOverview = ({ stats, bookings, period, setPeriod, selectedMonth, 
 
       <div className="stats-grid">
         {statCards.map(s => (
-          <div key={s.label} className={`stat-card ${s.color}`}>
+          <div key={s.label} className="stat-card">
             <span className="stat-label">{s.label}</span>
-            <span className="stat-value" style={{ color: s.color === 'gold' ? '#b8860b' : 'inherit' }}>{s.value}</span>
-            <div style={{ fontSize: '0.75rem', color: '#68d391' }}>
-              {period === 'month' ? 'Selected month data' : 'Real-time overall'}
-            </div>
+            <span className="stat-value">{s.value}</span>
+            <div style={{ fontSize: '0.75rem', color: '#68d391' }}>Real-time update</div>
           </div>
         ))}
       </div>
@@ -1020,7 +1018,14 @@ export default function AdminDashboard() {
 
   const renderView = () => {
     switch (activeTab) {
-      case 'overview': return <DashboardOverview stats={stats} bookings={bookings} period={statsPeriod} setPeriod={setStatsPeriod} selectedMonth={selectedMonth} setSelectedMonth={setSelectedMonth} />;
+      case 'overview': return <DashboardOverview 
+        stats={stats} 
+        bookings={bookings} 
+        period={statsPeriod}
+        setPeriod={setStatsPeriod}
+        selectedMonth={selectedMonth}
+        setSelectedMonth={setSelectedMonth}
+      />;
       case 'rooms': return <RoomManagement rooms={rooms} onAddClick={openAddModal} onDeleteRoom={handleDeleteRoom} onUpdateRoom={openEditModal} />;
       case 'bookings': return <BookingManagement
         bookings={bookings}
