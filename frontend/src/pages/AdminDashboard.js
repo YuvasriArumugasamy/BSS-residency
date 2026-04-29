@@ -1004,7 +1004,7 @@ export default function AdminDashboard() {
           </div>
         );
       case 'payments': return <Payments payments={payments} totalRevenue={stats?.totalRevenue} />;
-      case 'reports': return <Reports stats={stats} period={statsPeriod} setPeriod={setStatsPeriod} />;
+      case 'reports': return <Reports stats={stats} period={statsPeriod} setPeriod={setStatsPeriod} selectedMonth={selectedMonth} setSelectedMonth={setSelectedMonth} />;
       case 'settings': return <SettingsView isSeason={isSeason} onToggleSeason={async (val) => {
         const headers = { username: auth.username, password: auth.password };
         try {
