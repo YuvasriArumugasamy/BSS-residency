@@ -50,7 +50,7 @@ export default function Footer() {
             </span>
           ))}
           <p className="footer-price-note">
-            Starts from ₹1,000 / night
+            Starts from <span className="currency-symbol">₹</span>1,000 / night
           </p>
         </div>
 

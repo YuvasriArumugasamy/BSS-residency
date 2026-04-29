@@ -109,12 +109,12 @@
 .footer-bottom {
   max-width: 1200px; margin: 0 auto;
   display: flex; justify-content: space-between; align-items: center;
-  padding: 1.5rem 0; font-size: 0.78rem; color: rgba(255,255,255,0.35);
+  padding: 1.5rem 0; font-size: 0.78rem; color: rgba(255,255,255,0.7);
   position: relative; z-index: 1;
   animation: fadeIn 0.8s ease 0.4s both;
 }
 .admin-link {
-  color: rgba(255,255,255,0.25); font-size: 0.72rem;
+  color: rgba(255,255,255,0.5); font-size: 0.72rem;
   transition: all 0.3s;
 }
 .admin-link:hover { color: var(--accent); }
@@ -139,6 +139,9 @@
   .footer-price-note {
     font-size: 0.85rem !important;
     margin-top: 0.5rem;
+  }
+  .footer-price-note .currency-symbol {
+    margin-right: 3px;
   }
   .footer-contact h4, .footer-links h4 {
     font-size: 0.9rem;
