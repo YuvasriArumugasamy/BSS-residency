@@ -301,7 +301,6 @@ const BookingManagement = ({ bookings = [], period, setPeriod, onConfirm, onCanc
             )}
           </div>
         </div>
-      </div>
 
       <div className="admin-table-wrap">
         <table className="admin-table">
