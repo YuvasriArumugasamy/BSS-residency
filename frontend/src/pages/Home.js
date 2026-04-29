@@ -401,7 +401,7 @@ export default function Home() {
           <div className="notice-modal fade-up">
             <button className="notice-close" onClick={closeNotice}>&times;</button>
             <div className="notice-header">
-              <h2 className="notice-title">Important Notice</h2>
+              <h2 className="notice-title">BSS Residency Special</h2>
             </div>
             <div className="notice-body">
               <h3 className="notice-sub">Enjoy the Best of Courtallam! 🌊</h3>
@@ -412,7 +412,7 @@ export default function Home() {
               </div>
             </div>
             <div className="notice-actions">
-              <button className="notice-btn" onClick={closeNotice}>OK, I UNDERSTAND</button>
+              <button className="notice-btn" onClick={closeNotice}>WELCOME BSS RESIDENCY</button>
             </div>
           </div>
         </div>
