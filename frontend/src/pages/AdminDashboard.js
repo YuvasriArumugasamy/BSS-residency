@@ -543,7 +543,7 @@ const SettingsView = ({ isSeason, onToggleSeason }) => (
       </div>
 
       <form className="settings-form" style={{ display: 'grid', gap: '1.5rem' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+        <div className="form-row" style={{ marginBottom: 0 }}>
           <div className="form-group">
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, fontSize: '0.85rem', color: '#475569' }}>Lodge Name</label>
             <input 
