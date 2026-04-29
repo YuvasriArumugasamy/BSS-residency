@@ -233,7 +233,7 @@ const BookingManagement = ({ bookings = [], period, setPeriod, onConfirm, onCanc
   return (
     <div className="card">
       <div className="card-header" style={{ marginBottom: '1rem', flexWrap: 'wrap', gap: '1rem' }}>
-        <div className="filter-tabs" style={{ display: 'flex', gap: '0.5rem', background: '#f1f5f9', padding: '0.3rem', borderRadius: '8px', overflowX: 'auto', flexWrap: 'nowrap', msOverflowStyle: 'none', scrollbarWidth: 'none' }}>
+        <div className="filter-tabs" style={{ display: 'flex', gap: '0.5rem', background: '#f1f5f9', padding: '0.4rem', borderRadius: '8px', overflowX: 'auto', flexWrap: 'nowrap', msOverflowStyle: 'none', scrollbarWidth: 'none', width: '100%' }}>
           {['All', 'Pending', 'Confirmed', 'Cancelled'].map(tab => (
             <button
               key={tab}
