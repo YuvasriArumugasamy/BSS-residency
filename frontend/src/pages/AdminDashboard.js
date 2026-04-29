@@ -240,31 +240,33 @@ const BookingManagement = ({ bookings = [], period, setPeriod, onConfirm, onCanc
           display: 'flex', 
           gap: '0.6rem', 
           background: '#f1f5f9', 
-          padding: '0.5rem', 
+          padding: '0.5rem 0', 
           borderRadius: '10px', 
           overflowX: 'auto', 
           flexWrap: 'nowrap', 
           msOverflowStyle: 'none', 
           scrollbarWidth: 'none', 
           width: '100%',
+          justifyContent: 'flex-start',
+          alignItems: 'center',
           touchAction: 'pan-x',
           WebkitOverflowScrolling: 'touch'
         }}>
-          {['All', 'Pending', 'Confirmed', 'Cancelled'].map((tab, idx) => (
+          <div style={{ minWidth: '20px', height: '1px' }} /> {/* Spacer */}
+          {['All', 'Pending', 'Confirmed', 'Cancelled'].map((tab) => (
             <button
               key={tab}
               onClick={() => setFilter(tab)}
               style={{
-                padding: '0.5rem 1.2rem',
-                marginLeft: idx === 0 ? '10px' : '0',
+                padding: '0.5rem 1.4rem',
                 border: 'none',
                 borderRadius: '8px',
-                fontSize: '0.8rem',
+                fontSize: '0.85rem',
                 fontWeight: 600,
                 cursor: 'pointer',
                 background: filter === tab ? 'white' : 'transparent',
                 color: filter === tab ? 'var(--admin-primary)' : '#64748b',
-                boxShadow: filter === tab ? '0 2px 4px rgba(0,0,0,0.08)' : 'none',
+                boxShadow: filter === tab ? '0 2px 5px rgba(0,0,0,0.1)' : 'none',
                 transition: 'all 0.2s',
                 whiteSpace: 'nowrap',
                 flexShrink: 0
@@ -273,6 +275,7 @@ const BookingManagement = ({ bookings = [], period, setPeriod, onConfirm, onCanc
               {tab}
             </button>
           ))}
+          <div style={{ minWidth: '20px', height: '1px' }} /> {/* Spacer */}
         </div>
       </div>
         <div style={{ fontSize: '0.85rem', color: '#64748b', display: 'flex', alignItems: 'center', gap: '0.8rem', flexWrap: 'wrap' }}>
