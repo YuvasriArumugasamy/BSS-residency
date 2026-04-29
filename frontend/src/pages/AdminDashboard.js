@@ -83,11 +83,11 @@ const Sidebar = ({ activeTab, setActiveTab, onLogout, username, unreadCount = 0,
 
 // --- VIEWS ---
 
-const DashboardOverview = ({ stats, bookings }) => {
+const DashboardOverview = ({ stats, bookings, period, setPeriod, selectedMonth, setSelectedMonth }) => {
   if (!stats) return <div className="spinner" />;
 
   const statCards = [
-    { label: 'Total Rooms', value: stats.totalRooms, color: 'purple' },
+    { label: 'Total Revenue', value: `₹${stats.totalRevenue?.toLocaleString('en-IN') || 0}`, color: 'gold' },
     { label: 'Total Bookings', value: stats.totalBookings, color: 'blue' },
     { label: 'Available Rooms', value: stats.availableRooms, color: 'green' },
     { label: 'Today Check-ins', value: stats.checkInsToday, color: 'orange' },
@@ -98,12 +98,36 @@ const DashboardOverview = ({ stats, bookings }) => {
 
   return (
     <div className="view-content fade-in">
+      <div style={{ marginBottom: '1.5rem', display: 'flex', justifyContent: 'flex-end' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#fff', padding: '0.4rem 0.8rem', borderRadius: '8px', border: '1px solid #e2e8f0', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
+          <select
+            value={period}
+            onChange={(e) => setPeriod(e.target.value)}
+            style={{ border: 'none', fontWeight: 600, color: '#475569', outline: 'none', cursor: 'pointer', fontSize: '0.85rem' }}
+          >
+            <option value="month">Month View</option>
+            <option value="all">All Time</option>
+          </select>
+
+          {period === 'month' && (
+            <input
+              type="month"
+              value={selectedMonth}
+              onChange={(e) => setSelectedMonth(e.target.value)}
+              style={{ border: 'none', borderLeft: '1px solid #eee', paddingLeft: '0.5rem', fontWeight: 600, color: 'var(--admin-primary)', outline: 'none', fontSize: '0.85rem' }}
+            />
+          )}
+        </div>
+      </div>
+
       <div className="stats-grid">
         {statCards.map(s => (
-          <div key={s.label} className="stat-card">
+          <div key={s.label} className={`stat-card ${s.color}`}>
             <span className="stat-label">{s.label}</span>
-            <span className="stat-value">{s.value}</span>
-            <div style={{ fontSize: '0.75rem', color: '#68d391' }}>Real-time update</div>
+            <span className="stat-value" style={{ color: s.color === 'gold' ? '#b8860b' : 'inherit' }}>{s.value}</span>
+            <div style={{ fontSize: '0.75rem', color: '#68d391' }}>
+              {period === 'month' ? 'Selected month data' : 'Real-time overall'}
+            </div>
           </div>
         ))}
       </div>
@@ -996,7 +1020,7 @@ export default function AdminDashboard() {
 
   const renderView = () => {
     switch (activeTab) {
-      case 'overview': return <DashboardOverview stats={stats} bookings={bookings} />;
+      case 'overview': return <DashboardOverview stats={stats} bookings={bookings} period={statsPeriod} setPeriod={setStatsPeriod} selectedMonth={selectedMonth} setSelectedMonth={setSelectedMonth} />;
       case 'rooms': return <RoomManagement rooms={rooms} onAddClick={openAddModal} onDeleteRoom={handleDeleteRoom} onUpdateRoom={openEditModal} />;
       case 'bookings': return <BookingManagement
         bookings={bookings}
