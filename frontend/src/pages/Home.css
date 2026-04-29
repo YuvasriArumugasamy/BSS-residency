@@ -32,7 +32,7 @@
 .hero-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(0, 0, 0, 0.78) 0%, rgba(0, 0, 0, 0.55) 100%);
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.82) 0%, rgba(0, 0, 0, 0.5) 100%);
 }
 
 .hero-content {
@@ -92,7 +92,7 @@
   line-height: 1.1;
   margin-bottom: 1rem;
   color: var(--white);
-  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.4);
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.6); /* Enhanced shadow */
   animation: fadeUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.5s both;
 }
 
@@ -109,11 +109,12 @@
 
 .hero-content p {
   font-size: 1.05rem;
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(255, 255, 255, 0.95);
   margin-bottom: 2.2rem;
   font-weight: 300;
   line-height: 1.6;
   animation: fadeUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.7s both;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.5);
 }
 
 .hero-btns {
@@ -648,7 +649,7 @@
 .r-price {
   display: flex;
   align-items: baseline;
-  gap: 0.2rem;
+  gap: 0.35rem; /* Increased gap to prevent overlap */
   margin: 0.6rem 0 0.3rem;
 }
 
@@ -656,6 +657,7 @@
   font-size: 1.1rem;
   color: var(--primary);
   font-weight: 600;
+  margin-right: 2px; /* Extra spacing for the symbol */
 }
 
 .r-price-amount {
@@ -1103,6 +1105,14 @@
     justify-content: center;
     border-radius: 8px;
     padding: 0.6rem;
+  }
+
+  .r-price-amount {
+    font-size: 1.75rem; /* Slightly smaller price on mobile */
+  }
+
+  .r-price-currency {
+    font-size: 1rem;
   }
 }
 
