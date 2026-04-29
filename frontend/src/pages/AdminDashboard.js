@@ -877,7 +877,16 @@ export default function AdminDashboard() {
   const handleWhatsAppBooking = (booking) => {
     const checkIn = new Date(booking.checkIn).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
     const checkOut = new Date(booking.checkOut).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
-    const msg = `Hello ${booking.name}! 👋\n\nRegarding your booking at *BSS Residency*:\nID: ${booking.bookingId || booking._id}\nRoom: ${booking.roomType}\nCheck-in: ${checkIn}\nCheck-out: ${checkOut}\nStatus: ${booking.status}`;
+    const msg = 
+      `✅ *BSS Residency – Booking Update*\n\n` +
+      `Dear ${booking.name},\n\n` +
+      `Regarding your booking (ID: *${booking.bookingId || booking._id}*):\n\n` +
+      `🛏️ Room: *${booking.roomType}*${booking.roomNumber ? ` (Room #${booking.roomNumber})` : ''}\n` +
+      `📅 Check-in: *${checkIn}*\n` +
+      `📅 Check-out: *${checkOut}*\n` +
+      `📊 Status: *${booking.status}*\n\n` +
+      `📍 BSS Residency, Bus Stand, Near Anna Statue, Courtallam – 627 802\n\n` +
+      `Thank you! 🙏`;
     const phone = booking.phone.replace(/[^0-9]/g, '');
     const formatted = phone.startsWith('91') ? phone : `91${phone}`;
     window.open(`https://wa.me/${formatted}?text=${encodeURIComponent(msg)}`, '_blank');
