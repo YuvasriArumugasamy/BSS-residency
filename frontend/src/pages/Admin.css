@@ -178,6 +178,10 @@
   overflow-x: hidden;
 }
 
+.filter-tabs::-webkit-scrollbar {
+  display: none;
+}
+
 .admin-mobile-header {
   display: none;
 }
