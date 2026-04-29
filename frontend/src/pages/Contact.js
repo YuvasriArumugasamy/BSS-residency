@@ -32,16 +32,6 @@ export default function Contact() {
                 >
                   Open in Google Maps →
                 </a>
-                <div className="wa-links-group">
-                  <a
-                    href={WA_TEMPLATES.getLocation(CONTACT.whatsapp)}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="c-link wa-link-text"
-                  >
-                    <i className="fa-brands fa-whatsapp"></i> Get Location on WhatsApp →
-                  </a>
-                </div>
               </div>
             </div>
 
