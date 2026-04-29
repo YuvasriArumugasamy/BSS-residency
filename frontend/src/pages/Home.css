@@ -865,6 +865,12 @@
   overflow: hidden;
 }
 
+@media (max-width: 768px) {
+  .carousel-container {
+    min-height: 250px;
+  }
+}
+
 .carousel-img {
   position: absolute;
   top: 0;
@@ -1063,6 +1069,16 @@
   .about-badge-box {
     bottom: 0.5rem;
     right: 0.5rem;
+  }
+
+  .showcase-section {
+    padding: 3rem 1rem;
+  }
+  .showcase-row {
+    gap: 1.5rem;
+  }
+  .showcase-text {
+    margin-bottom: 0.5rem;
   }
 
   .amenity {
