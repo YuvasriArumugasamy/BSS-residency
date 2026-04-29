@@ -243,7 +243,7 @@ const RoomManagement = ({ rooms, onAddClick, onDeleteRoom, onUpdateRoom }) => {
   );
 };
 
-const BookingManagement = ({ bookings = [], period, setPeriod, onConfirm, onCancel, onWhatsApp, onUpdateRoomNumber, onDelete, onAddPayment, onViewCheckin, formatDate }) => {
+const BookingManagement = ({ bookings = [], period, setPeriod, onConfirm, onCancel, onWhatsApp, onCheckOut, onUpdateRoomNumber, onDelete, onAddPayment, onViewCheckin, formatDate }) => {
   const [filter, setFilter] = React.useState('All');
 
   const safeBookings = Array.isArray(bookings) ? bookings : [];
@@ -276,7 +276,7 @@ const BookingManagement = ({ bookings = [], period, setPeriod, onConfirm, onCanc
           WebkitOverflowScrolling: 'touch'
         }}>
           <div style={{ minWidth: '30px', height: '1px' }} /> {/* Large Spacer */}
-          {['All', 'Pending', 'Confirmed', 'Cancelled'].map((tab) => (
+          {['All', 'Pending', 'Confirmed', 'Checked-out', 'Cancelled'].map((tab) => (
             <button
               key={tab}
               onClick={() => setFilter(tab)}
@@ -382,6 +382,12 @@ const BookingManagement = ({ bookings = [], period, setPeriod, onConfirm, onCanc
                       {b.status === 'Pending' && (
                         <button className="action-btn-main confirm" onClick={() => onConfirm(b._id, b)}>
                           <CheckCircle size={15} /> Confirm Booking
+                        </button>
+                      )}
+
+                      {b.status === 'Confirmed' && (
+                        <button className="action-btn-main confirm" onClick={() => onCheckOut(b._id, b)} style={{ background: '#6366f1', borderColor: '#6366f1', color: '#fff' }}>
+                          <LogOut size={15} /> Check-out
                         </button>
                       )}
 
@@ -998,6 +1004,25 @@ export default function AdminDashboard() {
     fetchData();
   };
 
+  const handleCheckOut = async (id, booking) => {
+    if (!window.confirm(`Complete Check-out for ${booking.name}?`)) return;
+    const headers = { username: auth.username, password: auth.password };
+    try {
+      await api.patch(`/api/admin/bookings/${id}`, { status: 'Checked-out' }, { headers });
+      
+      // WhatsApp Feedback Message Link
+      const guestPhone = booking.phone.replace(/[^0-9]/g, '');
+      const formattedPhone = guestPhone.startsWith('91') ? guestPhone : `91${guestPhone}`;
+      const msg = `Hello ${booking.name}! 👋\n\nThank you for staying at *BSS Residency*. We hope you had a pleasant stay!\n\nWe would love to hear about your experience. Please share your valuable feedback/review here:\n🔗 https://g.page/r/YOUR_GOOGLE_REVIEW_ID/review\n\nWe look forward to hosting you again! 😊`;
+      const waUrl = `https://wa.me/${formattedPhone}?text=${encodeURIComponent(msg)}`;
+      
+      window.open(waUrl, '_blank');
+      fetchData();
+    } catch (err) {
+      alert('Error during check-out: ' + err.message);
+    }
+  };
+
   const handleDeleteReview = async (id) => {
     if (!window.confirm('Delete this review?')) return;
     const headers = { username: auth.username, password: auth.password };
@@ -1034,6 +1059,7 @@ export default function AdminDashboard() {
         onConfirm={handleConfirmBooking}
         onCancel={handleCancelBooking}
         onWhatsApp={handleWhatsAppBooking}
+        onCheckOut={handleCheckOut}
         onUpdateRoomNumber={handleUpdateRoomNumber}
         onDelete={handleDeleteBooking}
         onAddPayment={openAddPaymentModal}

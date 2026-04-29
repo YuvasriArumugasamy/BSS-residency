@@ -892,3 +892,19 @@
   border: 2px solid var(--admin-sidebar);
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
+
+/* Status Pills */
+.status-pill {
+  display: inline-block;
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-Pending { background: #fff7ed; color: #9a3412; border: 1px solid #ffedd5; }
+.status-Confirmed { background: #f0fdf4; color: #166534; border: 1px solid #dcfce7; }
+.status-Cancelled { background: #fef2f2; color: #991b1b; border: 1px solid #fee2e2; }
+.status-Checked-out { background: #eff6ff; color: #1e40af; border: 1px solid #dbeafe; }
