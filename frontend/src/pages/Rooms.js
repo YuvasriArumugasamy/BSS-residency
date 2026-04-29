@@ -100,16 +100,6 @@ export default function Rooms() {
                   <span className="r-price-inline-amt">{getPrice(room).toLocaleString('en-IN')}</span>
                   <span className="r-price-inline-unit">/ night</span>
                 </div>
-                <div className="wa-btns-group">
-                  <a
-                    href={WA_TEMPLATES.getRoomInfo(room.name, getPrice(room), CONTACT.whatsapp)}
-                    className="btn-wa-sm"
-                    target="_blank" rel="noreferrer"
-                    title="Chat on WhatsApp"
-                  >
-                    <i className="fa-brands fa-whatsapp"></i> Chat on WhatsApp
-                  </a>
-                </div>
                 <Link to="/booking" className="btn-primary-sm"><span>Book Online</span></Link>
               </div>
             </div>
