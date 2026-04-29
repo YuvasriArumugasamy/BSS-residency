@@ -130,9 +130,8 @@ const DashboardOverview = ({ stats, bookings }) => {
                   dataKey="day" 
                   axisLine={false} 
                   tickLine={false} 
-                  tick={{ fontSize: 10 }} 
-                  interval="preserveStartEnd"
-                  minTickGap={10}
+                  tick={{ fontSize: 9, angle: -30, textAnchor: 'end' }} 
+                  interval={0}
                 />
                 <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10 }} />
                 <Tooltip 
