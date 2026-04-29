@@ -6,6 +6,7 @@ const Guest = require('../models/Guest');
 const Payment = require('../models/Payment');
 const Review = require('../models/Review');
 const Notification = require('../models/Notification');
+const Setting = require('../models/Setting');
 const { sendBookingConfirmedEmail, sendBookingCancelledEmail } = require('../utils/emailService');
 
 const WHATSAPP_NUMBER = process.env.WHATSAPP_NUMBER || '919344989393';
@@ -72,14 +73,28 @@ router.post('/login', (req, res) => {
 // GET /api/admin/bookings — All bookings
 router.get('/bookings', adminAuth, async (req, res) => {
   try {
-    const { status, roomType, page = 1, limit = 10 } = req.query;
+    const { status, roomType, page = 1, limit = 10, period = 'all', month, year } = req.query;
     const filter = {};
     if (status) filter.status = status;
     if (roomType) filter.roomType = roomType;
 
+    if (period === 'month') {
+      let start, end;
+      if (month && year) {
+        start = new Date(year, month - 1, 1);
+        end = new Date(year, month, 0, 23, 59, 59, 999);
+      } else {
+        const now = new Date();
+        start = new Date(now.getFullYear(), now.getMonth(), 1);
+        end = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
+      }
+      // Filter by checkIn date for stays in that month
+      filter.checkIn = { $gte: start, $lte: end };
+    }
+
     const total = await Booking.countDocuments(filter);
     const bookings = await Booking.find(filter)
-      .sort({ createdAt: -1 })
+      .sort({ checkIn: 1 }) // Sorted by stay date
       .skip((page - 1) * limit)
       .limit(Number(limit));
 
@@ -145,16 +160,34 @@ router.delete('/bookings/:id', adminAuth, async (req, res) => {
 // GET /api/admin/stats — Dashboard stats
 router.get('/stats', adminAuth, async (req, res) => {
   try {
-    const totalBookings = await Booking.countDocuments();
-    const pending = await Booking.countDocuments({ status: 'Pending' });
-    const confirmed = await Booking.countDocuments({ status: 'Confirmed' });
-    const cancelled = await Booking.countDocuments({ status: 'Cancelled' });
+    const { period = 'all', month, year } = req.query;
+    let bookingFilter = {};
+    let paymentFilter = { status: 'Paid' };
 
-    // Revenue tracking (Sum of all real payments)
-    const payments = await Payment.find({ status: 'Paid' });
+    if (period === 'month') {
+      let start, end;
+      if (month && year) {
+        start = new Date(year, month - 1, 1);
+        end = new Date(year, month, 0, 23, 59, 59, 999);
+      } else {
+        const now = new Date();
+        start = new Date(now.getFullYear(), now.getMonth(), 1);
+        end = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
+      }
+      bookingFilter.createdAt = { $gte: start, $lte: end };
+      paymentFilter.date = { $gte: start, $lte: end };
+    }
+
+    const totalBookings = await Booking.countDocuments(bookingFilter);
+    const pending = await Booking.countDocuments({ ...bookingFilter, status: 'Pending' });
+    const confirmed = await Booking.countDocuments({ ...bookingFilter, status: 'Confirmed' });
+    const cancelled = await Booking.countDocuments({ ...bookingFilter, status: 'Cancelled' });
+
+    // Revenue tracking (Sum of all real payments in period)
+    const payments = await Payment.find(paymentFilter);
     const totalRevenue = payments.reduce((sum, p) => sum + p.amount, 0);
 
-    // Occupancy (Rooms available vs occupied)
+    // Occupancy (Current building state - usually not filtered by period)
     const totalRooms = await Room.countDocuments();
     const occupiedRooms = await Room.countDocuments({ status: 'Occupied' });
     const availableRooms = await Room.countDocuments({ status: 'Available' });
@@ -172,12 +205,13 @@ router.get('/stats', adminAuth, async (req, res) => {
       status: { $ne: 'Cancelled' }
     });
 
-    // Room performance (aggregate by type)
+    // Room performance (aggregate by type in period)
     const byRoom = await Booking.aggregate([
+      { $match: bookingFilter },
       { $group: { _id: '$roomType', count: { $sum: 1 } } }
     ]);
 
-    // Revenue history (last 7 days)
+    // Revenue history (last 7 days - always shows last 7 days regardless of period)
     const revenueHistory = [];
     for (let i = 6; i >= 0; i--) {
       const d = new Date();
@@ -202,7 +236,8 @@ router.get('/stats', adminAuth, async (req, res) => {
         totalBookings, pending, confirmed, cancelled, byRoom,
         totalRevenue, availableRooms, occupiedRooms, totalRooms,
         checkInsToday, checkOutsToday,
-        revenueHistory
+        revenueHistory,
+        period
       }
     });
   } catch (err) {
@@ -329,11 +364,49 @@ router.delete('/reviews/:id', adminAuth, async (req, res) => {
   }
 });
 
-// --- NOTIFICATION ROUTES ---
-router.get('/notifications', adminAuth, async (req, res) => {
+// --- SETTINGS ROUTES ---
+
+// GET /api/admin/settings — Get all settings
+router.get('/settings', adminAuth, async (req, res) => {
   try {
-    const notifications = await Notification.find().sort({ date: -1 });
-    res.json({ success: true, notifications });
+    const settings = await Setting.find();
+    // Convert to a simple object for easy consumption
+    const settingsObj = {};
+    settings.forEach(s => { settingsObj[s.key] = s.value; });
+    
+    // Ensure isSeason exists
+    if (settingsObj.isSeason === undefined) {
+      settingsObj.isSeason = false;
+    }
+    
+    res.json({ success: true, settings: settingsObj });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// PATCH /api/admin/settings — Update settings
+router.patch('/settings', adminAuth, async (req, res) => {
+  try {
+    const { isSeason } = req.body;
+    if (isSeason !== undefined) {
+      await Setting.findOneAndUpdate(
+        { key: 'isSeason' },
+        { value: isSeason },
+        { upsert: true, new: true }
+      );
+    }
+    res.json({ success: true, message: 'Settings updated' });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// PUBLIC GET /api/admin/settings/public — Get public settings (no auth)
+router.get('/settings/public', async (req, res) => {
+  try {
+    const setting = await Setting.findOne({ key: 'isSeason' });
+    res.json({ success: true, isSeason: setting ? setting.value : false });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }

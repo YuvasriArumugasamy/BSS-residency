@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import api from '../api/axios';
 import roomAc1 from '../assets/room-ac-1.jpg';
 import roomAc2 from '../assets/room-ac-2.jpg';
 import roomAc3 from '../assets/room-ac-3.jpg';
@@ -15,6 +16,18 @@ const imgMap = {
 };
 
 export default function Rooms() {
+  const [isSeason, setIsSeason] = useState(false);
+
+  useEffect(() => {
+    api.get('/api/admin/settings/public')
+      .then(res => {
+        if (res.data.success) setIsSeason(res.data.isSeason);
+      })
+      .catch(err => console.error('Error fetching season status:', err));
+  }, []);
+
+  const getPrice = (room) => isSeason ? room.seasonPrice : room.nonSeasonPrice;
+
   return (
     <main className="rooms-page">
       {/* Page Hero */}
@@ -48,9 +61,9 @@ export default function Rooms() {
                     <strong>{r.name}</strong>
                   </td>
                   <td><span className="tt-pill">{r.type}</span></td>
-                  <td className="tt-price">₹{r.price.toLocaleString('en-IN')}</td>
+                  <td className="tt-price">₹{getPrice(r).toLocaleString('en-IN')}</td>
                   <td>
-                    <Link to="/booking" className="btn-gold-sm">Book Now</Link>
+                    <Link to="/booking" className="btn-gold-sm"><span>Book Now</span></Link>
                   </td>
                 </tr>
               ))}
@@ -68,7 +81,7 @@ export default function Rooms() {
               <img src={imgMap[room.key]} alt={room.name} />
               <div className="room-type-badge">{room.type}</div>
               <div className="room-price-badge">
-                ₹{room.price.toLocaleString('en-IN')}<span>/ night</span>
+                ₹{getPrice(room).toLocaleString('en-IN')}<span>/ night</span>
               </div>
             </div>
             <div className="room-detail-info">
@@ -83,28 +96,20 @@ export default function Rooms() {
               </ul>
               <div className="r-price-note">
                 <div className="r-price-inline">
-                  <span className="r-price-inline-amt">₹{room.price.toLocaleString('en-IN')}</span>
+                  <span className="r-price-inline-amt">₹{getPrice(room).toLocaleString('en-IN')}</span>
                   <span className="r-price-inline-unit">/ night</span>
                 </div>
                 <div className="wa-btns-group">
                   <a
-                    href={WA_TEMPLATES.getRoomInfo(room.name, room.price, CONTACT.whatsapp1)}
+                    href={WA_TEMPLATES.getRoomInfo(room.name, getPrice(room), CONTACT.whatsapp)}
                     className="btn-wa-sm"
                     target="_blank" rel="noreferrer"
-                    title="Chat with Primary Number"
+                    title="Chat on WhatsApp"
                   >
-                    <i className="fa-brands fa-whatsapp"></i> WA 1
-                  </a>
-                  <a
-                    href={WA_TEMPLATES.getRoomInfo(room.name, room.price, CONTACT.whatsapp2)}
-                    className="btn-wa-sm secondary"
-                    target="_blank" rel="noreferrer"
-                    title="Chat with Secondary Number"
-                  >
-                    <i className="fa-brands fa-whatsapp"></i> WA 2
+                    <i className="fa-brands fa-whatsapp"></i> Chat on WhatsApp
                   </a>
                 </div>
-                <Link to="/booking" className="btn-primary-sm">Book Online</Link>
+                <Link to="/booking" className="btn-primary-sm"><span>Book Online</span></Link>
               </div>
             </div>
           </div>
@@ -119,7 +124,7 @@ export default function Rooms() {
             <p>Prefer to book instantly? Chat with us on WhatsApp or call for immediate confirmation. We guarantee the best rates when you book directly with us.</p>
             <div className="pricing-actions">
               <a href={waLink('Hello BSS Residency! Please share the current room tariff.')} className="btn-wa" target="_blank" rel="noreferrer"><i className="fa-brands fa-whatsapp"></i> WhatsApp Us</a>
-              <Link to="/booking" className="btn-gold">Book Now</Link>
+              <Link to="/booking" className="btn-gold"><span>Book Now</span></Link>
             </div>
           </div>
         </div>

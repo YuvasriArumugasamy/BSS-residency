@@ -38,7 +38,7 @@ export default function Footer() {
           <Link to="/rooms">Rooms</Link>
           <Link to="/gallery">Gallery</Link>
           <Link to="/booking">Book Now</Link>
-          <Link to="/booking/status">Track Status</Link>
+          <Link to="/booking/status">Manage Booking</Link>
           <Link to="/contact">Contact</Link>
         </div>
 
@@ -46,9 +46,12 @@ export default function Footer() {
           <h4>Our Rooms</h4>
           {ROOMS.map((r) => (
             <span key={r.key}>
-              {r.name} — ₹{r.price.toLocaleString('en-IN')}
+              {r.name} — {r.type}
             </span>
           ))}
+          <p style={{ fontSize: '0.8rem', color: '#888', marginTop: '0.5rem' }}>
+            Starts from ₹1,000 / night
+          </p>
         </div>
 
         <div className="footer-contact">

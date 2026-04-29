@@ -57,6 +57,21 @@ function ImageCarousel({ images, alt }) {
 export default function Home() {
   const [reviews, setReviews] = React.useState([]);
   const [selectedReview, setSelectedReview] = React.useState(null);
+  const [isSeason, setIsSeason] = React.useState(false);
+
+  React.useEffect(() => {
+    const fetchPublicSettings = async () => {
+      try {
+        const res = await api.get('/api/admin/settings/public');
+        if (res.data.success) setIsSeason(res.data.isSeason);
+      } catch (err) {
+        console.error('Error fetching season status:', err);
+      }
+    };
+    fetchPublicSettings();
+  }, []);
+
+  const getPrice = (room) => isSeason ? room.seasonPrice : room.nonSeasonPrice;
 
   React.useEffect(() => {
     const fetchReviews = async () => {
@@ -130,7 +145,7 @@ export default function Home() {
             <div className="stat"><span className="stat-n">4.6★</span><span className="stat-l">Rating</span></div>
             <div className="stat"><span className="stat-n">100m</span><span className="stat-l">to Falls</span></div>
           </div>
-          <Link to="/booking" className="btn-primary">Reserve Now</Link>
+          <Link to="/booking" className="btn-primary"><span>Reserve Now</span></Link>
         </div>
       </section>
 
@@ -177,27 +192,18 @@ export default function Home() {
                 <span className="r-type-pill">{r.type}</span>
                 <div className="r-price">
                   <span className="r-price-currency">₹</span>
-                  <span className="r-price-amount">{r.price.toLocaleString('en-IN')}</span>
+                  <span className="r-price-amount">{getPrice(r).toLocaleString('en-IN')}</span>
                   <span className="r-price-unit">/ night</span>
                 </div>
                 <div className="r-actions-home">
-                  <Link to="/booking" className="r-book-btn">Book Now</Link>
+                  <Link to="/booking" className="r-book-btn"><span>Book Now</span></Link>
                   <div className="r-wa-group-home">
                     <a 
-                      href={WA_TEMPLATES.getRoomInfo(r.name, r.price, CONTACT.whatsapp1)} 
+                      href={WA_TEMPLATES.getRoomInfo(r.name, getPrice(r), CONTACT.whatsapp)} 
                       target="_blank" 
                       rel="noreferrer" 
                       className="r-wa-btn"
-                      title="WhatsApp Number 1"
-                    >
-                      <i className="fa-brands fa-whatsapp"></i>
-                    </a>
-                    <a 
-                      href={WA_TEMPLATES.getRoomInfo(r.name, r.price, CONTACT.whatsapp2)} 
-                      target="_blank" 
-                      rel="noreferrer" 
-                      className="r-wa-btn secondary"
-                      title="WhatsApp Number 2"
+                      title="WhatsApp Us"
                     >
                       <i className="fa-brands fa-whatsapp"></i>
                     </a>
@@ -207,8 +213,8 @@ export default function Home() {
             ))}
           </div>
           <div className="tariff-foot">
-            <Link to="/rooms" className="btn-primary">View All Rooms</Link>
-            <Link to="/booking" className="btn-gold">Book Your Stay</Link>
+            <Link to="/rooms" className="btn-primary"><span>View All Rooms</span></Link>
+            <Link to="/booking" className="btn-gold"><span>Book Your Stay</span></Link>
           </div>
         </div>
       </section>
@@ -228,7 +234,7 @@ export default function Home() {
             <li><span className="tick">✓</span> 24hr hot water</li>
             <li><span className="tick">✓</span> Daily housekeeping</li>
           </ul>
-          <Link to="/booking" className="btn-primary" style={{ marginTop: '1.5rem', display: 'inline-block' }}>Book This Room</Link>
+          <Link to="/booking" className="btn-primary" style={{ marginTop: '1.5rem', display: 'inline-block' }}><span>Book This Room</span></Link>
         </div>
         <div className="showcase-img">
           <ImageCarousel images={[roomGal1, roomGal2, roomGal3, roomGal4]} alt="BSS Residency A/C Room" />

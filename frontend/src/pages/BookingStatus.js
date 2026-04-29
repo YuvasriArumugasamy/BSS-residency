@@ -140,9 +140,9 @@ export default function BookingStatus() {
   return (
     <main className="bstatus-page">
       <section className="page-hero">
-        <p className="section-label gold">Track Your Stay</p>
-        <h1>Booking <em>Status</em></h1>
-        <p>Enter your Booking ID to check the real-time status of your reservation.</p>
+        <p className="section-label gold">Manage Your Stay</p>
+        <h1>Manage <em>Booking</em></h1>
+        <p>Enter your Booking ID to track status, pay advance, or complete online check-in.</p>
       </section>
 
       <section className="bstatus-section container">
@@ -160,7 +160,7 @@ export default function BookingStatus() {
                 autoFocus
               />
               <button type="submit" className="btn-search" disabled={loading}>
-                {loading ? <span className="btn-spinner" /> : 'Check Status'}
+                {loading ? <span className="btn-spinner" /> : 'Find Booking'}
               </button>
             </div>
             <p className="search-hint">

@@ -5,7 +5,7 @@ export const CONTACT = {
   phoneSecondary: '+91 93449 89393',
   whatsapp1: '918838599755', // Primary
   whatsapp2: '919344989393', // Secondary
-  whatsapp: '918838599755', // Default for legacy support
+  whatsapp: '919344989393', // Updated to 9344989393 as per user request
   instagram: 'coutrallam_bss_residency',
   addressLine1: 'Bus Stand, Near Anna Statue',
   addressLine2: 'Courtallam, Tamil Nadu – 627 802',
@@ -38,7 +38,8 @@ export const ROOMS = [
     icon: '🛏️',
     name: 'Double Bed',
     type: 'Non-A/C',
-    price: 1300,
+    seasonPrice: 1300,
+    nonSeasonPrice: 1000,
     desc:
       "Comfortable double bed room with natural ventilation — ideal for couples and small families visiting Courtallam.",
     features: [
@@ -55,7 +56,8 @@ export const ROOMS = [
     icon: '❄️',
     name: 'Double Bed A/C',
     type: 'A/C',
-    price: 1600,
+    seasonPrice: 1600,
+    nonSeasonPrice: 1300,
     desc:
       'Air-conditioned double bed room for a cool, restful stay. Modern interiors and all essential amenities.',
     features: [
@@ -72,7 +74,8 @@ export const ROOMS = [
     icon: '👨‍👩‍👧‍👦',
     name: 'Four Bed',
     type: 'Non-A/C',
-    price: 2500,
+    seasonPrice: 2500,
+    nonSeasonPrice: 2000,
     desc:
       'Spacious four-bed room — perfect for families and small groups travelling together.',
     features: [
@@ -89,7 +92,8 @@ export const ROOMS = [
     icon: '👑',
     name: 'Four Bed A/C',
     type: 'A/C',
-    price: 2800,
+    seasonPrice: 2800,
+    nonSeasonPrice: 2300,
     desc:
       'Our premium family choice. Large four-bed A/C room with modern furnishings and top-tier comfort.',
     features: [

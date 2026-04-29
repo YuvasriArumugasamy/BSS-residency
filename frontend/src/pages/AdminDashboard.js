@@ -213,7 +213,7 @@ const RoomManagement = ({ rooms, onAddClick, onDeleteRoom, onUpdateRoom }) => {
   );
 };
 
-const BookingManagement = ({ bookings = [], onConfirm, onCancel, onWhatsApp, onUpdateRoomNumber, onDelete, onAddPayment, onViewCheckin, formatDate }) => {
+const BookingManagement = ({ bookings = [], period, setPeriod, onConfirm, onCancel, onWhatsApp, onUpdateRoomNumber, onDelete, onAddPayment, onViewCheckin, formatDate }) => {
   const [filter, setFilter] = React.useState('All');
 
   const safeBookings = Array.isArray(bookings) ? bookings : [];
@@ -246,8 +246,28 @@ const BookingManagement = ({ bookings = [], onConfirm, onCancel, onWhatsApp, onU
             </button>
           ))}
         </div>
-        <div style={{ fontSize: '0.85rem', color: '#64748b' }}>
-          Showing <strong>{filteredBookings.length}</strong> bookings
+        <div style={{ fontSize: '0.85rem', color: '#64748b', display: 'flex', alignItems: 'center', gap: '0.8rem', flexWrap: 'wrap' }}>
+          <div>Showing <strong>{filteredBookings.length}</strong> bookings</div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#fff', padding: '0.2rem 0.5rem', borderRadius: '6px', border: '1px solid #e2e8f0' }}>
+            <select
+              value={period}
+              onChange={(e) => setPeriod(e.target.value)}
+              style={{ border: 'none', fontWeight: 600, color: '#475569', outline: 'none', cursor: 'pointer' }}
+            >
+              <option value="month">Month View</option>
+              <option value="all">All Time</option>
+            </select>
+
+            {period === 'month' && (
+              <input
+                type="month"
+                value={window.selectedMonthGlobal || ''}
+                onChange={(e) => window.setSelectedMonthGlobal(e.target.value)}
+                style={{ border: 'none', borderLeft: '1px solid #eee', paddingLeft: '0.5rem', fontWeight: 600, color: 'var(--admin-primary)', outline: 'none' }}
+              />
+            )}
+          </div>
         </div>
       </div>
 
@@ -393,20 +413,45 @@ const Payments = ({ payments, totalRevenue }) => {
   );
 };
 
-const Reports = ({ stats }) => {
+const Reports = ({ stats, period, setPeriod, selectedMonth, setSelectedMonth }) => {
   return (
     <div className="view-content fade-in">
+      <div className="card-header" style={{ marginBottom: '1.5rem', justifyContent: 'flex-end' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', background: '#fff', padding: '0.3rem 0.6rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+          <select
+            value={period}
+            onChange={(e) => setPeriod(e.target.value)}
+            style={{ border: 'none', fontWeight: 600, color: '#475569', outline: 'none', cursor: 'pointer', fontSize: '0.85rem' }}
+          >
+            <option value="month">Month View</option>
+            <option value="all">All Time</option>
+          </select>
+
+          {period === 'month' && (
+            <input
+              type="month"
+              value={selectedMonth}
+              onChange={(e) => setSelectedMonth(e.target.value)}
+              style={{ border: 'none', borderLeft: '1px solid #eee', paddingLeft: '0.8rem', fontWeight: 700, color: 'var(--admin-primary)', outline: 'none', fontSize: '0.85rem' }}
+            />
+          )}
+        </div>
+      </div>
+
       <div className="dash-layout">
         <div className="card">
           <div className="card-header">
             <h3>Occupancy by Room Type</h3>
+            <span style={{ fontSize: '0.75rem', color: '#64748b' }}>
+              {period === 'all' ? 'All bookings' : `Bookings in ${new Date(selectedMonth).toLocaleDateString('en-IN', { month: 'long', year: 'numeric' })}`}
+            </span>
           </div>
           <div style={{ width: '100%', height: 300 }}>
             <ResponsiveContainer>
               <BarChart data={stats?.byRoom || []}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#eee" />
                 <XAxis dataKey="_id" axisLine={false} tickLine={false} />
-                <YAxis axisLine={false} tickLine={false} />
+                <YAxis axisLine={false} tickLine={false} allowDecimals={false} />
                 <Tooltip />
                 <Bar dataKey="count" fill="var(--admin-primary)" radius={[4, 4, 0, 0]} />
               </BarChart>
@@ -421,10 +466,12 @@ const Reports = ({ stats }) => {
             <div className="stat-card">
               <span className="stat-label">Avg Rev / Booking</span>
               <span className="stat-value">₹{(stats?.totalRevenue / (stats?.totalBookings || 1)).toFixed(0)}</span>
+              <div style={{ fontSize: '0.7rem', color: '#888', marginTop: '4px' }}>Based on {stats?.totalBookings} bookings</div>
             </div>
             <div className="stat-card">
               <span className="stat-label">Confirmation Rate</span>
               <span className="stat-value">{((stats?.confirmed / (stats?.totalBookings || 1)) * 100).toFixed(1)}%</span>
+              <div style={{ fontSize: '0.7rem', color: '#888', marginTop: '4px' }}>{stats?.confirmed} of {stats?.totalBookings} confirmed</div>
             </div>
           </div>
         </div>
@@ -433,10 +480,49 @@ const Reports = ({ stats }) => {
   );
 };
 
-const SettingsView = () => (
+const SettingsView = ({ isSeason, onToggleSeason }) => (
   <div className="card fade-in" style={{ maxWidth: '800px' }}>
     <h3 style={{ marginBottom: '1.5rem' }}>General Settings</h3>
-    <form className="settings-form" style={{ display: 'grid', gap: '1.5rem' }}>
+
+    <div className="settings-section" style={{ marginBottom: '2rem', padding: '1.5rem', background: '#f8fafc', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div>
+          <h4 style={{ margin: 0, fontSize: '1.1rem', color: '#1e293b' }}>Peak Season Mode</h4>
+          <p style={{ margin: '4px 0 0', fontSize: '0.85rem', color: '#64748b' }}>
+            When ON, the website will automatically show higher season prices (₹1300 / ₹2500).
+          </p>
+        </div>
+        <div
+          onClick={() => onToggleSeason(!isSeason)}
+          style={{
+            width: '60px',
+            height: '30px',
+            background: isSeason ? 'var(--admin-primary)' : '#cbd5e1',
+            borderRadius: '20px',
+            position: 'relative',
+            cursor: 'pointer',
+            transition: 'all 0.3s'
+          }}
+        >
+          <div style={{
+            width: '24px',
+            height: '24px',
+            background: 'white',
+            borderRadius: '50%',
+            position: 'absolute',
+            top: '3px',
+            left: isSeason ? '33px' : '3px',
+            transition: 'all 0.3s',
+            boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+          }} />
+        </div>
+      </div>
+      <div style={{ marginTop: '1rem', padding: '8px 12px', background: isSeason ? '#fef3c7' : '#f1f5f9', borderRadius: '6px', fontSize: '0.8rem', fontWeight: 600, color: isSeason ? '#92400e' : '#475569' }}>
+        Current Status: {isSeason ? '🔥 Season Pricing Active' : '❄️ Regular Pricing Active'}
+      </div>
+    </div>
+
+    <form className="settings-form" style={{ display: 'grid', gap: '1.5rem', opacity: 0.6, pointerEvents: 'none' }}>
       <div className="grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
         <div className="form-group">
           <label>Lodge Name</label>
@@ -444,18 +530,12 @@ const SettingsView = () => (
         </div>
         <div className="form-group">
           <label>Contact Email</label>
-          <input type="email" defaultValue="contact@bssresidency.com" />
+          <input type="email" defaultValue="bssresidencyofficial@gmail.com" />
         </div>
       </div>
       <div className="form-group">
         <label>Google Maps Embed URL</label>
         <textarea defaultValue="https://www.google.com/maps?q=BSS%20Residency%20Courtallam..." />
-      </div>
-      <div className="grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
-        <div className="form-group">
-          <label>WhatsApp Number</label>
-          <input type="text" defaultValue="919344989393" />
-        </div>
       </div>
       <button type="button" className="admin-btn admin-btn-primary">Save Changes</button>
     </form>
@@ -473,12 +553,12 @@ const ReviewsView = ({ reviews, onDeleteReview }) => {
             <span style={{ fontWeight: 700 }}>{r.guestName}</span>
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
               <span style={{ color: '#d4a857' }}>{'★'.repeat(r.rating)}</span>
-              <button 
+              <button
                 onClick={() => onDeleteReview(r._id)}
-                style={{ 
-                  background: 'none', 
-                  border: 'none', 
-                  color: '#ff4d4d', 
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: '#ff4d4d',
                   cursor: 'pointer',
                   padding: '4px',
                   display: 'flex',
@@ -537,7 +617,18 @@ export default function AdminDashboard() {
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [unreadReviewCount, setUnreadReviewCount] = useState(0);
+  const [isSeason, setIsSeason] = useState(false);
+  const [statsPeriod, setStatsPeriod] = useState('all');
+  const [bookingsPeriod, setBookingsPeriod] = useState('month');
+  const [selectedMonth, setSelectedMonth] = useState(() => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+  });
   const [loading, setLoading] = useState(true);
+
+  // Global access for shared components
+  window.selectedMonthGlobal = selectedMonth;
+  window.setSelectedMonthGlobal = setSelectedMonth;
   const prevBookingCountRef = useRef(0);
   const audioRef = useRef(new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3'));
 
@@ -550,7 +641,7 @@ export default function AdminDashboard() {
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [paymentForm, setPaymentForm] = useState({ guestName: '', bookingId: '', amount: '', method: 'Cash', status: 'Paid' });
   const [paymentLoading, setPaymentLoading] = useState(false);
-  
+
   // Check-in Modal State
   const [isCheckinModalOpen, setIsCheckinModalOpen] = useState(false);
   const [selectedCheckin, setSelectedCheckin] = useState(null);
@@ -559,22 +650,25 @@ export default function AdminDashboard() {
     if (!auth) return;
     // Only show loading spinner on initial load
     if (!stats) setLoading(true);
+    const [year, month] = selectedMonth.split('-');
     const headers = { username: auth.username, password: auth.password };
     try {
-      const [statsRes, bookingsRes, roomsRes, guestsRes, paymentsRes, reviewsRes, notifRes] = await Promise.all([
-        api.get('/api/admin/stats', { headers }),
-        api.get('/api/admin/bookings', { headers, params: { page: 1, limit: 100 } }),
+      const [statsRes, bookingsRes, roomsRes, guestsRes, paymentsRes, reviewsRes, notifRes, settingsRes] = await Promise.all([
+        api.get('/api/admin/stats', { headers, params: { period: statsPeriod, month, year } }),
+        api.get('/api/admin/bookings', { headers, params: { page: 1, limit: 100, period: bookingsPeriod, month, year } }),
         api.get('/api/admin/rooms', { headers }),
         api.get('/api/admin/guests', { headers }),
         api.get('/api/admin/payments', { headers }),
         api.get('/api/admin/reviews', { headers }),
-        api.get('/api/admin/notifications', { headers })
+        api.get('/api/admin/notifications', { headers }),
+        api.get('/api/admin/settings', { headers })
       ]);
       setStats(statsRes.data.stats);
       setBookings(bookingsRes.data.bookings);
       setRooms(roomsRes.data.rooms);
       setGuests(guestsRes.data.guests);
       setPayments(paymentsRes.data.payments);
+      setIsSeason(settingsRes.data.settings.isSeason);
       const finalReviews = reviewsRes.data.reviews;
       const seenReviews = parseInt(localStorage.getItem('bss_seen_reviews_count') || '0');
       if (activeTab !== 'reviews' && finalReviews.length > seenReviews) {
@@ -615,7 +709,7 @@ export default function AdminDashboard() {
     } finally {
       setLoading(false);
     }
-  }, [auth, stats]);
+  }, [auth, statsPeriod, bookingsPeriod, selectedMonth]);
 
   useEffect(() => {
     if (activeTab === 'notifications') {
@@ -649,7 +743,7 @@ export default function AdminDashboard() {
     const interval = setInterval(() => {
       // Background fetch without showing loading spinner
       fetchData();
-    }, 30000); 
+    }, 30000);
     return () => clearInterval(interval);
   }, [fetchData]);
 
@@ -825,6 +919,8 @@ export default function AdminDashboard() {
       case 'rooms': return <RoomManagement rooms={rooms} onAddClick={openAddModal} onDeleteRoom={handleDeleteRoom} onUpdateRoom={openEditModal} />;
       case 'bookings': return <BookingManagement
         bookings={bookings}
+        period={bookingsPeriod}
+        setPeriod={setBookingsPeriod}
         onConfirm={handleConfirmBooking}
         onCancel={handleCancelBooking}
         onWhatsApp={handleWhatsAppBooking}
@@ -858,8 +954,8 @@ export default function AdminDashboard() {
                       <td>{g.totalStays}</td>
                       <td><span style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: 'var(--admin-primary)', fontWeight: 700 }}>{g.loyaltyLevel}</span></td>
                       <td>
-                        <button 
-                          className="action-link delete" 
+                        <button
+                          className="action-link delete"
                           onClick={() => handleDeleteGuest(g._id)}
                           style={{ border: 'none', background: 'none', cursor: 'pointer', color: '#e74c3c' }}
                         >
@@ -874,8 +970,16 @@ export default function AdminDashboard() {
           </div>
         );
       case 'payments': return <Payments payments={payments} totalRevenue={stats?.totalRevenue} />;
-      case 'reports': return <Reports stats={stats} />;
-      case 'settings': return <SettingsView />;
+      case 'reports': return <Reports stats={stats} period={statsPeriod} setPeriod={setStatsPeriod} />;
+      case 'settings': return <SettingsView isSeason={isSeason} onToggleSeason={async (val) => {
+        const headers = { username: auth.username, password: auth.password };
+        try {
+          await api.patch('/api/admin/settings', { isSeason: val }, { headers });
+          setIsSeason(val);
+        } catch (err) {
+          alert('Error updating season mode');
+        }
+      }} />;
       case 'reviews': return <ReviewsView reviews={reviews} onDeleteReview={handleDeleteReview} />;
       case 'notifications': return <NotificationsView notifications={notifications} />;
       default: return <div className="card">Coming Soon...</div>;
@@ -1079,14 +1183,14 @@ export default function AdminDashboard() {
             {selectedCheckin.checkinData.idProofImage && (
               <div style={{ borderTop: '1px solid #eee', paddingTop: '1rem' }}>
                 <label style={{ fontSize: '0.75rem', color: '#888', textTransform: 'uppercase', display: 'block', marginBottom: '0.5rem' }}>ID Proof Image</label>
-                <img 
-                  src={selectedCheckin.checkinData.idProofImage} 
-                  alt="ID Proof" 
-                  style={{ width: '100%', maxHeight: '400px', objectFit: 'contain', borderRadius: '8px', border: '1px solid #ddd' }} 
+                <img
+                  src={selectedCheckin.checkinData.idProofImage}
+                  alt="ID Proof"
+                  style={{ width: '100%', maxHeight: '400px', objectFit: 'contain', borderRadius: '8px', border: '1px solid #ddd' }}
                 />
               </div>
             )}
-            
+
             <div style={{ marginTop: '1.5rem', textAlign: 'right' }}>
               <button className="admin-btn admin-btn-primary" onClick={() => setIsCheckinModalOpen(false)}>
                 Close Details

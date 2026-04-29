@@ -112,17 +112,10 @@
   position: relative;
   overflow: hidden;
 }
-.btn-gold-sm::before {
-  content: '';
-  position: absolute; inset: 0;
+.btn-gold-sm:hover {
   background: var(--primary);
-  transform: scaleX(0);
-  transform-origin: right;
-  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-  z-index: 0;
+  color: var(--accent);
 }
-.btn-gold-sm:hover::before { transform: scaleX(1); transform-origin: left; }
-.btn-gold-sm:hover { color: var(--accent); }
 .btn-gold-sm span, .btn-gold-sm { position: relative; z-index: 1; }
 
 .tariff-note {
@@ -308,9 +301,10 @@
   display: inline-block;
 }
 .btn-gold:hover {
-  background: var(--primary); color: var(--accent);
+  background: var(--primary);
+  color: var(--accent);
   transform: translateY(-3px);
-  box-shadow: 0 8px 22px rgba(0,0,0,0.2);
+  box-shadow: 0 8px 22px rgba(0,0,0,0.3);
 }
 
 @media (max-width: 900px) {

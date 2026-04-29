@@ -30,6 +30,7 @@ export default function Booking() {
   const [showSpecialReq, setShowSpecialReq] = useState(false);
   const [policyChecked, setPolicyChecked] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [isSeason, setIsSeason] = useState(false);
 
   useEffect(() => {
     const fetchAvailability = async () => {
@@ -43,6 +44,16 @@ export default function Booking() {
       }
     };
     fetchAvailability();
+    
+    const fetchSeasonStatus = async () => {
+      try {
+        const res = await api.get('/api/admin/settings/public');
+        if (res.data.success) setIsSeason(res.data.isSeason);
+      } catch (err) {
+        console.error('Failed to fetch season status', err);
+      }
+    };
+    fetchSeasonStatus();
   }, []);
 
   const today = new Date().toISOString().split('T')[0];
@@ -60,10 +71,12 @@ export default function Booking() {
     return diff > 0 ? diff : 0;
   }, [form.checkIn, form.checkOut]);
 
+  const getPrice = (room) => isSeason ? room.seasonPrice : room.nonSeasonPrice;
+
   const roomCharges = useMemo(() => {
     if (!selectedRoom || !nights) return 0;
-    return selectedRoom.price * nights * Math.max(1, Number(form.rooms) || 1);
-  }, [selectedRoom, nights, form.rooms]);
+    return getPrice(selectedRoom) * nights * Math.max(1, Number(form.rooms) || 1);
+  }, [selectedRoom, nights, form.rooms, isSeason]);
 
   const gstAmount = GST_FIXED;
   const totalPrice = useMemo(() => roomCharges + gstAmount, [roomCharges, gstAmount]);
@@ -396,7 +409,7 @@ export default function Booking() {
                               <span className="rc-type">{r.type}</span>
                             </div>
                             <div className="rc-price">
-                              <span className="rc-rate">₹{r.price.toLocaleString('en-IN')}</span>
+                              <span className="rc-rate">₹{getPrice(r).toLocaleString('en-IN')}</span>
                               <span className="rc-per">/ night</span>
                             </div>
                             {form.roomType === r.name && (
@@ -711,7 +724,7 @@ export default function Booking() {
                 <div className="price-breakdown">
                   <div className="pb-header">Price Breakdown</div>
                   <div className="pb-row">
-                    <span>₹{selectedRoom.price.toLocaleString('en-IN')} × {nights} night{nights > 1 ? 's' : ''} × {form.rooms} room{form.rooms > 1 ? 's' : ''}</span>
+                    <span>₹{getPrice(selectedRoom).toLocaleString('en-IN')} × {nights} night{nights > 1 ? 's' : ''} × {form.rooms} room{form.rooms > 1 ? 's' : ''}</span>
                     <span>₹{roomCharges.toLocaleString('en-IN')}</span>
                   </div>
                   <div className="pb-row">

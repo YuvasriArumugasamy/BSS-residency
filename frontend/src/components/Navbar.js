@@ -32,8 +32,7 @@ export default function Navbar() {
     { to: '/', label: 'Home' },
     { to: '/rooms', label: 'Rooms' },
     { to: '/gallery', label: 'Gallery' },
-    { to: '/checkin', label: 'Check-in' },
-    { to: '/booking/status', label: 'Track Status' },
+    { to: '/booking/status', label: 'Manage Booking' },
     { to: '/contact', label: 'Contact' },
   ];
 
@@ -74,7 +73,7 @@ export default function Navbar() {
           >
             <i className="fa-solid fa-location-dot"></i> Map
           </a>
-          <Link to="/booking" className="nav-cta">Book Now</Link>
+          <Link to="/booking" className="nav-cta"><span>Book Now</span></Link>
         </div>
 
         <button
@@ -96,18 +95,14 @@ export default function Navbar() {
                 {l.label}
               </Link>
             ))}
-            <Link to="/booking" className="mobile-book-btn">Book Your Stay</Link>
-
-            <div className="mobile-extras">
-              <a
-                href={MAP.directUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="mobile-extra-link"
-              >
-                📍 View on Google Maps
-              </a>
-            </div>
+            <a
+              href={MAP.directUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="mobile-book-btn"
+            >
+              📍 View on Google Maps
+            </a>
           </div>
         </div>
       )}

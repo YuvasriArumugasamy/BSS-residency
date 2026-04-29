@@ -120,22 +120,12 @@
   position: relative;
   overflow: hidden;
 }
-.nav-cta::before {
-  content: '';
-  position: absolute; top: 50%; left: 50%;
-  width: 0; height: 0;
-  background: rgba(255,255,255,0.2);
-  border-radius: 50%;
-  transition: width 0.5s, height 0.5s, top 0.5s, left 0.5s;
-  transform: translate(-50%, -50%);
-}
-.nav-cta:hover::before {
-  width: 200px; height: 200px;
-}
+
 .nav-cta:hover {
-  background: var(--accent-dark); color: var(--white);
+  background: var(--primary);
+  color: var(--accent);
   transform: translateY(-2px);
-  box-shadow: 0 8px 22px rgba(212,168,87,0.4);
+  box-shadow: 0 8px 22px rgba(0,0,0,0.3);
 }
 
 /* Hamburger */
