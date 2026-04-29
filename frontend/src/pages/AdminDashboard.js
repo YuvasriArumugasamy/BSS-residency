@@ -481,64 +481,98 @@ const Reports = ({ stats, period, setPeriod, selectedMonth, setSelectedMonth }) 
 };
 
 const SettingsView = ({ isSeason, onToggleSeason }) => (
-  <div className="card fade-in" style={{ maxWidth: '800px' }}>
-    <h3 style={{ marginBottom: '1.5rem' }}>General Settings</h3>
+  <div className="view-content fade-in">
+    <div className="card" style={{ maxWidth: '800px', margin: '0 auto' }}>
+      <div style={{ borderBottom: '1px solid #f1f5f9', paddingBottom: '1.5rem', marginBottom: '2rem' }}>
+        <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#1e293b', margin: 0 }}>System Settings</h2>
+        <p style={{ color: '#64748b', fontSize: '0.9rem', marginTop: '0.5rem' }}>Manage your lodge's global configuration and seasonal pricing.</p>
+      </div>
 
-    <div className="settings-section" style={{ marginBottom: '2rem', padding: '1.5rem', background: '#f8fafc', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div>
-          <h4 style={{ margin: 0, fontSize: '1.1rem', color: '#1e293b' }}>Peak Season Mode</h4>
-          <p style={{ margin: '4px 0 0', fontSize: '0.85rem', color: '#64748b' }}>
-            When ON, the website will automatically show higher season prices (₹1300 / ₹2500).
-          </p>
+      <div className="settings-section" style={{ marginBottom: '2.5rem', padding: '1.5rem', background: isSeason ? '#fffbeb' : '#f8fafc', borderRadius: '16px', border: '1px solid', borderColor: isSeason ? '#fef3c7' : '#e2e8f0', transition: 'all 0.3s ease' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ flex: 1 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
+              <span style={{ fontSize: '1.25rem' }}>{isSeason ? '🔥' : '❄️'}</span>
+              <h4 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700, color: '#1e293b' }}>Peak Season Pricing</h4>
+            </div>
+            <p style={{ margin: 0, fontSize: '0.9rem', color: '#64748b', lineHeight: '1.5' }}>
+              When activated, the website will automatically transition to peak season rates (₹1300 / ₹2500).
+            </p>
+          </div>
+          <div
+            onClick={() => onToggleSeason(!isSeason)}
+            style={{
+              width: '64px',
+              height: '32px',
+              background: isSeason ? '#d4a857' : '#cbd5e1',
+              borderRadius: '20px',
+              position: 'relative',
+              cursor: 'pointer',
+              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+              boxShadow: isSeason ? '0 4px 12px rgba(212, 168, 87, 0.3)' : 'none'
+            }}
+          >
+            <div style={{
+              width: '26px',
+              height: '26px',
+              background: 'white',
+              borderRadius: '50%',
+              position: 'absolute',
+              top: '3px',
+              left: isSeason ? '35px' : '3px',
+              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+              boxShadow: '0 2px 6px rgba(0,0,0,0.15)'
+            }} />
+          </div>
         </div>
-        <div
-          onClick={() => onToggleSeason(!isSeason)}
-          style={{
-            width: '60px',
-            height: '30px',
-            background: isSeason ? 'var(--admin-primary)' : '#cbd5e1',
-            borderRadius: '20px',
-            position: 'relative',
-            cursor: 'pointer',
-            transition: 'all 0.3s'
-          }}
-        >
-          <div style={{
-            width: '24px',
-            height: '24px',
-            background: 'white',
-            borderRadius: '50%',
-            position: 'absolute',
-            top: '3px',
-            left: isSeason ? '33px' : '3px',
-            transition: 'all 0.3s',
-            boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-          }} />
+        
+        <div style={{ 
+          marginTop: '1.25rem', 
+          padding: '10px 15px', 
+          background: isSeason ? 'rgba(212, 168, 87, 0.1)' : 'rgba(107, 114, 128, 0.05)', 
+          borderRadius: '10px', 
+          display: 'flex', 
+          alignItems: 'center', 
+          gap: '10px' 
+        }}>
+          <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: isSeason ? '#d4a857' : '#64748b', animation: isSeason ? 'pulse 2s infinite' : 'none' }} />
+          <span style={{ fontSize: '0.85rem', fontWeight: 700, color: isSeason ? '#92400e' : '#475569' }}>
+            {isSeason ? 'PEAK SEASON RATES ARE LIVE' : 'REGULAR RATES ARE LIVE'}
+          </span>
         </div>
       </div>
-      <div style={{ marginTop: '1rem', padding: '8px 12px', background: isSeason ? '#fef3c7' : '#f1f5f9', borderRadius: '6px', fontSize: '0.8rem', fontWeight: 600, color: isSeason ? '#92400e' : '#475569' }}>
-        Current Status: {isSeason ? '🔥 Season Pricing Active' : '❄️ Regular Pricing Active'}
-      </div>
+
+      <form className="settings-form" style={{ display: 'grid', gap: '1.5rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+          <div className="form-group">
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, fontSize: '0.85rem', color: '#475569' }}>Lodge Name</label>
+            <input 
+              type="text" 
+              defaultValue="BSS Residency" 
+              style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #e2e8f0', background: '#f8fafc', fontSize: '0.95rem' }} 
+            />
+          </div>
+          <div className="form-group">
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, fontSize: '0.85rem', color: '#475569' }}>Contact Email</label>
+            <input 
+              type="email" 
+              defaultValue="bssresidencyofficial@gmail.com" 
+              style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #e2e8f0', background: '#f8fafc', fontSize: '0.95rem' }} 
+            />
+          </div>
+        </div>
+        <div className="form-group">
+          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, fontSize: '0.85rem', color: '#475569' }}>Google Maps Embed URL</label>
+          <textarea 
+            defaultValue="https://www.google.com/maps?q=BSS%20Residency%20Courtallam..." 
+            style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #e2e8f0', background: '#f8fafc', fontSize: '0.95rem', minHeight: '100px' }} 
+          />
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1rem' }}>
+          <button type="button" className="admin-btn admin-btn-primary" style={{ padding: '0.75rem 2rem' }}>Update Profile</button>
+        </div>
+      </form>
     </div>
-
-    <form className="settings-form" style={{ display: 'grid', gap: '1.5rem', opacity: 0.6, pointerEvents: 'none' }}>
-      <div className="grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
-        <div className="form-group">
-          <label>Lodge Name</label>
-          <input type="text" defaultValue="BSS Residency" />
-        </div>
-        <div className="form-group">
-          <label>Contact Email</label>
-          <input type="email" defaultValue="bssresidencyofficial@gmail.com" />
-        </div>
-      </div>
-      <div className="form-group">
-        <label>Google Maps Embed URL</label>
-        <textarea defaultValue="https://www.google.com/maps?q=BSS%20Residency%20Courtallam..." />
-      </div>
-      <button type="button" className="admin-btn admin-btn-primary">Save Changes</button>
-    </form>
   </div>
 );
 
