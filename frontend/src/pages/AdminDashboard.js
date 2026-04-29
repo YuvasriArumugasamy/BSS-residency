@@ -231,30 +231,49 @@ const BookingManagement = ({ bookings = [], period, setPeriod, onConfirm, onCanc
 
   return (
     <div className="card">
-      <div className="card-header" style={{ marginBottom: '1rem', flexWrap: 'wrap', gap: '1rem' }}>
-        <div className="filter-tabs" style={{ display: 'flex', gap: '0.5rem', background: '#f1f5f9', padding: '0.4rem 0.8rem', borderRadius: '8px', overflowX: 'auto', flexWrap: 'nowrap', msOverflowStyle: 'none', scrollbarWidth: 'none', width: '100%', flexShrink: 0 }}>
+      <div className="card-header" style={{ marginBottom: '1rem' }}>
+        <h3 style={{ margin: 0 }}>Booking Management</h3>
+      </div>
+      
+      <div className="filter-tabs-row" style={{ marginBottom: '1.5rem', padding: '0 1rem' }}>
+        <div className="filter-tabs" style={{ 
+          display: 'flex', 
+          gap: '0.6rem', 
+          background: '#f1f5f9', 
+          padding: '0.5rem', 
+          borderRadius: '10px', 
+          overflowX: 'auto', 
+          flexWrap: 'nowrap', 
+          msOverflowStyle: 'none', 
+          scrollbarWidth: 'none', 
+          width: '100%',
+          touchAction: 'pan-x',
+          WebkitOverflowScrolling: 'touch'
+        }}>
           {['All', 'Pending', 'Confirmed', 'Cancelled'].map(tab => (
             <button
               key={tab}
               onClick={() => setFilter(tab)}
               style={{
-                padding: '0.4rem 0.8rem',
+                padding: '0.5rem 1.2rem',
                 border: 'none',
-                borderRadius: '6px',
-                fontSize: '0.75rem',
+                borderRadius: '8px',
+                fontSize: '0.8rem',
                 fontWeight: 600,
                 cursor: 'pointer',
                 background: filter === tab ? 'white' : 'transparent',
                 color: filter === tab ? 'var(--admin-primary)' : '#64748b',
-                boxShadow: filter === tab ? '0 2px 4px rgba(0,0,0,0.05)' : 'none',
+                boxShadow: filter === tab ? '0 2px 4px rgba(0,0,0,0.08)' : 'none',
                 transition: 'all 0.2s',
-                whiteSpace: 'nowrap'
+                whiteSpace: 'nowrap',
+                flexShrink: 0
               }}
             >
               {tab}
             </button>
           ))}
         </div>
+      </div>
         <div style={{ fontSize: '0.85rem', color: '#64748b', display: 'flex', alignItems: 'center', gap: '0.8rem', flexWrap: 'wrap' }}>
           <div>Showing <strong>{filteredBookings.length}</strong> bookings</div>
 
