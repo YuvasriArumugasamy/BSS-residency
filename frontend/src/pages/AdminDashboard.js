@@ -250,12 +250,13 @@ const BookingManagement = ({ bookings = [], period, setPeriod, onConfirm, onCanc
           touchAction: 'pan-x',
           WebkitOverflowScrolling: 'touch'
         }}>
-          {['All', 'Pending', 'Confirmed', 'Cancelled'].map(tab => (
+          {['All', 'Pending', 'Confirmed', 'Cancelled'].map((tab, idx) => (
             <button
               key={tab}
               onClick={() => setFilter(tab)}
               style={{
                 padding: '0.5rem 1.2rem',
+                marginLeft: idx === 0 ? '10px' : '0',
                 border: 'none',
                 borderRadius: '8px',
                 fontSize: '0.8rem',
