@@ -793,7 +793,7 @@ export default function AdminDashboard() {
     const interval = setInterval(() => {
       // Background fetch without showing loading spinner
       fetchData();
-    }, 30000);
+    }, 120000); // Refresh every 2 minutes instead of 30s
     return () => clearInterval(interval);
   }, [fetchData]);
 
