@@ -49,7 +49,7 @@ export default function Footer() {
               {r.name} — {r.type}
             </span>
           ))}
-          <p style={{ fontSize: '0.8rem', color: '#888', marginTop: '0.5rem' }}>
+          <p className="footer-price-note">
             Starts from ₹1,000 / night
           </p>
         </div>

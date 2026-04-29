@@ -1081,7 +1081,7 @@
 
 @media (max-width: 480px) {
   .hero-overlay {
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.88) 0%, rgba(0, 0, 0, 0.7) 100%);
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.92) 0%, rgba(0, 0, 0, 0.75) 100%);
   }
 
   .rooms-grid {

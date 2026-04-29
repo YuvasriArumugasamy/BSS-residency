@@ -81,7 +81,7 @@ export default function Rooms() {
               <img src={imgMap[room.key]} alt={room.name} />
               <div className="room-type-badge">{room.type}</div>
               <div className="room-price-badge">
-                ₹{getPrice(room).toLocaleString('en-IN')}<span>/ night</span>
+                <span className="currency-symbol">₹</span>{getPrice(room).toLocaleString('en-IN')}<span>/ night</span>
               </div>
             </div>
             <div className="room-detail-info">
@@ -96,7 +96,8 @@ export default function Rooms() {
               </ul>
               <div className="r-price-note">
                 <div className="r-price-inline">
-                  <span className="r-price-inline-amt">₹{getPrice(room).toLocaleString('en-IN')}</span>
+                  <span className="currency-symbol">₹</span>
+                  <span className="r-price-inline-amt">{getPrice(room).toLocaleString('en-IN')}</span>
                   <span className="r-price-inline-unit">/ night</span>
                 </div>
                 <div className="wa-btns-group">

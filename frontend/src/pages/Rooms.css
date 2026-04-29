@@ -186,6 +186,7 @@
   transform: scale(1.08);
   box-shadow: 0 8px 25px rgba(212,168,87,0.5);
 }
+.room-price-badge .currency-symbol { margin-right: 4px; font-family: 'Inter', sans-serif; }
 .room-price-badge span { font-size: 0.7rem; font-weight: 500; margin-left: 0.25rem; color: rgba(0,0,0,0.6); }
 
 .room-detail-info { display: flex; flex-direction: column; gap: 0; padding: 0 1rem; }
@@ -222,7 +223,7 @@
   background: rgba(212,168,87,0.08);
   border-left-color: var(--accent-dark);
 }
-.r-price-inline { display: flex; align-items: baseline; gap: 0.25rem; flex: 1; }
+.r-price-inline .currency-symbol { font-size: 1.2rem; color: var(--primary); font-family: 'Inter', sans-serif; margin-right: 2px; }
 .r-price-inline-amt {
   font-family: 'Playfair Display', serif;
   font-size: 1.5rem; font-weight: 700; color: var(--primary);
