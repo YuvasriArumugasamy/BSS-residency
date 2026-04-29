@@ -337,7 +337,7 @@ export default function BookingStatus() {
                   to={`/checkin/${booking.bookingId || booking._id}`}
                   className="btn-checkin-online"
                 >
-                  🧾 Complete Online Check-in
+                  <i className="fa-solid fa-file-invoice"></i> Complete Online Check-in
                 </Link>
               )}
               {booking.checkedInOnline && (

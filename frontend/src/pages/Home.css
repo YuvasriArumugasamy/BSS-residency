@@ -109,12 +109,12 @@
 
 .hero-content p {
   font-size: 1.05rem;
-  color: rgba(255, 255, 255, 0.95);
+  color: #ffffff; /* Brighter white */
   margin-bottom: 2.2rem;
   font-weight: 300;
   line-height: 1.6;
   animation: fadeUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.7s both;
-  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
 }
 
 .hero-btns {
@@ -199,12 +199,12 @@
 }
 
 .btn-outline-light {
-  border: 2px solid rgba(255, 255, 255, 0.6);
-  color: var(--white);
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  color: #ffffff;
   padding: 0.85rem 2rem;
   border-radius: 6px;
   font-size: 0.9rem;
-  font-weight: 500;
+  font-weight: 600;
   transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
   display: inline-block;
   background: transparent;
@@ -962,8 +962,8 @@
 }
 
 .cta-inner p {
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 1rem;
+  color: #ffffff; /* Full white for maximum contrast */
+  font-size: 1.05rem;
   margin-bottom: 2.2rem;
   animation: fadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
 }
@@ -1532,8 +1532,10 @@
 .pearls-section {
   background: #4a1c1c; /* Deep Maroon like the image */
   padding: 6rem 2rem;
-  margin-top: 4rem; /* Top-லிருந்து கீழே இறக்கியுள்ளேன் */
-  border-radius: 40px 40px 0 0; /* மேல் பகுதியை வளைவாக்கியுள்ளேன் */
+  margin-top: 4rem; 
+  border-radius: 40px 40px 0 0; 
+  border-top: 2px solid rgba(212, 168, 87, 0.3); /* Visible border */
+  box-shadow: 0 -20px 40px rgba(0,0,0,0.25); /* Lifted effect */
   color: #fff;
   position: relative;
   overflow: hidden;
