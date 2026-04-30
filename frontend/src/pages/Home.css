@@ -1492,6 +1492,12 @@
   .att-img-wrap {
     height: 200px;
   }
+
+  .carousel-nav {
+    width: 44px;
+    height: 44px;
+    font-size: 1.5rem;
+  }
 }
 
 /* Review Modal Styles - Fixed Visibility */

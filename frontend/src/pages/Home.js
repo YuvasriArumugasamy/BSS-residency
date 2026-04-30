@@ -257,7 +257,7 @@ export default function Home() {
                 className={`tab-btn ${activeTab === 'temples' ? 'active' : ''}`}
                 onClick={() => setActiveTab('temples')}
               >
-                🛕 Temples
+                🙏 Temples
               </button>
             </div>
 
