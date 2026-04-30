@@ -73,10 +73,14 @@
 .float-wa::before {
   content: '';
   position: absolute;
-  inset: -6px;
+  top: -6px;
+  right: -6px;
+  bottom: -6px;
+  left: -6px;
   border-radius: 50%;
   border: 3px solid rgba(37, 211, 102, 0.6);
   animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+  z-index: -1;
 }
 
 @keyframes ping {
