@@ -71,7 +71,7 @@ export default function Footer() {
       </div>
 
       <div className="footer-bottom">
-        <p>Copyright © {new Date().getFullYear()} BSS Residency, Courtallam. All rights reserved | Website Designed ❤️ by  Yuvasri Arumugasamy</p>
+        <p>Copyright © {new Date().getFullYear()} BSS Residency, Courtallam. All rights reserved | Website Designed ❤️ by -<span style={{ color: 'var(--accent)' }}>Yuvasri Arumugasamy</span></p>
         <Link to="/admin/login" className="admin-link">Admin</Link>
       </div>
     </footer>
