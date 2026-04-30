@@ -39,52 +39,52 @@ export default function Navbar() {
   return (
     <>
       <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
-      <div className="nav-inner">
-        <Link to="/" className="nav-logo">
-          <span className="nav-logo-circle">
-            <img src={logo} alt="BSS Residency" />
-          </span>
-          <span className="nav-logo-text">
-            <span className="logo-bss">BSS</span>
-            <span className="logo-rest">Residency</span>
-          </span>
-        </Link>
+        <div className="nav-inner">
+          <Link to="/" className="nav-logo">
+            <span className="nav-logo-circle">
+              <img src={logo} alt="BSS Residency" />
+            </span>
+            <span className="nav-logo-text">
+              <span className="logo-bss">BSS</span>
+              <span className="logo-rest">Residency</span>
+            </span>
+          </Link>
 
-        <ul className="nav-links">
-          {links.map((l) => (
-            <li key={l.to}>
-              <Link
-                to={l.to}
-                className={location.pathname === l.to ? 'active' : ''}
-              >
-                {l.label}
-              </Link>
-            </li>
-          ))}
-        </ul>
+          <ul className="nav-links">
+            {links.map((l) => (
+              <li key={l.to}>
+                <Link
+                  to={l.to}
+                  className={location.pathname === l.to ? 'active' : ''}
+                >
+                  {l.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
 
-        <div className="nav-actions">
-          <a
-            href={MAP.directUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="nav-map-btn"
-            title="View on Google Maps"
+          <div className="nav-actions">
+            <a
+              href={MAP.directUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="nav-map-btn"
+              title="View on Google Maps"
+            >
+              <i className="fa-solid fa-location-dot"></i> Map
+            </a>
+            <Link to="/booking" className="nav-cta"><span>Book Now</span></Link>
+          </div>
+
+          <button
+            className={`hamburger ${menuOpen ? 'open' : ''}`}
+            onClick={() => setMenuOpen(!menuOpen)}
+            aria-label="Toggle menu"
           >
-            <i className="fa-solid fa-location-dot"></i> Map
-          </a>
-          <Link to="/booking" className="nav-cta"><span>Book Now</span></Link>
+            <span /><span /><span />
+          </button>
         </div>
-
-        <button
-          className={`hamburger ${menuOpen ? 'open' : ''}`}
-          onClick={() => setMenuOpen(!menuOpen)}
-          aria-label="Toggle menu"
-        >
-          <span /><span /><span />
-        </button>
-      </div>
-    </nav>
+      </nav>
 
       {/* Mobile overlay */}
       {menuOpen && (

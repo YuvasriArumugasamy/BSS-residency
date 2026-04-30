@@ -8,6 +8,18 @@ import roomGal1 from '../assets/room-ac-1.jpg';
 import roomGal2 from '../assets/room-gallery-2.jpg';
 import roomGal3 from '../assets/room-gallery-3.jpg';
 import roomGal4 from '../assets/room-gallery-4.jpg';
+import mainFalls from '../assets/main-falls-user.jpg';
+import fiveFalls from '../assets/five falls.png';
+import oldFalls from '../assets/old falls.png';
+import chitraruvi from '../assets/Chitraruvi.png';
+import tigerFalls from '../assets/tiger falls.jpg';
+import palaruviFalls from '../assets/aruvi.png';
+import gundarDam from '../assets/gundar dam.jpg';
+import adaviNainarDam from '../assets/Adavi Nainar Dam.png';
+import kasiTemple from '../assets/kasi.png';
+import tirumalaiKovil from '../assets/Tirumalai Kovil.jpg';
+import kutralanatharTemple from '../assets/Kutralanathar Temple.png';
+import ariyankavuTemple from '../assets/Ariyankavu Iyappan Kovil.png';
 import { AMENITIES, ROOMS, CONTACT, waLink, WA_TEMPLATES } from '../constants';
 import api from '../api/axios';
 import './Home.css';
@@ -20,6 +32,27 @@ const PEARLS_ITEMS = [
   { letter: 'L', title: 'Lucky', desc: 'May your stay bring you joy and good fortune.' },
   { letter: 'S', title: 'Safety', desc: '24/7 security and a safe environment for your family.' },
 ];
+
+const ATTRACTIONS = {
+  falls: [
+    { name: 'Main Falls', desc: 'The iconic 60ft waterfall, just 100m from BSS Residency.', distance: '100m', img: mainFalls },
+    { name: 'Five Falls', desc: 'Divided naturally into five streams, a must-visit wonder.', distance: '4km', img: fiveFalls },
+    { name: 'Old Falls', desc: 'A calm and peaceful bathing spot away from the crowd.', distance: '6km', img: oldFalls },
+    { name: 'Chitraruvi', desc: 'A beautiful small cascade located very close to the Main Falls.', distance: '200m', img: chitraruvi },
+    { name: 'Tiger Falls', desc: 'A moderate waterfall perfect for children and family bathing.', distance: '1.5km', img: tigerFalls },
+    { name: 'Palaruvi Falls', desc: 'A stunning "Milk Falls" located near the Kerala border.', distance: '28km', img: palaruviFalls }
+  ],
+  dams: [
+    { name: 'Gundar Dam', desc: 'Breathtaking views of the mountains and a calm reservoir.', distance: '6km', img: gundarDam },
+    { name: 'Adavi Nainar Dam', desc: 'A large dam located at the foothills of the Western Ghats.', distance: '15km', img: adaviNainarDam }
+  ],
+  temples: [
+    { name: 'Kutralanathar Temple', desc: 'Ancient Shiva temple within walking distance from Main Falls.', distance: '200m', img: kutralanatharTemple },
+    { name: 'Kasi Viswanathar Temple', desc: 'Famous Tenkasi temple known as the "South Kasi".', distance: '6km', img: kasiTemple },
+    { name: 'Tirumalai Kovil', desc: 'Hilltop Murugan temple offering breathtaking panoramic views.', distance: '15km', img: tirumalaiKovil },
+    { name: 'Ariyankavu Iyappan Kovil', desc: 'Historical temple located on the Tamil Nadu - Kerala border.', distance: '30km', img: ariyankavuTemple }
+  ]
+};
 
 function ImageCarousel({ images, alt }) {
   const [index, setIndex] = React.useState(0);
@@ -59,6 +92,39 @@ export default function Home() {
   const [selectedReview, setSelectedReview] = React.useState(null);
   const [isSeason, setIsSeason] = React.useState(false);
   const [showNotice, setShowNotice] = React.useState(false);
+  const [activeTab, setActiveTab] = React.useState('falls');
+  const attractionsRef = React.useRef(null);
+  const [canScrollLeft, setCanScrollLeft] = React.useState(false);
+  const [canScrollRight, setCanScrollRight] = React.useState(true);
+
+  const checkScroll = () => {
+    if (attractionsRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = attractionsRef.current;
+      setCanScrollLeft(scrollLeft > 0);
+      setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 1);
+    }
+  };
+
+  React.useEffect(() => {
+    checkScroll();
+  }, [activeTab]);
+
+  const reviewsRef = React.useRef(null);
+  const [canScrollRevLeft, setCanScrollRevLeft] = React.useState(false);
+  const [canScrollRevRight, setCanScrollRevRight] = React.useState(true);
+
+  const checkRevScroll = () => {
+    if (reviewsRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = reviewsRef.current;
+      setCanScrollRevLeft(scrollLeft > 0);
+      setCanScrollRevRight(scrollLeft + clientWidth < scrollWidth - 1);
+    }
+  };
+
+  React.useEffect(() => {
+    const timer = setTimeout(() => checkRevScroll(), 100);
+    return () => clearTimeout(timer);
+  }, [reviews]);
 
   React.useEffect(() => {
     // Show notice only once per session
@@ -165,6 +231,71 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Attractions Section */}
+        <section className="attractions-section">
+          <div className="container">
+            <div className="attractions-header">
+              <p className="section-label">Nearest Attractions</p>
+              <h2>The Magic of <em>Courtallam & Beyond</em></h2>
+              <p className="attractions-sub">Discover the finest waterfalls, historic temples, and scenic dams near your stay.</p>
+            </div>
+
+            <div className="attractions-tabs">
+              <button 
+                className={`tab-btn ${activeTab === 'falls' ? 'active' : ''}`}
+                onClick={() => setActiveTab('falls')}
+              >
+                🌊 Waterfalls
+              </button>
+              <button 
+                className={`tab-btn ${activeTab === 'dams' ? 'active' : ''}`}
+                onClick={() => setActiveTab('dams')}
+              >
+                🏞️ Dams
+              </button>
+              <button 
+                className={`tab-btn ${activeTab === 'temples' ? 'active' : ''}`}
+                onClick={() => setActiveTab('temples')}
+              >
+                🛕 Temples
+              </button>
+            </div>
+
+            <div className="carousel-container">
+              <button 
+                className="carousel-nav prev" 
+                onClick={() => attractionsRef.current?.scrollBy({ left: -380, behavior: 'smooth' })}
+                disabled={!canScrollLeft}
+              >
+                ‹
+              </button>
+
+              <div className="attractions-grid" ref={attractionsRef} onScroll={checkScroll}>
+                {ATTRACTIONS[activeTab].map((att) => (
+                  <div key={att.name} className="attraction-card fade-up">
+                    <div className="att-img-wrap">
+                      <img src={att.img} alt={att.name} loading="lazy" />
+                      <div className="att-distance">📍 {att.distance}</div>
+                    </div>
+                    <div className="att-info">
+                      <h3>{att.name}</h3>
+                      <p>{att.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <button 
+                className="carousel-nav next" 
+                onClick={() => attractionsRef.current?.scrollBy({ left: 380, behavior: 'smooth' })}
+                disabled={!canScrollRight}
+              >
+                ›
+              </button>
+            </div>
+          </div>
+        </section>
+
         {/* PEARLS Brand Section */}
         <section className="pearls-section">
           <div className="container">
@@ -213,24 +344,12 @@ export default function Home() {
                   </div>
                   <div className="r-actions-home">
                     <Link to="/booking" className="r-book-btn"><span>Book Now</span></Link>
-                    <div className="r-wa-group-home">
-                      <a
-                        href={WA_TEMPLATES.getRoomInfo(r.name, getPrice(r), CONTACT.whatsapp)}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="r-wa-btn"
-                        title="WhatsApp Us"
-                      >
-                        <i className="fa-brands fa-whatsapp"></i>
-                      </a>
-                    </div>
                   </div>
                 </div>
               ))}
             </div>
             <div className="tariff-foot">
               <Link to="/rooms" className="btn-primary"><span>View All Rooms</span></Link>
-              <Link to="/booking" className="btn-gold"><span>Book Your Stay</span></Link>
             </div>
           </div>
         </section>
@@ -264,14 +383,15 @@ export default function Home() {
             <h2 style={{ textAlign: 'center', marginBottom: '3rem' }}>What Our <em>Guests Say</em></h2>
 
             <div className="carousel-container">
-              <button className="carousel-nav prev" onClick={() => {
-                const track = document.querySelector('.reviews-carousel');
-                track.scrollBy({ left: -380, behavior: 'smooth' });
-              }}>
+              <button 
+                className="carousel-nav prev" 
+                onClick={() => reviewsRef.current?.scrollBy({ left: -380, behavior: 'smooth' })}
+                disabled={!canScrollRevLeft}
+              >
                 ‹
               </button>
 
-              <div className="reviews-carousel">
+              <div className="reviews-carousel" ref={reviewsRef} onScroll={checkRevScroll}>
                 {reviews.map((r, idx) => {
                   const initial = r.guestName ? r.guestName.charAt(0).toUpperCase() : '?';
                   const colors = ['#1a73e8', '#d93025', '#188038', '#f29900', '#a142f4', '#00acc1'];
@@ -330,10 +450,11 @@ export default function Home() {
                 })}
               </div>
 
-              <button className="carousel-nav next" onClick={() => {
-                const track = document.querySelector('.reviews-carousel');
-                track.scrollBy({ left: 380, behavior: 'smooth' });
-              }}>
+              <button 
+                className="carousel-nav next" 
+                onClick={() => reviewsRef.current?.scrollBy({ left: 380, behavior: 'smooth' })}
+                disabled={!canScrollRevRight}
+              >
                 ›
               </button>
             </div>

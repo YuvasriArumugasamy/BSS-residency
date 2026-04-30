@@ -192,7 +192,7 @@ export default function Booking() {
               {/* Premium Payment Section */}
               <div className="payment-checkout-card">
                 <div className="pc-badge">Action Required: Secure Your Booking</div>
-                <h3 className="pc-title">Pay Advance ₹{advanceAmount}</h3>
+                <h3 className="pc-title">Pay Advance ₹ {advanceAmount}</h3>
                 <p className="pc-subtitle">Scan QR code or use the UPI ID below to pay via GPay, PhonePe, or Paytm.</p>
                 
                 <div className="pc-grid">
@@ -233,7 +233,7 @@ export default function Booking() {
                     <div className="payment-steps-new">
                       <div className="psn-item">
                         <span className="psn-num">1</span>
-                        <span>Pay <strong>₹{advanceAmount}</strong> advance</span>
+                        <span>Pay <strong>₹ {advanceAmount}</strong> advance</span>
                       </div>
                       <div className="psn-item">
                         <span className="psn-num">2</span>
@@ -282,15 +282,15 @@ export default function Booking() {
               <div className="pending-price-breakdown">
                 <div className="pb-row">
                   <span>Room Charges</span>
-                  <span>₹{pendingBooking.roomCharges?.toLocaleString('en-IN')}</span>
+                  <span>₹ {pendingBooking.roomCharges?.toLocaleString('en-IN')}</span>
                 </div>
                 <div className="pb-row">
                   <span>GST (12%)</span>
-                  <span>₹{pendingBooking.gstAmount?.toLocaleString('en-IN')}</span>
+                  <span>₹ {pendingBooking.gstAmount?.toLocaleString('en-IN')}</span>
                 </div>
                 <div className="pb-total">
                   <span>Total Amount</span>
-                  <strong>₹{pendingBooking.totalPrice?.toLocaleString('en-IN')}</strong>
+                  <strong>₹ {pendingBooking.totalPrice?.toLocaleString('en-IN')}</strong>
                 </div>
               </div>
 
@@ -409,7 +409,7 @@ export default function Booking() {
                               <span className="rc-type">{r.type}</span>
                             </div>
                             <div className="rc-price">
-                              <span className="rc-rate">₹{getPrice(r).toLocaleString('en-IN')}</span>
+                              <span className="rc-rate">₹ {getPrice(r).toLocaleString('en-IN')}</span>
                               <span className="rc-per">/ night</span>
                             </div>
                             {form.roomType === r.name && (
@@ -724,16 +724,16 @@ export default function Booking() {
                 <div className="price-breakdown">
                   <div className="pb-header">Price Breakdown</div>
                   <div className="pb-row">
-                    <span>₹{getPrice(selectedRoom).toLocaleString('en-IN')} × {nights} night{nights > 1 ? 's' : ''} × {form.rooms} room{form.rooms > 1 ? 's' : ''}</span>
-                    <span>₹{roomCharges.toLocaleString('en-IN')}</span>
+                    <span>₹ {getPrice(selectedRoom).toLocaleString('en-IN')} × {nights} night{nights > 1 ? 's' : ''} × {form.rooms} room{form.rooms > 1 ? 's' : ''}</span>
+                    <span>₹ {roomCharges.toLocaleString('en-IN')}</span>
                   </div>
                   <div className="pb-row">
                     <span>GST</span>
-                    <span>₹{gstAmount.toLocaleString('en-IN')}</span>
+                    <span>₹ {gstAmount.toLocaleString('en-IN')}</span>
                   </div>
                   <div className="pb-total-row">
                     <span>Total</span>
-                    <strong>₹{totalPrice.toLocaleString('en-IN')}</strong>
+                    <strong>₹ {totalPrice.toLocaleString('en-IN')}</strong>
                   </div>
                   <p className="pb-note">Inclusive of all taxes. Payment at property.</p>
                 </div>
