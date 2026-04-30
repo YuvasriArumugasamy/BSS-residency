@@ -160,8 +160,8 @@ export default function Booking() {
 
   // --- SUCCESS / PENDING SCREEN ---
   if (pendingBooking) {
-    const bookingId = pendingBooking.bookingId || pendingBooking._id;
-    const shortId = bookingId?.toString().slice(-6).toUpperCase() || '';
+    const bookingId = pendingBooking.bookingId || (pendingBooking._id ? String(parseInt(pendingBooking._id.toString().slice(-6), 16)).padStart(6, '0').slice(-6) : '');
+    const shortId = bookingId;
     const waMsg = `Hello BSS Residency! 🙏\n\nI just submitted a booking request.\nBooking ID: ${bookingId}\nName: ${pendingBooking.name}\nRoom: ${pendingBooking.roomType}\nCheck-in: ${new Date(pendingBooking.checkIn).toLocaleDateString('en-IN')}\nCheck-out: ${new Date(pendingBooking.checkOut).toLocaleDateString('en-IN')}\n\nI have paid the advance of ₹500 via UPI. Please confirm!`;
 
     return (

@@ -109,7 +109,7 @@
 .footer-bottom {
   max-width: 1200px; margin: 0 auto;
   display: flex; justify-content: space-between; align-items: center;
-  padding: 1.5rem 0; font-size: 0.78rem; color: rgba(255,255,255,0.7);
+  padding: 1.5rem 0; font-size: 0.85rem; color: #ffffff;
   position: relative; z-index: 1;
   animation: fadeIn 0.8s ease 0.4s both;
 }
@@ -151,7 +151,9 @@
   }
   .footer-bottom {
     padding: 2rem 0;
-    color: rgba(255,255,255,0.9) !important;
+    color: #ffffff !important;
+    font-size: 0.85rem !important;
+    line-height: 1.5;
     border-top: 1px solid rgba(255,255,255,0.1);
   }
   .admin-link {

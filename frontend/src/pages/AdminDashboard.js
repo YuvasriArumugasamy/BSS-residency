@@ -346,7 +346,7 @@ const BookingManagement = ({ bookings = [], period, setPeriod, onConfirm, onCanc
                 <td>
                   <div style={{ fontWeight: 600 }}>{b.name || 'Unknown'}</div>
                   <div style={{ fontSize: '0.75rem', color: 'var(--admin-primary)', fontWeight: 600 }}>
-                    #{b.bookingId || (b._id ? b._id.toString().slice(-6) : 'N/A')}
+                    #{b.bookingId || (b._id ? String(parseInt(b._id.toString().slice(-6), 16)).padStart(6, '0').slice(-6) : 'N/A')}
                   </div>
                   <div style={{ fontSize: '0.7rem', color: '#888' }}>{b.email || ''}</div>
                 </td>

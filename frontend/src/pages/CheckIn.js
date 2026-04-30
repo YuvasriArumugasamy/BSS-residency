@@ -242,7 +242,7 @@ export default function CheckIn() {
           <div className="ci-booking-banner">
             <div className="ci-bb-item">
               <span>Booking ID</span>
-              <strong>#{booking.bookingId || booking._id?.toString().slice(-6).toUpperCase()}</strong>
+              <strong>#{booking.bookingId || (booking._id ? String(parseInt(booking._id.toString().slice(-6), 16)).padStart(6, '0').slice(-6) : '')}</strong>
             </div>
             <div className="ci-bb-item">
               <span>Room</span>

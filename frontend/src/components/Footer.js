@@ -58,7 +58,7 @@ export default function Footer() {
           <h4>Contact</h4>
           <p>📞 {CONTACT.phonePrimary}</p>
           <p>📞 {CONTACT.phoneSecondary}</p>
-          <p><i className="fa-brands fa-instagram"></i> <a href={`https://instagram.com/${CONTACT.instagram}`} target="_blank" rel="noreferrer" style={{color:'inherit', textDecoration:'none'}}>@{CONTACT.instagram}</a></p>
+          <p><i className="fa-brands fa-instagram"></i> <a href={`https://instagram.com/${CONTACT.instagram}`} target="_blank" rel="noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>@{CONTACT.instagram}</a></p>
           <a
             href={MAP.directUrl}
             target="_blank"
@@ -71,7 +71,7 @@ export default function Footer() {
       </div>
 
       <div className="footer-bottom">
-        <p>© {new Date().getFullYear()} BSS Residency, Courtallam. All rights reserved.</p>
+        <p>Copyright © {new Date().getFullYear()} BSS Residency, Courtallam. All rights reserved | Website Designed ❤️ by  Yuvasri Arumugasamy</p>
         <Link to="/admin/login" className="admin-link">Admin</Link>
       </div>
     </footer>
