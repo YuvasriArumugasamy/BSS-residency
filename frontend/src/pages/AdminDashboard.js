@@ -243,7 +243,7 @@ const RoomManagement = ({ rooms, onAddClick, onDeleteRoom, onUpdateRoom }) => {
   );
 };
 
-const BookingManagement = ({ bookings = [], period, setPeriod, onConfirm, onCancel, onWhatsApp, onCheckOut, onUpdateRoomNumber, onDelete, onAddPayment, onViewCheckin, formatDate }) => {
+const BookingManagement = ({ bookings = [], rooms = [], period, setPeriod, onConfirm, onCancel, onWhatsApp, onCheckOut, onUpdateRoomNumber, onDelete, onAddPayment, onViewCheckin, formatDate }) => {
   const [filter, setFilter] = React.useState('All');
 
   const safeBookings = Array.isArray(bookings) ? bookings : [];
@@ -354,13 +354,18 @@ const BookingManagement = ({ bookings = [], period, setPeriod, onConfirm, onCanc
                 <td>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
                     <div style={{ fontWeight: 600 }}>{b.roomType}</div>
-                    <input
-                      type="text"
-                      placeholder="Room #"
+                    <select
                       value={b.roomNumber || ''}
                       onChange={(e) => onUpdateRoomNumber(b._id, e.target.value)}
-                      style={{ width: '70px', fontSize: '0.75rem', padding: '2px 5px', borderRadius: '4px', border: '1px solid #ddd' }}
-                    />
+                      style={{ width: '130px', fontSize: '0.8rem', padding: '4px 8px', borderRadius: '4px', border: '1px solid #ddd', backgroundColor: '#f9fafb', cursor: 'pointer' }}
+                    >
+                      <option value="">Assign Room</option>
+                      {rooms.map(r => (
+                        <option key={r.roomNumber} value={r.roomNumber}>
+                          {r.roomNumber} ({r.type.split(' ')[0]})
+                        </option>
+                      ))}
+                    </select>
                   </div>
                 </td>
                 <td style={{ fontSize: '0.85rem' }}>
@@ -1053,6 +1058,7 @@ export default function AdminDashboard() {
       case 'rooms': return <RoomManagement rooms={rooms} onAddClick={openAddModal} onDeleteRoom={handleDeleteRoom} onUpdateRoom={openEditModal} />;
       case 'bookings': return <BookingManagement
         bookings={bookings}
+        rooms={rooms}
         period={bookingsPeriod}
         setPeriod={setBookingsPeriod}
         onConfirm={handleConfirmBooking}

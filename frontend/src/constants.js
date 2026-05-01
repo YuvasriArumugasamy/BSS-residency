@@ -108,9 +108,9 @@ export const ROOMS = [
 ];
 
 export const AMENITIES = [
-  { icon: '❄️', label: 'A/C Rooms Available' },
-  { icon: '🅿️', label: 'Parking Available' },
-  { icon: '💧', label: '100 mt by Courtallam' },
+  { icon: '❄️', label: 'A/C Rooms' },
+  { icon: '🅿️', label: 'Limited Parking' },
+  { icon: '💧', label: '100m to Falls' },
   { icon: '🔒', label: 'CCTV Security' },
   { icon: '📶', label: 'Free Wi-Fi' },
   { icon: '🚿', label: '24hr Hot Water' },

@@ -14,8 +14,16 @@ import oldFalls from '../assets/old falls.png';
 import chitraruvi from '../assets/Chitraruvi.png';
 import tigerFalls from '../assets/tiger falls.jpg';
 import palaruviFalls from '../assets/aruvi.png';
+import fruitGardenFalls from '../assets/Fruit Garden Falls.png';
+import honeyFalls from '../assets/Honey Falls.png';
+import shenbagadeviFalls from '../assets/Shenbagadevi Falls.png';
+import roomFamily from '../assets/room-family.jpg';
+import roomAc3 from '../assets/room-ac-3.jpg';
 import gundarDam from '../assets/gundar dam.jpg';
 import adaviNainarDam from '../assets/Adavi Nainar Dam.png';
+import gadananathiDam from '../assets/Gadananathi Dam.png';
+import karuppanadhiDam from '../assets/Karuppanadhi Dam.png';
+import ramanadhiDam from '../assets/Ramanadhi Dam.png';
 import kasiTemple from '../assets/kasi.png';
 import tirumalaiKovil from '../assets/Tirumalai Kovil.jpg';
 import kutralanatharTemple from '../assets/Kutralanathar Temple.png';
@@ -23,6 +31,13 @@ import ariyankavuTemple from '../assets/Ariyankavu Iyappan Kovil.png';
 import { AMENITIES, ROOMS, CONTACT, waLink, WA_TEMPLATES } from '../constants';
 import api from '../api/axios';
 import './Home.css';
+
+const imgMap = {
+  'double-bed': roomAcImg,       // Was 2nd, now 1st
+  'double-bed-ac': roomAc3,      // Was 4th, now 2nd
+  'four-bed': roomGal1,          // Stays 3rd
+  'four-bed-ac': roomFamily,     // Was 1st, now 4th
+};
 
 const PEARLS_ITEMS = [
   { letter: 'P', title: 'Peaceful stay', desc: 'A calm and serene environment for your relaxation.' },
@@ -40,11 +55,17 @@ const ATTRACTIONS = {
     { name: 'Old Falls', desc: 'A calm and peaceful bathing spot away from the crowd.', distance: '6km', img: oldFalls },
     { name: 'Chitraruvi', desc: 'A beautiful small cascade located very close to the Main Falls.', distance: '200m', img: chitraruvi },
     { name: 'Tiger Falls', desc: 'A moderate waterfall perfect for children and family bathing.', distance: '1.5km', img: tigerFalls },
-    { name: 'Palaruvi Falls', desc: 'A stunning "Milk Falls" located near the Kerala border.', distance: '28km', img: palaruviFalls }
+    { name: 'Palaruvi Falls', desc: 'A stunning "Milk Falls" located near the Kerala border.', distance: '28km', img: palaruviFalls },
+    { name: 'Fruit Garden Falls', desc: 'A beautiful cascade surrounded by fruit orchards and lush greenery.', distance: '2km', img: fruitGardenFalls },
+    { name: 'Honey Falls', desc: 'A picturesque waterfall hidden in dense forests, ideal for trekking.', distance: '4km', img: honeyFalls },
+    { name: 'Shenbagadevi Falls', desc: 'A serene waterfall named after the nearby Shenbagadevi Amman temple.', distance: '3km', img: shenbagadeviFalls }
   ],
   dams: [
     { name: 'Gundar Dam', desc: 'Breathtaking views of the mountains and a calm reservoir.', distance: '6km', img: gundarDam },
-    { name: 'Adavi Nainar Dam', desc: 'A large dam located at the foothills of the Western Ghats.', distance: '15km', img: adaviNainarDam }
+    { name: 'Adavi Nainar Dam', desc: 'A large dam located at the foothills of the Western Ghats.', distance: '15km', img: adaviNainarDam },
+    { name: 'Gadananathi Dam', desc: 'Surrounded by lush green hills, a perfect peaceful getaway.', distance: '25km', img: gadananathiDam },
+    { name: 'Karuppanadhi Dam', desc: 'A serene and beautiful dam nestled in nature.', distance: '25km', img: karuppanadhiDam },
+    { name: 'Ramanadhi Dam', desc: 'Scenic reservoir offering stunning views of the Western Ghats.', distance: '20km', img: ramanadhiDam }
   ],
   temples: [
     { name: 'Kutralanathar Temple', desc: 'Ancient Shiva temple within walking distance from Main Falls.', distance: '200m', img: kutralanatharTemple },
@@ -334,7 +355,9 @@ export default function Home() {
             <div className="rooms-grid">
               {ROOMS.map((r) => (
                 <div key={r.key} className="room-card-home">
-                  <span className="r-icon">{r.icon}</span>
+                  <div className="r-img-wrapper">
+                    <img src={imgMap[r.key]} alt={r.name} className="r-card-img" />
+                  </div>
                   <h3>{r.name}</h3>
                   <span className="r-type-pill">{r.type}</span>
                   <div className="r-price">

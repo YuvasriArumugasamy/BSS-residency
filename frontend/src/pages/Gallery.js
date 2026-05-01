@@ -15,7 +15,7 @@ const photos = [
   { id: 4, src: roomImg,     caption: 'Clean & Comfortable Bedding',     category: 'Rooms' },
   { id: 5, src: roomFamily,  caption: 'Double Bed Room — Cosy Interiors', category: 'Rooms' },
   { id: 6, src: roomAc3,     caption: 'Spacious Family Room',            category: 'Rooms' },
-  { id: 7, src: buildingImg, caption: 'Parking Area — Ample Space',      category: 'Facilities' },
+  { id: 7, src: buildingImg, caption: 'Parking Area (Limited Space)',      category: 'Facilities' },
 ];
 
 const categories = ['All', 'Exterior', 'Rooms', 'Facilities'];

@@ -9,10 +9,10 @@ import { ROOMS, waLink, WA_TEMPLATES, CONTACT } from '../constants';
 import './Rooms.css';
 
 const imgMap = {
-  'double-bed': roomFamily,
-  'double-bed-ac': roomAc2,
+  'double-bed': roomAc2,
+  'double-bed-ac': roomAc3,
   'four-bed': roomAc1,
-  'four-bed-ac': roomAc3,
+  'four-bed-ac': roomFamily,
 };
 
 export default function Rooms() {
