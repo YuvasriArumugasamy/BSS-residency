@@ -82,36 +82,40 @@ mongoose
       }
     });
 
-    // Auto-seed default rooms if empty
-    const Room = require('./models/Room');
-    Room.countDocuments().then(count => {
-      if (count === 0) {
-        const defaultRooms = [
-          { type: 'Double Bed', count: 5, price: 1000 },
-          { type: 'Double Bed A/C', count: 5, price: 1300 },
-          { type: 'Four Bed', count: 5, price: 2000 },
-          { type: 'Four Bed A/C', count: 5, price: 2300 }
+    // Auto-seed default rooms if missing types
+    (async () => {
+      try {
+        const Room = require('./models/Room');
+        const requiredTypes = [
+          { type: 'Double Bed', price: 1000 },
+          { type: 'Double Bed A/C', price: 1300 },
+          { type: 'Four Bed', price: 2000 },
+          { type: 'Four Bed A/C', price: 2300 }
         ];
-        
-        let roomsToSave = [];
-        let roomNum = 101;
-        
-        defaultRooms.forEach(group => {
-          for(let i=0; i<group.count; i++) {
-            roomsToSave.push({
-              roomNumber: (roomNum++).toString(),
-              type: group.type,
-              price: group.price,
-              status: 'Available'
-            });
+
+        for (const roomSpec of requiredTypes) {
+          const count = await Room.countDocuments({ type: roomSpec.type });
+          if (count === 0) {
+            console.log(`Seeding 5 rooms for missing type: ${roomSpec.type}`);
+            let roomsToSave = [];
+            const lastRoom = await Room.findOne().sort({ roomNumber: -1 });
+            let startNum = lastRoom ? parseInt(lastRoom.roomNumber) + 1 : 101;
+            
+            for(let i=0; i<5; i++) {
+              roomsToSave.push({
+                roomNumber: (startNum++).toString(),
+                type: roomSpec.type,
+                price: roomSpec.price,
+                status: 'Available'
+              });
+            }
+            await Room.insertMany(roomsToSave);
           }
-        });
-        
-        Room.insertMany(roomsToSave)
-          .then(() => console.log('Default rooms seeded successfully'))
-          .catch(err => console.error('Room seeding failed:', err));
+        }
+      } catch (e) {
+        console.error('Seeding error:', e);
       }
-    });
+    })();
 
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
   })
