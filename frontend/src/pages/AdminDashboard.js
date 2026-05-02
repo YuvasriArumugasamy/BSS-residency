@@ -235,8 +235,11 @@ const RoomManagement = ({ rooms, onAddClick, onDeleteRoom, onUpdateRoom }) => {
               </div>
               <span className={`status-pill status-${room.status}`}>{room.status}</span>
             </div>
-            <div style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--admin-primary)', marginBottom: '1rem' }}>
+            <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--admin-primary)', marginBottom: '1rem' }}>
               ₹{room.price}/night
+              <div style={{ fontSize: '0.7rem', color: '#888', fontWeight: 400, marginTop: '2px' }}>
+                (Regular: ₹{room.nonSeasonPrice} | Peak: ₹{room.seasonPrice})
+              </div>
             </div>
             <div style={{ display: 'flex', gap: '0.5rem' }}>
               <button
@@ -958,7 +961,7 @@ export default function AdminDashboard() {
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [roomForm, setRoomForm] = useState({ roomNumber: '', type: 'AC Double Bed', price: '', status: 'Available' });
+  const [roomForm, setRoomForm] = useState({ roomNumber: '', type: 'Double Bed A/C', nonSeasonPrice: '', seasonPrice: '', status: 'Available' });
   const [editingRoomId, setEditingRoomId] = useState(null);
 
   // Payment Modal State
@@ -1075,10 +1078,14 @@ export default function AdminDashboard() {
     e.preventDefault();
     const headers = { username: auth.username, password: auth.password };
     try {
+      // Logic: If isSeason is ON, active price = seasonPrice, else nonSeasonPrice
+      const activePrice = isSeason ? roomForm.seasonPrice : roomForm.nonSeasonPrice;
+      const payload = { ...roomForm, price: activePrice };
+      
       if (editingRoomId) {
-        await api.patch(`/api/admin/rooms/${editingRoomId}`, roomForm, { headers });
+        await api.patch(`/api/admin/rooms/${editingRoomId}`, payload, { headers });
       } else {
-        await api.post('/api/admin/rooms', roomForm, { headers });
+        await api.post('/api/admin/rooms', payload, { headers });
       }
       setIsModalOpen(false);
       fetchData();
@@ -1088,13 +1095,19 @@ export default function AdminDashboard() {
   };
 
   const openAddModal = () => {
-    setRoomForm({ roomNumber: '', type: 'AC Double Bed', price: '', status: 'Available' });
+    setRoomForm({ roomNumber: '', type: 'Double Bed A/C', nonSeasonPrice: '', seasonPrice: '', status: 'Available' });
     setEditingRoomId(null);
     setIsModalOpen(true);
   };
 
   const openEditModal = (room) => {
-    setRoomForm({ roomNumber: room.roomNumber, type: room.type, price: room.price, status: room.status });
+    setRoomForm({ 
+      roomNumber: room.roomNumber, 
+      type: room.type, 
+      nonSeasonPrice: room.nonSeasonPrice || room.price, 
+      seasonPrice: room.seasonPrice || room.price, 
+      status: room.status 
+    });
     setEditingRoomId(room._id);
     setIsModalOpen(true);
   };
@@ -1337,6 +1350,7 @@ export default function AdminDashboard() {
         try {
           await api.patch('/api/admin/settings', { isSeason: val }, { headers });
           setIsSeason(val);
+          fetchData();
         } catch (err) {
           alert('Error updating season mode');
         }
@@ -1418,10 +1432,10 @@ export default function AdminDashboard() {
             <div className="form-group">
               <label>Room Type</label>
               <select value={roomForm.type} onChange={e => setRoomForm({ ...roomForm, type: e.target.value })}>
-                <option>Double Bed</option>
                 <option>Double Bed A/C</option>
-                <option>Four Bed</option>
                 <option>Four Bed A/C</option>
+                <option>Double Bed</option>
+                <option>Four Bed</option>
                 <option>Three Bed</option>
                 <option>Deluxe AC</option>
                 <option>Suite</option>
@@ -1430,21 +1444,31 @@ export default function AdminDashboard() {
           </div>
           <div className="form-row">
             <div className="form-group">
-              <label>Price (₹)</label>
+              <label>Regular Price (₹)</label>
               <input
                 type="number" required
-                value={roomForm.price}
-                onChange={e => setRoomForm({ ...roomForm, price: e.target.value })}
+                value={roomForm.nonSeasonPrice}
+                onChange={e => setRoomForm({ ...roomForm, nonSeasonPrice: e.target.value })}
+                placeholder="e.g. 1300"
               />
             </div>
             <div className="form-group">
-              <label>Status</label>
-              <select value={roomForm.status} onChange={e => setRoomForm({ ...roomForm, status: e.target.value })}>
-                <option>Available</option>
-                <option>Occupied</option>
-                <option>Maintenance</option>
-              </select>
+              <label>Peak Season Price (₹)</label>
+              <input
+                type="number" required
+                value={roomForm.seasonPrice}
+                onChange={e => setRoomForm({ ...roomForm, seasonPrice: e.target.value })}
+                placeholder="e.g. 1600"
+              />
             </div>
+          </div>
+          <div className="form-group">
+            <label>Status</label>
+            <select value={roomForm.status} onChange={e => setRoomForm({ ...roomForm, status: e.target.value })}>
+              <option>Available</option>
+              <option>Occupied</option>
+              <option>Maintenance</option>
+            </select>
           </div>
           <button type="submit" className="admin-btn admin-btn-primary" style={{ width: '100%' }}>
             {editingRoomId ? "Update Room" : "Create Room"}

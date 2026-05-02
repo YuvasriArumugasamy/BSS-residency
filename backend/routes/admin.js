@@ -420,6 +420,15 @@ router.patch('/settings', adminAuth, async (req, res) => {
         { value: isSeason },
         { upsert: true, new: true }
       );
+      
+      // Update all rooms to use the correct seasonal price
+      const rooms = await Room.find();
+      for (const room of rooms) {
+        if (room.seasonPrice && room.nonSeasonPrice) {
+          room.price = isSeason ? room.seasonPrice : room.nonSeasonPrice;
+          await room.save();
+        }
+      }
     }
     res.json({ success: true, message: 'Settings updated' });
   } catch (err) {
@@ -487,28 +496,59 @@ router.get('/notifications', adminAuth, async (req, res) => {
 // POST /api/admin/rooms/reset-layout — Reset database to the specific 20-room floor layout
 router.post('/rooms/reset-layout', adminAuth, async (req, res) => {
   try {
+    const Settings = mongoose.model('Settings');
+    const settings = await Settings.findOne();
+    const isSeason = settings ? settings.isSeason : false;
+
     await Room.deleteMany({});
     const roomsToCreate = [];
+
+    const getPrices = (type) => {
+      if (type === 'Four Bed A/C') return { nonSeason: 2300, season: 2800 };
+      return { nonSeason: 1300, season: 1600 };
+    };
+
     // 1st Floor (101-106)
     for (let i = 101; i <= 106; i++) {
       const type = (i === 102) ? 'Four Bed A/C' : 'Double Bed A/C';
-      const price = (type === 'Four Bed A/C' ? 2300 : 1300);
-      roomsToCreate.push({ roomNumber: i.toString(), type, price, status: 'Available' });
+      const prices = getPrices(type);
+      roomsToCreate.push({
+        roomNumber: i.toString(),
+        type,
+        nonSeasonPrice: prices.nonSeason,
+        seasonPrice: prices.season,
+        price: isSeason ? prices.season : prices.nonSeason,
+        status: 'Available'
+      });
     }
     // 2nd Floor (201-207)
     for (let i = 201; i <= 207; i++) {
       const type = ([201, 202, 207].includes(i)) ? 'Four Bed A/C' : 'Double Bed A/C';
-      const price = (type === 'Four Bed A/C' ? 2300 : 1300);
-      roomsToCreate.push({ roomNumber: i.toString(), type, price, status: 'Available' });
+      const prices = getPrices(type);
+      roomsToCreate.push({
+        roomNumber: i.toString(),
+        type,
+        nonSeasonPrice: prices.nonSeason,
+        seasonPrice: prices.season,
+        price: isSeason ? prices.season : prices.nonSeason,
+        status: 'Available'
+      });
     }
     // 3rd Floor (301-307)
     for (let i = 301; i <= 307; i++) {
       const type = ([302, 307].includes(i)) ? 'Four Bed A/C' : 'Double Bed A/C';
-      const price = (type === 'Four Bed A/C' ? 2300 : 1300);
-      roomsToCreate.push({ roomNumber: i.toString(), type, price, status: 'Available' });
+      const prices = getPrices(type);
+      roomsToCreate.push({
+        roomNumber: i.toString(),
+        type,
+        nonSeasonPrice: prices.nonSeason,
+        seasonPrice: prices.season,
+        price: isSeason ? prices.season : prices.nonSeason,
+        status: 'Available'
+      });
     }
     await Room.insertMany(roomsToCreate);
-    res.json({ success: true, message: 'Lodge layout reset successfully to 20 rooms.' });
+    res.json({ success: true, message: 'Lodge layout reset successfully with seasonal pricing.' });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }

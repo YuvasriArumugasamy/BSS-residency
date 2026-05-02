@@ -8,7 +8,9 @@ const roomSchema = new mongoose.Schema(
       required: true, 
       enum: ['Double Bed', 'Double Bed A/C', 'Four Bed', 'Four Bed A/C', 'Deluxe AC', 'Suite'],
     },
-    price: { type: Number, required: true },
+    price: { type: Number, required: true }, // Current active price
+    nonSeasonPrice: { type: Number },
+    seasonPrice: { type: Number },
     status: { 
       type: String, 
       enum: ['Available', 'Occupied', 'Maintenance'], 
