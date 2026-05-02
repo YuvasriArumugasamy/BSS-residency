@@ -490,20 +490,37 @@ router.get('/notifications', adminAuth, async (req, res) => {
   }
 });
 
-// POST /api/admin/rooms/renumber — Fix room numbers (renumber 1-99 to 101+)
-router.post('/rooms/renumber', adminAuth, async (req, res) => {
+// POST /api/admin/rooms/reset-layout — Reset database to the specific 20-room floor layout
+router.post('/rooms/reset-layout', adminAuth, async (req, res) => {
   try {
-    const shortRooms = await Room.find({ roomNumber: { $regex: /^[0-9]$|^[0-9][0-9]$/ } });
-    if (shortRooms.length > 0) {
-      for (const room of shortRooms) {
-        const lastRoom = await Room.findOne({ roomNumber: { $not: /^[0-9]$|^[0-9][0-9]$/ } }).sort({ roomNumber: -1 });
-        let nextNum = lastRoom ? parseInt(lastRoom.roomNumber) + 1 : 101;
-        if (nextNum < 101) nextNum = 101;
-        room.roomNumber = nextNum.toString();
-        await room.save();
-      }
+    // 1. Clear existing rooms
+    await Room.deleteMany({});
+
+    const roomsToCreate = [];
+
+    // --- First Floor (6 rooms: 101-106) ---
+    for (let i = 101; i <= 106; i++) {
+      const type = (i === 102) ? 'Four Bed A/C' : 'Double Bed A/C';
+      const price = (type === 'Four Bed A/C') ? 2500 : 1500;
+      roomsToCreate.push({ roomNumber: i.toString(), type, price, status: 'Available' });
     }
-    res.json({ success: true, message: `Fixed ${shortRooms.length} rooms` });
+
+    // --- Second Floor (7 rooms: 201-207) ---
+    for (let i = 201; i <= 207; i++) {
+      const type = ([201, 202, 207].includes(i)) ? 'Four Bed A/C' : 'Double Bed A/C';
+      const price = (type === 'Four Bed A/C') ? 2500 : 1500;
+      roomsToCreate.push({ roomNumber: i.toString(), type, price, status: 'Available' });
+    }
+
+    // --- Third Floor (7 rooms: 301-307) ---
+    for (let i = 301; i <= 307; i++) {
+      const type = ([302, 307].includes(i)) ? 'Four Bed A/C' : 'Double Bed A/C';
+      const price = (type === 'Four Bed A/C') ? 2500 : 1500;
+      roomsToCreate.push({ roomNumber: i.toString(), type, price, status: 'Available' });
+    }
+
+    await Room.insertMany(roomsToCreate);
+    res.json({ success: true, message: 'Lodge layout reset successfully to 20 rooms.' });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
