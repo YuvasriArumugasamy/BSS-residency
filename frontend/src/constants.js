@@ -115,6 +115,7 @@ export const AMENITIES = [
   { icon: '📶', label: 'Free Wi-Fi' },
   { icon: '🚿', label: '24hr Hot Water' },
   { icon: '🛏️', label: 'Extra Bed Available' },
+  { icon: '✨', label: 'Prime Location' },
 ];
 
 export const waLink = (text = 'Hello BSS Residency!', num = CONTACT.whatsapp) =>
