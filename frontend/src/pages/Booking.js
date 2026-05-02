@@ -505,17 +505,15 @@ export default function Booking() {
                           const ds = `${calendarYear}-${String(calendarMonth).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
                           const isSelected = form.checkIn === ds || form.checkOut === ds;
                           
-                          let statusClass = 'available';
-                          if (avail === 0) statusClass = 'full';
-                          else if (avail === 1) statusClass = 'limited';
-                          if (isPast) statusClass = 'past';
+                          const statusClass = avail === 0 ? 'full' : (avail === 1 ? 'limited' : 'available');
+                          const isActuallyPast = isPast; // already calculated above
 
                           return (
                             <div 
                               key={day} 
-                              className={`calendar-day ${statusClass} ${isSelected ? 'selected' : ''}`}
+                              className={`calendar-day ${isActuallyPast ? 'past' : statusClass} ${isSelected ? 'selected' : ''}`}
                               onClick={() => {
-                                if (!isPast && avail > 0) {
+                                if (!isActuallyPast && (avail === undefined || avail > 0)) {
                                   if (!form.checkIn || (form.checkIn && form.checkOut)) {
                                     setForm(prev => ({ ...prev, checkIn: ds, checkOut: '' }));
                                   } else {
@@ -529,9 +527,9 @@ export default function Booking() {
                               }}
                             >
                               <span className="day-num">{day}</span>
-                              {!isPast && (
+                              {!isActuallyPast && (
                                 <span className="day-avail">
-                                  {avail === 0 ? 'Full' : 'Available'}
+                                  {avail === 0 ? 'Full' : (avail === undefined ? 'Available' : 'Available')}
                                 </span>
                               )}
                             </div>
