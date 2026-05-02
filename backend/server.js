@@ -82,6 +82,37 @@ mongoose
       }
     });
 
+    // Auto-seed default rooms if empty
+    const Room = require('./models/Room');
+    Room.countDocuments().then(count => {
+      if (count === 0) {
+        const defaultRooms = [
+          { type: 'Double Bed', count: 5, price: 1000 },
+          { type: 'Double Bed A/C', count: 5, price: 1300 },
+          { type: 'Four Bed', count: 5, price: 2000 },
+          { type: 'Four Bed A/C', count: 5, price: 2300 }
+        ];
+        
+        let roomsToSave = [];
+        let roomNum = 101;
+        
+        defaultRooms.forEach(group => {
+          for(let i=0; i<group.count; i++) {
+            roomsToSave.push({
+              roomNumber: (roomNum++).toString(),
+              type: group.type,
+              price: group.price,
+              status: 'Available'
+            });
+          }
+        });
+        
+        Room.insertMany(roomsToSave)
+          .then(() => console.log('Default rooms seeded successfully'))
+          .catch(err => console.error('Room seeding failed:', err));
+      }
+    });
+
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
   })
   .catch((err) => {

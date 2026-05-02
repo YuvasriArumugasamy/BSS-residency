@@ -196,10 +196,16 @@ router.get('/stats', adminAuth, async (req, res) => {
     const payments = await Payment.find(paymentFilter);
     const totalRevenue = payments.reduce((sum, p) => sum + p.amount, 0);
 
-    // Occupancy (Current building state - usually not filtered by period)
+    // Today's active bookings (those currently in-house or arriving today)
+    const activeBookingsToday = await Booking.find({
+      status: { $in: ['Confirmed', 'Pending'] },
+      checkIn: { $lte: todayEnd },
+      checkOut: { $gt: todayStart }
+    });
+    
+    const roomsOccupiedByBookings = activeBookingsToday.reduce((sum, b) => sum + (b.rooms || 1), 0);
     const totalRooms = await Room.countDocuments();
-    const occupiedRooms = await Room.countDocuments({ status: 'Occupied' });
-    const availableRooms = await Room.countDocuments({ status: 'Available' });
+    const availableRooms = Math.max(0, totalRooms - roomsOccupiedByBookings);
 
     // Today's activity
     const todayStart = new Date(); todayStart.setHours(0, 0, 0, 0);

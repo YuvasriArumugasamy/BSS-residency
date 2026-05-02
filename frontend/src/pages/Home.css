@@ -1980,8 +1980,11 @@
   }
   .notice-close {
     top: 5px;
-    right: 10px;
-    font-size: 1.2rem;
+    right: 5px;
+    font-size: 2.2rem;
+    padding: 10px;
+    line-height: 1;
+    z-index: 1000;
   }
 }
 

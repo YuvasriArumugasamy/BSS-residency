@@ -1352,7 +1352,11 @@ export default function AdminDashboard() {
         {/* Mobile Header */}
         <header className="admin-mobile-header">
           <div className="mobile-logo">BSS <span>Residency</span></div>
-          <button className="mobile-menu-btn" onClick={() => document.body.classList.toggle('sidebar-open')}>
+          <button 
+            className="mobile-menu-btn" 
+            onClick={() => document.body.classList.toggle('sidebar-open')}
+            aria-label="Toggle Menu"
+          >
             <div className="hamburger"></div>
           </button>
         </header>
