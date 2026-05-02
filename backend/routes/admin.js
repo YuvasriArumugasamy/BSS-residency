@@ -490,4 +490,23 @@ router.get('/notifications', adminAuth, async (req, res) => {
   }
 });
 
+// POST /api/admin/rooms/renumber — Fix room numbers (renumber 1-99 to 101+)
+router.post('/rooms/renumber', adminAuth, async (req, res) => {
+  try {
+    const shortRooms = await Room.find({ roomNumber: { $regex: /^[0-9]$|^[0-9][0-9]$/ } });
+    if (shortRooms.length > 0) {
+      for (const room of shortRooms) {
+        const lastRoom = await Room.findOne({ roomNumber: { $not: /^[0-9]$|^[0-9][0-9]$/ } }).sort({ roomNumber: -1 });
+        let nextNum = lastRoom ? parseInt(lastRoom.roomNumber) + 1 : 101;
+        if (nextNum < 101) nextNum = 101;
+        room.roomNumber = nextNum.toString();
+        await room.save();
+      }
+    }
+    res.json({ success: true, message: `Fixed ${shortRooms.length} rooms` });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 module.exports = router;

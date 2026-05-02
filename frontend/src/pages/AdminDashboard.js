@@ -1368,6 +1368,18 @@ export default function AdminDashboard() {
               <p>Work with real occupancy and data logs</p>
             </div>
             <div className="view-header-actions">
+              <span style={{ fontSize: '0.7rem', color: '#aaa', alignSelf: 'center' }}>v2.1</span>
+              <button onClick={async () => {
+                if(!window.confirm('Fix room numbers to 101+?')) return;
+                try {
+                  const headers = { username: auth.username, password: auth.password };
+                  await api.post('/api/admin/rooms/renumber', {}, { headers });
+                  alert('Rooms renumbered! Refreshing...');
+                  fetchData();
+                } catch(e) { alert('Fix failed: ' + e.message); }
+              }} className="admin-btn admin-btn-outline header-btn" style={{ borderColor: '#d4a857', color: '#d4a857' }}>
+                <Hash size={16} /> <span>Fix Numbers</span>
+              </button>
               <button onClick={fetchData} className="admin-btn admin-btn-outline header-btn">
                 <RefreshCcw size={16} /> <span>Refresh</span>
               </button>
