@@ -146,6 +146,10 @@ export default function Booking() {
     if (result) setResult(null);
   };
 
+  const clearDates = () => {
+    setForm(prev => ({ ...prev, checkIn: '', checkOut: '' }));
+  };
+
   const nextStep = () => {
     if (!form.roomType || !form.checkIn || !form.checkOut) {
       setResult({ success: false, message: 'Please select a room and both dates.' });
@@ -549,38 +553,49 @@ export default function Booking() {
                       <label>
                         <span className="label-icon">📅</span> Check-in Date <span className="req">*</span>
                       </label>
-                      <input
-                        name="checkIn"
-                        value={form.checkIn}
-                        onChange={handleChange}
-                        type="date"
-                        min={today}
-                        required
-                        className="input-styled"
-                      />
+                      <div className="input-with-action">
+                        <input
+                          name="checkIn"
+                          value={form.checkIn}
+                          onChange={handleChange}
+                          type="date"
+                          min={today}
+                          required
+                          className="input-styled"
+                        />
+                      </div>
                     </div>
                     <div className="form-group">
                       <label>
                         <span className="label-icon">📅</span> Check-out Date <span className="req">*</span>
                       </label>
-                      <input
-                        name="checkOut"
-                        value={form.checkOut}
-                        onChange={handleChange}
-                        type="date"
-                        min={form.checkIn || today}
-                        required
-                        className="input-styled"
-                      />
+                      <div className="input-with-action">
+                        <input
+                          name="checkOut"
+                          value={form.checkOut}
+                          onChange={handleChange}
+                          type="date"
+                          min={form.checkIn || today}
+                          required
+                          className="input-styled"
+                        />
+                      </div>
                     </div>
                   </div>
 
-                  {/* Nights indicator */}
-                  {nights > 0 && (
-                    <div className="nights-badge">
-                      🌙 {nights} Night{nights > 1 ? 's' : ''} stay
-                    </div>
-                  )}
+                  {/* Nights & Clear */}
+                  <div className="dates-feedback-row">
+                    {nights > 0 ? (
+                      <div className="nights-badge">
+                        🌙 {nights} Night{nights > 1 ? 's' : ''} stay
+                      </div>
+                    ) : <div />}
+                    {(form.checkIn || form.checkOut) && (
+                      <button type="button" className="btn-clear-dates" onClick={clearDates}>
+                        ✕ Clear Dates
+                      </button>
+                    )}
+                  </div>
 
                   <div className="form-row-2">
                     <div className="form-group">
