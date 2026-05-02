@@ -731,6 +731,17 @@
   margin: 0 auto;
 }
 
+@media (max-width: 600px) {
+  .pc-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  .pc-qr-wrap {
+    max-width: 200px;
+    margin: 0 auto;
+  }
+}
+
 .pc-qr-wrap {
   display: flex;
   flex-direction: column;

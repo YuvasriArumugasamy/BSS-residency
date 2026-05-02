@@ -267,10 +267,9 @@
 .amenities-strip {
   background: var(--primary);
   display: flex;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   justify-content: center;
   gap: 0;
-  overflow: hidden;
 }
 
 .amenity {
@@ -320,6 +319,19 @@
 
 .amenity:last-child {
   border-right: none;
+}
+
+@media (max-width: 768px) {
+  .amenities-strip {
+    justify-content: flex-start;
+    padding: 0.5rem;
+  }
+  .amenity {
+    flex: 1 1 45%;
+    border-right: none;
+    border-bottom: 1px solid rgba(212, 168, 87, 0.1);
+    padding: 0.8rem 1rem;
+  }
 }
 
 .amenity::before {
@@ -1920,7 +1932,31 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
+  padding: 1rem;
+}
+
+@media (max-width: 480px) {
+  .notice-overlay {
+    padding: 0.75rem;
+  }
+  .notice-modal {
+    border-radius: 16px;
+  }
+  .notice-header {
+    padding: 1.5rem 1rem;
+  }
+  .notice-body {
+    padding: 1.5rem 1rem;
+  }
+  .notice-title {
+    font-size: 1.4rem;
+  }
+  .notice-sub {
+    font-size: 1.2rem;
+  }
+  .notice-main {
+    font-size: 0.95rem;
+  }
 }
 
 .notice-modal {
