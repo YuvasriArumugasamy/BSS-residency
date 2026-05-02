@@ -246,7 +246,8 @@ export default function Home() {
             <div className="about-stats">
               <div className="stat fade-up"><span className="stat-n">4</span><span className="stat-l">Room Types</span></div>
               <div className="stat fade-up" style={{ animationDelay: '0.2s' }}><span className="stat-n">4.6★</span><span className="stat-l">Rating</span></div>
-              <div className="stat fade-up" style={{ animationDelay: '0.4s' }}><span className="stat-n">100m</span><span className="stat-l">to Falls</span></div>
+              <div className="stat fade-up" style={{ animationDelay: '0.4s' }}><span className="stat-n">100m</span><span className="stat-l">to Main Falls</span></div>
+              <div className="stat fade-up" style={{ animationDelay: '0.6s' }}><span className="stat-n">24/7</span><span className="stat-l">Service</span></div>
             </div>
             <Link to="/booking" className="btn-primary fade-up" style={{ animationDelay: '0.6s' }}><span>Reserve Now</span></Link>
           </div>
