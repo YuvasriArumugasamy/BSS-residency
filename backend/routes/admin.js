@@ -249,7 +249,7 @@ router.get('/stats', adminAuth, async (req, res) => {
       success: true,
       stats: {
         totalBookings, pending, confirmed, cancelled, byRoom,
-        totalRevenue, availableRooms, occupiedRooms, totalRooms,
+        totalRevenue, availableRooms, occupiedRooms: roomsOccupiedByBookings, totalRooms,
         checkInsToday, checkOutsToday,
         revenueHistory,
         period
