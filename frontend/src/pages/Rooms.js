@@ -40,7 +40,7 @@ export default function Rooms() {
       </section>
 
       {/* Tariff summary table */}
-      <section className="tariff-summary container">
+      <section className="tariff-summary container fade-up">
         <h2>Room Tariff</h2>
         <div className="divider-gold center" />
         <div className="tariff-table-wrap">
@@ -63,7 +63,7 @@ export default function Rooms() {
                   <td><span className="tt-pill">{r.type}</span></td>
                   <td className="tt-price">₹{getPrice(r).toLocaleString('en-IN')}</td>
                   <td>
-                    <Link to="/booking" className="btn-gold-sm"><span>Book Now</span></Link>
+                    <Link to={`/booking?room=${r.key}`} className="btn-gold-sm"><span>Book Now</span></Link>
                   </td>
                 </tr>
               ))}
@@ -76,7 +76,7 @@ export default function Rooms() {
       {/* Rooms List */}
       <section className="rooms-list container">
         {ROOMS.map((room, i) => (
-          <div key={room.key} className={`room-detail-card ${i % 2 === 1 ? 'reverse' : ''}`}>
+          <div key={room.key} className={`room-detail-card fade-up ${i % 2 === 1 ? 'reverse' : ''}`}>
             <div className="room-detail-img">
               <img src={imgMap[room.key]} alt={room.name} />
               <div className="room-type-badge">{room.type}</div>
@@ -100,7 +100,7 @@ export default function Rooms() {
                   <span className="r-price-inline-amt">{getPrice(room).toLocaleString('en-IN')}</span>
                   <span className="r-price-inline-unit">/ night</span>
                 </div>
-                <Link to="/booking" className="btn-primary-sm"><span>Book Online</span></Link>
+                <Link to={`/booking?room=${room.key}`} className="btn-primary-sm"><span>Book Online</span></Link>
               </div>
             </div>
           </div>

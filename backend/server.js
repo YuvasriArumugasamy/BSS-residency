@@ -1,10 +1,12 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const path = require('path');
 require('dotenv').config();
 
 const bookingRoutes = require('./routes/bookings');
 const adminRoutes = require('./routes/admin');
+const galleryRoutes = require('./routes/gallery');
 
 // Models (Pre-load for consistency)
 require('./models/Room');
@@ -44,6 +46,10 @@ app.use(express.urlencoded({ limit: '10mb', extended: true }));
 // Routes
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/gallery', galleryRoutes);
+
+// Static folders
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Health check
 app.get('/', (req, res) =>

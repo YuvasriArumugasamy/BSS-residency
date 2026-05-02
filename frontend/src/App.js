@@ -13,10 +13,24 @@ import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
 import CheckIn from './pages/CheckIn';
 import ScrollObserver from './components/ScrollObserver';
+import ReactGA from 'react-ga4';
+import { useLocation } from 'react-router-dom';
+
+// Initialize GA4 - Replace with your actual Measurement ID (e.g., 'G-XXXXXXXXXX')
+ReactGA.initialize('G-9BB0MG8X0X');
+
+function Analytics() {
+  const location = useLocation();
+  React.useEffect(() => {
+    ReactGA.send({ hitType: "pageview", page: location.pathname });
+  }, [location]);
+  return null;
+}
 
 function App() {
   return (
     <Router>
+      <Analytics />
       <ScrollObserver />
       <Routes>
         {/* Admin routes - no navbar/footer */}

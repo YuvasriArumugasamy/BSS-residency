@@ -22,7 +22,38 @@ router.post('/', async (req, res) => {
     }
 
     const roomCount = Math.max(1, Number(rooms) || 1);
+
+    // --- Availability Check ---
+    const totalRoomsCount = await Room.countDocuments({ type: roomType });
+    const start = new Date(checkIn);
+    const end = new Date(checkOut);
     
+    const existingBookings = await Booking.find({
+      roomType,
+      status: { $in: ['Confirmed', 'Pending'] },
+      $or: [
+        { checkIn: { $lt: end }, checkOut: { $gt: start } }
+      ]
+    });
+
+    // Check each day of the stay
+    for (let d = new Date(start); d < end; d.setDate(d.getDate() + 1)) {
+      const occupiedOnDay = existingBookings.reduce((acc, b) => {
+        if (d >= new Date(b.checkIn) && d < new Date(b.checkOut)) {
+          return acc + (b.rooms || 1);
+        }
+        return acc;
+      }, 0);
+      
+      if (occupiedOnDay + roomCount > totalRoomsCount) {
+        return res.status(400).json({ 
+          success: false, 
+          message: `Sorry, only ${totalRoomsCount - occupiedOnDay} rooms of type '${roomType}' are available for some of your selected dates.` 
+        });
+      }
+    }
+    // --- End Availability Check ---
+
     // Generate unique 6-digit booking ID
     let bookingId;
     let isUnique = false;
@@ -97,6 +128,64 @@ router.post('/', async (req, res) => {
   }
 });
 
+// GET /api/bookings/availability — Get availability by room type and month
+router.get('/availability', async (req, res) => {
+  try {
+    const { roomType, month, year } = req.query;
+
+    if (!roomType || !month || !year) {
+      // Backwards compatibility for initial load or legacy calls
+      const rooms = await Room.find({ status: 'Available' });
+      const simpleAvailability = {};
+      rooms.forEach(r => {
+        simpleAvailability[r.type] = (simpleAvailability[r.type] || 0) + 1;
+      });
+      return res.json({ success: true, availability: simpleAvailability });
+    }
+
+    // 1. Get total rooms of this type
+    const totalRoomsCount = await Room.countDocuments({ type: roomType });
+
+    // 2. Define month range
+    const startOfMonth = new Date(year, month - 1, 1);
+    const endOfMonth = new Date(year, month, 0, 23, 59, 59, 999);
+
+    // 3. Get bookings that overlap with this month
+    const bookings = await Booking.find({
+      roomType,
+      status: { $in: ['Confirmed', 'Pending'] },
+      $or: [
+        { checkIn: { $gte: startOfMonth, $lte: endOfMonth } },
+        { checkOut: { $gte: startOfMonth, $lte: endOfMonth } },
+        { checkIn: { $lte: startOfMonth }, checkOut: { $gte: endOfMonth } }
+      ]
+    });
+
+    // 4. Calculate availability for each day
+    const availability = {};
+    const daysInMonth = new Date(year, month, 0).getDate();
+
+    for (let day = 1; day <= daysInMonth; day++) {
+      const currentDay = new Date(year, month - 1, day);
+      const occupiedCount = bookings.reduce((count, b) => {
+        const ci = new Date(b.checkIn);
+        const co = new Date(b.checkOut);
+        // Occupied from checkIn up to (but not including) checkOut
+        if (currentDay >= ci && currentDay < co) {
+          return count + (b.rooms || 1);
+        }
+        return count;
+      }, 0);
+
+      availability[day] = Math.max(0, totalRoomsCount - occupiedCount);
+    }
+
+    res.json({ success: true, availability, totalRooms: totalRoomsCount });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 // GET /api/bookings/:id — Get booking status by ID (for guests)
 router.get('/:id', async (req, res) => {
   try {
@@ -140,19 +229,59 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// GET /api/bookings/availability — Get availability by room type
+// GET /api/bookings/availability — Get availability by room type and month
 router.get('/availability', async (req, res) => {
   try {
-    const rooms = await Room.find({ status: 'Available' });
-    const availability = {};
+    const { roomType, month, year } = req.query;
 
-    // Group available counts by type — matches constants.js ROOMS[].name
-    rooms.forEach(r => {
-      const key = r.type; // e.g. "Double Bed", "Double Bed A/C"
-      availability[key] = (availability[key] || 0) + 1;
+    if (!roomType || !month || !year) {
+      // Backwards compatibility for initial load or legacy calls
+      const rooms = await Room.find({ status: 'Available' });
+      const simpleAvailability = {};
+      rooms.forEach(r => {
+        simpleAvailability[r.type] = (simpleAvailability[r.type] || 0) + 1;
+      });
+      return res.json({ success: true, availability: simpleAvailability });
+    }
+
+    // 1. Get total rooms of this type
+    const totalRoomsCount = await Room.countDocuments({ type: roomType });
+
+    // 2. Define month range
+    const startOfMonth = new Date(year, month - 1, 1);
+    const endOfMonth = new Date(year, month, 0, 23, 59, 59, 999);
+
+    // 3. Get bookings that overlap with this month
+    const bookings = await Booking.find({
+      roomType,
+      status: { $in: ['Confirmed', 'Pending'] },
+      $or: [
+        { checkIn: { $gte: startOfMonth, $lte: endOfMonth } },
+        { checkOut: { $gte: startOfMonth, $lte: endOfMonth } },
+        { checkIn: { $lte: startOfMonth }, checkOut: { $gte: endOfMonth } }
+      ]
     });
 
-    res.json({ success: true, availability });
+    // 4. Calculate availability for each day
+    const availability = {};
+    const daysInMonth = new Date(year, month, 0).getDate();
+
+    for (let day = 1; day <= daysInMonth; day++) {
+      const currentDay = new Date(year, month - 1, day);
+      const occupiedCount = bookings.reduce((count, b) => {
+        const ci = new Date(b.checkIn);
+        const co = new Date(b.checkOut);
+        // Occupied from checkIn up to (but not including) checkOut
+        if (currentDay >= ci && currentDay < co) {
+          return count + (b.rooms || 1);
+        }
+        return count;
+      }, 0);
+
+      availability[day] = Math.max(0, totalRoomsCount - occupiedCount);
+    }
+
+    res.json({ success: true, availability, totalRooms: totalRoomsCount });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }

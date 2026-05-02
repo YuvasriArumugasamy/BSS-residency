@@ -4,7 +4,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area
 } from 'recharts';
 import {
-  LayoutDashboard, Bed, CalendarCheck, Users, CreditCard, PieChart, Settings, MessageSquare, Bell, LogOut, ExternalLink, RefreshCcw, Plus, Trash2, Edit3, CheckCircle, XCircle, Clock, X, MessageCircle, ClipboardCheck, Calendar
+  LayoutDashboard, Bed, CalendarCheck, Users, CreditCard, PieChart, Settings, MessageSquare, Bell, LogOut, ExternalLink, RefreshCcw, Plus, Trash2, Edit3, CheckCircle, XCircle, Clock, X, MessageCircle, ClipboardCheck, Calendar, Image, Lock
 } from 'lucide-react';
 import api from '../api/axios';
 import './Admin.css';
@@ -36,6 +36,7 @@ const Sidebar = ({ activeTab, setActiveTab, onLogout, username, unreadCount = 0,
     { id: 'reports', label: 'Reports', icon: <PieChart size={20} /> },
     { id: 'settings', label: 'Settings', icon: <Settings size={20} /> },
     { id: 'reviews', label: 'Reviews', icon: <MessageSquare size={20} />, count: unreadReviewCount },
+    { id: 'gallery', label: 'Gallery', icon: <Image size={20} /> },
     { id: 'notifications', label: 'Notifications', icon: <Bell size={20} />, count: unreadCount },
   ];
 
@@ -612,45 +613,113 @@ const SettingsView = ({ isSeason, onToggleSeason }) => (
         </div>
       </div>
 
-      <form className="settings-form" style={{ display: 'grid', gap: '1.5rem' }}>
+      <form className="settings-form" style={{ display: 'grid', gap: '1.5rem', borderTop: '1px solid #f1f5f9', paddingTop: '2rem', marginTop: '2rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
+          <Lock size={20} color="var(--admin-primary)" />
+          <h4 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700, color: '#1e293b' }}>Security & Login</h4>
+        </div>
+        <p style={{ color: '#64748b', fontSize: '0.85rem', margin: 0 }}>Update your admin credentials. You will be logged out after changing these.</p>
+        
         <div className="form-row" style={{ marginBottom: 0 }}>
           <div className="form-group">
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, fontSize: '0.85rem', color: '#475569' }}>Lodge Name</label>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, fontSize: '0.85rem', color: '#475569' }}>New Username</label>
             <input 
               type="text" 
-              defaultValue="BSS Residency" 
-              style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #e2e8f0', background: '#f8fafc', fontSize: '0.95rem' }} 
+              id="new-username"
+              placeholder="Leave blank to keep current"
+              style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #e2e8f0', background: '#fff', fontSize: '0.95rem' }} 
             />
           </div>
           <div className="form-group">
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, fontSize: '0.85rem', color: '#475569' }}>Contact Email</label>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, fontSize: '0.85rem', color: '#475569' }}>New Password</label>
             <input 
-              type="email" 
-              defaultValue="bssresidencyofficial@gmail.com" 
-              style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #e2e8f0', background: '#f8fafc', fontSize: '0.95rem' }} 
+              type="password" 
+              id="new-password"
+              placeholder="Minimum 6 characters"
+              style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #e2e8f0', background: '#fff', fontSize: '0.95rem' }} 
             />
           </div>
         </div>
-        <div className="form-group">
-          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, fontSize: '0.85rem', color: '#475569' }}>Google Maps Embed URL</label>
-          <textarea 
-            defaultValue="https://www.google.com/maps?q=BSS%20Residency%20Courtallam..." 
-            style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #e2e8f0', background: '#f8fafc', fontSize: '0.95rem', minHeight: '100px' }} 
+
+        <div style={{ padding: '1rem', background: '#fef2f2', borderRadius: '8px', border: '1px solid #fee2e2' }}>
+          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 700, fontSize: '0.85rem', color: '#991b1b' }}>Current Password (Required to Save)</label>
+          <input 
+            type="password" 
+            id="current-password"
+            required
+            style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #fecaca', background: '#fff', fontSize: '0.95rem' }} 
           />
         </div>
-        <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1rem' }}>
-          <button type="button" className="admin-btn admin-btn-primary" style={{ padding: '0.75rem 2rem' }}>Update Profile</button>
+
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
+          <button 
+            type="button" 
+            className="admin-btn admin-btn-primary" 
+            style={{ padding: '0.75rem 2.5rem', background: '#1e293b' }}
+            onClick={async () => {
+              const newU = document.getElementById('new-username').value;
+              const newP = document.getElementById('new-password').value;
+              const currP = document.getElementById('current-password').value;
+              
+              if (!currP) return alert('Current password is required');
+              if (newP && newP.length < 6) return alert('New password must be at least 6 characters');
+              
+              if (!window.confirm('Are you sure you want to change your login credentials? You will be logged out.')) return;
+              
+              const auth = JSON.parse(sessionStorage.getItem('bss_admin'));
+              try {
+                const headers = { username: auth.username, password: auth.password };
+                await api.patch('/api/admin/profile', {
+                  oldUsername: auth.username,
+                  oldPassword: currP,
+                  newUsername: newU || undefined,
+                  newPassword: newP || undefined
+                }, { headers });
+                
+                alert('Success! Please login with your new credentials.');
+                sessionStorage.removeItem('bss_admin');
+                window.location.reload();
+              } catch (err) {
+                alert(err.response?.data?.message || 'Error updating profile');
+              }
+            }}
+          >
+            Save Security Settings
+          </button>
         </div>
       </form>
     </div>
   </div>
 );
 
-const ReviewsView = ({ reviews, onDeleteReview }) => {
+const ReviewsView = ({ reviews, onDeleteReview, period, setPeriod, selectedMonth, setSelectedMonth }) => {
   return (
     <div className="view-content fade-in">
+      <div style={{ marginBottom: '1.5rem', display: 'flex', justifyContent: 'flex-end' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#fff', padding: '0.4rem 0.8rem', borderRadius: '8px', border: '1px solid #e2e8f0', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+          <Calendar size={16} color="#64748b" />
+          <select
+            value={period}
+            onChange={(e) => setPeriod(e.target.value)}
+            style={{ border: 'none', fontWeight: 600, color: '#475569', outline: 'none', cursor: 'pointer', fontSize: '0.85rem' }}
+          >
+            <option value="month">Month View</option>
+            <option value="all">All Time</option>
+          </select>
+
+          {period === 'month' && (
+            <input
+              type="month"
+              value={selectedMonth}
+              onChange={(e) => setSelectedMonth(e.target.value)}
+              style={{ border: 'none', borderLeft: '1px solid #eee', paddingLeft: '0.5rem', fontWeight: 600, color: 'var(--admin-primary)', outline: 'none', fontSize: '0.85rem' }}
+            />
+          )}
+        </div>
+      </div>
+
       {reviews.length === 0 ? (
-        <div className="card">No guest reviews yet.</div>
+        <div className="card">No guest reviews yet for this period.</div>
       ) : reviews.map(r => (
         <div key={r._id} className="card" style={{ marginBottom: '1rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
@@ -685,11 +754,143 @@ const ReviewsView = ({ reviews, onDeleteReview }) => {
   );
 };
 
-const NotificationsView = ({ notifications }) => {
+const GalleryManagement = ({ auth }) => {
+  const [images, setImages] = useState([]);
+  const [uploading, setUploading] = useState(false);
+  const [form, setForm] = useState({ title: '', category: 'Room', image: null });
+
+  const fetchImages = useCallback(async () => {
+    try {
+      const res = await api.get('/api/gallery');
+      if (res.data.success) setImages(res.data.images);
+    } catch (err) {
+      console.error('Fetch gallery error:', err);
+    }
+  }, []);
+
+  useEffect(() => { fetchImages(); }, [fetchImages]);
+
+  const handleFileChange = (e) => {
+    setForm({ ...form, image: e.target.files[0] });
+  };
+
+  const handleUpload = async (e) => {
+    e.preventDefault();
+    if (!form.image) return alert('Select an image');
+    setUploading(true);
+    const formData = new FormData();
+    formData.append('image', form.image);
+    formData.append('title', form.title);
+    formData.append('category', form.category);
+
+    try {
+      const headers = { 
+        username: auth.username, 
+        password: auth.password 
+      };
+      await api.post('/api/gallery/upload', formData, { headers });
+      setForm({ title: '', category: 'Room', image: null });
+      fetchImages();
+      alert('Uploaded successfully!');
+    } catch (err) {
+      alert('Upload failed: ' + err.message);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm('Delete image?')) return;
+    try {
+      const headers = { username: auth.username, password: auth.password };
+      await api.delete(`/api/gallery/${id}`, { headers });
+      fetchImages();
+    } catch (err) {
+      alert('Delete failed');
+    }
+  };
+
   return (
     <div className="view-content fade-in">
+      <div className="card" style={{ marginBottom: '2rem' }}>
+        <h3>Upload New Photo</h3>
+        <form onSubmit={handleUpload} style={{ display: 'grid', gap: '1rem', marginTop: '1rem' }}>
+          <div className="form-row">
+            <div className="form-group">
+              <label>Title / Caption</label>
+              <input type="text" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} placeholder="e.g. Deluxe Room View" />
+            </div>
+            <div className="form-group">
+              <label>Category</label>
+              <select value={form.category} onChange={e => setForm({ ...form, category: e.target.value })}>
+                <option value="Room">Rooms</option>
+                <option value="Exterior">Exterior</option>
+                <option value="Nearby">Nearby</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+          </div>
+          <div className="form-group">
+            <label>Select Image File</label>
+            <input type="file" accept="image/*" onChange={handleFileChange} style={{ border: '1px solid #ddd', padding: '0.5rem', borderRadius: '4px' }} />
+          </div>
+          <button type="submit" className="admin-btn admin-btn-primary" disabled={uploading}>
+            {uploading ? 'Uploading...' : 'Upload to Gallery'}
+          </button>
+        </form>
+      </div>
+
+      <div className="stats-grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))' }}>
+        {images.map(img => (
+          <div key={img._id} className="card" style={{ padding: '0.5rem', position: 'relative' }}>
+            <img 
+              src={`${process.env.REACT_APP_API_URL || 'https://bss-residency-2.onrender.com'}${img.imageUrl}`} 
+              alt={img.title} 
+              style={{ width: '100%', height: '150px', objectFit: 'cover', borderRadius: '8px' }} 
+            />
+            <div style={{ marginTop: '0.5rem', fontSize: '0.8rem', fontWeight: 600 }}>{img.title || 'Untitled'}</div>
+            <div style={{ fontSize: '0.7rem', color: '#666' }}>{img.category}</div>
+            <button 
+              onClick={() => handleDelete(img._id)}
+              style={{ position: 'absolute', top: '10px', right: '10px', background: 'rgba(255, 77, 77, 0.9)', color: 'white', border: 'none', borderRadius: '4px', padding: '4px', cursor: 'pointer' }}
+            >
+              <Trash2 size={14} />
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const NotificationsView = ({ notifications, period, setPeriod, selectedMonth, setSelectedMonth }) => {
+  return (
+    <div className="view-content fade-in">
+      <div style={{ marginBottom: '1.5rem', display: 'flex', justifyContent: 'flex-end' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#fff', padding: '0.4rem 0.8rem', borderRadius: '8px', border: '1px solid #e2e8f0', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+          <Calendar size={16} color="#64748b" />
+          <select
+            value={period}
+            onChange={(e) => setPeriod(e.target.value)}
+            style={{ border: 'none', fontWeight: 600, color: '#475569', outline: 'none', cursor: 'pointer', fontSize: '0.85rem' }}
+          >
+            <option value="month">Month View</option>
+            <option value="all">All Time</option>
+          </select>
+
+          {period === 'month' && (
+            <input
+              type="month"
+              value={selectedMonth}
+              onChange={(e) => setSelectedMonth(e.target.value)}
+              style={{ border: 'none', borderLeft: '1px solid #eee', paddingLeft: '0.5rem', fontWeight: 600, color: 'var(--admin-primary)', outline: 'none', fontSize: '0.85rem' }}
+            />
+          )}
+        </div>
+      </div>
+
       {notifications.length === 0 ? (
-        <div className="card">No notifications yet.</div>
+        <div className="card">No notifications yet for this period.</div>
       ) : notifications.map(a => (
         <div key={a._id} className="card" style={{ marginBottom: '1rem', borderLeft: '4px solid var(--admin-primary)', display: 'flex', gap: '1rem', alignItems: 'center' }}>
           <div style={{ background: '#fdfaf4', padding: '0.75rem', borderRadius: '50%', color: 'var(--admin-primary)' }}>
@@ -699,7 +900,7 @@ const NotificationsView = ({ notifications }) => {
             <div style={{ fontWeight: 700, fontSize: '0.95rem' }}>{a.title}</div>
             <div style={{ fontSize: '0.85rem', color: '#666' }}>{a.message}</div>
           </div>
-          <div style={{ fontSize: '0.75rem', color: '#aaa' }}>{new Date(a.date).toLocaleTimeString()}</div>
+          <div style={{ fontSize: '0.75rem', color: '#aaa' }}>{new Date(a.date).toLocaleString()}</div>
         </div>
       ))}
     </div>
@@ -724,6 +925,8 @@ export default function AdminDashboard() {
   const [isSeason, setIsSeason] = useState(false);
   const [statsPeriod, setStatsPeriod] = useState('all');
   const [bookingsPeriod, setBookingsPeriod] = useState('month');
+  const [reviewsPeriod, setReviewsPeriod] = useState('month');
+  const [notificationsPeriod, setNotificationsPeriod] = useState('month');
   const [selectedMonth, setSelectedMonth] = useState(() => {
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
@@ -763,8 +966,8 @@ export default function AdminDashboard() {
         api.get('/api/admin/rooms', { headers }),
         api.get('/api/admin/guests', { headers }),
         api.get('/api/admin/payments', { headers }),
-        api.get('/api/admin/reviews', { headers }),
-        api.get('/api/admin/notifications', { headers }),
+        api.get('/api/admin/reviews', { headers, params: { period: reviewsPeriod, month, year } }),
+        api.get('/api/admin/notifications', { headers, params: { period: notificationsPeriod, month, year } }),
         api.get('/api/admin/settings', { headers })
       ]);
       setStats(statsRes.data.stats);
@@ -813,7 +1016,7 @@ export default function AdminDashboard() {
     } finally {
       setLoading(false);
     }
-  }, [auth, statsPeriod, bookingsPeriod, selectedMonth]);
+  }, [auth, statsPeriod, bookingsPeriod, reviewsPeriod, notificationsPeriod, selectedMonth]);
 
   useEffect(() => {
     if (activeTab === 'notifications') {
@@ -1121,8 +1324,22 @@ export default function AdminDashboard() {
           alert('Error updating season mode');
         }
       }} />;
-      case 'reviews': return <ReviewsView reviews={reviews} onDeleteReview={handleDeleteReview} />;
-      case 'notifications': return <NotificationsView notifications={notifications} />;
+      case 'reviews': return <ReviewsView 
+        reviews={reviews} 
+        onDeleteReview={handleDeleteReview} 
+        period={reviewsPeriod}
+        setPeriod={setReviewsPeriod}
+        selectedMonth={selectedMonth}
+        setSelectedMonth={setSelectedMonth}
+      />;
+      case 'notifications': return <NotificationsView 
+        notifications={notifications} 
+        period={notificationsPeriod}
+        setPeriod={setNotificationsPeriod}
+        selectedMonth={selectedMonth}
+        setSelectedMonth={setSelectedMonth}
+      />;
+      case 'gallery': return <GalleryManagement auth={auth} />;
       default: return <div className="card">Coming Soon...</div>;
     }
   };

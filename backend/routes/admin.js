@@ -7,6 +7,7 @@ const Payment = require('../models/Payment');
 const Review = require('../models/Review');
 const Notification = require('../models/Notification');
 const Setting = require('../models/Setting');
+const Admin = require('../models/Admin');
 const { sendBookingConfirmedEmail, sendBookingCancelledEmail } = require('../utils/emailService');
 
 const WHATSAPP_NUMBER = process.env.WHATSAPP_NUMBER || '919344989393';
@@ -46,27 +47,35 @@ function buildWaCancelLink(booking, reason = '') {
 }
 
 // Simple auth middleware
-const adminAuth = (req, res, next) => {
-  const { username, password } = req.headers;
-  const targetUser = 'santhosh';
-  const targetPass = 'santhosh@123';
-  if (username === targetUser && password === targetPass) {
-    next();
-  } else {
-    res.status(401).json({ success: false, message: 'Unauthorized' });
+const adminAuth = async (req, res, next) => {
+  try {
+    const { username, password } = req.headers;
+    const admin = await Admin.findOne({ username, password });
+    if (admin) {
+      next();
+    } else {
+      res.status(401).json({ success: false, message: 'Unauthorized' });
+    }
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Server error' });
   }
 };
 
 // POST /api/admin/login — Verify credentials
-router.post('/login', (req, res) => {
-  const { username, password } = req.body;
-  const targetUser = 'santhosh';
-  const targetPass = 'santhosh@123';
+router.post('/login', async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    const admin = await Admin.findOne({ username, password });
 
-  if (username === targetUser && password === targetPass) {
-    res.json({ success: true, message: 'Login successful' });
-  } else {
-    res.status(401).json({ success: false, message: 'Invalid credentials' });
+    if (admin) {
+      admin.lastLogin = new Date();
+      await admin.save();
+      res.json({ success: true, message: 'Login successful' });
+    } else {
+      res.status(401).json({ success: false, message: 'Invalid credentials' });
+    }
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
   }
 });
 
@@ -348,7 +357,23 @@ router.delete('/payments/:id', adminAuth, async (req, res) => {
 // --- REVIEW ROUTES ---
 router.get('/reviews', adminAuth, async (req, res) => {
   try {
-    const reviews = await Review.find().sort({ date: -1 });
+    const { period = 'all', month, year } = req.query;
+    const filter = {};
+
+    if (period === 'month') {
+      let start, end;
+      if (month && year) {
+        start = new Date(year, month - 1, 1);
+        end = new Date(year, month, 0, 23, 59, 59, 999);
+      } else {
+        const now = new Date();
+        start = new Date(now.getFullYear(), now.getMonth(), 1);
+        end = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
+      }
+      filter.date = { $gte: start, $lte: end };
+    }
+
+    const reviews = await Review.find(filter).sort({ date: -1 });
     res.json({ success: true, reviews });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -402,6 +427,27 @@ router.patch('/settings', adminAuth, async (req, res) => {
   }
 });
 
+// PATCH /api/admin/profile — Update admin username/password
+router.patch('/profile', adminAuth, async (req, res) => {
+  try {
+    const { oldUsername, oldPassword, newUsername, newPassword } = req.body;
+    
+    // Verify old credentials one more time for safety
+    const admin = await Admin.findOne({ username: oldUsername, password: oldPassword });
+    if (!admin) {
+      return res.status(401).json({ success: false, message: 'Incorrect old credentials' });
+    }
+
+    if (newUsername) admin.username = newUsername;
+    if (newPassword) admin.password = newPassword;
+    
+    await admin.save();
+    res.json({ success: true, message: 'Profile updated successfully' });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 // PUBLIC GET /api/admin/settings/public — Get public settings (no auth)
 router.get('/settings/public', async (req, res) => {
   try {
@@ -415,7 +461,23 @@ router.get('/settings/public', async (req, res) => {
 // GET /api/admin/notifications
 router.get('/notifications', adminAuth, async (req, res) => {
   try {
-    const notifications = await Notification.find().sort({ createdAt: -1 }).limit(50);
+    const { period = 'all', month, year } = req.query;
+    const filter = {};
+
+    if (period === 'month') {
+      let start, end;
+      if (month && year) {
+        start = new Date(year, month - 1, 1);
+        end = new Date(year, month, 0, 23, 59, 59, 999);
+      } else {
+        const now = new Date();
+        start = new Date(now.getFullYear(), now.getMonth(), 1);
+        end = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
+      }
+      filter.createdAt = { $gte: start, $lte: end };
+    }
+
+    const notifications = await Notification.find(filter).sort({ createdAt: -1 }).limit(100);
     res.json({ success: true, notifications });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

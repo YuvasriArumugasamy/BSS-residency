@@ -267,7 +267,7 @@
 .amenities-strip {
   background: var(--primary);
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   justify-content: center;
   gap: 0;
   overflow: hidden;
@@ -277,7 +277,7 @@
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  padding: 1.2rem 2.2rem;
+  padding: 1.2rem 1.5rem;
   color: var(--white);
   border-right: 1px solid rgba(212, 168, 87, 0.25);
   transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
@@ -378,7 +378,6 @@
 
 .about-img-wrap {
   position: relative;
-  animation: fadeLeft 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .about-img-wrap img {
@@ -426,7 +425,6 @@
 
 .about-text {
   padding-right: 1rem;
-  animation: fadeRight 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both;
 }
 
 .section-label {
@@ -436,7 +434,6 @@
   color: var(--accent-dark);
   font-weight: 700;
   margin-bottom: 0.75rem;
-  animation: fadeUp 0.5s ease both;
 }
 
 .about-text h2 {
@@ -477,7 +474,6 @@
 
 .stat {
   text-align: center;
-  animation: countUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
   transition: transform 0.3s;
 }
 
@@ -530,7 +526,6 @@
 .rooms-preview h2 {
   font-size: clamp(1.8rem, 3vw, 2.4rem);
   color: var(--primary);
-  animation: fadeUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .rooms-preview h2 em {
@@ -543,7 +538,6 @@
   color: var(--text-muted);
   margin-bottom: 2.5rem;
   font-size: 0.92rem;
-  animation: fadeUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
 }
 
 .rooms-grid {
@@ -564,7 +558,6 @@
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
-  animation: slideInUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
   position: relative;
   overflow: hidden;
 }

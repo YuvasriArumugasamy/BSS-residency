@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import api from '../api/axios';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { ROOMS, CONTACT, waLink } from '../constants';
 import './Booking.css';
 
@@ -27,6 +27,22 @@ export default function Booking() {
   const [step, setStep] = useState(1);
   const [pendingBooking, setPendingBooking] = useState(null);
   const [availability, setAvailability] = useState({});
+  const [dailyAvailability, setDailyAvailability] = useState({});
+  const location = useLocation();
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const roomKey = params.get('room');
+    if (roomKey) {
+      const room = ROOMS.find(r => r.key === roomKey);
+      if (room) {
+        setForm(prev => ({ ...prev, roomType: room.name }));
+      }
+    }
+  }, [location]);
+  const [calendarMonth, setCalendarMonth] = useState(new Date().getMonth() + 1);
+  const [calendarYear, setCalendarYear] = useState(new Date().getFullYear());
+  const [isCalendarLoading, setIsCalendarLoading] = useState(false);
   const [showSpecialReq, setShowSpecialReq] = useState(false);
   const [policyChecked, setPolicyChecked] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -55,6 +71,31 @@ export default function Booking() {
     };
     fetchSeasonStatus();
   }, []);
+
+  useEffect(() => {
+    if (!form.roomType) return;
+    
+    const fetchDailyAvailability = async () => {
+      setIsCalendarLoading(true);
+      try {
+        const res = await api.get('/api/bookings/availability', {
+          params: {
+            roomType: form.roomType,
+            month: calendarMonth,
+            year: calendarYear
+          }
+        });
+        if (res.data.success) {
+          setDailyAvailability(res.data.availability);
+        }
+      } catch (err) {
+        console.error('Failed to fetch daily availability', err);
+      } finally {
+        setIsCalendarLoading(false);
+      }
+    };
+    fetchDailyAvailability();
+  }, [form.roomType, calendarMonth, calendarYear]);
 
   const today = new Date().toISOString().split('T')[0];
 
@@ -421,6 +462,89 @@ export default function Booking() {
                     </div>
                   </div>
 
+                  {/* Availability Calendar Integration */}
+                  {form.roomType && (
+                    <div className="availability-calendar-section animate-in">
+                      <div className="calendar-header-custom">
+                        <h3><span className="cal-icon">🗓️</span> Availability for {form.roomType}</h3>
+                        <div className="calendar-nav-custom">
+                          <button type="button" onClick={() => {
+                            if (calendarMonth === 1) {
+                              setCalendarMonth(12);
+                              setCalendarYear(calendarYear - 1);
+                            } else {
+                              setCalendarMonth(calendarMonth - 1);
+                            }
+                          }} disabled={calendarYear === new Date().getFullYear() && calendarMonth === new Date().getMonth() + 1}>‹</button>
+                          <span>{new Date(calendarYear, calendarMonth - 1).toLocaleString('en-IN', { month: 'long', year: 'numeric' })}</span>
+                          <button type="button" onClick={() => {
+                            if (calendarMonth === 12) {
+                              setCalendarMonth(1);
+                              setCalendarYear(calendarYear + 1);
+                            } else {
+                              setCalendarMonth(calendarMonth + 1);
+                            }
+                          }}>›</button>
+                        </div>
+                      </div>
+                      
+                      <div className="calendar-grid-custom">
+                        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(d => (
+                          <div key={d} className="calendar-day-name">{d}</div>
+                        ))}
+                        {/* Empty slots for first week */}
+                        {Array.from({ length: new Date(calendarYear, calendarMonth - 1, 1).getDay() }).map((_, i) => (
+                          <div key={`empty-${i}`} className="calendar-day-empty" />
+                        ))}
+                        {/* Days of month */}
+                        {Array.from({ length: new Date(calendarYear, calendarMonth, 0).getDate() }).map((_, i) => {
+                          const day = i + 1;
+                          const avail = dailyAvailability[day];
+                          const date = new Date(calendarYear, calendarMonth - 1, day);
+                          const isPast = date < new Date().setHours(0,0,0,0);
+                          const ds = `${calendarYear}-${String(calendarMonth).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                          const isSelected = form.checkIn === ds || form.checkOut === ds;
+                          
+                          let statusClass = 'available';
+                          if (avail === 0) statusClass = 'full';
+                          else if (avail === 1) statusClass = 'limited';
+                          if (isPast) statusClass = 'past';
+
+                          return (
+                            <div 
+                              key={day} 
+                              className={`calendar-day ${statusClass} ${isSelected ? 'selected' : ''}`}
+                              onClick={() => {
+                                if (!isPast && avail > 0) {
+                                  if (!form.checkIn || (form.checkIn && form.checkOut)) {
+                                    setForm(prev => ({ ...prev, checkIn: ds, checkOut: '' }));
+                                  } else {
+                                    if (new Date(ds) > new Date(form.checkIn)) {
+                                      setForm(prev => ({ ...prev, checkOut: ds }));
+                                    } else {
+                                      setForm(prev => ({ ...prev, checkIn: ds, checkOut: '' }));
+                                    }
+                                  }
+                                }
+                              }}
+                            >
+                              <span className="day-num">{day}</span>
+                              {!isPast && (
+                                <span className="day-avail">
+                                  {avail === 0 ? 'Full' : 'Available'}
+                                </span>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                      <div className="calendar-legend">
+                        <div className="legend-item"><span className="legend-dot available" /> Available</div>
+                        <div className="legend-item"><span className="legend-dot full" /> Sold Out</div>
+                      </div>
+                    </div>
+                  )}
+
                   {/* Dates */}
                   <div className="form-row-2">
                     <div className="form-group">
@@ -691,7 +815,6 @@ export default function Booking() {
                 <div className="summary-date-box">
                   <span className="sdb-label">Check-in</span>
                   <span className="sdb-value">{formatDate(form.checkIn)}</span>
-                  <span className="sdb-sub">From 11:00 AM</span>
                 </div>
                 <div className="summary-nights-badge">
                   {nights > 0 ? `${nights}N` : '—'}
@@ -699,7 +822,6 @@ export default function Booking() {
                 <div className="summary-date-box">
                   <span className="sdb-label">Check-out</span>
                   <span className="sdb-value">{formatDate(form.checkOut)}</span>
-                  <span className="sdb-sub">Before 10:00 AM</span>
                 </div>
               </div>
 
@@ -750,8 +872,8 @@ export default function Booking() {
             <div className="policy-info-card">
               <h4>📋 Booking Policies</h4>
               <ul>
-                <li>✅ Check-in: From 11:00 AM</li>
-                <li>✅ Check-out: Before 10:00 AM</li>
+                <li>✅ Flexible Check-in / Check-out</li>
+                <li>✅ Extra Bed Available (on request)</li>
                 <li>✅ Confirmation via WhatsApp</li>
                 <li>✅ Payment at property</li>
                 <li>ℹ️ Valid ID proof required at check-in</li>

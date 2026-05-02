@@ -9,8 +9,8 @@ export const CONTACT = {
   instagram: 'coutrallam_bss_residency',
   addressLine1: 'Bus Stand, Near Anna Statue',
   addressLine2: 'Courtallam, Tamil Nadu – 627 802',
-  checkIn: '11:00 AM',
-  checkOut: '10:00 AM',
+  checkIn: 'Flexible',
+  checkOut: 'Flexible',
 };
 
 export const MAP = {
@@ -114,6 +114,7 @@ export const AMENITIES = [
   { icon: '🔒', label: 'CCTV Security' },
   { icon: '📶', label: 'Free Wi-Fi' },
   { icon: '🚿', label: '24hr Hot Water' },
+  { icon: '🛏️', label: 'Extra Bed Available' },
 ];
 
 export const waLink = (text = 'Hello BSS Residency!', num = CONTACT.whatsapp) =>

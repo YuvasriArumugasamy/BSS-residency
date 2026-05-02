@@ -230,25 +230,25 @@ export default function Home() {
 
         {/* About section */}
         <section className="home-about container">
-          <div className="about-img-wrap">
+          <div className="about-img-wrap fade-left">
             <img src={buildingImg} alt="BSS Residency" />
             <div className="about-badge-box">
               <span className="badge-icon">🏨</span>
               <span className="badge-txt">Premium Lodge</span>
             </div>
           </div>
-          <div className="about-text">
+          <div className="about-text fade-right">
             <p className="section-label">About Us</p>
             <h2>A Sanctuary in the<br /><em>Heart of Courtallam</em></h2>
             <div className="divider-gold" />
             <p>BSS Residency is located just 100 metres from the legendary Courtallam Falls — moments from the bus stand and Anna Statue. We offer modern rooms with premium amenities, ideal for families, pilgrims, and leisure travellers.</p>
             <p>From comfortable non-A/C doubles to spacious four-bed A/C rooms, we have the perfect accommodation for every guest and every budget.</p>
             <div className="about-stats">
-              <div className="stat"><span className="stat-n">4</span><span className="stat-l">Room Types</span></div>
-              <div className="stat"><span className="stat-n">4.6★</span><span className="stat-l">Rating</span></div>
-              <div className="stat"><span className="stat-n">100m</span><span className="stat-l">to Falls</span></div>
+              <div className="stat fade-up"><span className="stat-n">4</span><span className="stat-l">Room Types</span></div>
+              <div className="stat fade-up" style={{ animationDelay: '0.2s' }}><span className="stat-n">4.6★</span><span className="stat-l">Rating</span></div>
+              <div className="stat fade-up" style={{ animationDelay: '0.4s' }}><span className="stat-n">100m</span><span className="stat-l">to Falls</span></div>
             </div>
-            <Link to="/booking" className="btn-primary"><span>Reserve Now</span></Link>
+            <Link to="/booking" className="btn-primary fade-up" style={{ animationDelay: '0.6s' }}><span>Reserve Now</span></Link>
           </div>
         </section>
 
@@ -347,9 +347,9 @@ export default function Home() {
         {/* Tariff / room preview */}
         <section className="rooms-preview">
           <div className="container">
-            <p className="section-label" style={{ textAlign: 'center' }}>Tariff</p>
-            <h2 style={{ textAlign: 'center', marginBottom: '0.5rem' }}>Our <em>Rooms & Prices</em></h2>
-            <p className="rooms-preview-sub">
+            <p className="section-label fade-up" style={{ textAlign: 'center' }}>Tariff</p>
+            <h2 className="fade-up" style={{ textAlign: 'center', marginBottom: '0.5rem', animationDelay: '0.1s' }}>Our <em>Rooms & Prices</em></h2>
+            <p className="rooms-preview-sub fade-up" style={{ animationDelay: '0.2s' }}>
               Best rates guaranteed when you book directly with us
             </p>
             <div className="rooms-grid">
@@ -366,12 +366,12 @@ export default function Home() {
                     <span className="r-price-unit">/ night</span>
                   </div>
                   <div className="r-actions-home">
-                    <Link to="/booking" className="r-book-btn"><span>Book Now</span></Link>
+                    <Link to={`/booking?room=${r.key}`} className="r-book-btn"><span>Book Now</span></Link>
                   </div>
                 </div>
               ))}
             </div>
-            <div className="tariff-foot">
+            <div className="tariff-foot fade-up">
               <Link to="/rooms" className="btn-primary"><span>View All Rooms</span></Link>
             </div>
           </div>
