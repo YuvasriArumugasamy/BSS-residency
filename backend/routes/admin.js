@@ -484,4 +484,31 @@ router.get('/notifications', adminAuth, async (req, res) => {
   }
 });
 
+// POST /api/admin/rooms/reset-layout — Reset database to the specific 20-room floor layout
+router.post('/rooms/reset-layout', adminAuth, async (req, res) => {
+  try {
+    await Room.deleteMany({});
+    const roomsToCreate = [];
+    // 1st Floor (101-106)
+    for (let i = 101; i <= 106; i++) {
+      const type = (i === 102) ? 'Four Bed A/C' : 'Double Bed A/C';
+      roomsToCreate.push({ roomNumber: i.toString(), type, price: (type === 'Four Bed A/C' ? 2500 : 1500), status: 'Available' });
+    }
+    // 2nd Floor (201-207)
+    for (let i = 201; i <= 207; i++) {
+      const type = ([201, 202, 207].includes(i)) ? 'Four Bed A/C' : 'Double Bed A/C';
+      roomsToCreate.push({ roomNumber: i.toString(), type, price: (type === 'Four Bed A/C' ? 2500 : 1500), status: 'Available' });
+    }
+    // 3rd Floor (301-307)
+    for (let i = 301; i <= 307; i++) {
+      const type = ([302, 307].includes(i)) ? 'Four Bed A/C' : 'Double Bed A/C';
+      roomsToCreate.push({ roomNumber: i.toString(), type, price: (type === 'Four Bed A/C' ? 2500 : 1500), status: 'Available' });
+    }
+    await Room.insertMany(roomsToCreate);
+    res.json({ success: true, message: 'Lodge layout reset successfully to 20 rooms.' });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 module.exports = router;

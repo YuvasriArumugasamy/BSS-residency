@@ -201,9 +201,26 @@ const RoomManagement = ({ rooms, onAddClick, onDeleteRoom, onUpdateRoom }) => {
     <div className="view-content fade-in">
       <div className="card-header" style={{ marginBottom: '1.5rem' }}>
         <p style={{ color: '#666' }}>Manage your inventory and pricing</p>
-        <button onClick={onAddClick} className="admin-btn admin-btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <Plus size={18} /> Add Room
-        </button>
+        <div style={{ display: 'flex', gap: '0.5rem' }}>
+          <button 
+            className="admin-btn admin-btn-outline" 
+            onClick={async () => {
+              if(!window.confirm('Sync to 20-room layout (101-307)?')) return;
+              try {
+                const headers = { username: auth.username, password: auth.password };
+                await api.post('/api/admin/rooms/reset-layout', {}, { headers });
+                alert('Rooms synced! Please refresh.');
+                fetchData();
+              } catch(e) { alert('Sync failed: ' + e.message); }
+            }}
+            style={{ padding: '0.4rem 0.8rem', fontSize: '0.85rem' }}
+          >
+            Sync Layout
+          </button>
+          <button onClick={onAddClick} className="admin-btn admin-btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <Plus size={18} /> Add Room
+          </button>
+        </div>
       </div>
 
       <div className="stats-grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))' }}>
