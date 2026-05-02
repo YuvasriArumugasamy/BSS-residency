@@ -19,7 +19,7 @@ async function setupClientRooms() {
       roomsToCreate.push({
         roomNumber: i.toString(),
         type,
-        price: (type === 'Four Bed A/C' ? 2500 : 1500),
+        price: (type === 'Four Bed A/C' ? 2300 : 1300),
         status: 'Available'
       });
     }
@@ -30,7 +30,7 @@ async function setupClientRooms() {
       roomsToCreate.push({
         roomNumber: i.toString(),
         type,
-        price: (type === 'Four Bed A/C' ? 2500 : 1500),
+        price: (type === 'Four Bed A/C' ? 2300 : 1300),
         status: 'Available'
       });
     }
@@ -41,7 +41,7 @@ async function setupClientRooms() {
       roomsToCreate.push({
         roomNumber: i.toString(),
         type,
-        price: (type === 'Four Bed A/C' ? 2500 : 1500),
+        price: (type === 'Four Bed A/C' ? 2300 : 1300),
         status: 'Available'
       });
     }
