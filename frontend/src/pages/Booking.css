@@ -1219,16 +1219,16 @@
 .legend-dot.full { background: #ef4444; }
 
 @media (max-width: 600px) {
-  .form-card { padding: 1.25rem 1rem; }
-  .calendar-header-custom { flex-direction: column; gap: 0.75rem; align-items: flex-start; margin-bottom: 1rem; }
-  .calendar-nav-custom { width: 100%; justify-content: space-between; }
-  .calendar-nav-custom span { min-width: auto; font-size: 0.85rem; }
-  .calendar-nav-custom button { width: 28px; height: 28px; font-size: 1rem; }
-  .availability-calendar-section { padding: 0.75rem; margin-top: 1.5rem; }
-  .calendar-grid-custom { gap: 4px; }
-  .calendar-day { min-height: 42px; border-radius: 6px; padding: 2px; }
-  .day-num { font-size: 0.85rem; }
-  .day-avail { font-size: 0.5rem; margin-top: 0; }
-  .calendar-legend { gap: 1rem; margin-top: 1rem; padding-top: 0.75rem; }
-  .legend-item { font-size: 0.7rem; }
+  .form-card { padding: 1rem 0.75rem; }
+  .calendar-header-custom { flex-direction: column; gap: 0.5rem; align-items: flex-start; margin-bottom: 0.75rem; }
+  .calendar-nav-custom { width: 100%; justify-content: space-between; gap: 0.5rem; }
+  .calendar-nav-custom span { min-width: auto; font-size: 0.8rem; }
+  .calendar-nav-custom button { width: 26px; height: 26px; font-size: 0.9rem; }
+  .availability-calendar-section { padding: 0.5rem; margin-top: 1rem; }
+  .calendar-grid-custom { gap: 2px; }
+  .calendar-day { min-height: 38px; border-radius: 4px; padding: 2px; }
+  .day-num { font-size: 0.8rem; }
+  .day-avail { font-size: 0.45rem; margin-top: 0; }
+  .calendar-legend { gap: 0.75rem; margin-top: 0.75rem; padding-top: 0.5rem; }
+  .legend-item { font-size: 0.65rem; }
 }
