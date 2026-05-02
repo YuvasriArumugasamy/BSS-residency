@@ -30,8 +30,8 @@
   position: sticky;
   top: 0;
   height: 100vh;
-  z-index: 1100;
-  transition: width 0.3s ease, left 0.3s ease;
+  z-index: 100;
+  transition: width 0.3s ease;
 }
 
 .sidebar-logo {
@@ -76,7 +76,6 @@
   font-size: 0.95rem;
   position: relative;
   overflow: hidden;
-  z-index: 10;
 }
 
 .nav-item::after {
@@ -683,13 +682,9 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem 1.5rem;
+    padding: 1rem 0;
     margin-bottom: 2rem;
     border-bottom: 1px solid var(--admin-border);
-    position: sticky;
-    top: 0;
-    background: white;
-    z-index: 1000;
   }
 
   .mobile-logo {

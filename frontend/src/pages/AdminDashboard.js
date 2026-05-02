@@ -4,7 +4,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area
 } from 'recharts';
 import {
-  LayoutDashboard, Bed, CalendarCheck, Users, CreditCard, PieChart, Settings, MessageSquare, Bell, LogOut, ExternalLink, RefreshCcw, Plus, Trash2, Edit3, CheckCircle, XCircle, Clock, X, MessageCircle, ClipboardCheck, Calendar, Image, Lock, Hash
+  LayoutDashboard, Bed, CalendarCheck, Users, CreditCard, PieChart, Settings, MessageSquare, Bell, LogOut, ExternalLink, RefreshCcw, Plus, Trash2, Edit3, CheckCircle, XCircle, Clock, X, MessageCircle, ClipboardCheck, Calendar, Image, Lock
 } from 'lucide-react';
 import api from '../api/axios';
 import './Admin.css';
@@ -1352,11 +1352,7 @@ export default function AdminDashboard() {
         {/* Mobile Header */}
         <header className="admin-mobile-header">
           <div className="mobile-logo">BSS <span>Residency</span></div>
-          <button 
-            className="mobile-menu-btn" 
-            onClick={() => document.body.classList.toggle('sidebar-open')}
-            aria-label="Toggle Menu"
-          >
+          <button className="mobile-menu-btn" onClick={() => document.body.classList.toggle('sidebar-open')}>
             <div className="hamburger"></div>
           </button>
         </header>
@@ -1368,18 +1364,6 @@ export default function AdminDashboard() {
               <p>Work with real occupancy and data logs</p>
             </div>
             <div className="view-header-actions">
-              <span style={{ fontSize: '0.7rem', color: '#aaa', alignSelf: 'center' }}>v2.2</span>
-              <button onClick={async () => {
-                if(!window.confirm('Wipe all rooms and reset to your specific 20-room layout (101-307)? This cannot be undone.')) return;
-                try {
-                  const headers = { username: auth.username, password: auth.password };
-                  await api.post('/api/admin/rooms/reset-layout', {}, { headers });
-                  alert('Lodge layout reset successfully! Refreshing...');
-                  fetchData();
-                } catch(e) { alert('Reset failed: ' + e.message); }
-              }} className="admin-btn admin-btn-outline header-btn" style={{ borderColor: '#d4a857', color: '#d4a857' }}>
-                <LayoutDashboard size={16} /> <span>Reset Layout</span>
-              </button>
               <button onClick={fetchData} className="admin-btn admin-btn-outline header-btn">
                 <RefreshCcw size={16} /> <span>Refresh</span>
               </button>

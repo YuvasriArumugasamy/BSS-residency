@@ -196,20 +196,14 @@ router.get('/stats', adminAuth, async (req, res) => {
     const payments = await Payment.find(paymentFilter);
     const totalRevenue = payments.reduce((sum, p) => sum + p.amount, 0);
 
-    // Today's activity definitions
+    // Occupancy (Current building state - usually not filtered by period)
+    const totalRooms = await Room.countDocuments();
+    const occupiedRooms = await Room.countDocuments({ status: 'Occupied' });
+    const availableRooms = await Room.countDocuments({ status: 'Available' });
+
+    // Today's activity
     const todayStart = new Date(); todayStart.setHours(0, 0, 0, 0);
     const todayEnd = new Date(); todayEnd.setHours(23, 59, 59, 999);
-
-    // Today's active bookings (those currently in-house or arriving today)
-    const activeBookingsToday = await Booking.find({
-      status: { $in: ['Confirmed', 'Pending'] },
-      checkIn: { $lte: todayEnd },
-      checkOut: { $gt: todayStart }
-    });
-    
-    const roomsOccupiedByBookings = activeBookingsToday.reduce((sum, b) => sum + (b.rooms || 1), 0);
-    const totalRooms = await Room.countDocuments();
-    const availableRooms = Math.max(0, totalRooms - roomsOccupiedByBookings);
 
     const checkInsToday = await Booking.countDocuments({
       checkIn: { $gte: todayStart, $lte: todayEnd },
@@ -249,7 +243,7 @@ router.get('/stats', adminAuth, async (req, res) => {
       success: true,
       stats: {
         totalBookings, pending, confirmed, cancelled, byRoom,
-        totalRevenue, availableRooms, occupiedRooms: roomsOccupiedByBookings, totalRooms,
+        totalRevenue, availableRooms, occupiedRooms, totalRooms,
         checkInsToday, checkOutsToday,
         revenueHistory,
         period
@@ -487,42 +481,6 @@ router.get('/notifications', adminAuth, async (req, res) => {
     res.json({ success: true, notifications });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
-  }
-});
-
-// POST /api/admin/rooms/reset-layout — Reset database to the specific 20-room floor layout
-router.post('/rooms/reset-layout', adminAuth, async (req, res) => {
-  try {
-    // 1. Clear existing rooms
-    await Room.deleteMany({});
-
-    const roomsToCreate = [];
-
-    // --- First Floor (6 rooms: 101-106) ---
-    for (let i = 101; i <= 106; i++) {
-      const type = (i === 102) ? 'Four Bed A/C' : 'Double Bed A/C';
-      const price = (type === 'Four Bed A/C') ? 2500 : 1500;
-      roomsToCreate.push({ roomNumber: i.toString(), type, price, status: 'Available' });
-    }
-
-    // --- Second Floor (7 rooms: 201-207) ---
-    for (let i = 201; i <= 207; i++) {
-      const type = ([201, 202, 207].includes(i)) ? 'Four Bed A/C' : 'Double Bed A/C';
-      const price = (type === 'Four Bed A/C') ? 2500 : 1500;
-      roomsToCreate.push({ roomNumber: i.toString(), type, price, status: 'Available' });
-    }
-
-    // --- Third Floor (7 rooms: 301-307) ---
-    for (let i = 301; i <= 307; i++) {
-      const type = ([302, 307].includes(i)) ? 'Four Bed A/C' : 'Double Bed A/C';
-      const price = (type === 'Four Bed A/C') ? 2500 : 1500;
-      roomsToCreate.push({ roomNumber: i.toString(), type, price, status: 'Available' });
-    }
-
-    await Room.insertMany(roomsToCreate);
-    res.json({ success: true, message: 'Lodge layout reset successfully to 20 rooms.' });
-  } catch (err) {
-    res.status(500).json({ success: false, error: err.message });
   }
 });
 

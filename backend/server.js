@@ -20,8 +20,6 @@ const app = express();
 const allowedOrigins = [
   process.env.FRONTEND_URL,
   'https://bss-residency.vercel.app',
-  'https://bssresidency.com',
-  'https://www.bssresidency.com',
   'http://localhost:3000'
 ].filter(Boolean);
 
@@ -70,20 +68,6 @@ mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
     console.log('MongoDB Connected');
-    
-    // Auto-seed admin if database is empty
-    const Admin = require('./models/Admin');
-    Admin.findOne({ username: 'santhosh' }).then(existing => {
-      if (!existing) {
-        new Admin({
-          username: process.env.ADMIN_USERNAME || 'santhosh',
-          password: process.env.ADMIN_PASSWORD || 'santhosh@123'
-        }).save().then(() => console.log('Default admin seeded')).catch(e => console.error('Seed error:', e));
-      }
-    });
-
-    // Room seeding disabled to preserve manual configuration
-
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
   })
   .catch((err) => {
