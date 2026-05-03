@@ -261,27 +261,56 @@ export default function Booking() {
                   <div className="pc-qr-wrap">
                     {(() => {
                       const upiUrl = `upi://pay?pa=santhoshgk9498@oksbi&am=500&cu=INR&tn=BSS${bookingId}`;
+                      // Use a more reliable QR service as fallback
                       const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(upiUrl)}`;
+                      
                       return (
                         <div className="pc-payment-actions">
-                          <div className="pc-qr-frame">
-                            <img src={qrUrl} alt="Payment QR Code" className="pc-qr-img" />
+                          <div className="pc-qr-frame" style={{ background: '#fff', padding: '10px', borderRadius: '12px', border: '1px solid #eee' }}>
+                            <img 
+                              src={qrUrl} 
+                              alt="Payment QR Code" 
+                              className="pc-qr-img" 
+                              style={{ width: '100%', maxWidth: '200px' }}
+                            />
                           </div>
-                          <a 
-                            href={upiUrl} 
-                            className="pc-qr-link" 
-                            style={{ marginTop: '1rem', background: '#000', color: '#fff', padding: '0.8rem', borderRadius: '8px', display: 'block', textDecoration: 'none', fontWeight: '700' }}
-                          >
-                            ⚡ Pay via Any UPI App
-                          </a>
+                          <div style={{ marginTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                            <a 
+                              href={upiUrl} 
+                              className="admin-btn admin-btn-primary" 
+                              style={{ 
+                                background: '#2563eb', 
+                                color: '#fff', 
+                                padding: '1rem', 
+                                borderRadius: '10px', 
+                                textDecoration: 'none', 
+                                fontWeight: '700',
+                                textAlign: 'center',
+                                boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)'
+                              }}
+                            >
+                              ⚡ PAY VIA UPI APP
+                            </a>
+                            <p style={{ fontSize: '0.8rem', color: '#666', margin: '0.5rem 0' }}>OR pay directly to GPay number:</p>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#f8fafc', padding: '0.8rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                              <strong style={{ fontSize: '1.1rem' }}>93449 89393</strong>
+                              <button 
+                                type="button" 
+                                onClick={() => copyToClipboard('9344989393')}
+                                style={{ background: '#0f172a', color: '#fff', border: 'none', padding: '0.4rem 0.8rem', borderRadius: '4px', fontSize: '0.75rem', cursor: 'pointer' }}
+                              >
+                                {copied ? 'Copied' : 'Copy'}
+                              </button>
+                            </div>
+                          </div>
                         </div>
                       );
                     })()}
                   </div>
 
                   <div className="pc-info-wrap">
-                    <div className="upi-copy-box">
-                      <div className="ucb-label">UPI ID & GPay Number</div>
+                    <div className="upi-copy-box" style={{ background: '#fff', border: '1px solid #e2e8f0' }}>
+                      <div className="ucb-label">Alternative UPI ID</div>
                       <div className="ucb-value-row">
                         <strong className="ucb-id">santhoshgk9498@oksbi</strong>
                         <button 
@@ -289,7 +318,7 @@ export default function Booking() {
                           className={`copy-btn ${copied ? 'copied' : ''}`}
                           onClick={() => copyToClipboard('santhoshgk9498@oksbi')}
                         >
-                          {copied ? '✓ Copied' : '📋 Copy'}
+                          {copied ? '✓' : '📋'}
                         </button>
                       </div>
                       <div className="ucb-value-row" style={{ marginTop: '0.5rem' }}>
