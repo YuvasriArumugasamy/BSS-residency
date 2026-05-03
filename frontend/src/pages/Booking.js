@@ -260,7 +260,8 @@ export default function Booking() {
                 <div className="pc-grid">
                   <div className="pc-qr-wrap">
                     {(() => {
-                      const upiUrl = `upi://pay?pa=santhoshgk9498@oksbi&am=500&cu=INR`;
+                      // REMOVED &am=500 to bypass personal account bank limits
+                      const upiUrl = `upi://pay?pa=santhoshgk9498@oksbi&pn=Santhosh%20G&cu=INR&tn=BSS${bookingId}`;
                       const qrUrl = `https://chart.googleapis.com/chart?cht=qr&chl=${encodeURIComponent(upiUrl)}&chs=300x300&choe=UTF-8&chld=L|2&v=${Date.now()}`;
                       
                       return (
@@ -272,7 +273,9 @@ export default function Booking() {
                               className="pc-qr-img" 
                               style={{ width: '100%', maxWidth: '220px', display: 'block', margin: '0 auto' }}
                             />
-                            <p style={{ fontSize: '0.7rem', color: '#888', marginTop: '8px', textAlign: 'center' }}>Scan with GPay / PhonePe / Paytm</p>
+                            <p style={{ fontSize: '0.85rem', color: '#000', marginTop: '12px', textAlign: 'center', fontWeight: '700' }}>
+                              ⚠️ Enter Amount: ₹500 Manually
+                            </p>
                           </div>
                           
                           <div style={{ marginTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -294,11 +297,11 @@ export default function Booking() {
                                 boxShadow: '0 4px 15px rgba(0,0,0,0.2)'
                               }}
                             >
-                              🚀 CLICK HERE TO PAY NOW
+                              🚀 OPEN PAYMENT APP
                             </button>
                             
                             <div style={{ background: '#fffbeb', padding: '1rem', borderRadius: '10px', border: '1px solid #fef3c7' }}>
-                              <p style={{ fontSize: '0.8rem', color: '#92400e', margin: '0 0 0.5rem 0', fontWeight: '700' }}>Alternative: GPay directly to Number</p>
+                              <p style={{ fontSize: '0.8rem', color: '#92400e', margin: '0 0 0.5rem 0', fontWeight: '700' }}>Quick Pay: GPay to Number</p>
                               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                 <strong style={{ fontSize: '1.2rem', color: '#000' }}>93449 89393</strong>
                                 <button 
