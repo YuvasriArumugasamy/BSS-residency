@@ -32,7 +32,7 @@
 .hero-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(160deg, rgba(0, 0, 0, 0.60) 0%, rgba(0, 0, 0, 0.35) 60%, rgba(0, 0, 0, 0.50) 100%);
+  background: linear-gradient(160deg, rgba(0, 0, 0, 0.72) 0%, rgba(0, 0, 0, 0.55) 50%, rgba(0, 0, 0, 0.68) 100%);
 }
 
 .hero-content {
@@ -43,6 +43,7 @@
   padding: 0 1.5rem;
   max-width: 720px;
   animation: fadeUp 1s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
 }
 
 .hero-logo-wrap {
@@ -2069,14 +2070,14 @@
   box-shadow: 0 4px 12px rgba(212, 168, 87, 0.3);
 }
 
-/* Mobile hero opacity — increased for better text readability */
+/* Mobile hero opacity — dark overlay for good text readability */
 @media (max-width: 768px) {
   .hero-overlay {
-    background: linear-gradient(160deg, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.30) 60%, rgba(0, 0, 0, 0.50) 100%);
+    background: linear-gradient(160deg, rgba(0, 0, 0, 0.70) 0%, rgba(0, 0, 0, 0.52) 50%, rgba(0, 0, 0, 0.65) 100%);
   }
   
   .hero-bg-img {
-    filter: brightness(0.9); /* Slightly dim for better text contrast */
+    filter: brightness(0.85);
   }
 }
 
