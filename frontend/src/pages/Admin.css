@@ -27,11 +27,12 @@
   color: white;
   display: flex;
   flex-direction: column;
-  position: sticky;
+  position: fixed; /* Changed from sticky to fixed */
+  left: 0;
   top: 0;
   height: 100vh;
   z-index: 100;
-  transition: width 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .sidebar-logo {
@@ -173,8 +174,8 @@
   flex: 1;
   padding: 1.5rem 3rem;
   max-width: 1400px;
-  margin: 0 auto;
-  width: 100%;
+  margin-left: 260px; /* Offset for fixed sidebar */
+  width: calc(100% - 260px);
   overflow-x: hidden;
 }
 
@@ -670,8 +671,13 @@
     position: fixed;
     left: -260px;
     height: 100vh;
-    transition: left 0.3s ease;
+    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 10px 0 30px rgba(0,0,0,0.2);
+    z-index: 1001;
+  }
+
+  body.sidebar-open {
+    overflow: hidden; /* Prevent background scroll when sidebar is open */
   }
 
   body.sidebar-open .admin-sidebar {
@@ -908,3 +914,20 @@
 .status-Confirmed { background: #f0fdf4; color: #166534; border: 1px solid #dcfce7; }
 .status-Cancelled { background: #fef2f2; color: #991b1b; border: 1px solid #fee2e2; }
 .status-Checked-out { background: #eff6ff; color: #1e40af; border: 1px solid #dbeafe; }
+
+/* Notification Specifics */
+.notification-card {
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.notification-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 15px rgba(0,0,0,0.05);
+}
+.delete-notif-btn:hover {
+  background: #fee2e2 !important;
+  color: #ef4444 !important;
+  transform: scale(1.05);
+}
+.delete-notif-btn:active {
+  transform: scale(0.95);
+}

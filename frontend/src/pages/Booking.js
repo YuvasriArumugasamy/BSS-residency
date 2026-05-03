@@ -177,11 +177,22 @@ export default function Booking() {
     setLoading(true);
     try {
       const fullName = `${form.salutation} ${form.firstName} ${form.lastName}`.trim();
-      const res = await api.post('/api/bookings', {
-        ...form,
+      
+      // Clean payload for backend
+      const payload = {
         name: fullName,
-        guests: Number(form.guests),
-      });
+        email: form.email,
+        phone: form.phone,
+        checkIn: form.checkIn,
+        checkOut: form.checkOut,
+        roomType: form.roomType,
+        rooms: Number(form.rooms) || 1,
+        guests: Number(form.guests) || 1,
+        children: Number(form.children) || 0,
+        message: form.message // Changed from specialRequests to message to match backend
+      };
+
+      const res = await api.post('/api/bookings', payload);
 
       setPendingBooking({
         ...res.data.booking,
@@ -402,9 +413,9 @@ export default function Booking() {
               </div>
             </div>
 
-            {result && (
-              <div className={`result-msg ${result.success ? 'success' : 'error'}`}>
-                {result.success ? '✅' : '⚠️'} {result.message}
+            {result && step === 1 && (
+              <div className="result-msg error animate-in">
+                ⚠️ {result.message}
               </div>
             )}
 
@@ -761,6 +772,11 @@ export default function Booking() {
                     >
                       ← Back
                     </button>
+                    {result && step === 2 && (
+                      <div className={`result-msg ${result.success ? 'success' : 'error'}`} style={{ marginBottom: '1rem', width: '100%' }}>
+                        {result.success ? '✅' : '⚠️'} {result.message}
+                      </div>
+                    )}
                     <button type="submit" className="btn-book-now" disabled={loading}>
                       {loading ? (
                         <>

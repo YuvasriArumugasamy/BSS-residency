@@ -883,7 +883,7 @@ const GalleryManagement = ({ auth }) => {
   );
 };
 
-const NotificationsView = ({ notifications, period, setPeriod, selectedMonth, setSelectedMonth }) => {
+const NotificationsView = ({ notifications, period, setPeriod, selectedMonth, setSelectedMonth, onDelete }) => {
   return (
     <div className="view-content fade-in">
       <div style={{ marginBottom: '1.5rem', display: 'flex', justifyContent: 'flex-end' }}>
@@ -912,15 +912,45 @@ const NotificationsView = ({ notifications, period, setPeriod, selectedMonth, se
       {notifications.length === 0 ? (
         <div className="card">No notifications yet for this period.</div>
       ) : notifications.map(a => (
-        <div key={a._id} className="card" style={{ marginBottom: '1rem', borderLeft: '4px solid var(--admin-primary)', display: 'flex', gap: '1rem', alignItems: 'center' }}>
-          <div style={{ background: '#fdfaf4', padding: '0.75rem', borderRadius: '50%', color: 'var(--admin-primary)' }}>
-            {a.type === 'booking' ? <CalendarCheck size={20} /> : (a.type === 'wa' ? <MessageSquare size={20} /> : <Clock size={20} />)}
+        <div key={a._id} className="notification-card-container" style={{ position: 'relative', marginBottom: '1rem' }}>
+          <div 
+            className="card notification-card" 
+            style={{ 
+              borderLeft: `4px solid ${a.type === 'booking' ? '#d4a857' : (a.type === 'wa' ? '#25D366' : '#64748b')}`, 
+              display: 'flex', 
+              gap: '1rem', 
+              alignItems: 'center' 
+            }}
+          >
+            <div style={{ background: '#fdfaf4', padding: '0.75rem', borderRadius: '50%', color: 'var(--admin-primary)' }}>
+              {a.type === 'booking' ? <CalendarCheck size={20} /> : (a.type === 'wa' ? <MessageSquare size={20} /> : <Clock size={20} />)}
+            </div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontWeight: 700, fontSize: '0.95rem' }}>{a.title}</div>
+              <div style={{ fontSize: '0.85rem', color: '#666' }}>{a.message}</div>
+              <div style={{ fontSize: '0.75rem', color: '#aaa', marginTop: '0.5rem' }}>{new Date(a.date).toLocaleString()}</div>
+            </div>
+            
+            <button 
+              className="delete-notif-btn"
+              onClick={() => onDelete(a._id)}
+              style={{ 
+                background: '#fff1f1', 
+                border: 'none', 
+                color: '#ef4444', 
+                padding: '10px', 
+                borderRadius: '8px', 
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'all 0.2s'
+              }}
+              title="Delete Notification"
+            >
+              <Trash2 size={20} />
+            </button>
           </div>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontWeight: 700, fontSize: '0.95rem' }}>{a.title}</div>
-            <div style={{ fontSize: '0.85rem', color: '#666' }}>{a.message}</div>
-          </div>
-          <div style={{ fontSize: '0.75rem', color: '#aaa' }}>{new Date(a.date).toLocaleString()}</div>
         </div>
       ))}
     </div>
@@ -1271,6 +1301,17 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleDeleteNotification = async (id) => {
+    if (!window.confirm('Delete this notification?')) return;
+    const headers = { username: auth.username, password: auth.password };
+    try {
+      await api.delete(`/api/admin/notifications/${id}`, { headers });
+      fetchData();
+    } catch (err) {
+      alert('Error deleting notification: ' + err.message);
+    }
+  };
+
   const logout = () => {
     sessionStorage.removeItem('bss_admin');
     navigate('/admin/login');
@@ -1369,6 +1410,7 @@ export default function AdminDashboard() {
         setPeriod={setNotificationsPeriod}
         selectedMonth={selectedMonth}
         setSelectedMonth={setSelectedMonth}
+        onDelete={handleDeleteNotification}
       />;
       case 'gallery': return <GalleryManagement auth={auth} />;
       default: return <div className="card">Coming Soon...</div>;

@@ -46,11 +46,29 @@ function buildWaCancelLink(booking, reason = '') {
   return `https://wa.me/${formattedPhone}?text=${encodeURIComponent(msg)}`;
 }
 
-// Simple auth middleware
+// Simple auth middleware — checks DB first, then ENV fallback
 const adminAuth = async (req, res, next) => {
   try {
     const { username, password } = req.headers;
-    const admin = await Admin.findOne({ username, password });
+    
+    // Check DB first
+    let admin = await Admin.findOne({ username, password });
+    
+    // ENV fallback: if DB has no admin yet, check environment variables
+    if (!admin) {
+      const envUser = process.env.ADMIN_USERNAME || 'santhosh';
+      const envPass = process.env.ADMIN_PASSWORD || 'santhosh@123';
+      if (username === envUser && password === envPass) {
+        // Auto-create admin in DB if not exists
+        const existing = await Admin.findOne({ username });
+        if (!existing) {
+          await Admin.create({ username, password });
+          console.log('Auto-created admin from ENV:', username);
+        }
+        return next();
+      }
+    }
+    
     if (admin) {
       next();
     } else {
@@ -61,18 +79,37 @@ const adminAuth = async (req, res, next) => {
   }
 };
 
-// POST /api/admin/login — Verify credentials
+// POST /api/admin/login — Verify credentials (DB + ENV fallback)
 router.post('/login', async (req, res) => {
   try {
     const { username, password } = req.body;
-    const admin = await Admin.findOne({ username, password });
+    let admin = await Admin.findOne({ username, password });
+
+    // ENV fallback: allow login from environment variables if DB has no admin
+    if (!admin) {
+      const envUser = process.env.ADMIN_USERNAME || 'santhosh';
+      const envPass = process.env.ADMIN_PASSWORD || 'santhosh@123';
+      if (username === envUser && password === envPass) {
+        // Auto-create in DB so future logins use DB
+        const existing = await Admin.findOne({ username });
+        if (!existing) {
+          admin = await Admin.create({ username, password, lastLogin: new Date() });
+          console.log('Admin auto-created from ENV on first login:', username);
+        } else {
+          admin = existing;
+          existing.lastLogin = new Date();
+          await existing.save();
+        }
+        return res.json({ success: true, message: 'Login successful' });
+      }
+    }
 
     if (admin) {
       admin.lastLogin = new Date();
       await admin.save();
       res.json({ success: true, message: 'Login successful' });
     } else {
-      res.status(401).json({ success: false, message: 'Invalid credentials' });
+      res.status(401).json({ success: false, message: 'Invalid username or password' });
     }
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -493,6 +530,16 @@ router.get('/notifications', adminAuth, async (req, res) => {
   }
 });
 
+// DELETE /api/admin/notifications/:id
+router.delete('/notifications/:id', adminAuth, async (req, res) => {
+  try {
+    await Notification.findByIdAndDelete(req.params.id);
+    res.json({ success: true, message: 'Notification deleted' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
 // POST /api/admin/rooms/reset-layout — Reset database to the specific 20-room floor layout
 router.post('/rooms/reset-layout', adminAuth, async (req, res) => {
   try {
@@ -504,13 +551,13 @@ router.post('/rooms/reset-layout', adminAuth, async (req, res) => {
     const roomsToCreate = [];
 
     const getPrices = (type) => {
-      if (type === 'Four Bed A/C') return { nonSeason: 2300, season: 2800 };
-      return { nonSeason: 1300, season: 1600 };
+      if (type === 'Four Bed') return { nonSeason: 2000, season: 2500 };
+      return { nonSeason: 1000, season: 1300 };
     };
 
     // 1st Floor (101-106)
     for (let i = 101; i <= 106; i++) {
-      const type = (i === 102) ? 'Four Bed A/C' : 'Double Bed A/C';
+      const type = (i === 102) ? 'Four Bed' : 'Double Bed';
       const prices = getPrices(type);
       roomsToCreate.push({
         roomNumber: i.toString(),
@@ -523,7 +570,7 @@ router.post('/rooms/reset-layout', adminAuth, async (req, res) => {
     }
     // 2nd Floor (201-207)
     for (let i = 201; i <= 207; i++) {
-      const type = ([201, 202, 207].includes(i)) ? 'Four Bed A/C' : 'Double Bed A/C';
+      const type = ([201, 202, 207].includes(i)) ? 'Four Bed' : 'Double Bed';
       const prices = getPrices(type);
       roomsToCreate.push({
         roomNumber: i.toString(),
@@ -536,7 +583,7 @@ router.post('/rooms/reset-layout', adminAuth, async (req, res) => {
     }
     // 3rd Floor (301-307)
     for (let i = 301; i <= 307; i++) {
-      const type = ([302, 307].includes(i)) ? 'Four Bed A/C' : 'Double Bed A/C';
+      const type = ([302, 307].includes(i)) ? 'Four Bed' : 'Double Bed';
       const prices = getPrices(type);
       roomsToCreate.push({
         roomNumber: i.toString(),

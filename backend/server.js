@@ -20,6 +20,8 @@ const app = express();
 const allowedOrigins = [
   process.env.FRONTEND_URL,
   'https://bss-residency.vercel.app',
+  'https://bssresidency.com',
+  'https://www.bssresidency.com',
   'http://localhost:3000'
 ].filter(Boolean);
 

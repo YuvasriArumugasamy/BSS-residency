@@ -32,7 +32,7 @@
 .hero-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(0, 0, 0, 0.82) 0%, rgba(0, 0, 0, 0.5) 100%);
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.2) 100%);
 }
 
 .hero-content {
@@ -2067,4 +2067,16 @@
   font-size: 1rem;
   cursor: pointer;
   box-shadow: 0 4px 12px rgba(212, 168, 87, 0.3);
-}
+}
+
+/* Reduced opacity for mobile as per user request */
+@media (max-width: 768px) {
+  .hero-overlay {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.05) 100%);
+  }
+  
+  .hero-bg-img {
+    filter: brightness(1.2); /* Even brighter for mobile */
+  }
+}
+

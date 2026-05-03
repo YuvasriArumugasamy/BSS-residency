@@ -124,7 +124,13 @@ router.post('/', async (req, res) => {
       booking,
     });
   } catch (err) {
-    res.status(500).json({ success: false, message: 'Server error.', error: err.message });
+    console.error('CRITICAL BOOKING ERROR:', err);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Server error. Please try again or contact us directly.', 
+      error: err.message,
+      stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
+    });
   }
 });
 
