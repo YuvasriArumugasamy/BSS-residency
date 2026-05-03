@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../api/axios';
+import SEO from '../components/SEO';
 import './CheckIn.css';
 
 const ID_TYPES = ['Aadhaar', 'Driving License', 'Passport', 'Voter ID'];
@@ -147,8 +148,13 @@ export default function CheckIn() {
   // --- STEP 1: Booking ID Search ---
   if (step === 1) {
     return (
-      <main className="checkin-page">
-        <section className="checkin-hero">
+      <>
+        <SEO 
+          title="Online Check-in | BSS Residency"
+          description="Fast and easy online check-in for BSS Residency guests. Skip the queue and complete your check-in before arrival."
+        />
+        <main className="checkin-page">
+          <section className="checkin-hero">
           <p className="ci-label">Online Check-in</p>
           <h1>Guest <em>Check-in</em></h1>
           <p>Skip the queue — complete your check-in before arrival</p>
@@ -196,14 +202,20 @@ export default function CheckIn() {
           </div>
         </section>
       </main>
+      </>
     );
   }
 
   // --- STEP 3: Success ---
   if (step === 3) {
     return (
-      <main className="checkin-page">
-        <section className="ci-container" style={{ paddingTop: '120px' }}>
+      <>
+        <SEO 
+          title="Check-in Complete | BSS Residency"
+          description="Your online check-in is complete. We look forward to hosting you at BSS Residency."
+        />
+        <main className="checkin-page">
+          <section className="ci-container" style={{ paddingTop: '120px' }}>
           <div className="ci-success-card">
             <div className="ci-success-anim">✅</div>
             <h2>Check-in Complete!</h2>
@@ -224,13 +236,19 @@ export default function CheckIn() {
           </div>
         </section>
       </main>
+      </>
     );
   }
 
   // --- STEP 2: Check-in Form ---
   return (
-    <main className="checkin-page">
-      <section className="checkin-hero">
+    <>
+      <SEO 
+        title="Complete Check-in Form | BSS Residency"
+        description="Please fill in your details to complete your online check-in at BSS Residency."
+      />
+      <main className="checkin-page">
+        <section className="checkin-hero">
         <p className="ci-label">Online Check-in</p>
         <h1>Complete Your <em>Check-in</em></h1>
         <p>Please fill in all details as per your ID proof</p>
@@ -450,5 +468,6 @@ export default function CheckIn() {
         </form>
       </section>
     </main>
+    </>
   );
 }

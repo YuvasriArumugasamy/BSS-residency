@@ -2,6 +2,7 @@ import React, { useMemo, useState, useEffect } from 'react';
 import api from '../api/axios';
 import { Link, useLocation } from 'react-router-dom';
 import { ROOMS, CONTACT, waLink } from '../constants';
+import SEO from '../components/SEO';
 import './Booking.css';
 
 const initForm = {
@@ -221,7 +222,12 @@ export default function Booking() {
     const waMsg = `Hello BSS Residency! 🙏\n\nI just submitted a booking request.\nBooking ID: ${bookingId}\nName: ${pendingBooking.name}\nRoom: ${pendingBooking.roomType}\nCheck-in: ${new Date(pendingBooking.checkIn).toLocaleDateString('en-IN')}\nCheck-out: ${new Date(pendingBooking.checkOut).toLocaleDateString('en-IN')}\n\nI have paid the advance of ₹500 via UPI. Please confirm!`;
 
     return (
-      <main className="booking-page">
+      <>
+        <SEO 
+          title="Booking Confirmed | BSS Residency"
+          description="Your booking request has been received. Please complete the advance payment."
+        />
+        <main className="booking-page">
         <section className="page-hero">
           <p className="section-label gold">Reservation</p>
           <h1>Booking <em>Received!</em></h1>
@@ -393,11 +399,18 @@ export default function Booking() {
           </div>
         </section>
       </main>
+      </>
     );
   }
 
   return (
-    <main className="booking-page">
+    <>
+      <SEO 
+        title="Book Your Room in Courtallam Online | BSS Residency"
+        description="Book your stay at BSS Residency Courtallam. Instant WhatsApp confirmation, safe & secure, and best prices guaranteed."
+        keywords="book lodge courtallam, online booking courtallam, courtallam room booking"
+      />
+      <main className="booking-page">
       <section className="page-hero">
         <p className="section-label gold">Reservations</p>
         <h1>Book Your <em>Stay</em></h1>
@@ -945,5 +958,6 @@ export default function Booking() {
         </div>
       </section>
     </main>
+    </>
   );
 }

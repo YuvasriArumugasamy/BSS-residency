@@ -7,6 +7,7 @@ import roomAc3 from '../assets/room-ac-3.jpg';
 import roomFamily from '../assets/room-family.jpg';
 import { waLink, CONTACT } from '../constants';
 import api from '../api/axios';
+import SEO from '../components/SEO';
 import './Gallery.css';
 
 const staticPhotos = [
@@ -52,7 +53,12 @@ export default function Gallery() {
   const filtered = active === 'All' ? photos : photos.filter(p => p.category === active);
 
   return (
-    <main className="gallery-page">
+    <>
+      <SEO 
+        title="Gallery & Photos – BSS Residency Courtallam"
+        description="View photos of our premium rooms, clean bathrooms, and the majestic Courtallam waterfalls near BSS Residency."
+      />
+      <main className="gallery-page">
       <section className="page-hero">
         <div className="page-hero-content">
           <p className="section-label gold">Visual Tour</p>
@@ -122,5 +128,6 @@ export default function Gallery() {
         </div>
       )}
     </main>
+    </>
   );
 }

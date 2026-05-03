@@ -30,6 +30,7 @@ import kutralanatharTemple from '../assets/Kutralanathar Temple.png';
 import ariyankavuTemple from '../assets/Ariyankavu Iyappan Kovil.png';
 import { AMENITIES, ROOMS, CONTACT, waLink, WA_TEMPLATES } from '../constants';
 import api from '../api/axios';
+import SEO from '../components/SEO';
 import './Home.css';
 
 const imgMap = {
@@ -188,8 +189,31 @@ export default function Home() {
     fetchReviews();
   }, []);
 
+  const schemaMarkup = {
+    "@context": "https://schema.org",
+    "@type": "Hotel",
+    "name": "BSS Residency",
+    "image": "https://bssresidency.com/logo.png",
+    "description": "Premium Lodge & Rooms in Courtallam. We offer A/C and Non-A/C rooms near Courtallam Waterfalls and Bus Stand.",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Near Anna Statue, Old Bus Stand",
+      "addressLocality": "Courtallam",
+      "addressRegion": "Tamil Nadu",
+      "postalCode": "627802",
+      "addressCountry": "IN"
+    },
+    "telephone": "+918838599755",
+    "priceRange": "₹1000 - ₹2500"
+  };
+
   return (
     <>
+      <SEO 
+        title="BSS Residency – Premium Lodge & Rooms in Courtallam"
+        description="Experience premium comfort at BSS Residency, located near Courtallam Bus Stand and Waterfalls. Book A/C & Non-A/C rooms at the best lodge in Courtallam."
+        schemaMarkup={schemaMarkup}
+      />
       <main className="home">
         {/* Hero */}
         <section className="hero">

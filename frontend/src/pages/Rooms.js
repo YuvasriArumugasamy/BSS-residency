@@ -6,6 +6,7 @@ import roomAc2 from '../assets/room-ac-2.jpg';
 import roomAc3 from '../assets/room-ac-3.jpg';
 import roomFamily from '../assets/room-family.jpg';
 import { ROOMS, waLink, WA_TEMPLATES, CONTACT } from '../constants';
+import SEO from '../components/SEO';
 import './Rooms.css';
 
 const imgMap = {
@@ -29,8 +30,14 @@ export default function Rooms() {
   const getPrice = (room) => isSeason ? room.seasonPrice : room.nonSeasonPrice;
 
   return (
-    <main className="rooms-page">
-      {/* Page Hero */}
+    <>
+      <SEO 
+        title="Best Rooms & Lodge in Courtallam | A/C & Non-A/C | BSS Residency"
+        description="Choose from our luxurious Double Bed, Four Bed, A/C and Non-A/C rooms. BSS Residency offers the best accommodation near Courtallam Main Falls at affordable prices."
+        keywords="courtallam rooms, courtallam lodge tariff, ac rooms courtallam, family rooms courtallam, cheap rooms courtallam"
+      />
+      <main className="rooms-page">
+        {/* Page Hero */}
       <section className="page-hero">
         <div className="page-hero-content">
           <p className="section-label gold">Accommodations</p>
@@ -121,5 +128,6 @@ export default function Rooms() {
         </div>
       </section>
     </main>
+    </>
   );
 }

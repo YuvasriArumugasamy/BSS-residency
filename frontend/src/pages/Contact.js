@@ -1,11 +1,18 @@
 import React from 'react';
 import { CONTACT, MAP, NEARBY_PLACES, AMENITIES, waLink, WA_TEMPLATES } from '../constants';
+import SEO from '../components/SEO';
 import './Contact.css';
 
 export default function Contact() {
   return (
-    <main className="contact-page">
-      <section className="page-hero">
+    <>
+      <SEO 
+        title="Contact Us & Location | BSS Residency Courtallam"
+        description="Get in touch with BSS Residency. Call us for lodge bookings, find our location near Courtallam Bus Stand, or WhatsApp us."
+        keywords="bss residency contact, courtallam lodge phone number, courtallam stay location"
+      />
+      <main className="contact-page">
+        <section className="page-hero">
         <p className="section-label gold">Get In Touch</p>
         <h1>Contact <em>Us</em></h1>
         <p>We're here to help. Reach us on WhatsApp for fastest response.</p>
@@ -156,5 +163,6 @@ export default function Contact() {
         </div>
       </section>
     </main>
+    </>
   );
 }

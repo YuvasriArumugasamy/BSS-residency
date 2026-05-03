@@ -883,10 +883,19 @@ const GalleryManagement = ({ auth }) => {
   );
 };
 
-const NotificationsView = ({ notifications, period, setPeriod, selectedMonth, setSelectedMonth, onDelete }) => {
+const NotificationsView = ({ notifications, period, setPeriod, selectedMonth, setSelectedMonth, onDelete, onClearAll }) => {
   return (
     <div className="view-content fade-in">
-      <div style={{ marginBottom: '1.5rem', display: 'flex', justifyContent: 'flex-end' }}>
+      <div style={{ marginBottom: '1.5rem', display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
+        {notifications.length > 0 && (
+          <button 
+            onClick={onClearAll} 
+            className="admin-btn admin-btn-outline" 
+            style={{ color: '#ef4444', borderColor: '#fee2e2', background: '#fff', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+          >
+            <Trash2 size={16} /> Clear All
+          </button>
+        )}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#fff', padding: '0.4rem 0.8rem', borderRadius: '8px', border: '1px solid #e2e8f0', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
           <Calendar size={16} color="#64748b" />
           <select
@@ -1312,6 +1321,17 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleClearAllNotifications = async () => {
+    if (!window.confirm('Clear ALL notifications? This cannot be undone.')) return;
+    const headers = { username: auth.username, password: auth.password };
+    try {
+      await api.delete(`/api/admin/notifications/all`, { headers });
+      fetchData();
+    } catch (err) {
+      alert('Error clearing notifications: ' + err.message);
+    }
+  };
+
   const logout = () => {
     sessionStorage.removeItem('bss_admin');
     navigate('/admin/login');
@@ -1411,6 +1431,7 @@ export default function AdminDashboard() {
         selectedMonth={selectedMonth}
         setSelectedMonth={setSelectedMonth}
         onDelete={handleDeleteNotification}
+        onClearAll={handleClearAllNotifications}
       />;
       case 'gallery': return <GalleryManagement auth={auth} />;
       default: return <div className="card">Coming Soon...</div>;

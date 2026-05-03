@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import FloatingContact from './components/FloatingContact';
@@ -29,10 +30,11 @@ function Analytics() {
 
 function App() {
   return (
-    <Router>
-      <Analytics />
-      <ScrollObserver />
-      <Routes>
+    <HelmetProvider>
+      <Router>
+        <Analytics />
+        <ScrollObserver />
+        <Routes>
         {/* Admin routes - no navbar/footer */}
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
@@ -58,6 +60,7 @@ function App() {
         } />
       </Routes>
     </Router>
+    </HelmetProvider>
   );
 }
 

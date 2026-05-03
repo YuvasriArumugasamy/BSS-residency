@@ -530,9 +530,13 @@ router.get('/notifications', adminAuth, async (req, res) => {
   }
 });
 
-// DELETE /api/admin/notifications/:id
+// DELETE /api/admin/notifications/:id or all
 router.delete('/notifications/:id', adminAuth, async (req, res) => {
   try {
+    if (req.params.id === 'all') {
+      await Notification.deleteMany({});
+      return res.json({ success: true, message: 'All notifications cleared' });
+    }
     await Notification.findByIdAndDelete(req.params.id);
     res.json({ success: true, message: 'Notification deleted' });
   } catch (error) {
