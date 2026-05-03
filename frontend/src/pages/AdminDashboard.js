@@ -1440,6 +1440,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="admin-dashboard">
+      <div className="sidebar-backdrop" onClick={() => document.body.classList.remove('sidebar-open')}></div>
       <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} onLogout={logout} username={auth?.username} unreadCount={unreadCount} unreadReviewCount={unreadReviewCount} />
 
       <main className="admin-main">
