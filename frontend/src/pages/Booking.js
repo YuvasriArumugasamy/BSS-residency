@@ -121,7 +121,7 @@ export default function Booking() {
 
   const gstAmount = GST_FIXED;
   const totalPrice = useMemo(() => roomCharges + gstAmount, [roomCharges, gstAmount]);
-  const advanceAmount = 500; // Flat ₹500 advance
+  const advanceAmount = 100; // Flat ₹100 advance (reduced to avoid bank UPI limits)
 
   const formatDate = (dateStr) => {
     if (!dateStr) return '—';
