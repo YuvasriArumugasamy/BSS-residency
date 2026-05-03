@@ -260,47 +260,55 @@ export default function Booking() {
                 <div className="pc-grid">
                   <div className="pc-qr-wrap">
                     {(() => {
-                      const upiUrl = `upi://pay?pa=santhoshgk9498@oksbi&am=500&cu=INR&tn=BSS${bookingId}`;
-                      // Use a more reliable QR service as fallback
-                      const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(upiUrl)}`;
+                      const upiUrl = `upi://pay?pa=santhoshgk9498@oksbi&am=500&cu=INR`;
+                      const qrUrl = `https://chart.googleapis.com/chart?cht=qr&chl=${encodeURIComponent(upiUrl)}&chs=300x300&choe=UTF-8&chld=L|2&v=${Date.now()}`;
                       
                       return (
                         <div className="pc-payment-actions">
-                          <div className="pc-qr-frame" style={{ background: '#fff', padding: '10px', borderRadius: '12px', border: '1px solid #eee' }}>
+                          <div className="pc-qr-frame" style={{ background: '#fff', padding: '15px', borderRadius: '16px', border: '2px solid #d4a857', boxShadow: '0 10px 25px rgba(212,168,87,0.2)' }}>
                             <img 
                               src={qrUrl} 
                               alt="Payment QR Code" 
                               className="pc-qr-img" 
-                              style={{ width: '100%', maxWidth: '200px' }}
+                              style={{ width: '100%', maxWidth: '220px', display: 'block', margin: '0 auto' }}
                             />
+                            <p style={{ fontSize: '0.7rem', color: '#888', marginTop: '8px', textAlign: 'center' }}>Scan with GPay / PhonePe / Paytm</p>
                           </div>
-                          <div style={{ marginTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
-                            <a 
-                              href={upiUrl} 
+                          
+                          <div style={{ marginTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                            <button 
+                              type="button"
+                              onClick={() => {
+                                window.location.href = upiUrl;
+                              }}
                               className="admin-btn admin-btn-primary" 
                               style={{ 
-                                background: '#2563eb', 
+                                background: '#1a1a1a', 
                                 color: '#fff', 
-                                padding: '1rem', 
-                                borderRadius: '10px', 
-                                textDecoration: 'none', 
-                                fontWeight: '700',
-                                textAlign: 'center',
-                                boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)'
+                                padding: '1.25rem', 
+                                borderRadius: '12px', 
+                                fontWeight: '800',
+                                fontSize: '1rem',
+                                border: 'none',
+                                cursor: 'pointer',
+                                boxShadow: '0 4px 15px rgba(0,0,0,0.2)'
                               }}
                             >
-                              ⚡ PAY VIA UPI APP
-                            </a>
-                            <p style={{ fontSize: '0.8rem', color: '#666', margin: '0.5rem 0' }}>OR pay directly to GPay number:</p>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#f8fafc', padding: '0.8rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                              <strong style={{ fontSize: '1.1rem' }}>93449 89393</strong>
-                              <button 
-                                type="button" 
-                                onClick={() => copyToClipboard('9344989393')}
-                                style={{ background: '#0f172a', color: '#fff', border: 'none', padding: '0.4rem 0.8rem', borderRadius: '4px', fontSize: '0.75rem', cursor: 'pointer' }}
-                              >
-                                {copied ? 'Copied' : 'Copy'}
-                              </button>
+                              🚀 CLICK HERE TO PAY NOW
+                            </button>
+                            
+                            <div style={{ background: '#fffbeb', padding: '1rem', borderRadius: '10px', border: '1px solid #fef3c7' }}>
+                              <p style={{ fontSize: '0.8rem', color: '#92400e', margin: '0 0 0.5rem 0', fontWeight: '700' }}>Alternative: GPay directly to Number</p>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                <strong style={{ fontSize: '1.2rem', color: '#000' }}>93449 89393</strong>
+                                <button 
+                                  type="button" 
+                                  onClick={() => copyToClipboard('9344989393')}
+                                  style={{ background: '#d4a857', color: '#fff', border: 'none', padding: '0.5rem 1rem', borderRadius: '6px', fontSize: '0.8rem', fontWeight: '700', cursor: 'pointer' }}
+                                >
+                                  {copied ? '✅ COPIED' : '📋 COPY'}
+                                </button>
+                              </div>
                             </div>
                           </div>
                         </div>
