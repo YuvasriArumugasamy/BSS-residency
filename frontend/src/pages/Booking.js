@@ -259,24 +259,28 @@ export default function Booking() {
                 
                 <div className="pc-grid">
                   <div className="pc-qr-wrap">
-                    <a 
-                      href={`upi://pay?pa=santhoshgk9498@oksbi&pn=BSS%20Residency&tn=Booking%20Advance%20BSS${bookingId}&am=${advanceAmount}.00&cu=INR`.replace(/ /g, '%20')}
-                      className="pc-qr-link"
-                      title="Click to pay with GPay / UPI"
-                    >
-                      <div className="pc-qr-frame">
-                        <img 
-                          src="/images/qr-code.png" 
-                          alt="Payment QR Code" 
-                          className="pc-qr-img" 
-                          onError={(e) => {
-                            const upiUrl = `upi://pay?pa=santhoshgk9498@oksbi&pn=BSS Residency&tn=Booking Advance BSS${bookingId}&am=${advanceAmount}.00&cu=INR`;
-                            e.target.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiUrl)}`;
-                          }} 
-                        />
-                      </div>
-                      <span className="pc-qr-label">Tap or Scan to Pay</span>
-                    </a>
+                    {(() => {
+                      const upiUrl = `upi://pay?pa=santhoshgk9498@oksbi&pn=Santhosh%20G&am=${advanceAmount}&cu=INR&tn=BSS-${bookingId}`;
+                      return (
+                        <a 
+                          href={upiUrl}
+                          className="pc-qr-link"
+                          title="Click to pay with UPI"
+                        >
+                          <div className="pc-qr-frame">
+                            <img 
+                              src="/images/qr-code.png" 
+                              alt="Payment QR Code" 
+                              className="pc-qr-img" 
+                              onError={(e) => {
+                                e.target.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiUrl)}`;
+                              }} 
+                            />
+                          </div>
+                          <span className="pc-qr-label">Tap or Scan to Pay</span>
+                        </a>
+                      );
+                    })()}
                   </div>
 
                   <div className="pc-info-wrap">
