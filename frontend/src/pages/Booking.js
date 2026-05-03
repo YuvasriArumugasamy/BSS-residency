@@ -260,25 +260,21 @@ export default function Booking() {
                 <div className="pc-grid">
                   <div className="pc-qr-wrap">
                     {(() => {
-                      const upiUrl = `upi://pay?pa=santhoshgk9498@oksbi&pn=Santhosh%20G&am=${advanceAmount}&cu=INR&tn=BSS-${bookingId}`;
+                      const upiUrl = `upi://pay?pa=santhoshgk9498@oksbi&am=500&cu=INR&tn=BSS${bookingId}`;
+                      const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(upiUrl)}`;
                       return (
-                        <a 
-                          href={upiUrl}
-                          className="pc-qr-link"
-                          title="Click to pay with UPI"
-                        >
+                        <div className="pc-payment-actions">
                           <div className="pc-qr-frame">
-                            <img 
-                              src="/images/qr-code.png" 
-                              alt="Payment QR Code" 
-                              className="pc-qr-img" 
-                              onError={(e) => {
-                                e.target.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiUrl)}`;
-                              }} 
-                            />
+                            <img src={qrUrl} alt="Payment QR Code" className="pc-qr-img" />
                           </div>
-                          <span className="pc-qr-label">Tap or Scan to Pay</span>
-                        </a>
+                          <a 
+                            href={upiUrl} 
+                            className="pc-qr-link" 
+                            style={{ marginTop: '1rem', background: '#000', color: '#fff', padding: '0.8rem', borderRadius: '8px', display: 'block', textDecoration: 'none', fontWeight: '700' }}
+                          >
+                            ⚡ Pay via Any UPI App
+                          </a>
+                        </div>
                       );
                     })()}
                   </div>
