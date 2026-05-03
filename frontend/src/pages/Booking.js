@@ -260,8 +260,8 @@ export default function Booking() {
                 <div className="pc-grid">
                   <div className="pc-qr-wrap">
                     {(() => {
-                      // REMOVED &am=500 to bypass personal account bank limits
-                      const upiUrl = `upi://pay?pa=santhoshgk9498@oksbi&pn=Santhosh%20G&cu=INR&tn=BSS${bookingId}`;
+                      // EXTREME SIMPLIFICATION: Only PA and CU
+                      const upiUrl = `upi://pay?pa=santhoshgk9498@oksbi&cu=INR`;
                       const qrUrl = `https://chart.googleapis.com/chart?cht=qr&chl=${encodeURIComponent(upiUrl)}&chs=300x300&choe=UTF-8&chld=L|2&v=${Date.now()}`;
                       
                       return (
@@ -273,46 +273,48 @@ export default function Booking() {
                               className="pc-qr-img" 
                               style={{ width: '100%', maxWidth: '220px', display: 'block', margin: '0 auto' }}
                             />
-                            <p style={{ fontSize: '0.85rem', color: '#000', marginTop: '12px', textAlign: 'center', fontWeight: '700' }}>
-                              ⚠️ Enter Amount: ₹500 Manually
-                            </p>
+                            <div style={{ textAlign: 'center', marginTop: '1rem' }}>
+                                <p style={{ fontSize: '0.85rem', color: '#e11d48', fontWeight: '800', margin: '0' }}>⚠️ 1. Enter Amount: ₹500</p>
+                                <p style={{ fontSize: '0.75rem', color: '#666', margin: '4px 0 0 0' }}>Banks may block automatic amounts</p>
+                            </div>
                           </div>
                           
                           <div style={{ marginTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                            <div style={{ background: '#f8fafc', padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0', textAlign: 'center' }}>
+                                <p style={{ fontSize: '0.85rem', color: '#475569', marginBottom: '0.5rem', fontWeight: '600' }}>Option A: Pay to Phone Number (Recommended)</p>
+                                <strong style={{ fontSize: '1.5rem', color: '#0f172a', display: 'block', marginBottom: '0.8rem' }}>93449 89393</strong>
+                                <button 
+                                  type="button" 
+                                  onClick={() => copyToClipboard('9344989393')}
+                                  style={{ background: '#0f172a', color: '#fff', border: 'none', padding: '0.6rem 1.5rem', borderRadius: '8px', fontSize: '0.9rem', fontWeight: '700', cursor: 'pointer', width: '100%' }}
+                                >
+                                  {copied ? '✅ COPIED!' : '📋 COPY NUMBER'}
+                                </button>
+                            </div>
+
+                            <div style={{ textAlign: 'center' }}>
+                                <p style={{ fontSize: '0.8rem', color: '#94a3b8', margin: '0.5rem 0' }}>— OR —</p>
+                            </div>
+
                             <button 
                               type="button"
                               onClick={() => {
                                 window.location.href = upiUrl;
                               }}
-                              className="admin-btn admin-btn-primary" 
+                              className="admin-btn" 
                               style={{ 
-                                background: '#1a1a1a', 
-                                color: '#fff', 
-                                padding: '1.25rem', 
-                                borderRadius: '12px', 
-                                fontWeight: '800',
-                                fontSize: '1rem',
-                                border: 'none',
-                                cursor: 'pointer',
-                                boxShadow: '0 4px 15px rgba(0,0,0,0.2)'
+                                background: '#fff', 
+                                color: '#1a1a1a', 
+                                padding: '1rem', 
+                                borderRadius: '10px', 
+                                fontWeight: '700',
+                                fontSize: '0.9rem',
+                                border: '2px solid #1a1a1a',
+                                cursor: 'pointer'
                               }}
                             >
-                              🚀 OPEN PAYMENT APP
+                              🚀 Open GPay / PhonePe App
                             </button>
-                            
-                            <div style={{ background: '#fffbeb', padding: '1rem', borderRadius: '10px', border: '1px solid #fef3c7' }}>
-                              <p style={{ fontSize: '0.8rem', color: '#92400e', margin: '0 0 0.5rem 0', fontWeight: '700' }}>Quick Pay: GPay to Number</p>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                <strong style={{ fontSize: '1.2rem', color: '#000' }}>93449 89393</strong>
-                                <button 
-                                  type="button" 
-                                  onClick={() => copyToClipboard('9344989393')}
-                                  style={{ background: '#d4a857', color: '#fff', border: 'none', padding: '0.5rem 1rem', borderRadius: '6px', fontSize: '0.8rem', fontWeight: '700', cursor: 'pointer' }}
-                                >
-                                  {copied ? '✅ COPIED' : '📋 COPY'}
-                                </button>
-                              </div>
-                            </div>
                           </div>
                         </div>
                       );
