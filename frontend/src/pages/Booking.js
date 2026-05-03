@@ -261,62 +261,59 @@ export default function Booking() {
                   <div className="pc-qr-wrap" style={{ width: '100%', maxWidth: 'none' }}>
                     {(() => {
                       const upiUrl = `upi://pay?pa=santhoshgk9498@oksbi&cu=INR`;
-                      const qrUrl = `https://chart.googleapis.com/chart?cht=qr&chl=${encodeURIComponent(upiUrl)}&chs=300x300&choe=UTF-8&chld=L|2&v=${Date.now()}`;
+                      const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upiUrl)}`;
                       
                       return (
-                        <div className="premium-gateway-box" style={{ background: '#fff', borderRadius: '16px', border: '1px solid #e2e8f0', overflow: 'hidden', boxShadow: '0 10px 30px rgba(0,0,0,0.05)' }}>
+                        <div className="premium-gateway-box" style={{ background: '#fff', borderRadius: '16px', border: '1px solid #e2e8f0', overflow: 'hidden', boxShadow: '0 10px 30px rgba(0,0,0,0.05)', margin: '1rem 0' }}>
                             {/* Header */}
-                            <div style={{ background: '#0f172a', color: '#fff', padding: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <div style={{ fontSize: '0.9rem', fontWeight: '700' }}>Secure Checkout</div>
-                                <div style={{ fontSize: '0.7rem', opacity: '0.7' }}>Powered by UPI 2.0</div>
+                            <div style={{ background: '#0f172a', color: '#fff', padding: '0.75rem 1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <div style={{ fontSize: '0.85rem', fontWeight: '700' }}>Secure Checkout</div>
+                                <div style={{ fontSize: '0.65rem', opacity: '0.7' }}>UPI 2.0 Secure</div>
                             </div>
 
-                            <div style={{ padding: '1.5rem' }}>
-                                {/* Steps info */}
-                                <div style={{ marginBottom: '1.5rem', display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                                    <div style={{ flex: 1, height: '4px', background: '#d4a857', borderRadius: '2px' }}></div>
-                                    <div style={{ flex: 1, height: '4px', background: '#e2e8f0', borderRadius: '2px' }}></div>
-                                    <div style={{ flex: 1, height: '4px', background: '#e2e8f0', borderRadius: '2px' }}></div>
-                                </div>
-
-                                <div className="pc-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', alignItems: 'center' }}>
-                                    {/* Left: QR */}
-                                    <div style={{ textAlign: 'center' }}>
-                                        <div style={{ padding: '12px', background: '#fff', border: '2px solid #f1f5f9', borderRadius: '12px', display: 'inline-block' }}>
-                                            <img src={qrUrl} alt="QR" style={{ width: '160px', height: '160px' }} />
+                            <div style={{ padding: '1.25rem' }}>
+                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.5rem', alignItems: 'center', justifyContent: 'center' }}>
+                                    {/* Left/Top: QR */}
+                                    <div style={{ textAlign: 'center', flex: '1', minWidth: '200px' }}>
+                                        <div style={{ padding: '12px', background: '#fff', border: '1px solid #f1f5f9', borderRadius: '12px', display: 'inline-block', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
+                                            <img 
+                                              src={qrUrl} 
+                                              alt="UPI QR Code" 
+                                              style={{ width: '150px', height: '150px', display: 'block' }} 
+                                              onError={(e) => {
+                                                e.target.src = `https://chart.googleapis.com/chart?cht=qr&chl=${encodeURIComponent(upiUrl)}&chs=200x200`;
+                                              }}
+                                            />
                                         </div>
                                         <p style={{ fontSize: '0.7rem', color: '#64748b', marginTop: '8px' }}>Scan with GPay/Any UPI App</p>
                                     </div>
 
-                                    {/* Right: Actions */}
-                                    <div style={{ textAlign: 'left' }}>
-                                        <div style={{ marginBottom: '1.25rem' }}>
-                                            <label style={{ fontSize: '0.75rem', color: '#94a3b8', textTransform: 'uppercase', fontWeight: '700', letterSpacing: '0.05em' }}>Payee Name</label>
-                                            <div style={{ fontSize: '1rem', fontWeight: '700', color: '#0f172a' }}>Santhosh G (BSS)</div>
-                                        </div>
-                                        <div style={{ marginBottom: '1.5rem' }}>
-                                            <label style={{ fontSize: '0.75rem', color: '#94a3b8', textTransform: 'uppercase', fontWeight: '700', letterSpacing: '0.05em' }}>Amount to Pay</label>
-                                            <div style={{ fontSize: '1.5rem', fontWeight: '800', color: '#d4a857' }}>₹ 500</div>
+                                    {/* Right/Bottom: Actions */}
+                                    <div style={{ textAlign: 'center', flex: '1', minWidth: '200px' }}>
+                                        <div style={{ marginBottom: '1rem' }}>
+                                            <label style={{ fontSize: '0.7rem', color: '#94a3b8', textTransform: 'uppercase', fontWeight: '700' }}>Amount to Pay</label>
+                                            <div style={{ fontSize: '1.75rem', fontWeight: '800', color: '#d4a857' }}>₹ 500</div>
                                         </div>
 
                                         <button 
                                             type="button"
                                             onClick={() => { window.location.href = upiUrl; }}
                                             className="admin-btn admin-btn-primary" 
-                                            style={{ width: '100%', background: '#d4a857', color: '#000', fontWeight: '800', padding: '1rem', borderRadius: '10px' }}
+                                            style={{ width: '100%', background: '#d4a857', color: '#000', fontWeight: '800', padding: '0.85rem', borderRadius: '10px', border: 'none', cursor: 'pointer', boxShadow: '0 4px 12px rgba(212,168,87,0.3)' }}
                                         >
                                             ⚡ PAY NOW
                                         </button>
+                                        <p style={{ fontSize: '0.65rem', color: '#94a3b8', marginTop: '8px' }}>Redirects to your payment app</p>
                                     </div>
                                 </div>
 
                                 {/* Security Footer */}
-                                <div style={{ marginTop: '2rem', paddingTop: '1.5rem', borderTop: '1px solid #f1f5f9', display: 'flex', justifyContent: 'center', gap: '2rem' }}>
-                                    <div style={{ fontSize: '0.7rem', color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                <div style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid #f1f5f9', display: 'flex', justifyContent: 'center', gap: '1.5rem' }}>
+                                    <div style={{ fontSize: '0.65rem', color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '4px' }}>
                                         <i className="fa-solid fa-shield-halved" style={{ color: '#10b981' }}></i> SSL Secure
                                     </div>
-                                    <div style={{ fontSize: '0.7rem', color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                        <i className="fa-solid fa-lock" style={{ color: '#10b981' }}></i> End-to-End Encrypted
+                                    <div style={{ fontSize: '0.65rem', color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                        <i className="fa-solid fa-lock" style={{ color: '#10b981' }}></i> Encrypted
                                     </div>
                                 </div>
                             </div>
