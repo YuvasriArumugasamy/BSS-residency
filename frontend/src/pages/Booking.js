@@ -260,7 +260,7 @@ export default function Booking() {
                 <div className="pc-grid">
                   <div className="pc-qr-wrap">
                     <a 
-                      href={`upi://pay?pa=santhoshgk9498@oksbi&pn=BSS%20Residency&tn=Booking%20Advance%20BSS${bookingId}&am=${advanceAmount}.00&cu=INR`}
+                      href={`upi://pay?pa=santhoshgk9498@oksbi&pn=BSS%20Residency&tn=Booking%20Advance%20BSS${bookingId}&am=${advanceAmount}.00&cu=INR`.replace(/ /g, '%20')}
                       className="pc-qr-link"
                       title="Click to pay with GPay / UPI"
                     >
@@ -269,7 +269,10 @@ export default function Booking() {
                           src="/images/qr-code.png" 
                           alt="Payment QR Code" 
                           className="pc-qr-img" 
-                          onError={(e) => e.target.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=santhoshgk9498@oksbi%26pn=BSS%20Residency%26tn=Booking%20Advance%20BSS${bookingId}%26am=${advanceAmount}.00%26cu=INR`} 
+                          onError={(e) => {
+                            const upiUrl = `upi://pay?pa=santhoshgk9498@oksbi&pn=BSS Residency&tn=Booking Advance BSS${bookingId}&am=${advanceAmount}.00&cu=INR`;
+                            e.target.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiUrl)}`;
+                          }} 
                         />
                       </div>
                       <span className="pc-qr-label">Tap or Scan to Pay</span>
