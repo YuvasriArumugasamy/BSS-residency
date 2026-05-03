@@ -258,64 +258,68 @@ export default function Booking() {
                 <p className="pc-subtitle">Scan QR code or use the UPI ID below to pay via GPay, PhonePe, or Paytm.</p>
                 
                 <div className="pc-grid">
-                  <div className="pc-qr-wrap">
+                  <div className="pc-qr-wrap" style={{ width: '100%', maxWidth: 'none' }}>
                     {(() => {
-                      // EXTREME SIMPLIFICATION: Only PA and CU
                       const upiUrl = `upi://pay?pa=santhoshgk9498@oksbi&cu=INR`;
                       const qrUrl = `https://chart.googleapis.com/chart?cht=qr&chl=${encodeURIComponent(upiUrl)}&chs=300x300&choe=UTF-8&chld=L|2&v=${Date.now()}`;
                       
                       return (
-                        <div className="pc-payment-actions">
-                          <div className="pc-qr-frame" style={{ background: '#fff', padding: '15px', borderRadius: '16px', border: '2px solid #d4a857', boxShadow: '0 10px 25px rgba(212,168,87,0.2)' }}>
-                            <img 
-                              src={qrUrl} 
-                              alt="Payment QR Code" 
-                              className="pc-qr-img" 
-                              style={{ width: '100%', maxWidth: '220px', display: 'block', margin: '0 auto' }}
-                            />
-                            <div style={{ textAlign: 'center', marginTop: '1rem' }}>
-                                <p style={{ fontSize: '0.85rem', color: '#e11d48', fontWeight: '800', margin: '0' }}>⚠️ 1. Enter Amount: ₹500</p>
-                                <p style={{ fontSize: '0.75rem', color: '#666', margin: '4px 0 0 0' }}>Banks may block automatic amounts</p>
-                            </div>
-                          </div>
-                          
-                          <div style={{ marginTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                            <div style={{ background: '#f8fafc', padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0', textAlign: 'center' }}>
-                                <p style={{ fontSize: '0.85rem', color: '#475569', marginBottom: '0.5rem', fontWeight: '600' }}>Option A: Pay to Phone Number (Recommended)</p>
-                                <strong style={{ fontSize: '1.5rem', color: '#0f172a', display: 'block', marginBottom: '0.8rem' }}>93449 89393</strong>
-                                <button 
-                                  type="button" 
-                                  onClick={() => copyToClipboard('9344989393')}
-                                  style={{ background: '#0f172a', color: '#fff', border: 'none', padding: '0.6rem 1.5rem', borderRadius: '8px', fontSize: '0.9rem', fontWeight: '700', cursor: 'pointer', width: '100%' }}
-                                >
-                                  {copied ? '✅ COPIED!' : '📋 COPY NUMBER'}
-                                </button>
+                        <div className="premium-gateway-box" style={{ background: '#fff', borderRadius: '16px', border: '1px solid #e2e8f0', overflow: 'hidden', boxShadow: '0 10px 30px rgba(0,0,0,0.05)' }}>
+                            {/* Header */}
+                            <div style={{ background: '#0f172a', color: '#fff', padding: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <div style={{ fontSize: '0.9rem', fontWeight: '700' }}>Secure Checkout</div>
+                                <div style={{ fontSize: '0.7rem', opacity: '0.7' }}>Powered by UPI 2.0</div>
                             </div>
 
-                            <div style={{ textAlign: 'center' }}>
-                                <p style={{ fontSize: '0.8rem', color: '#94a3b8', margin: '0.5rem 0' }}>— OR —</p>
-                            </div>
+                            <div style={{ padding: '1.5rem' }}>
+                                {/* Steps info */}
+                                <div style={{ marginBottom: '1.5rem', display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                                    <div style={{ flex: 1, height: '4px', background: '#d4a857', borderRadius: '2px' }}></div>
+                                    <div style={{ flex: 1, height: '4px', background: '#e2e8f0', borderRadius: '2px' }}></div>
+                                    <div style={{ flex: 1, height: '4px', background: '#e2e8f0', borderRadius: '2px' }}></div>
+                                </div>
 
-                            <button 
-                              type="button"
-                              onClick={() => {
-                                window.location.href = upiUrl;
-                              }}
-                              className="admin-btn" 
-                              style={{ 
-                                background: '#fff', 
-                                color: '#1a1a1a', 
-                                padding: '1rem', 
-                                borderRadius: '10px', 
-                                fontWeight: '700',
-                                fontSize: '0.9rem',
-                                border: '2px solid #1a1a1a',
-                                cursor: 'pointer'
-                              }}
-                            >
-                              🚀 Open GPay / PhonePe App
-                            </button>
-                          </div>
+                                <div className="pc-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', alignItems: 'center' }}>
+                                    {/* Left: QR */}
+                                    <div style={{ textAlign: 'center' }}>
+                                        <div style={{ padding: '12px', background: '#fff', border: '2px solid #f1f5f9', borderRadius: '12px', display: 'inline-block' }}>
+                                            <img src={qrUrl} alt="QR" style={{ width: '160px', height: '160px' }} />
+                                        </div>
+                                        <p style={{ fontSize: '0.7rem', color: '#64748b', marginTop: '8px' }}>Scan with GPay/Any UPI App</p>
+                                    </div>
+
+                                    {/* Right: Actions */}
+                                    <div style={{ textAlign: 'left' }}>
+                                        <div style={{ marginBottom: '1.25rem' }}>
+                                            <label style={{ fontSize: '0.75rem', color: '#94a3b8', textTransform: 'uppercase', fontWeight: '700', letterSpacing: '0.05em' }}>Payee Name</label>
+                                            <div style={{ fontSize: '1rem', fontWeight: '700', color: '#0f172a' }}>Santhosh G (BSS)</div>
+                                        </div>
+                                        <div style={{ marginBottom: '1.5rem' }}>
+                                            <label style={{ fontSize: '0.75rem', color: '#94a3b8', textTransform: 'uppercase', fontWeight: '700', letterSpacing: '0.05em' }}>Amount to Pay</label>
+                                            <div style={{ fontSize: '1.5rem', fontWeight: '800', color: '#d4a857' }}>₹ 500</div>
+                                        </div>
+
+                                        <button 
+                                            type="button"
+                                            onClick={() => { window.location.href = upiUrl; }}
+                                            className="admin-btn admin-btn-primary" 
+                                            style={{ width: '100%', background: '#d4a857', color: '#000', fontWeight: '800', padding: '1rem', borderRadius: '10px' }}
+                                        >
+                                            ⚡ PAY NOW
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {/* Security Footer */}
+                                <div style={{ marginTop: '2rem', paddingTop: '1.5rem', borderTop: '1px solid #f1f5f9', display: 'flex', justifyContent: 'center', gap: '2rem' }}>
+                                    <div style={{ fontSize: '0.7rem', color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                        <i className="fa-solid fa-shield-halved" style={{ color: '#10b981' }}></i> SSL Secure
+                                    </div>
+                                    <div style={{ fontSize: '0.7rem', color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                        <i className="fa-solid fa-lock" style={{ color: '#10b981' }}></i> End-to-End Encrypted
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                       );
                     })()}
