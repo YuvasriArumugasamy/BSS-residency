@@ -5,7 +5,7 @@ import { useLocation } from 'react-router-dom';
 const SEO = ({ 
   title = "BSS Residency – Premium Lodge & Rooms in Courtallam", 
   description = "Experience premium comfort at BSS Residency, located near Courtallam Bus Stand and Waterfalls. Book A/C & Non-A/C rooms at the best lodge in Courtallam.", 
-  keywords = "bss residency, courtallam lodge, rooms in courtallam, best lodge near waterfalls, courtallam hotels, premium rooms courtallam, tenkasi lodge",
+  keywords = "bss residency, courtallam lodge, rooms in courtallam, best lodge near waterfalls, courtallam hotels, premium rooms courtallam, tenkasi lodge, bss residency courtallam, kutralam rooms, kutralam lodge, courtallam stay, best hotels in courtallam, cheap rooms in courtallam, ac lodge in tenkasi, family lodge near main falls courtallam, five falls courtallam rooms, online room booking courtallam, budget rooms in kutralam, courtallam waterfalls stay, tenkasi room booking, courtallam guest house, tourist stay in courtallam, kutralam resorts, courtallam tourism stay",
   image = "/logo.png",
   schemaMarkup = null
 }) => {
