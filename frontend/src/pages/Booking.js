@@ -254,7 +254,7 @@ export default function Booking() {
                 <div className="pc-grid">
                   <div className="pc-qr-wrap">
                     <a 
-                      href={`upi://pay?pa=santhoshgk9498@oksbi&pn=Santhosh%20G&tr=BSS${bookingId}&tn=Booking%20Advance%20BSS${bookingId}&am=${advanceAmount}&cu=INR`}
+                      href={`upi://pay?pa=santhoshgk9498@oksbi&pn=BSS%20Residency&mc=7011&tr=BSS${bookingId}&tn=Booking%20Advance&am=${advanceAmount}.00&cu=INR`}
                       className="pc-qr-link"
                       title="Click to pay with GPay / UPI"
                     >
@@ -263,7 +263,7 @@ export default function Booking() {
                           src="/images/qr-code.png" 
                           alt="Payment QR Code" 
                           className="pc-qr-img" 
-                          onError={(e) => e.target.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=santhoshgk9498@oksbi%26pn=Santhosh%20G%26tr=BSS${bookingId}%26tn=Booking%20Advance%20BSS${bookingId}%26am=${advanceAmount}%26cu=INR`} 
+                          onError={(e) => e.target.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=santhoshgk9498@oksbi%26pn=BSS%20Residency%26mc=7011%26tr=BSS${bookingId}%26tn=Booking%20Advance%26am=${advanceAmount}.00%26cu=INR`} 
                         />
                       </div>
                       <span className="pc-qr-label">Tap or Scan to Pay</span>
@@ -272,7 +272,7 @@ export default function Booking() {
 
                   <div className="pc-info-wrap">
                     <div className="upi-copy-box">
-                      <div className="ucb-label">UPI ID</div>
+                      <div className="ucb-label">UPI ID & GPay Number</div>
                       <div className="ucb-value-row">
                         <strong className="ucb-id">santhoshgk9498@oksbi</strong>
                         <button 
@@ -283,7 +283,17 @@ export default function Booking() {
                           {copied ? '✓ Copied' : '📋 Copy'}
                         </button>
                       </div>
-                      <p className="ucb-name">Verified Name: <strong>Santhosh G</strong></p>
+                      <div className="ucb-value-row" style={{ marginTop: '0.5rem' }}>
+                        <strong className="ucb-id">9344989393</strong>
+                        <button 
+                          type="button" 
+                          className={`copy-btn ${copied ? 'copied' : ''}`}
+                          onClick={() => copyToClipboard('9344989393')}
+                        >
+                          {copied ? '✓ Copied' : '📋 Copy'}
+                        </button>
+                      </div>
+                      <p className="ucb-name">Verified Name: <strong>Santhosh G (BSS Residency)</strong></p>
                     </div>
 
                     <div className="payment-steps-new">
