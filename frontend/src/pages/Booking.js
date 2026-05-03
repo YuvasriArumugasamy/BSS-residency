@@ -121,7 +121,7 @@ export default function Booking() {
 
   const gstAmount = GST_FIXED;
   const totalPrice = useMemo(() => roomCharges + gstAmount, [roomCharges, gstAmount]);
-  const advanceAmount = 100; // Flat ₹100 advance
+  const advanceAmount = 500; // Flat ₹500 advance
 
   const formatDate = (dateStr) => {
     if (!dateStr) return '—';
@@ -218,7 +218,7 @@ export default function Booking() {
   if (pendingBooking) {
     const bookingId = pendingBooking.bookingId || (pendingBooking._id ? String(parseInt(pendingBooking._id.toString().slice(-6), 16)).padStart(6, '0').slice(-6) : '');
     const shortId = bookingId;
-    const waMsg = `Hello BSS Residency! 🙏\n\nI just submitted a booking request.\nBooking ID: ${bookingId}\nName: ${pendingBooking.name}\nRoom: ${pendingBooking.roomType}\nCheck-in: ${new Date(pendingBooking.checkIn).toLocaleDateString('en-IN')}\nCheck-out: ${new Date(pendingBooking.checkOut).toLocaleDateString('en-IN')}\n\nI have paid the advance of ₹100 via UPI. Please confirm!`;
+    const waMsg = `Hello BSS Residency! 🙏\n\nI just submitted a booking request.\nBooking ID: ${bookingId}\nName: ${pendingBooking.name}\nRoom: ${pendingBooking.roomType}\nCheck-in: ${new Date(pendingBooking.checkIn).toLocaleDateString('en-IN')}\nCheck-out: ${new Date(pendingBooking.checkOut).toLocaleDateString('en-IN')}\n\nI have paid the advance of ₹500 via UPI. Please confirm!`;
 
     return (
       <main className="booking-page">
@@ -254,7 +254,7 @@ export default function Booking() {
                 <div className="pc-grid">
                   <div className="pc-qr-wrap">
                     <a 
-                      href={`upi://pay?pa=santhoshgk9498@oksbi&pn=Santhosh%20G&cu=INR`}
+                      href={`upi://pay?pa=santhoshgk9498@oksbi&pn=Santhosh%20G&tr=BSS${bookingId}&tn=Booking%20Advance%20BSS${bookingId}&am=${advanceAmount}&cu=INR`}
                       className="pc-qr-link"
                       title="Click to pay with GPay / UPI"
                     >
@@ -263,7 +263,7 @@ export default function Booking() {
                           src="/images/qr-code.png" 
                           alt="Payment QR Code" 
                           className="pc-qr-img" 
-                          onError={(e) => e.target.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=santhoshgk9498@oksbi%26pn=Santhosh%20G%26cu=INR`} 
+                          onError={(e) => e.target.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=santhoshgk9498@oksbi%26pn=Santhosh%20G%26tr=BSS${bookingId}%26tn=Booking%20Advance%20BSS${bookingId}%26am=${advanceAmount}%26cu=INR`} 
                         />
                       </div>
                       <span className="pc-qr-label">Tap or Scan to Pay</span>
