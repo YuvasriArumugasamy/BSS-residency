@@ -89,16 +89,71 @@
   transform: translateY(-5px) translateX(4px);
 }
 .c-icon {
-  font-size: 1.5rem; flex-shrink: 0;
+  font-size: 1.4rem; flex-shrink: 0;
   transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
   width: 52px; height: 52px;
   border-radius: 14px;
-  background: linear-gradient(135deg, var(--secondary), var(--cream-dark));
-  border: 1px solid var(--line);
+  border: 1.5px solid transparent;
   display: flex; align-items: center; justify-content: center;
-  color: var(--accent-dark);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
 }
+
+/* 📍 Location — Google Maps Red */
+.c-icon--location {
+  background: linear-gradient(135deg, #fff1f0, #ffdad6);
+  border-color: rgba(234,67,53,0.2);
+  color: #EA4335;
+}
+.contact-card:hover .c-icon--location {
+  background: linear-gradient(135deg, #EA4335, #c0392b);
+  border-color: #EA4335;
+  color: white;
+  box-shadow: 0 6px 20px rgba(234,67,53,0.35);
+  transform: scale(1.12) rotate(-8deg);
+}
+
+/* 📞 Phone — Blue */
+.c-icon--phone {
+  background: linear-gradient(135deg, #e8f4ff, #cce5ff);
+  border-color: rgba(66,133,244,0.2);
+  color: #4285F4;
+}
+.contact-card:hover .c-icon--phone {
+  background: linear-gradient(135deg, #4285F4, #1a73e8);
+  border-color: #4285F4;
+  color: white;
+  box-shadow: 0 6px 20px rgba(66,133,244,0.35);
+  transform: scale(1.12) rotate(-8deg);
+}
+
+/* 💬 WhatsApp — Green */
+.c-icon--whatsapp {
+  background: linear-gradient(135deg, #e8faf0, #c8f5da);
+  border-color: rgba(37,211,102,0.25);
+  color: #25D366;
+}
+.contact-card:hover .c-icon--whatsapp {
+  background: linear-gradient(135deg, #25D366, #1ebe59);
+  border-color: #25D366;
+  color: white;
+  box-shadow: 0 6px 20px rgba(37,211,102,0.35);
+  transform: scale(1.12) rotate(-8deg);
+}
+
+/* 📸 Instagram — Purple/Pink Gradient */
+.c-icon--instagram {
+  background: linear-gradient(135deg, #fdf0f8, #fce4f5);
+  border-color: rgba(193,53,132,0.2);
+  color: #C13584;
+}
+.contact-card:hover .c-icon--instagram {
+  background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+  border-color: transparent;
+  color: white;
+  box-shadow: 0 6px 20px rgba(220,39,67,0.35);
+  transform: scale(1.12) rotate(-8deg);
+}
+
 .contact-card:hover .c-icon {
   transform: scale(1.15) rotate(-8deg);
   background: linear-gradient(135deg, var(--accent), var(--accent-dark));

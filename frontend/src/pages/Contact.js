@@ -23,7 +23,7 @@ export default function Contact() {
           {/* Info cards */}
           <div className="contact-info">
             <div className="contact-card">
-              <span className="c-icon"><i className="fa-solid fa-location-dot"></i></span>
+              <span className="c-icon c-icon--location"><i className="fa-solid fa-location-dot"></i></span>
               <div>
                 <h3>Address</h3>
                 <p>
@@ -43,7 +43,7 @@ export default function Contact() {
             </div>
 
             <div className="contact-card">
-              <span className="c-icon">📞</span>
+              <span className="c-icon c-icon--phone">📞</span>
               <div>
                 <h3>Phone</h3>
                 <p>
@@ -61,7 +61,7 @@ export default function Contact() {
             </div>
 
             <div className="contact-card">
-              <span className="c-icon"><i className="fa-brands fa-whatsapp"></i></span>
+              <span className="c-icon c-icon--whatsapp"><i className="fa-brands fa-whatsapp"></i></span>
               <div>
                 <h3>WhatsApp Booking</h3>
                 <p>{CONTACT.phonePrimary}</p>
@@ -88,7 +88,7 @@ export default function Contact() {
             </div>
 
             <div className="contact-card">
-              <span className="c-icon"><i className="fa-brands fa-square-instagram"></i></span>
+              <span className="c-icon c-icon--instagram"><i className="fa-brands fa-square-instagram"></i></span>
               <div>
                 <h3>Instagram</h3>
                 <p>
