@@ -132,7 +132,7 @@ const FAQ_DATA = [
   {
     id: 24, category: 'Courtallam & Season',
     q: 'When does the Courtallam season start and end?',
-    a: 'The Courtallam season typically runs from June to September, coinciding with the South-West Monsoon. The waterfalls are at full flow in June–July. October to May is the off-season — waterfalls are lighter but it's a great time for a peaceful, crowd-free stay!',
+    a: 'The Courtallam season typically runs from June to September, coinciding with the South-West Monsoon. The waterfalls are at full flow in June\u2013July. October to May is the off-season \u2014 waterfalls are lighter but it\'s a great time for a peaceful, crowd-free stay!',
   },
   {
     id: 25, category: 'Courtallam & Season',
