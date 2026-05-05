@@ -8,153 +8,154 @@ const FAQ_DATA = [
   // Booking & Payment
   {
     id: 1, category: 'Booking & Payment',
-    q: 'Check-in time and Check-out time என்ன?',
-    a: 'Check-in time: 12:00 PM (noon). Check-out time: 11:00 AM. Early check-in and late check-out room availability-ஐ பொறுத்து possible — தயவுசெய்து முன்கூட்டியே தொடர்பு கொள்ளுங்கள்.',
+    q: 'What are the Check-in and Check-out times?',
+    a: 'Check-in time is 12:00 PM (noon) and Check-out time is 11:00 AM. Early check-in and late check-out may be possible depending on room availability — please contact us in advance.',
   },
   {
     id: 2, category: 'Booking & Payment',
-    q: 'Online booking பண்ண advance எவ்வளவு கட்டணும்?',
-    a: '₹500 advance payment கட்டினால் உங்கள் room confirmed ஆகும். Balance amount check-out time-ல pay பண்ணலாம்.',
+    q: 'How much advance payment is required to confirm a booking?',
+    a: 'An advance payment of ₹500 is required to confirm your room booking online. The remaining balance can be paid at check-out.',
   },
   {
     id: 3, category: 'Booking & Payment',
-    q: 'Booking cancel பண்ணா refund கிடைக்குமா?',
-    a: 'Check-in date-க்கு 48 hours முன்பாக cancel பண்ணினால் full refund கிடைக்கும். 48 hours-க்குள் cancel பண்ணினால் advance amount refund ஆகாது. மேலும் தகவலுக்கு WhatsApp-ல தொடர்பு கொள்ளுங்கள்.',
+    q: 'Will I get a refund if I cancel my booking?',
+    a: 'Cancellations made 48 hours before the check-in date are eligible for a full refund. Cancellations within 48 hours of check-in are non-refundable. For assistance, please reach out via WhatsApp.',
   },
   {
     id: 4, category: 'Booking & Payment',
-    q: 'Walk-in booking accept பண்றீங்களா?',
-    a: 'ஆமாம்! Walk-in guests-ஐயும் welcome பண்றோம். ஆனால் peak season மற்றும் weekends-ல rooms quickly fill ஆகும். முன்கூட்டியே WhatsApp-ல அல்லது phone-ல availability check பண்ணுவது better.',
+    q: 'Do you accept walk-in bookings?',
+    a: 'Yes! Walk-in guests are welcome. However, rooms fill up quickly during peak season and weekends. We recommend checking availability via WhatsApp or phone call before arriving.',
   },
   {
     id: 5, category: 'Booking & Payment',
-    q: 'Group booking (10+ persons) discount இருக்கா?',
-    a: 'ஆமாம்! 10 or more guests-க்கு special group rates கிடைக்கும். Details-க்கு directly +91 88385 99755 call பண்ணுங்கள் அல்லது WhatsApp பண்ணுங்கள்.',
+    q: 'Is there a discount for group bookings (10+ persons)?',
+    a: 'Yes! Special group rates are available for 10 or more guests. Please call or WhatsApp us at +91 88385 99755 for details and customized pricing.',
   },
   {
     id: 6, category: 'Booking & Payment',
-    q: 'Check-in-க்கு ID proof என்ன கொண்டுவரணும்?',
-    a: 'Valid government ID mandatory — Aadhaar Card, Voter ID, Passport, அல்லது Driving License ஏதாவது ஒன்று. All guests 18+ போட வேண்டும்.',
+    q: 'What ID proof is required at check-in?',
+    a: 'A valid government-issued photo ID is mandatory — Aadhaar Card, Voter ID, Passport, or Driving License. All guests aged 18 and above must provide ID proof.',
   },
   {
     id: 7, category: 'Booking & Payment',
-    q: 'Hotel-ல payment methods என்னென்ன accept பண்றீங்க?',
-    a: 'Cash, UPI (GPay, PhonePe, Paytm), Net Banking ஆகியவை accept பண்றோம். Online booking-க்கு advance payment via UPI.',
+    q: 'What payment methods are accepted at the hotel?',
+    a: 'We accept Cash, UPI (GPay, PhonePe, Paytm), and Net Banking. Online advance bookings are secured via UPI payment.',
   },
 
-  // Room & Facilities
+  // Rooms & Facilities
   {
     id: 8, category: 'Rooms & Facilities',
-    q: 'Room-ல Wi-Fi இருக்கா?',
-    a: 'தற்போது Wi-Fi facility இல்லை. ஆனால் Courtallam area-ல நல்ல mobile network (4G/5G) கிடைக்கும். Jio, Airtel, BSNL எல்லாம் good coverage இருக்கு.',
+    q: 'Is Wi-Fi available in the rooms?',
+    a: 'Wi-Fi is not available at this time. However, Courtallam area has good 4G/5G mobile network coverage. Jio, Airtel, and BSNL all have good signal strength.',
   },
   {
     id: 9, category: 'Rooms & Facilities',
-    q: 'Hot water 24 hours கிடைக்குமா?',
-    a: 'ஆமாம்! எல்லா rooms-லும் 24-hour hot water கிடைக்கும். Geyser attached bathroom-ல available.',
+    q: 'Is hot water available 24 hours?',
+    a: 'Yes! All rooms are equipped with 24-hour hot water through a geyser in the attached bathroom.',
   },
   {
     id: 10, category: 'Rooms & Facilities',
-    q: 'AC room-ல extra charge இருக்கா?',
-    a: 'Non-AC மற்றும் AC rooms-க்கு தனித்தனி tariff இருக்கு. AC rooms ₹500–₹800 அதிகமாக இருக்கும். Exact pricing-க்கு Rooms page பாருங்கள்.',
+    q: 'Is there an extra charge for AC rooms?',
+    a: 'Yes, AC and Non-AC rooms are priced separately. AC rooms are approximately ₹500–₹800 more per night. Please check our Rooms page for exact pricing.',
   },
   {
     id: 11, category: 'Rooms & Facilities',
-    q: 'Extra mattress / extra bed போடுவீங்களா?',
-    a: 'ஆமாம்! Extra mattress available — small additional charge apply ஆகும். Check-in-க்கு முன்பாக தெரிவிக்கவும்.',
+    q: 'Can an extra mattress or bed be arranged?',
+    a: 'Yes! Extra mattresses are available for a small additional charge. Please inform us before check-in so we can arrange it in advance.',
   },
   {
     id: 12, category: 'Rooms & Facilities',
-    q: 'Room-ல TV இருக்கா?',
-    a: 'தேர்ந்தெடுக்கப்பட்ட rooms-ல TV available. Booking பண்ணும்போது இதைப் பற்றி கேட்கலாம்.',
+    q: 'Are TVs available in the rooms?',
+    a: 'TVs are available in selected rooms. Please mention your preference while booking or contact us to confirm availability.',
   },
   {
     id: 13, category: 'Rooms & Facilities',
-    q: 'Attached bathroom இருக்கா?',
-    a: 'ஆமாம்! எல்லா rooms-லும் clean attached bathroom with 24-hour hot & cold water கிடைக்கும்.',
+    q: 'Do all rooms have an attached bathroom?',
+    a: 'Yes! All rooms have clean attached bathrooms with 24-hour hot and cold water supply.',
   },
   {
     id: 14, category: 'Rooms & Facilities',
-    q: 'Early check-in / Late check-out possible-ஆ?',
-    a: 'Room availability-ஐ பொறுத்து possible. முன்கூட்டியே WhatsApp-ல request பண்ணுங்கள். Extra charges apply ஆகலாம்.',
+    q: 'Is early check-in or late check-out possible?',
+    a: 'Early check-in and late check-out are subject to room availability. Please send us a request via WhatsApp in advance. Additional charges may apply.',
   },
   {
     id: 15, category: 'Rooms & Facilities',
-    q: 'Daily housekeeping பண்றீங்களா?',
-    a: 'ஆமாம்! Daily housekeeping, fresh towels, மற்றும் clean drinking water provide பண்றோம்.',
+    q: 'Is daily housekeeping provided?',
+    a: 'Yes! We provide daily housekeeping, fresh towels, and clean drinking water in all rooms.',
   },
 
-  // Transport & Location
+  // Location & Transport
   {
     id: 16, category: 'Location & Transport',
-    q: 'Courtallam bus stand-லிருந்து BSS Residency எவ்வளவு தூரம்?',
-    a: 'Courtallam Old Bus Stand மற்றும் Anna Statue-க்கு அருகில் உள்ளோம் — வெறும் 2 minutes walking distance. Main Falls-க்கு 100 metres மட்டும்!',
+    q: 'How far is BSS Residency from the Courtallam Bus Stand?',
+    a: 'We are located right next to the Courtallam Old Bus Stand and Anna Statue — just a 2-minute walk. We are only 100 metres from the famous Main Falls!',
   },
   {
     id: 17, category: 'Location & Transport',
-    q: 'Parking facility இருக்கா?',
-    a: 'Limited parking space available (2-wheeler & 4-wheeler). Peak season-ல nearby public parking use பண்ணலாம். முன்கூட்டியே inform பண்ணுங்கள்.',
+    q: 'Is parking available at the hotel?',
+    a: 'Limited parking space is available for both 2-wheelers and 4-wheelers. During peak season, public parking nearby is also available. Please inform us in advance if you need parking.',
   },
   {
     id: 18, category: 'Location & Transport',
-    q: 'Main Falls எத்தனை km / minutes-ல போகலாம்?',
-    a: 'Main Falls மிக அருகில் — 100 metres மட்டும்! Walking-ல 1-2 minutes. Five Falls 4 km, Tiger Falls 1.5 km, Old Falls 6 km தூரத்தில் உள்ளன.',
+    q: 'How far are the waterfalls from the hotel?',
+    a: 'Main Falls is just 100 metres away — a 1-2 minute walk! Five Falls is 4 km, Tiger Falls is 1.5 km, and Old Falls is 6 km from our property.',
   },
   {
     id: 19, category: 'Location & Transport',
-    q: 'Nearest railway station எது? எப்படி வருவது?',
-    a: 'Nearest railway station: Tenkasi Junction (14 km). From there auto / cab available. Alternatively, Shengottai Station (20 km). Chennai-லிருந்து Nellai Express / Courtallam Express direct train உண்டு.',
+    q: 'What is the nearest railway station and how do I get there?',
+    a: 'The nearest railway station is Tenkasi Junction (14 km), with autos and cabs readily available. Shengottai Station (20 km) is another option. Direct trains from Chennai include Nellai Express and Courtallam Express.',
   },
   {
     id: 20, category: 'Location & Transport',
-    q: 'Auto / Cab arrange பண்ணி தர முடியுமா?',
-    a: 'Station அல்லது town-ல இருந்து auto readily available. Local cab details request பண்ணினால் help பண்றோம். WhatsApp பண்ணுங்கள்.',
+    q: 'Can you arrange an auto or cab for us?',
+    a: 'Autos are easily available from the station and town. We can help with local cab or auto contact details on request — just WhatsApp us.',
   },
 
   // Food & Services
   {
     id: 21, category: 'Food & Services',
-    q: 'Hotel-ல food / restaurant இருக்கா?',
-    a: 'BSS Residency-ல in-house restaurant இல்லை. ஆனால் அருகிலேயே (50-100m) பல good hotels மற்றும் restaurants உள்ளன — Saravana Bhavan, local mess, juice shops எல்லாம் available.',
+    q: 'Is there a restaurant or food service at the hotel?',
+    a: 'BSS Residency does not have an in-house restaurant. However, several good hotels and restaurants are within 50–100 metres — including Saravana Bhavan, local mess, and juice shops.',
   },
   {
     id: 22, category: 'Food & Services',
-    q: 'Drinking water provide பண்றீங்களா?',
-    a: 'ஆமாம்! Clean drinking water (filtered/bottled) provide பண்றோம். Room-ல water bottles கிடைக்கும்.',
+    q: 'Is drinking water provided in the rooms?',
+    a: 'Yes! Clean filtered/bottled drinking water is provided in all rooms.',
   },
   {
     id: 23, category: 'Food & Services',
-    q: 'Room service கிடைக்குமா?',
-    a: 'Limited room service available. Specific needs-க்கு reception-ல request பண்ணலாம். Nearby restaurants-ல home delivery possible.',
+    q: 'Is room service available?',
+    a: 'Limited room service is available. For specific needs, please request at the reception. Home delivery from nearby restaurants is also possible.',
   },
 
   // Courtallam & Season
   {
     id: 24, category: 'Courtallam & Season',
-    q: 'Courtallam season எப்போ start ஆகும்? எப்போ end ஆகும்?',
-    a: 'Courtallam season பொதுவாக June – September (South-West Monsoon). June-July-ல waterfalls full flow-ல இருக்கும். October-May off-season — falls கொஞ்சம் குறைவாக இருக்கும், ஆனால் peaceful stay-க்கு perfect!',
+    q: 'When does the Courtallam season start and end?',
+    a: 'The Courtallam season typically runs from June to September, coinciding with the South-West Monsoon. The waterfalls are at full flow in June–July. October to May is the off-season — waterfalls are lighter but it's a great time for a peaceful, crowd-free stay!',
   },
   {
     id: 25, category: 'Courtallam & Season',
-    q: 'Season-ல room rate அதிகமா இருக்கா?',
-    a: 'ஆமாம். Peak season (June–September) rates slightly higher. Off-season-ல better rates கிடைக்கும். Exact pricing-க்கு call/WhatsApp பண்ணுங்கள்.',
+    q: 'Are room rates higher during the season?',
+    a: 'Yes, rates are slightly higher during peak season (June–September). Better rates are available during off-season. Please call or WhatsApp us for exact pricing.',
   },
   {
     id: 26, category: 'Courtallam & Season',
-    q: 'Falls-ல bathing safe-ஆ? குழந்தைகளுக்கு safe-ஆ?',
-    a: 'Main Falls and Chitraruvi are generally safe for bathing. ஆனால் heavy rain season-ல strong currents இருக்கலாம். குழந்தைகளை கவனமாக பார்த்துக்கொள்ளுங்கள். Government safety guidelines follow பண்ணுங்கள்.',
+    q: 'Is bathing in the falls safe? Is it safe for children?',
+    a: 'Main Falls and Chitraruvi are generally safe for bathing. However, strong currents may occur during heavy rainfall. Please supervise children at all times and follow government safety guidelines.',
   },
   {
     id: 27, category: 'Courtallam & Season',
-    q: 'Pets allowed-ஆ?',
-    a: 'தற்போது pets allow பண்றதில்லை. மன்னிக்கவும்!',
+    q: 'Are pets allowed?',
+    a: 'We are sorry, pets are not allowed at BSS Residency at this time.',
   },
   {
     id: 28, category: 'Courtallam & Season',
-    q: 'Children-க்கு separate / extra charge இருக்கா?',
-    a: '5 years வரை children free. 5–12 years children-க்கு nominal extra charge. 12+ adults-ஆக count ஆவார்கள். Family room booking-ல details கேட்கலாம்.',
+    q: 'Is there a separate charge for children?',
+    a: 'Children up to 5 years stay free. Children aged 5–12 years are charged a nominal extra fee. Guests aged 12 and above are counted as adults. Please mention the number of children while booking.',
   },
 ];
+
 
 const CATEGORIES = ['All', 'Booking & Payment', 'Rooms & Facilities', 'Location & Transport', 'Food & Services', 'Courtallam & Season'];
 
@@ -283,7 +284,7 @@ export default function FAQ() {
         {/* CTA */}
         <section className="faq-cta">
           <div className="faq-cta-inner container">
-            <h2>இன்னும் doubt இருக்கா?</h2>
+            <h2>Still have questions?</h2>
             <p>We're available 24/7 — just WhatsApp or call us directly!</p>
             <div className="faq-cta-btns">
               <a
