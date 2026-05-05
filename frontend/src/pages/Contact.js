@@ -7,9 +7,9 @@ export default function Contact() {
   return (
     <>
       <SEO 
-        title="Contact Us & Location | BSS Residency Courtallam"
-        description="Get in touch with BSS Residency. Call us for lodge bookings, find our location near Courtallam Bus Stand, or WhatsApp us."
-        keywords="bss residency contact, courtallam lodge phone number, courtallam stay location"
+        title="Contact BSS Residency Courtallam | Phone, Map & Location"
+        description="Contact BSS Residency for room bookings in Courtallam. We are located near the Old Bus Stand & Anna Statue, just 100m from Main Falls. Call or WhatsApp us 24/7."
+        keywords="bss residency contact, courtallam hotel phone number, courtallam lodge location, bss residency map, how to reach courtallam hotel, bss residency address, kutralam lodge contact"
       />
       <main className="contact-page">
         <section className="page-hero">

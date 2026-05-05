@@ -55,8 +55,9 @@ export default function Gallery() {
   return (
     <>
       <SEO 
-        title="Gallery & Photos – BSS Residency Courtallam"
-        description="View photos of our premium rooms, clean bathrooms, and the majestic Courtallam waterfalls near BSS Residency."
+        title="BSS Residency Gallery | Room Photos & Courtallam Waterfalls"
+        description="Explore BSS Residency's photo gallery — clean A/C & Non-A/C rooms, building exterior, and nearby Courtallam waterfall views. Best hotel near Kutralam falls."
+        keywords="bss residency photos, courtallam hotel images, courtallam lodge gallery, rooms in courtallam pictures, kutralam hotel photos, courtallam waterfall stay photos"
       />
       <main className="gallery-page">
       <section className="page-hero">
@@ -87,7 +88,7 @@ export default function Gallery() {
               className="photo-card"
               onClick={() => setLightbox(photo)}
             >
-              <img src={photo.src} alt={photo.caption} />
+              <img src={photo.src} alt={photo.caption} loading="lazy" />
               <div className="photo-overlay">
                 <span className="photo-zoom">🔍</span>
                 <p>{photo.caption}</p>
@@ -122,7 +123,7 @@ export default function Gallery() {
         <div className="lightbox" onClick={() => setLightbox(null)}>
           <div className="lightbox-inner" onClick={e => e.stopPropagation()}>
             <button className="lb-close" onClick={() => setLightbox(null)}>✕</button>
-            <img src={lightbox.src} alt={lightbox.caption} />
+            <img src={lightbox.src} alt={lightbox.caption} loading="lazy" />
             <p className="lb-caption">{lightbox.caption}</p>
           </div>
         </div>

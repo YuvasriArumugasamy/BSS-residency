@@ -4,7 +4,7 @@
   background: linear-gradient(135deg, #000 0%, #1a1a1a 50%, #0d0d0d 100%);
   background-size: 200% 200%;
   animation: gradientShift 8s ease infinite;
-  padding: 5rem 2rem; text-align: center; color: var(--white);
+  padding: 6rem 2rem; text-align: center; color: var(--white);
   border-bottom: 3px solid var(--accent);
   position: relative;
   overflow: hidden;
@@ -12,22 +12,36 @@
 .page-hero::before {
   content: '';
   position: absolute; top: 50%; left: 50%;
-  width: 600px; height: 600px;
-  background: radial-gradient(circle, rgba(212,168,87,0.08) 0%, transparent 70%);
+  width: 700px; height: 700px;
+  background: radial-gradient(circle, rgba(212,168,87,0.1) 0%, transparent 70%);
   transform: translate(-50%, -50%);
   animation: pulse 6s ease-in-out infinite;
   pointer-events: none;
+}
+.page-hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(212,168,87,0.18) 1px, transparent 1px);
+  background-size: 32px 32px;
+  pointer-events: none;
+  opacity: 0.6;
 }
 .page-hero h1 {
   font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 400; margin-top: 0.5rem; color: var(--white);
   animation: fadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
   position: relative;
+  z-index: 1;
 }
 .page-hero h1 em { font-style: italic; color: var(--accent); }
 .page-hero p {
   color: rgba(255,255,255,0.75); margin-top: 1rem;
   animation: fadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both;
   position: relative;
+  z-index: 1;
+}
+.section-label.gold {
+  position: relative; z-index: 1;
 }
 .section-label {
   font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 700;
@@ -71,14 +85,27 @@
 .contact-card:hover::before { height: 100%; }
 .contact-card:hover {
   border-color: var(--accent);
-  box-shadow: 0 10px 35px rgba(212,168,87,0.12);
-  transform: translateY(-4px) translateX(4px);
+  box-shadow: 0 14px 40px rgba(212,168,87,0.14);
+  transform: translateY(-5px) translateX(4px);
 }
 .c-icon {
-  font-size: 1.8rem; flex-shrink: 0;
-  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  font-size: 1.5rem; flex-shrink: 0;
+  transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  width: 52px; height: 52px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--secondary), var(--cream-dark));
+  border: 1px solid var(--line);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--accent-dark);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
 }
-.contact-card:hover .c-icon { transform: scale(1.25) rotate(-10deg); }
+.contact-card:hover .c-icon {
+  transform: scale(1.15) rotate(-8deg);
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  border-color: var(--accent);
+  color: var(--primary);
+  box-shadow: 0 6px 20px rgba(212,168,87,0.3);
+}
 .contact-card h3 {
   font-size: 1rem; margin-bottom: 0.4rem; color: var(--primary);
   font-family: 'Playfair Display', serif;

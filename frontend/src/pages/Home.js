@@ -94,6 +94,7 @@ function ImageCarousel({ images, alt }) {
           src={img}
           alt={`${alt} ${i + 1}`}
           className={`carousel-img ${i === index ? 'active' : ''}`}
+          loading={i === 0 ? 'eager' : 'lazy'}
         />
       ))}
       <div className="carousel-dots">
@@ -193,8 +194,9 @@ export default function Home() {
     "@context": "https://schema.org",
     "@type": "Hotel",
     "name": "BSS Residency",
+    "url": "https://bssresidency.com",
     "image": "https://bssresidency.com/logo.png",
-    "description": "Premium Lodge & Rooms in Courtallam. We offer A/C and Non-A/C rooms near Courtallam Waterfalls and Bus Stand.",
+    "description": "BSS Residency is the best hotel near Courtallam waterfalls. We offer A/C and Non-A/C rooms for families near Main Falls, Courtallam Bus Stand.",
     "address": {
       "@type": "PostalAddress",
       "streetAddress": "Near Anna Statue, Old Bus Stand",
@@ -203,15 +205,30 @@ export default function Home() {
       "postalCode": "627802",
       "addressCountry": "IN"
     },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": "8.9333",
+      "longitude": "77.2833"
+    },
     "telephone": "+918838599755",
-    "priceRange": "₹1000 - ₹2500"
+    "priceRange": "₹1000 - ₹2500",
+    "amenityFeature": [
+      { "@type": "LocationFeatureSpecification", "name": "Air Conditioning", "value": true },
+      { "@type": "LocationFeatureSpecification", "name": "24-hour Front Desk", "value": true },
+      { "@type": "LocationFeatureSpecification", "name": "Free Parking", "value": true },
+      { "@type": "LocationFeatureSpecification", "name": "Hot Water", "value": true }
+    ],
+    "checkinTime": "12:00",
+    "checkoutTime": "11:00",
+    "starRating": { "@type": "Rating", "ratingValue": "4.6" }
   };
 
   return (
     <>
       <SEO 
-        title="BSS Residency – Premium Lodge & Rooms in Courtallam"
-        description="Experience premium comfort at BSS Residency, located near Courtallam Bus Stand and Waterfalls. Book A/C & Non-A/C rooms at the best lodge in Courtallam."
+        title="BSS Residency Courtallam | Best Hotel Near Waterfalls | Book Now"
+        description="BSS Residency is the best hotel near Courtallam waterfalls. Book A/C & Non-A/C rooms for families at affordable prices. Courtallam lodging near Main Falls, Old Bus Stand."
+        keywords="bss residency courtallam, courtallam hotel, hotel near courtallam waterfalls, courtallam rooms for rent, kutralam lodging, family hotel courtallam, best lodge courtallam, courtallam accommodation, lodge near main falls courtallam, kutralam hotel booking"
         schemaMarkup={schemaMarkup}
       />
       <main className="home">
@@ -265,8 +282,8 @@ export default function Home() {
             <p className="section-label">About Us</p>
             <h2>A Sanctuary in the<br /><em>Heart of Courtallam</em></h2>
             <div className="divider-gold" />
-            <p>BSS Residency is located just 100 metres from the legendary Courtallam Falls — moments from the bus stand and Anna Statue. We offer modern rooms with premium amenities, ideal for families, pilgrims, and leisure travellers.</p>
-            <p>From comfortable non-A/C doubles to spacious four-bed A/C rooms, we have the perfect accommodation for every guest and every budget.</p>
+            <p>BSS Residency is the best <strong>hotel near Courtallam waterfalls</strong>, located just 100 metres from the legendary Main Falls — moments from the bus stand and Anna Statue. We offer modern <strong>Courtallam rooms for rent</strong> with premium amenities, ideal for families, pilgrims, and leisure travellers.</p>
+            <p>From comfortable non-A/C doubles to spacious four-bed A/C rooms, our <strong>family hotel in Courtallam</strong> has the perfect accommodation for every guest and every budget. Looking for <strong>Kutralam lodging</strong>? BSS Residency is your best choice.</p>
             <div className="about-stats">
               <div className="stat fade-up"><span className="stat-n">4</span><span className="stat-l">Room Types</span></div>
               <div className="stat fade-up" style={{ animationDelay: '0.2s' }}><span className="stat-n">4.6★</span><span className="stat-l">Rating</span></div>
@@ -381,7 +398,7 @@ export default function Home() {
               {ROOMS.map((r) => (
                 <div key={r.key} className="room-card-home">
                   <div className="r-img-wrapper">
-                    <img src={imgMap[r.key]} alt={r.name} className="r-card-img" />
+                    <img src={imgMap[r.key]} alt={r.name} className="r-card-img" loading="lazy" />
                   </div>
                   <h3>{r.name}</h3>
                   <span className="r-type-pill">{r.type}</span>

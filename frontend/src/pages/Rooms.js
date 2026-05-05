@@ -32,9 +32,9 @@ export default function Rooms() {
   return (
     <>
       <SEO 
-        title="Best Rooms & Lodge in Courtallam | A/C & Non-A/C | BSS Residency"
-        description="Choose from our luxurious Double Bed, Four Bed, A/C and Non-A/C rooms. BSS Residency offers the best accommodation near Courtallam Main Falls at affordable prices."
-        keywords="courtallam rooms, courtallam lodge tariff, ac rooms courtallam, family rooms courtallam, cheap rooms courtallam"
+        title="Rooms & Tariff | A/C & Non-A/C Rooms in Courtallam | BSS Residency"
+        description="View room tariff at BSS Residency — the best lodge in Courtallam. A/C & Non-A/C rooms for families, couples & tourists near Courtallam Main Falls. Book online now."
+        keywords="courtallam hotel tariff, ac rooms courtallam, non ac rooms courtallam, family rooms courtallam, rooms for rent courtallam, courtallam lodge price, kutralam room booking, cheap rooms near courtallam falls, double bed ac room courtallam, four bed room courtallam"
       />
       <main className="rooms-page">
         {/* Page Hero */}
@@ -85,7 +85,7 @@ export default function Rooms() {
         {ROOMS.map((room, i) => (
           <div key={room.key} className={`room-detail-card fade-up ${i % 2 === 1 ? 'reverse' : ''}`}>
             <div className="room-detail-img">
-              <img src={imgMap[room.key]} alt={room.name} />
+              <img src={imgMap[room.key]} alt={room.name} loading="lazy" />
               <div className="room-type-badge">{room.type}</div>
               <div className="room-price-badge">
                 <span className="currency-symbol">₹</span>{getPrice(room).toLocaleString('en-IN')}<span>/ night</span>

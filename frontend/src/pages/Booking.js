@@ -260,7 +260,7 @@ export default function Booking() {
                 <div className="pc-grid">
                   <div className="pc-qr-wrap">
                     {(() => {
-                      const upiUrl = `upi://pay?pa=mariappansg123-1@oksbi&pn=Mari%20S&am=500&cu=INR`;
+                      const upiUrl = `upi://pay?pa=mariappansg123-1@oksbi&pn=Mari%20S&cu=INR`;
                       const qrUrl = `https://chart.googleapis.com/chart?cht=qr&chl=${encodeURIComponent(upiUrl)}&chs=300x300&choe=UTF-8&chld=L|2&v=${Date.now()}`;
                       
                       return (

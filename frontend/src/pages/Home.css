@@ -490,34 +490,55 @@
 /* Stats — Number pop-in */
 .about-stats {
   display: flex;
-  gap: 2.5rem;
+  gap: 1rem;
   margin: 2rem 0;
+  flex-wrap: wrap;
 }
 
 .stat {
   text-align: center;
-  transition: transform 0.3s;
+  transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 1rem 1.25rem;
+  flex: 1;
+  min-width: 72px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+  position: relative;
+  overflow: hidden;
 }
 
-.stat:nth-child(1) {
-  animation-delay: 0.1s;
+.stat::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-dark));
+  transform: scaleX(0);
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  border-radius: 0 0 14px 14px;
 }
 
-.stat:nth-child(2) {
-  animation-delay: 0.25s;
+.stat:hover::after {
+  transform: scaleX(1);
 }
 
-.stat:nth-child(3) {
-  animation-delay: 0.4s;
-}
+.stat:nth-child(1) { animation-delay: 0.1s; }
+.stat:nth-child(2) { animation-delay: 0.25s; }
+.stat:nth-child(3) { animation-delay: 0.4s; }
 
 .stat:hover {
-  transform: translateY(-5px);
+  transform: translateY(-6px);
+  border-color: var(--accent);
+  box-shadow: 0 14px 32px rgba(212,168,87,0.15);
 }
 
 .stat-n {
   display: block;
-  font-size: 2rem;
+  font-size: 1.9rem;
   font-family: 'Playfair Display', serif;
   color: var(--accent-dark);
   font-weight: 700;
@@ -526,23 +547,52 @@
 
 .stat:hover .stat-n {
   color: var(--accent);
-  transform: scale(1.15);
+  transform: scale(1.12);
 }
 
 .stat-l {
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   color: var(--text-light);
   text-transform: uppercase;
   letter-spacing: 0.12em;
+  margin-top: 0.2rem;
+  display: block;
 }
 
 /* =========================================
    ROOMS PREVIEW — Staggered Card Entrance
    ========================================= */
 .rooms-preview {
-  background: var(--neutral);
+  background: linear-gradient(135deg, #fdf8f2 0%, #f5ede6 50%, #ede0d2 100%);
   padding: 5rem 0;
   overflow: hidden;
+  position: relative;
+}
+
+.rooms-preview::before {
+  content: '';
+  position: absolute;
+  top: -120px;
+  right: -120px;
+  width: 450px;
+  height: 450px;
+  background: radial-gradient(circle, rgba(212,168,87,0.1) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: float 10s ease-in-out infinite;
+}
+
+.rooms-preview::after {
+  content: '';
+  position: absolute;
+  bottom: -100px;
+  left: -100px;
+  width: 350px;
+  height: 350px;
+  background: radial-gradient(circle, rgba(212,168,87,0.07) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: float 12s ease-in-out 2s infinite reverse;
 }
 
 .rooms-preview h2 {
@@ -618,17 +668,27 @@
 
 .room-card-home:hover {
   border-color: var(--accent);
-  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.12);
-  transform: translateY(-6px);
+  box-shadow: 0 24px 50px rgba(212,168,87,0.18), 0 8px 20px rgba(0,0,0,0.08);
+  transform: translateY(-8px);
 }
 
 .r-img-wrapper {
   width: 100%;
-  height: 160px;
-  border-radius: 8px;
+  height: 190px;
+  border-radius: 10px;
   overflow: hidden;
   margin-bottom: 0.8rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.r-img-wrapper::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 60%, rgba(0,0,0,0.12) 100%);
+  pointer-events: none;
+  border-radius: 10px;
 }
 
 .r-card-img {
@@ -1206,10 +1266,21 @@
 /* ---- Testimonials (Pixel-Perfect Google Style) ---- */
 .testimonials {
   padding: 4rem 0;
-  background: #eeeeee;
-  /* Light grey from user image */
+  background: linear-gradient(135deg, #f0e8dc 0%, #e8d9c6 50%, #f5ede6 100%);
   margin-bottom: 4rem;
   overflow: hidden;
+  position: relative;
+}
+
+.testimonials::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--accent), var(--accent-dark), var(--accent), transparent);
+  opacity: 0.6;
 }
 
 .carousel-container {
@@ -1375,7 +1446,17 @@
 /* Attractions Section */
 .attractions-section {
   padding: 80px 0;
-  background-color: #fcfbf7;
+  background: linear-gradient(180deg, #ffffff 0%, #fdf8f2 60%, #f5ede6 100%);
+  position: relative;
+}
+
+.attractions-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(212,168,87,0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
 }
 
 .attractions-header {
@@ -1438,10 +1519,11 @@
   flex: 0 0 calc((100% - 60px) / 3);
   scroll-snap-align: start;
   background: white;
-  border-radius: 16px;
+  border-radius: 18px;
   overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+  border: 1px solid rgba(212,168,87,0.1);
+  transition: transform 0.35s cubic-bezier(0.22,1,0.36,1), box-shadow 0.35s ease, border-color 0.35s ease;
 }
 
 @media (max-width: 1024px) {
@@ -1451,8 +1533,9 @@
 }
 
 .attraction-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+  transform: translateY(-12px);
+  box-shadow: 0 24px 50px rgba(212,168,87,0.2), 0 10px 20px rgba(0,0,0,0.08);
+  border-color: rgba(212,168,87,0.4);
 }
 
 .att-img-wrap {

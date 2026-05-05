@@ -1,23 +1,45 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import FloatingContact from './components/FloatingContact';
-import Home from './pages/Home';
-import Rooms from './pages/Rooms';
-import Gallery from './pages/Gallery';
-import Booking from './pages/Booking';
-import Contact from './pages/Contact';
-import BookingStatus from './pages/BookingStatus';
-import AdminLogin from './pages/AdminLogin';
-import AdminDashboard from './pages/AdminDashboard';
-import CheckIn from './pages/CheckIn';
 import ScrollObserver from './components/ScrollObserver';
 import ReactGA from 'react-ga4';
 import { useLocation } from 'react-router-dom';
 
-// Initialize GA4 - Replace with your actual Measurement ID (e.g., 'G-XXXXXXXXXX')
+// ✅ Code Splitting — pages load only when visited
+const Home          = lazy(() => import('./pages/Home'));
+const Rooms         = lazy(() => import('./pages/Rooms'));
+const Gallery       = lazy(() => import('./pages/Gallery'));
+const Booking       = lazy(() => import('./pages/Booking'));
+const Contact       = lazy(() => import('./pages/Contact'));
+const BookingStatus = lazy(() => import('./pages/BookingStatus'));
+const AdminLogin    = lazy(() => import('./pages/AdminLogin'));
+const AdminDashboard= lazy(() => import('./pages/AdminDashboard'));
+const CheckIn       = lazy(() => import('./pages/CheckIn'));
+
+// Lightweight page-transition spinner
+function PageLoader() {
+  return (
+    <div style={{
+      minHeight: '60vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      background: '#F5EDE6'
+    }}>
+      <div style={{
+        width: 40, height: 40,
+        border: '3px solid #EAEAEA',
+        borderTopColor: '#D4A857',
+        borderRadius: '50%',
+        animation: 'spin 0.7s linear infinite'
+      }} />
+    </div>
+  );
+}
+
 ReactGA.initialize('G-9BB0MG8X0X');
 
 function Analytics() {
@@ -34,32 +56,34 @@ function App() {
       <Router>
         <Analytics />
         <ScrollObserver />
-        <Routes>
-        {/* Admin routes - no navbar/footer */}
-        <Route path="/admin/login" element={<AdminLogin />} />
-        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Suspense fallback={<PageLoader />}>
+          <Routes>
+            {/* Admin routes - no navbar/footer */}
+            <Route path="/admin/login"      element={<AdminLogin />} />
+            <Route path="/admin/dashboard"  element={<AdminDashboard />} />
 
-        {/* Public routes */}
-        <Route path="/*" element={
-          <>
-            <Navbar />
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/rooms" element={<Rooms />} />
-              <Route path="/gallery" element={<Gallery />} />
-              <Route path="/booking" element={<Booking />} />
-              <Route path="/booking/status" element={<BookingStatus />} />
-              <Route path="/booking/status/:id" element={<BookingStatus />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/checkin" element={<CheckIn />} />
-              <Route path="/checkin/:id" element={<CheckIn />} />
-            </Routes>
-            <Footer />
-            <FloatingContact />
-          </>
-        } />
-      </Routes>
-    </Router>
+            {/* Public routes */}
+            <Route path="/*" element={
+              <>
+                <Navbar />
+                <Routes>
+                  <Route path="/"                   element={<Home />} />
+                  <Route path="/rooms"              element={<Rooms />} />
+                  <Route path="/gallery"            element={<Gallery />} />
+                  <Route path="/booking"            element={<Booking />} />
+                  <Route path="/booking/status"     element={<BookingStatus />} />
+                  <Route path="/booking/status/:id" element={<BookingStatus />} />
+                  <Route path="/contact"            element={<Contact />} />
+                  <Route path="/checkin"            element={<CheckIn />} />
+                  <Route path="/checkin/:id"        element={<CheckIn />} />
+                </Routes>
+                <Footer />
+                <FloatingContact />
+              </>
+            } />
+          </Routes>
+        </Suspense>
+      </Router>
     </HelmetProvider>
   );
 }
