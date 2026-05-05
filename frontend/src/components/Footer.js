@@ -40,6 +40,7 @@ export default function Footer() {
           <Link to="/booking">Book Now</Link>
           <Link to="/booking/status">Manage Booking</Link>
           <Link to="/contact">Contact</Link>
+          <Link to="/faq">FAQ</Link>
         </div>
 
         <div className="footer-links">
