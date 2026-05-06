@@ -636,7 +636,7 @@ const SettingsView = ({ isSeason, onToggleSeason }) => (
       <form className="settings-form" style={{ display: 'grid', gap: '1.5rem', borderTop: '1px solid #f1f5f9', paddingTop: '2rem', marginTop: '2rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
           <Lock size={20} color="var(--admin-primary)" />
-          <h4 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700, color: '#1e293b' }}>Security & Login</h4>
+          <h4 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700, color: '#1e293b' }}>Login Credentials</h4>
         </div>
         <p style={{ color: '#64748b', fontSize: '0.85rem', margin: 0 }}>Update your admin credentials. You will be logged out after changing these.</p>
         
@@ -675,7 +675,7 @@ const SettingsView = ({ isSeason, onToggleSeason }) => (
           <button 
             type="button" 
             className="admin-btn admin-btn-primary" 
-            style={{ padding: '0.75rem 2.5rem', background: '#1e293b' }}
+            style={{ padding: '0.75rem 2.5rem', background: '#1e293b', color: '#fff' }}
             onClick={async () => {
               const newU = document.getElementById('new-username').value;
               const newP = document.getElementById('new-password').value;
@@ -704,7 +704,7 @@ const SettingsView = ({ isSeason, onToggleSeason }) => (
               }
             }}
           >
-            Save Security Settings
+            Update Login Details
           </button>
         </div>
       </form>
