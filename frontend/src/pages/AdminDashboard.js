@@ -633,6 +633,84 @@ const SettingsView = ({ isSeason, onToggleSeason }) => (
         </div>
       </div>
 
+      <form className="settings-form" style={{ display: 'grid', gap: '1.5rem', borderTop: '1px solid #f1f5f9', paddingTop: '2rem', marginTop: '2rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
+          <Lock size={20} color="var(--admin-primary)" />
+          <h4 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700, color: '#1e293b' }}>Login Credentials</h4>
+        </div>
+        <p style={{ color: '#64748b', fontSize: '0.85rem', margin: 0 }}>Update your admin credentials. You will be logged out after changing these.</p>
+        
+        <div className="form-row" style={{ marginBottom: 0 }}>
+          <div className="form-group">
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, fontSize: '0.85rem', color: '#475569' }}>New Username</label>
+            <input 
+              type="text" 
+              id="new-username"
+              placeholder="Leave blank to keep current"
+              style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #e2e8f0', background: '#fff', fontSize: '0.95rem' }} 
+            />
+          </div>
+          <div className="form-group">
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, fontSize: '0.85rem', color: '#475569' }}>New Password</label>
+            <input 
+              type="password" 
+              id="new-password"
+              placeholder="Minimum 6 characters"
+              style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #e2e8f0', background: '#fff', fontSize: '0.95rem' }} 
+            />
+          </div>
+        </div>
+
+        <div style={{ padding: '1rem', background: '#fef2f2', borderRadius: '8px', border: '1px solid #fee2e2' }}>
+          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 700, fontSize: '0.85rem', color: '#991b1b' }}>Current Password (Required to Save)</label>
+          <input 
+            type="password" 
+            id="current-password"
+            required
+            style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #fecaca', background: '#fff', fontSize: '0.95rem' }} 
+          />
+        </div>
+
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
+          <button 
+            type="button" 
+            className="admin-btn admin-btn-primary" 
+            style={{ padding: '0.75rem 2.5rem', background: '#1e293b', color: '#fff' }}
+            onClick={async () => {
+              const newU = document.getElementById('new-username').value;
+              const newP = document.getElementById('new-password').value;
+              const currP = document.getElementById('current-password').value;
+              
+              if (!newU && !newP) return;
+              
+              if (!currP) return alert('Current password is required to save changes');
+              if (newP && newP.length < 6) return alert('New password must be at least 6 characters');
+              
+              if (!window.confirm('Are you sure you want to change your login credentials? You will be logged out.')) return;
+              
+              const auth = JSON.parse(sessionStorage.getItem('bss_admin'));
+              try {
+                const headers = { username: auth.username, password: auth.password };
+                await api.patch('/api/admin/profile', {
+                  oldUsername: auth.username,
+                  oldPassword: currP,
+                  newUsername: newU || undefined,
+                  newPassword: newP || undefined
+                }, { headers });
+                
+                alert('Success! Please login with your new credentials.');
+                sessionStorage.removeItem('bss_admin');
+                window.location.reload();
+              } catch (err) {
+                alert(err.response?.data?.message || 'Error updating profile');
+              }
+            }}
+          >
+            Update Login Details
+          </button>
+        </div>
+      </form>
+
     </div>
   </div>
 );
