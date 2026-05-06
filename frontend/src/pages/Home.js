@@ -1,33 +1,33 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import buildingImg from '../assets/building.png';
-import roomImg from '../assets/room.jpg';
-import roomAcImg from '../assets/room-ac-2.jpg';
+import buildingImg from '../assets/outside.webp';
+import roomImg from '../assets/room.webp';
+import roomAcImg from '../assets/room2.webp';
 import logo from '../assets/logo.png';
-import roomGal1 from '../assets/room-ac-1.jpg';
+import roomGal1 from '../assets/room1.webp';
 import roomGal2 from '../assets/room-gallery-2.jpg';
 import roomGal3 from '../assets/room-gallery-3.jpg';
 import roomGal4 from '../assets/room-gallery-4.jpg';
-import mainFalls from '../assets/main-falls-user.jpg';
-import fiveFalls from '../assets/five falls.png';
-import oldFalls from '../assets/old falls.png';
-import chitraruvi from '../assets/Chitraruvi.png';
-import tigerFalls from '../assets/tiger falls.jpg';
-import palaruviFalls from '../assets/aruvi.png';
-import fruitGardenFalls from '../assets/Fruit Garden Falls.png';
-import honeyFalls from '../assets/Honey Falls.png';
-import shenbagadeviFalls from '../assets/Shenbagadevi Falls.png';
+import mainFalls from '../assets/main-falls.webp';
+import fiveFalls from '../assets/five falls.webp';
+import oldFalls from '../assets/old falls.webp';
+import chitraruvi from '../assets/Chitraruvi.webp';
+import tigerFalls from '../assets/tiger falls.webp';
+import palaruviFalls from '../assets/palaruvi.webp';
+import fruitGardenFalls from '../assets/Fruit Garden Falls.webp';
+import honeyFalls from '../assets/Honey Falls.webp';
+import shenbagadeviFalls from '../assets/Shenbagadevi Falls.webp';
 import roomFamily from '../assets/room-family.jpg';
-import roomAc3 from '../assets/room-ac-3.jpg';
-import gundarDam from '../assets/gundar dam.jpg';
+import roomAc3 from '../assets/room3.webp';
+import gundarDam from '../assets/gundar dam.webp';
 import adaviNainarDam from '../assets/Adavi Nainar Dam.png';
-import gadananathiDam from '../assets/Gadananathi Dam.png';
-import karuppanadhiDam from '../assets/Karuppanadhi Dam.png';
-import ramanadhiDam from '../assets/Ramanadhi Dam.png';
-import kasiTemple from '../assets/kasi.png';
+import gadananathiDam from '../assets/Gadananathi Dam.webp';
+import karuppanadhiDam from '../assets/Karuppanadhi Dam.webp';
+import ramanadhiDam from '../assets/Ramanadhi Dam.webp';
+import kasiTemple from '../assets/kasi.webp';
 import tirumalaiKovil from '../assets/Tirumalai Kovil.jpg';
-import kutralanatharTemple from '../assets/Kutralanathar Temple.png';
-import ariyankavuTemple from '../assets/Ariyankavu Iyappan Kovil.png';
+import kutralanatharTemple from '../assets/Kutralanathar Temple.webp';
+import ariyankavuTemple from '../assets/Ariyankavu Iyappan Kovil.webp';
 import { AMENITIES, ROOMS, CONTACT, waLink, WA_TEMPLATES } from '../constants';
 import api from '../api/axios';
 import SEO from '../components/SEO';
@@ -235,12 +235,19 @@ export default function Home() {
         {/* Hero */}
         <section className="hero">
           <div className="hero-img-wrap">
-            <img src={buildingImg} alt="BSS Residency Building" className="hero-bg-img" />
+            <img 
+              src={buildingImg} 
+              alt="BSS Residency Building" 
+              className="hero-bg-img" 
+              width="1920" 
+              height="1080" 
+              fetchpriority="high"
+            />
             <div className="hero-overlay" />
           </div>
           <div className="hero-content fade-up">
             <span className="hero-logo-wrap">
-              <img src={logo} alt="BSS Residency" />
+              <img src={logo} alt="BSS Residency" width="180" height="180" />
             </span>
             <span className="hero-badge">✦ Courtallam's Premium Stay ✦</span>
             <h1>
@@ -274,7 +281,7 @@ export default function Home() {
         {/* About section */}
         <section className="home-about container">
           <div className="about-img-wrap fade-left">
-            <img src={buildingImg} alt="BSS Residency" />
+            <img src={buildingImg} alt="BSS Residency" width="600" height="400" loading="lazy" />
             <div className="about-badge-box">
               <span className="badge-icon">🏨</span>
               <span className="badge-txt">Premium Lodge</span>
