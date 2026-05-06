@@ -681,7 +681,10 @@ const SettingsView = ({ isSeason, onToggleSeason }) => (
               const newP = document.getElementById('new-password').value;
               const currP = document.getElementById('current-password').value;
               
-              if (!currP) return alert('Current password is required');
+              // If no new credentials are provided, just do nothing (avoid annoying alerts)
+              if (!newU && !newP) return;
+              
+              if (!currP) return alert('Current password is required to save changes');
               if (newP && newP.length < 6) return alert('New password must be at least 6 characters');
               
               if (!window.confirm('Are you sure you want to change your login credentials? You will be logged out.')) return;
