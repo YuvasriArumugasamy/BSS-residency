@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
+const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
 const bookingRoutes = require('./routes/bookings');
@@ -15,6 +16,18 @@ require('./models/Booking');
 require('./models/Payment');
 
 const app = express();
+
+// Rate Limiting — Prevents spam and handles load
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 200, // Increase to 200 for BSS residency high-traffic
+  message: { success: false, message: 'Too many requests from this IP, please try again after 15 minutes.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Apply limiter to all API routes
+app.use('/api/', limiter);
 
 // Middleware
 const allowedOrigins = [
@@ -79,6 +92,8 @@ if (!process.env.MONGO_URI) {
 const connectDB = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI, {
+      maxPoolSize: 50,      // Up to 50 concurrent connections
+      minPoolSize: 10,       // Keep 10 connections always ready
       serverSelectionTimeoutMS: 5000,
       socketTimeoutMS: 45000,
     });
