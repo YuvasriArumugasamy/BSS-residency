@@ -229,19 +229,37 @@
 }
 
 /* Total */
-.bstatus-total {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.bstatus-total-wrap {
   margin: 0 2rem;
-  padding: 1.25rem 0;
+  padding: 1.5rem 0;
   border-top: 2px solid #f0f0f0;
   border-bottom: 2px solid #f0f0f0;
 }
 
+.bst-breakdown {
+  margin-bottom: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.bst-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.bstatus-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .bstatus-total span {
-  color: #555;
-  font-size: 0.9rem;
+  color: #1a1a1a;
+  font-size: 1rem;
+  font-weight: 700;
 }
 
 .bstatus-total strong {

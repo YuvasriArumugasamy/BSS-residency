@@ -6,6 +6,7 @@ const Room = require('../models/Room');
 const Guest = require('../models/Guest');
 const Review = require('../models/Review');
 const Notification = require('../models/Notification');
+const Setting = require('../models/Setting');
 const { sendBookingReceivedEmail, sendNewBookingAdminAlert } = require('../utils/emailService');
 
 // POST /api/bookings — Create new booking
@@ -63,6 +64,26 @@ router.post('/', async (req, res) => {
       if (!existing) isUnique = true;
     }
 
+    // --- Price Calculation ---
+    const settings = await Setting.findOne({ key: 'isSeason' });
+    const isSeason = settings ? settings.value === true : false;
+    
+    const ROOM_DATA = {
+      'Double Bed': { season: 1300, nonSeason: 1000 },
+      'Double Bed A/C': { season: 1600, nonSeason: 1300 },
+      'Four Bed': { season: 2500, nonSeason: 2000 },
+      'Four Bed A/C': { season: 2800, nonSeason: 2300 },
+    };
+
+    const roomPriceInfo = ROOM_DATA[roomType] || { season: 1000, nonSeason: 1000 };
+    const unitPrice = isSeason ? roomPriceInfo.season : roomPriceInfo.nonSeason;
+    const nights = Math.max(1, Math.round((new Date(checkOut) - new Date(checkIn)) / (1000 * 60 * 60 * 24)));
+    
+    const roomCharges = unitPrice * nights * roomCount;
+    const gstAmount = Math.round(roomCharges * 0.12);
+    const totalPrice = roomCharges + gstAmount;
+    // --- End Price Calculation ---
+
     const booking = new Booking({
       bookingId,
       name,
@@ -75,6 +96,9 @@ router.post('/', async (req, res) => {
       rooms: roomCount,
       message,
       status: 'Pending',
+      roomCharges,
+      gstAmount,
+      totalPrice
     });
     await booking.save();
 
@@ -224,6 +248,9 @@ router.get('/:id', async (req, res) => {
         status: booking.status,
         message: booking.message,
         createdAt: booking.createdAt,
+        roomCharges: booking.roomCharges,
+        gstAmount: booking.gstAmount,
+        totalPrice: booking.totalPrice,
       },
     });
   } catch (err) {

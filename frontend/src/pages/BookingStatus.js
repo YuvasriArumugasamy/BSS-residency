@@ -1,17 +1,11 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import api from '../api/axios';
-import { waLink, CONTACT } from '../constants';
+import { waLink, CONTACT, ROOMS } from '../constants';
 import gpayLogo from '../assets/gpay.png';
 import paytmLogo from '../assets/paytm.png';
 import './BookingStatus.css';
 
-const ROOM_PRICES = {
-  'Double Bed': 1300,
-  'Double Bed A/C': 1600,
-  'Four Bed': 2500,
-  'Four Bed A/C': 2800,
-};
 
 export default function BookingStatus() {
   const { id: urlId } = useParams();
@@ -25,6 +19,17 @@ export default function BookingStatus() {
   const [reviewForm, setReviewForm] = useState({ rating: 5, comment: '' });
   const [reviewLoading, setReviewLoading] = useState(false);
   const [reviewSuccess, setReviewSuccess] = useState('');
+  const [isSeason, setIsSeason] = useState(false);
+
+  useEffect(() => {
+    const fetchSeason = async () => {
+      try {
+        const res = await api.get('/api/admin/settings/public');
+        if (res.data.success) setIsSeason(res.data.isSeason);
+      } catch (err) { console.error(err); }
+    };
+    fetchSeason();
+  }, []);
 
   // Auto-search if ID comes from URL
   useEffect(() => {
@@ -79,19 +84,37 @@ export default function BookingStatus() {
     }
   };
 
-  // Compute nights and total
   const nights = useMemo(() => {
     if (!booking) return 0;
     const ci = new Date(booking.checkIn);
     const co = new Date(booking.checkOut);
-    return Math.max(0, Math.round((co - ci) / (1000 * 60 * 60 * 24)));
+    const diff = Math.round((co - ci) / (1000 * 60 * 60 * 24));
+    return Math.max(1, diff);
   }, [booking]);
 
-  const totalPrice = useMemo(() => {
-    if (!booking) return 0;
-    const price = ROOM_PRICES[booking.roomType] || 0;
-    return price * nights * Math.max(1, booking.rooms || 1);
-  }, [booking, nights]);
+  const pricing = useMemo(() => {
+    if (!booking) return { roomCharges: 0, gstAmount: 0, totalPrice: 0 };
+    
+    // 1. Use stored prices if available (preferred)
+    if (booking.totalPrice) {
+      return {
+        roomCharges: booking.roomCharges,
+        gstAmount: booking.gstAmount,
+        totalPrice: booking.totalPrice
+      };
+    }
+
+    // 2. Fallback for older bookings (calculate based on type and season status)
+    const room = ROOMS.find(r => r.name === booking.roomType);
+    const unitPrice = room ? (isSeason ? room.seasonPrice : room.nonSeasonPrice) : 1000;
+    const charges = unitPrice * nights * (booking.rooms || 1);
+    const gst = Math.round(charges * 0.12);
+    return {
+      roomCharges: charges,
+      gstAmount: gst,
+      totalPrice: charges + gst
+    };
+  }, [booking, nights, isSeason]);
 
   const formatDate = (d) =>
     d
@@ -249,9 +272,21 @@ export default function BookingStatus() {
             </div>
 
             {/* Total */}
-            <div className="bstatus-total">
-              <span>Estimated Total</span>
-              <strong>₹{totalPrice.toLocaleString('en-IN')}</strong>
+            <div className="bstatus-total-wrap">
+              <div className="bst-breakdown">
+                <div className="bst-row">
+                  <span>Room Charges ({nights} Nights)</span>
+                  <span>₹{pricing.roomCharges.toLocaleString('en-IN')}</span>
+                </div>
+                <div className="bst-row">
+                  <span>GST (12%)</span>
+                  <span>₹{pricing.gstAmount.toLocaleString('en-IN')}</span>
+                </div>
+              </div>
+              <div className="bstatus-total">
+                <span>Total Amount</span>
+                <strong>₹{pricing.totalPrice.toLocaleString('en-IN')}</strong>
+              </div>
             </div>
 
             {/* Payment options — only for confirmed bookings */}
@@ -263,7 +298,7 @@ export default function BookingStatus() {
                   <button
                     className="btn-gpay"
                     onClick={() => {
-                      const upiLink = `upi://pay?pa=9344989393@okaxis&pn=BSS%20Residency&am=${totalPrice}&cu=INR`;
+                      const upiLink = `upi://pay?pa=9344989393@okaxis&pn=BSS%20Residency&am=${pricing.totalPrice}&cu=INR`;
                       window.open(upiLink, '_blank');
                     }}
                   >
@@ -275,7 +310,7 @@ export default function BookingStatus() {
                   <button
                     className="btn-paytm"
                     onClick={() => {
-                      const upiLink = `upi://pay?pa=9344989393@paytm&pn=BSS%20Residency&am=${totalPrice}&cu=INR`;
+                      const upiLink = `upi://pay?pa=9344989393@paytm&pn=BSS%20Residency&am=${pricing.totalPrice}&cu=INR`;
                       window.open(upiLink, '_blank');
                     }}
                   >

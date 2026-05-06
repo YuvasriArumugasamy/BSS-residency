@@ -119,7 +119,7 @@ export default function Booking() {
     return getPrice(selectedRoom) * nights * Math.max(1, Number(form.rooms) || 1);
   }, [selectedRoom, nights, form.rooms, isSeason]);
 
-  const gstAmount = GST_FIXED;
+  const gstAmount = useMemo(() => Math.round(roomCharges * 0.12), [roomCharges]);
   const totalPrice = useMemo(() => roomCharges + gstAmount, [roomCharges, gstAmount]);
   const advanceAmount = 500; // Flat ₹500 advance
 

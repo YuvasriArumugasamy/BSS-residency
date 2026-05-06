@@ -57,6 +57,11 @@ const bookingSchema = new mongoose.Schema(
       specialRequests: { type: String, default: '' },
       checkinTime: { type: Date },
     },
+
+    // Price details (stored at time of booking to avoid mismatch if rates change)
+    roomCharges: { type: Number },
+    gstAmount: { type: Number },
+    totalPrice: { type: Number },
   },
   { timestamps: true }
 );

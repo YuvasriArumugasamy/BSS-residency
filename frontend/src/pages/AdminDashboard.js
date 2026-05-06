@@ -1271,16 +1271,24 @@ export default function AdminDashboard() {
 
   const handleUpdateRoomNumber = async (id, roomNumber) => {
     const headers = { username: auth.username, password: auth.password };
-    await api.patch(`/api/admin/bookings/${id}`, { roomNumber }, { headers });
-    // Local update for better UX before refresh
-    setBookings(prev => prev.map(b => b._id === id ? { ...b, roomNumber } : b));
+    try {
+      await api.patch(`/api/admin/bookings/${id}`, { roomNumber }, { headers });
+      // Local update for better UX before refresh
+      setBookings(prev => prev.map(b => b._id === id ? { ...b, roomNumber } : b));
+    } catch (err) {
+      alert('Error updating room assignment: ' + err.message);
+    }
   };
 
   const handleDeleteBooking = async (id) => {
-    if (!window.confirm('Are you sure?')) return;
+    if (!window.confirm('Are you sure you want to delete this booking?')) return;
     const headers = { username: auth.username, password: auth.password };
-    await api.delete(`/api/admin/bookings/${id}`, { headers });
-    fetchData();
+    try {
+      await api.delete(`/api/admin/bookings/${id}`, { headers });
+      fetchData();
+    } catch (err) {
+      alert('Error deleting booking: ' + err.message);
+    }
   };
 
   const handleCheckOut = async (id, booking) => {
