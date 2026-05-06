@@ -17,6 +17,9 @@ require('./models/Payment');
 
 const app = express();
 
+// Required for express-rate-limit behind proxies like Render/Railway
+app.set('trust proxy', 1);
+
 // Rate Limiting — Prevents spam and handles load
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
