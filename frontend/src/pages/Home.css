@@ -263,85 +263,43 @@
 }
 
 /* =========================================
-   AMENITIES STRIP — Staggered Entrance
+   AMENITIES STRIP — Infinite Marquee Scroll
    ========================================= */
-.amenities-strip {
-  background: var(--primary);
-  display: flex;
-  flex-wrap: nowrap;
-  justify-content: flex-start;
-  overflow-x: auto;
-  gap: 0;
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE 10+ */
+@keyframes marquee-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
-.amenities-strip::-webkit-scrollbar {
-  display: none; /* Safari/Chrome */
+.amenities-strip {
+  background: var(--primary);
+  overflow: hidden;          /* clips the scrolling track */
+  width: 100%;
+}
+
+.amenities-track {
+  display: flex;
+  flex-wrap: nowrap;
+  width: max-content;        /* let the duplicated list stretch naturally */
+  animation: marquee-scroll 22s linear infinite;
+  will-change: transform;
+}
+
+.amenities-strip:hover .amenities-track {
+  animation-play-state: paused; /* pause on hover */
 }
 
 .amenity {
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  padding: 1.2rem 1.5rem;
+  padding: 1.2rem 1.8rem;
   color: var(--white);
   border-right: 1px solid rgba(212, 168, 87, 0.25);
   white-space: nowrap;
   flex-shrink: 0;
   transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-  animation: fadeUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
   position: relative;
   overflow: hidden;
-}
-
-.amenity:nth-child(1) {
-  animation-delay: 0.05s;
-}
-
-.amenity:nth-child(2) {
-  animation-delay: 0.1s;
-}
-
-.amenity:nth-child(3) {
-  animation-delay: 0.15s;
-}
-
-.amenity:nth-child(4) {
-  animation-delay: 0.2s;
-}
-
-.amenity:nth-child(5) {
-  animation-delay: 0.25s;
-}
-
-.amenity:nth-child(6) {
-  animation-delay: 0.3s;
-}
-
-.amenity:nth-child(7) {
-  animation-delay: 0.35s;
-}
-
-.amenity:nth-child(8) {
-  animation-delay: 0.4s;
-}
-
-.amenity:last-child {
-  border-right: none;
-}
-
-@media (max-width: 480px) {
-  .amenities-strip {
-    flex-wrap: nowrap;
-    padding: 0;
-    justify-content: flex-start;
-  }
-  .amenity {
-    padding: 0.85rem 1.25rem;
-    font-size: 0.8rem;
-    border-bottom: 1px solid rgba(212, 168, 87, 0.1);
-  }
 }
 
 .amenity::before {
@@ -363,7 +321,7 @@
   color: var(--primary);
 }
 
-.amenity>* {
+.amenity > * {
   position: relative;
   z-index: 1;
 }
@@ -384,6 +342,16 @@
   font-weight: 500;
   letter-spacing: 0.05em;
   white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  .amenity {
+    padding: 0.85rem 1.25rem;
+    font-size: 0.8rem;
+  }
+  .amenities-track {
+    animation-duration: 18s; /* slightly faster on mobile */
+  }
 }
 
 /* =========================================

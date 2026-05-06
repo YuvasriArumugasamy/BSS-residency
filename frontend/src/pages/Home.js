@@ -259,14 +259,16 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Amenities strip */}
+        {/* Amenities strip — infinite CSS marquee */}
         <section className="amenities-strip">
-          {AMENITIES.map((a) => (
-            <div key={a.label} className="amenity">
-              <span className="a-icon">{a.icon}</span>
-              <span className="a-label">{a.label}</span>
-            </div>
-          ))}
+          <div className="amenities-track">
+            {[...AMENITIES, ...AMENITIES].map((a, i) => (
+              <div key={i} className="amenity">
+                <span className="a-icon">{a.icon}</span>
+                <span className="a-label">{a.label}</span>
+              </div>
+            ))}
+          </div>
         </section>
 
         {/* About section */}
