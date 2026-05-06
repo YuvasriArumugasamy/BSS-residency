@@ -67,7 +67,6 @@ export default function BookingStatus() {
     try {
       await api.post('/api/bookings/public/reviews', {
         guestName: booking.name,
-        email: booking.email || '',
         rating: reviewForm.rating,
         comment: reviewForm.comment
       });
