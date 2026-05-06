@@ -27,6 +27,7 @@
   object-fit: cover;
   object-position: center top;
   animation: kenBurns 20s ease-in-out infinite alternate;
+  content-visibility: auto;
 }
 
 .hero-overlay {
