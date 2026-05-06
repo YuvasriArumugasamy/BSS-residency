@@ -66,11 +66,8 @@ app.use('/api/bookings', bookingRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/gallery', galleryRoutes);
 
-// Static folders with caching
-app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
-  maxAge: '1y', // Cache for 1 year
-  etag: true
-}));
+// Static folders
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Health check
 app.get('/', (req, res) =>

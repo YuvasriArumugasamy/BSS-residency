@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../api/axios';
-import roomAc1 from '../assets/room1.webp';
-import roomAc2 from '../assets/room2.webp';
-import roomAc3 from '../assets/room3.webp';
+import roomAc1 from '../assets/room-ac-1.jpg';
+import roomAc2 from '../assets/room-ac-2.jpg';
+import roomAc3 from '../assets/room-ac-3.jpg';
 import roomFamily from '../assets/room-family.jpg';
 import { ROOMS, waLink, WA_TEMPLATES, CONTACT } from '../constants';
 import SEO from '../components/SEO';
