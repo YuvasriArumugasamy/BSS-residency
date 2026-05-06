@@ -6,7 +6,6 @@ import SEO from '../components/SEO';
 import './Booking.css';
 
 const initForm = {
-  salutation: 'Mr.',
   firstName: '',
   lastName: '',
   phone: '',
@@ -177,7 +176,7 @@ export default function Booking() {
     }
     setLoading(true);
     try {
-      const fullName = `${form.salutation} ${form.firstName} ${form.lastName}`.trim();
+      const fullName = `${form.firstName} ${form.lastName}`.trim();
       
       // Clean payload for backend
       const payload = {
@@ -717,16 +716,6 @@ export default function Booking() {
 
                   {/* Name Row */}
                   <div className="form-row-name">
-                    <div className="form-group salutation-group">
-                      <label>Salutation <span className="req">*</span></label>
-                      <select name="salutation" value={form.salutation} onChange={handleChange} className="input-styled">
-                        <option>Mr.</option>
-                        <option>Ms.</option>
-                        <option>Mrs.</option>
-                        <option>Dr.</option>
-                        <option>Prof.</option>
-                      </select>
-                    </div>
                     <div className="form-group" style={{flex: 1}}>
                       <label>First Name <span className="req">*</span></label>
                       <input
