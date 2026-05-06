@@ -58,6 +58,16 @@ app.get('/', (req, res) =>
   res.json({ message: 'BSS Residency API running', status: 'ok' })
 );
 
+// Global Error Handling Middleware
+app.use((err, req, res, next) => {
+  console.error('SERVER ERROR:', err.stack);
+  res.status(500).json({ 
+    success: false, 
+    message: 'Internal Server Error', 
+    error: process.env.NODE_ENV === 'development' ? err.message : 'Something went wrong' 
+  });
+});
+
 // Connect MongoDB and start server
 const PORT = process.env.PORT || 5000;
 
@@ -66,11 +76,14 @@ if (!process.env.MONGO_URI) {
   process.exit(1);
 }
 
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(async () => {
+const connectDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URI, {
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000,
+    });
     console.log('MongoDB Connected');
-
+    
     // Auto-seed admin if not exists
     const Admin = require('./models/Admin');
     const existing = await Admin.findOne({});
@@ -80,13 +93,20 @@ mongoose
       await Admin.create({ username, password });
       console.log('Admin auto-seeded:', username);
     }
+  } catch (err) {
+    console.error('MongoDB Initial Connection Error:', err);
+    // Retry logic
+    setTimeout(connectDB, 5000);
+  }
+};
 
-    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-  })
-  .catch((err) => {
-    console.error('MongoDB Error:', err);
-    process.exit(1);
-  });
+mongoose.connection.on('disconnected', () => {
+  console.log('MongoDB disconnected! Attempting to reconnect...');
+});
+
+connectDB().then(() => {
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+});
 
 // SECRET one-time endpoint to setup rooms in production
 // Call this ONCE: https://bss-residency-2.onrender.com/api/setup-rooms-bss2025

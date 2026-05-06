@@ -52,6 +52,19 @@ function Analytics() {
 }
 
 function App() {
+  React.useEffect(() => {
+    const handleOffline = () => alert('⚠️ Internet connection lost! Please check your network.');
+    const handleOnline = () => alert('✅ Back online! You can continue.');
+
+    window.addEventListener('offline', handleOffline);
+    window.addEventListener('online', handleOnline);
+
+    return () => {
+      window.removeEventListener('offline', handleOffline);
+      window.removeEventListener('online', handleOnline);
+    };
+  }, []);
+
   return (
     <HelmetProvider>
       <Router>
