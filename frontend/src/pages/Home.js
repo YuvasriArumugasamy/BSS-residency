@@ -31,6 +31,7 @@ import ariyankavuTemple from '../assets/Ariyankavu Iyappan Kovil.png';
 import { AMENITIES, ROOMS, CONTACT, waLink, WA_TEMPLATES } from '../constants';
 import api from '../api/axios';
 import SEO from '../components/SEO';
+import { User } from 'lucide-react';
 import './Home.css';
 
 const imgMap = {
@@ -460,10 +461,6 @@ export default function Home() {
 
               <div className="reviews-carousel" ref={reviewsRef} onScroll={checkRevScroll}>
                 {reviews.map((r, idx) => {
-                  const initial = r.guestName ? r.guestName.charAt(0).toUpperCase() : '?';
-                  const colors = ['#1a73e8', '#d93025', '#188038', '#f29900', '#a142f4', '#00acc1'];
-                  const bgColor = colors[initial.charCodeAt(0) % colors.length];
-
                   const formattedDate = new Date(r.date).toLocaleDateString('en-GB', {
                     day: '2-digit',
                     month: '2-digit',
@@ -478,7 +475,15 @@ export default function Home() {
                       style={{ cursor: 'pointer' }}
                     >
                       <div className="gr-header">
-                        <div className="gr-avatar" style={{ backgroundColor: bgColor }}>{initial}</div>
+                        <div className="gr-avatar-wrap">
+                          {r.avatarUrl ? (
+                            <img src={r.avatarUrl} alt={r.guestName} className="gr-avatar-img" />
+                          ) : (
+                            <div className="gr-avatar-placeholder">
+                              <User size={20} />
+                            </div>
+                          )}
+                        </div>
                         <div className="gr-name-wrap">
                           <span className="gr-name">{r.guestName}</span>
                           <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="G" className="gr-google-logo" />
