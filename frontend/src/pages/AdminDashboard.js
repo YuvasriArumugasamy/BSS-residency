@@ -196,7 +196,7 @@ const DashboardOverview = ({ stats, bookings, period, setPeriod, selectedMonth, 
   );
 };
 
-const RoomManagement = ({ rooms, onAddClick, onDeleteRoom, onUpdateRoom }) => {
+const RoomManagement = ({ rooms, onAddClick, onDeleteRoom, onUpdateRoom, auth, fetchData }) => {
   return (
     <div className="view-content fade-in">
       <div className="card-header" style={{ marginBottom: '1.5rem' }}>
@@ -205,17 +205,17 @@ const RoomManagement = ({ rooms, onAddClick, onDeleteRoom, onUpdateRoom }) => {
           <button 
             className="admin-btn admin-btn-outline" 
             onClick={async () => {
-              if(!window.confirm('Sync to 20-room layout (101-307)?')) return;
+              if(!window.confirm('Reset to default 20-room layout (101-307)? This will wipe existing room data!')) return;
               try {
                 const headers = { username: auth.username, password: auth.password };
                 await api.post('/api/admin/rooms/reset-layout', {}, { headers });
-                alert('Rooms synced! Please refresh.');
+                alert('Rooms reset successfully!');
                 fetchData();
-              } catch(e) { alert('Sync failed: ' + e.message); }
+              } catch(e) { alert('Reset failed: ' + e.message); }
             }}
             style={{ padding: '0.4rem 0.8rem', fontSize: '0.85rem' }}
           >
-            Sync Layout
+            Reset Layout
           </button>
           <button onClick={onAddClick} className="admin-btn admin-btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <Plus size={18} /> Add Room
@@ -1349,7 +1349,7 @@ export default function AdminDashboard() {
         selectedMonth={selectedMonth}
         setSelectedMonth={setSelectedMonth}
       />;
-      case 'rooms': return <RoomManagement rooms={rooms} onAddClick={openAddModal} onDeleteRoom={handleDeleteRoom} onUpdateRoom={openEditModal} />;
+      case 'rooms': return <RoomManagement rooms={rooms} onAddClick={openAddModal} onDeleteRoom={handleDeleteRoom} onUpdateRoom={openEditModal} auth={auth} fetchData={fetchData} />;
       case 'bookings': return <BookingManagement
         bookings={bookings}
         rooms={rooms}
