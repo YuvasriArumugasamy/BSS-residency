@@ -177,7 +177,7 @@ export default function Booking() {
 
     setLoading(true);
     try {
-      const advanceToPay = 510; // The fixed advance amount
+      const advanceToPay = 20; // Temporarily set to 20 for testing
 
       // 1. Create Razorpay Order on Backend
       const orderRes = await api.post('/api/bookings/create-order', {
