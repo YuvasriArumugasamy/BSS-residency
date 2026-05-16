@@ -248,7 +248,7 @@ export default function Booking() {
         prefill: {
           name: `${form.firstName} ${form.lastName}`,
           email: form.email,
-          contact: '9344989393' // Hardcoded as per user request
+          contact: form.phone
         },
         theme: {
           color: "#d4a857"
