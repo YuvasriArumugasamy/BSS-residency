@@ -305,7 +305,9 @@ export default function Booking() {
                   <strong className="bid">{bookingId}</strong>
                   <small>Short ref: BSS-{shortId}</small>
                 </div>
-                        {/* Success Payment Section */}
+              </div>
+
+              {/* Success Payment Section */}
               <div className="payment-checkout-card success-card">
                 <div className="pc-badge success">Payment Verified ✅</div>
                 <h3 className="pc-title">Advance Paid: ₹ {pendingBooking.advancePaid || 510}</h3>
@@ -325,7 +327,6 @@ export default function Booking() {
                 <div className="next-steps-confirmed">
                   <p><strong>What's next?</strong> Our team will contact you on WhatsApp shortly for any additional details.</p>
                 </div>
-              </div>        </div>
               </div>
 
               <div className="pending-details-grid">
