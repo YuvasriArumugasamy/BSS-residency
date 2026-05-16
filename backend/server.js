@@ -71,7 +71,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Health check
 app.get('/', (req, res) =>
-  res.json({ message: 'BSS Residency API running', status: 'ok' })
+  res.json({ message: 'BSS Residency API running v2-payment', status: 'ok' })
 );
 
 // Global Error Handling Middleware
