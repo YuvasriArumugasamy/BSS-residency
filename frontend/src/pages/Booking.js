@@ -174,42 +174,99 @@ export default function Booking() {
       setResult({ success: false, message: 'Please accept the booking policy to proceed.' });
       return;
     }
+
     setLoading(true);
     try {
-      const fullName = `${form.firstName} ${form.lastName}`.trim();
-      
-      // Clean payload for backend
-      const payload = {
-        name: fullName,
-        email: form.email,
-        phone: form.phone,
-        checkIn: form.checkIn,
-        checkOut: form.checkOut,
-        roomType: form.roomType,
-        rooms: Number(form.rooms) || 1,
-        guests: Number(form.guests) || 1,
-        children: Number(form.children) || 0,
-        message: form.message // Changed from specialRequests to message to match backend
+      const advanceToPay = 510; // The fixed advance amount
+
+      // 1. Create Razorpay Order on Backend
+      const orderRes = await api.post('/api/bookings/create-order', {
+        amount: advanceToPay
+      });
+
+      if (!orderRes.data.success) {
+        throw new Error('Failed to create payment order');
+      }
+
+      const { order_id } = orderRes.data;
+
+      // 2. Configure Razorpay Options
+      const options = {
+        key: 'rzp_live_SptqBPCmbCGB7n', // Your Live Key ID
+        amount: advanceToPay * 100,
+        currency: "INR",
+        name: "BSS Residency",
+        description: `Advance Payment for ${form.roomType}`,
+        image: "/logo.png",
+        order_id: order_id,
+        handler: async (response) => {
+          // 3. Verify Payment and Save Booking on Success
+          try {
+            setLoading(true);
+            const fullName = `${form.firstName} ${form.lastName}`.trim();
+            const payload = {
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+              bookingData: {
+                name: fullName,
+                email: form.email,
+                phone: form.phone,
+                checkIn: form.checkIn,
+                checkOut: form.checkOut,
+                roomType: form.roomType,
+                rooms: Number(form.rooms) || 1,
+                guests: Number(form.guests) || 1,
+                message: form.message
+              }
+            };
+
+            const verifyRes = await api.post('/api/bookings/verify-payment', payload);
+
+            if (verifyRes.data.success) {
+              setPendingBooking({
+                ...verifyRes.data.booking,
+                nights,
+                totalPrice,
+                roomCharges,
+                gstAmount,
+                advancePaid: advanceToPay
+              });
+              setForm(initForm);
+              setStep(1);
+              setPolicyChecked(false);
+            } else {
+              setResult({ success: false, message: 'Payment verification failed. Please contact us.' });
+            }
+          } catch (err) {
+            console.error('Verification Error:', err);
+            setResult({ success: false, message: 'Error finalizing your booking. Please contact support.' });
+          } finally {
+            setLoading(false);
+          }
+        },
+        prefill: {
+          name: `${form.firstName} ${form.lastName}`,
+          email: form.email,
+          contact: form.phone
+        },
+        theme: {
+          color: "#d4a857"
+        },
+        modal: {
+          ondismiss: () => setLoading(false)
+        }
       };
 
-      const res = await api.post('/api/bookings', payload);
+      const rzp = new window.Razorpay(options);
+      rzp.open();
 
-      setPendingBooking({
-        ...res.data.booking,
-        nights,
-        totalPrice,
-        roomCharges,
-        gstAmount,
-      });
-      setForm(initForm);
-      setStep(1);
-      setPolicyChecked(false);
     } catch (err) {
+      console.error('Razorpay Error:', err);
       setResult({
         success: false,
-        message: err.response?.data?.message || 'Something went wrong. Please try again.',
+        message: err.response?.data?.message || 'Payment initialization failed. Please try again.',
       });
-    } finally {
       setLoading(false);
     }
   };
@@ -248,115 +305,27 @@ export default function Booking() {
                   <strong className="bid">{bookingId}</strong>
                   <small>Short ref: BSS-{shortId}</small>
                 </div>
-              </div>
-
-              {/* Premium Payment Section */}
-              <div className="payment-checkout-card">
-                <div className="pc-badge">Action Required: Secure Your Booking</div>
-                <h3 className="pc-title">Pay Advance ₹ {advanceAmount}</h3>
-                <p className="pc-subtitle">Scan QR code or use the UPI ID below to pay via GPay, PhonePe, or Paytm.</p>
+                        {/* Success Payment Section */}
+              <div className="payment-checkout-card success-card">
+                <div className="pc-badge success">Payment Verified ✅</div>
+                <h3 className="pc-title">Advance Paid: ₹ {pendingBooking.advancePaid || 510}</h3>
+                <p className="pc-subtitle">Thank you! Your advance payment has been received successfully via Razorpay.</p>
                 
-                <div className="pc-grid">
-                  <div className="pc-qr-wrap">
-                    {(() => {
-                      const upiUrl = `upi://pay?pa=mariappansg123-1@oksbi&pn=Mari%20S&cu=INR`;
-                      const qrUrl = `https://chart.googleapis.com/chart?cht=qr&chl=${encodeURIComponent(upiUrl)}&chs=300x300&choe=UTF-8&chld=L|2&v=${Date.now()}`;
-                      
-                      return (
-                        <div className="pc-payment-actions">
-                          <div className="pc-qr-frame" style={{ background: '#fff', padding: '15px', borderRadius: '16px', border: '2px solid #d4a857', boxShadow: '0 10px 25px rgba(212,168,87,0.2)' }}>
-                            <img 
-                              src={qrUrl} 
-                              alt="Payment QR Code" 
-                              className="pc-qr-img" 
-                              style={{ width: '100%', maxWidth: '220px', display: 'block', margin: '0 auto' }}
-                            />
-                            <p style={{ fontSize: '0.7rem', color: '#888', marginTop: '8px', textAlign: 'center' }}>Scan with GPay / PhonePe / Paytm</p>
-                          </div>
-                          
-                          <div style={{ marginTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                            <button 
-                              type="button"
-                              onClick={() => {
-                                window.location.href = upiUrl;
-                              }}
-                              className="admin-btn admin-btn-primary" 
-                              style={{ 
-                                background: '#1a1a1a', 
-                                color: '#fff', 
-                                padding: '1.25rem', 
-                                borderRadius: '12px', 
-                                fontWeight: '800',
-                                fontSize: '1rem',
-                                border: 'none',
-                                cursor: 'pointer',
-                                boxShadow: '0 4px 15px rgba(0,0,0,0.2)'
-                              }}
-                            >
-                              🚀 CLICK HERE TO PAY NOW
-                            </button>
-                            
-                            <div style={{ background: '#fffbeb', padding: '1rem', borderRadius: '10px', border: '1px solid #fef3c7' }}>
-                              <p style={{ fontSize: '0.8rem', color: '#92400e', margin: '0 0 0.5rem 0', fontWeight: '700' }}>Alternative: GPay directly to Number</p>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                <strong style={{ fontSize: '1.2rem', color: '#000' }}>93449 89393</strong>
-                                <button 
-                                  type="button" 
-                                  onClick={() => copyToClipboard('9344989393')}
-                                  style={{ background: '#d4a857', color: '#fff', border: 'none', padding: '0.5rem 1rem', borderRadius: '6px', fontSize: '0.8rem', fontWeight: '700', cursor: 'pointer' }}
-                                >
-                                  {copied ? '✅ COPIED' : '📋 COPY'}
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })()}
+                <div className="success-confirmation-details">
+                  <div className="scd-row">
+                    <span>Payment ID:</span>
+                    <strong>{pendingBooking.razorpayPaymentId || 'N/A'}</strong>
                   </div>
-
-                  <div className="pc-info-wrap">
-                    <div className="upi-copy-box" style={{ background: '#fff', border: '1px solid #e2e8f0' }}>
-                      <div className="ucb-label">Verified Name: <strong>Mari S</strong></div>
-                      <div className="ucb-value-row">
-                        <strong className="ucb-id">mariappansg123-1@oksbi</strong>
-                        <button 
-                          type="button" 
-                          className={`copy-btn ${copied ? 'copied' : ''}`}
-                          onClick={() => copyToClipboard('mariappansg123-1@oksbi')}
-                        >
-                          {copied ? '✓' : '📋'}
-                        </button>
-                      </div>
-                      <div className="ucb-value-row" style={{ marginTop: '0.5rem' }}>
-                        <strong className="ucb-id">9344989393</strong>
-                        <button 
-                          type="button" 
-                          className={`copy-btn ${copied ? 'copied' : ''}`}
-                          onClick={() => copyToClipboard('9344989393')}
-                        >
-                          {copied ? '✓ Copied' : '📋 Copy'}
-                        </button>
-                      </div>
-                      <p className="ucb-name">Verified Name: <strong>Santhosh G (BSS Residency)</strong></p>
-                    </div>
-
-                    <div className="payment-steps-new">
-                      <div className="psn-item">
-                        <span className="psn-num">1</span>
-                        <span>Pay <strong>₹ {advanceAmount}</strong> advance</span>
-                      </div>
-                      <div className="psn-item">
-                        <span className="psn-num">2</span>
-                        <span>Take <strong>Screenshot</strong></span>
-                      </div>
-                      <div className="psn-item">
-                        <span className="psn-num">3</span>
-                        <span>Share on <strong>WhatsApp</strong></span>
-                      </div>
-                    </div>
+                  <div className="scd-row">
+                    <span>Order ID:</span>
+                    <strong>{pendingBooking.razorpayOrderId || 'N/A'}</strong>
                   </div>
                 </div>
+
+                <div className="next-steps-confirmed">
+                  <p><strong>What's next?</strong> Our team will contact you on WhatsApp shortly for any additional details.</p>
+                </div>
+              </div>        </div>
               </div>
 
               <div className="pending-details-grid">

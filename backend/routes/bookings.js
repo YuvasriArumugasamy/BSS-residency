@@ -8,6 +8,136 @@ const Review = require('../models/Review');
 const Notification = require('../models/Notification');
 const Setting = require('../models/Setting');
 const { sendBookingReceivedEmail, sendNewBookingAdminAlert } = require('../utils/emailService');
+const Razorpay = require('razorpay');
+const crypto = require('crypto');
+
+// Initialize Razorpay
+const razorpay = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_KEY_SECRET,
+});
+
+// --- NEW RAZORPAY ROUTES ---
+
+// 1. Create Razorpay Order
+router.post('/create-order', async (req, res) => {
+  try {
+    const { amount } = req.body; // Amount in INR (e.g., 510)
+    
+    const options = {
+      amount: amount * 100, // Convert to paise
+      currency: 'INR',
+      receipt: `receipt_${Date.now()}`,
+    };
+
+    const order = await razorpay.orders.create(options);
+    
+    res.json({
+      success: true,
+      order_id: order.id,
+      amount: order.amount,
+    });
+  } catch (err) {
+    console.error('Razorpay Order Error:', err);
+    res.status(500).json({ success: false, message: 'Failed to create payment order' });
+  }
+});
+
+// 2. Verify Payment and Save Booking
+router.post('/verify-payment', async (req, res) => {
+  try {
+    const { 
+      razorpay_order_id, 
+      razorpay_payment_id, 
+      razorpay_signature,
+      bookingData 
+    } = req.body;
+
+    // Verify signature
+    const body = razorpay_order_id + "|" + razorpay_payment_id;
+    const expectedSignature = crypto
+      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+      .update(body.toString())
+      .digest("hex");
+
+    const isSignatureValid = expectedSignature === razorpay_signature;
+
+    if (!isSignatureValid) {
+      return res.status(400).json({ success: false, message: 'Invalid payment signature' });
+    }
+
+    // Payment is valid, now save the booking
+    const { name, phone, email, roomType, checkIn, checkOut, guests, rooms, message } = bookingData;
+
+    // Generate unique 6-digit booking ID
+    let bookingId;
+    let isUnique = false;
+    while (!isUnique) {
+      bookingId = Math.floor(100000 + Math.random() * 900000).toString();
+      const existing = await Booking.findOne({ bookingId });
+      if (!existing) isUnique = true;
+    }
+
+    // Calculate Price
+    const settings = await Setting.findOne({ key: 'isSeason' });
+    const isSeason = settings ? settings.value === true : false;
+    const ROOM_DATA = {
+      'Double Bed': { season: 1300, nonSeason: 1000 },
+      'Double Bed A/C': { season: 1600, nonSeason: 1300 },
+      'Four Bed': { season: 2500, nonSeason: 2000 },
+      'Four Bed A/C': { season: 2800, nonSeason: 2300 },
+    };
+    const roomPriceInfo = ROOM_DATA[roomType] || { season: 1000, nonSeason: 1000 };
+    const unitPrice = isSeason ? roomPriceInfo.season : roomPriceInfo.nonSeason;
+    const nights = Math.max(1, Math.round((new Date(checkOut) - new Date(checkIn)) / (1000 * 60 * 60 * 24)));
+    const roomCount = Number(rooms) || 1;
+    const roomCharges = unitPrice * nights * roomCount;
+    const gstAmount = Math.round(roomCharges * 0.12);
+    const totalPrice = roomCharges + gstAmount;
+
+    const booking = new Booking({
+      bookingId,
+      name,
+      phone,
+      email,
+      roomType,
+      checkIn,
+      checkOut,
+      guests,
+      rooms: roomCount,
+      message,
+      status: 'Confirmed', // Set to confirmed since payment is done
+      roomCharges,
+      gstAmount,
+      totalPrice,
+      razorpayOrderId: razorpay_order_id,
+      razorpayPaymentId: razorpay_payment_id,
+      razorpaySignature: razorpay_signature,
+      advancePaid: 510,
+      paymentStatus: 'Completed'
+    });
+
+    await booking.save();
+
+    // Create Notification
+    try {
+      await new Notification({
+        title: '💰 New Paid Booking',
+        message: `${name} paid ₹510 advance for ${roomType}.`,
+        type: 'booking'
+      }).save();
+    } catch (e) {}
+
+    // Send Emails
+    sendBookingReceivedEmail(booking).catch(e => console.error(e));
+    sendNewBookingAdminAlert(booking).catch(e => console.error(e));
+
+    res.json({ success: true, bookingId: booking.bookingId, booking });
+  } catch (err) {
+    console.error('Payment Verification Error:', err);
+    res.status(500).json({ success: false, message: 'Internal server error during verification' });
+  }
+});
 
 // POST /api/bookings — Create new booking
 router.post('/', async (req, res) => {

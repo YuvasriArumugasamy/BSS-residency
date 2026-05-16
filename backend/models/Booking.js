@@ -58,10 +58,21 @@ const bookingSchema = new mongoose.Schema(
       checkinTime: { type: Date },
     },
 
-    // Price details (stored at time of booking to avoid mismatch if rates change)
+    // Price details
     roomCharges: { type: Number },
     gstAmount: { type: Number },
     totalPrice: { type: Number },
+    
+    // Razorpay Payment Details
+    razorpayOrderId: { type: String },
+    razorpayPaymentId: { type: String },
+    razorpaySignature: { type: String },
+    advancePaid: { type: Number, default: 0 },
+    paymentStatus: { 
+      type: String, 
+      enum: ['Pending', 'Completed', 'Failed'], 
+      default: 'Pending' 
+    },
   },
   { timestamps: true }
 );
