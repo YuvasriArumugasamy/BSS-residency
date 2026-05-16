@@ -265,7 +265,7 @@ export default function Booking() {
       console.error('Razorpay Error:', err);
       setResult({
         success: false,
-        message: err.response?.data?.message || 'Payment initialization failed. Please try again.',
+        message: err.response?.data?.error || err.response?.data?.message || 'Payment initialization failed. Please try again.',
       });
       setLoading(false);
     }
