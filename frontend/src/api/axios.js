@@ -8,7 +8,7 @@ const baseURL = isLocal ? '' : 'https://bss-residency.onrender.com';
 
 const api = axios.create({ 
   baseURL,
-  timeout: 10000 // 10 seconds timeout
+  timeout: 60000 // 60 seconds timeout to handle Render cold starts
 });
 
 // Auto-retry on network errors

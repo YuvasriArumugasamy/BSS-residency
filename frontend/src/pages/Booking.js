@@ -258,14 +258,25 @@ export default function Booking() {
         }
       };
 
+      if (!window.Razorpay) {
+        throw new Error('Payment system failed to load. Please disable any adblockers and refresh the page.');
+      }
+
       const rzp = new window.Razorpay(options);
+      rzp.on('payment.failed', function (response) {
+        setResult({
+          success: false,
+          message: response.error.description || 'Payment failed. Please try again.',
+        });
+        setLoading(false);
+      });
       rzp.open();
 
     } catch (err) {
       console.error('Razorpay Error:', err);
       setResult({
         success: false,
-        message: err.response?.data?.error || err.response?.data?.message || 'Payment initialization failed. Please try again.',
+        message: err.response?.data?.error || err.response?.data?.message || err.message || 'Payment initialization failed. Please try again.',
       });
       setLoading(false);
     }

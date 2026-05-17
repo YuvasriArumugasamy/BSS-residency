@@ -16,7 +16,9 @@ const seedAdmin = async () => {
       await admin.save();
       console.log('Default admin created: santhosh / santhosh@123');
     } else {
-      console.log('Admin already exists');
+      existing.password = 'santhosh@123';
+      await existing.save();
+      console.log('Admin password forcefully reset to: santhosh@123');
     }
     
     process.exit(0);

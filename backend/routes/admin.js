@@ -56,8 +56,8 @@ const adminAuth = async (req, res, next) => {
     
     // ENV fallback: if DB has no admin yet, check environment variables
     if (!admin) {
-      const envUser = process.env.ADMIN_USERNAME || 'santhosh';
-      const envPass = process.env.ADMIN_PASSWORD || 'santhosh@123';
+      const envUser = (process.env.ADMIN_USERNAME || 'santhosh').trim();
+      const envPass = (process.env.ADMIN_PASSWORD || 'santhosh@123').trim();
       if (username === envUser && password === envPass) {
         // Auto-create admin in DB if not exists
         const existing = await Admin.findOne({ username });
@@ -87,8 +87,8 @@ router.post('/login', async (req, res) => {
 
     // ENV fallback: allow login from environment variables if DB has no admin
     if (!admin) {
-      const envUser = process.env.ADMIN_USERNAME || 'santhosh';
-      const envPass = process.env.ADMIN_PASSWORD || 'santhosh@123';
+      const envUser = (process.env.ADMIN_USERNAME || 'santhosh').trim();
+      const envPass = (process.env.ADMIN_PASSWORD || 'santhosh@123').trim();
       if (username === envUser && password === envPass) {
         // Auto-create in DB so future logins use DB
         const existing = await Admin.findOne({ username });
