@@ -99,7 +99,7 @@ const bookingReceivedCustomer = (booking) => {
           <div style="background:#f0f9ff;border:1px solid #b8daff;border-radius:8px;padding:16px;margin-bottom:20px;">
             <p style="margin:0;font-size:14px;color:#004085;">
               <strong>📌 Next Steps:</strong><br>
-              1. Pay advance ₹500 via UPI<br>
+              1. Pay advance ₹510 via UPI<br>
               2. Share screenshot on WhatsApp<br>
               3. Get instant confirmation!
             </p>

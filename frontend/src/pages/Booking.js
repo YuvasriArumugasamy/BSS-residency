@@ -121,7 +121,7 @@ export default function Booking() {
 
   const gstAmount = useMemo(() => Math.round(roomCharges * 0.12), [roomCharges]);
   const totalPrice = useMemo(() => roomCharges + gstAmount, [roomCharges, gstAmount]);
-  const advanceAmount = 500; // Flat ₹500 advance
+  const advanceAmount = 510; // Flat ₹510 advance
 
   const formatDate = (dateStr) => {
     if (!dateStr) return '—';
@@ -286,7 +286,7 @@ export default function Booking() {
   if (pendingBooking) {
     const bookingId = pendingBooking.bookingId || (pendingBooking._id ? String(parseInt(pendingBooking._id.toString().slice(-6), 16)).padStart(6, '0').slice(-6) : '');
     const shortId = bookingId;
-    const waMsg = `Hello BSS Residency! 🙏\n\nI just submitted a booking request.\nBooking ID: ${bookingId}\nName: ${pendingBooking.name}\nRoom: ${pendingBooking.roomType}\nCheck-in: ${new Date(pendingBooking.checkIn).toLocaleDateString('en-IN')}\nCheck-out: ${new Date(pendingBooking.checkOut).toLocaleDateString('en-IN')}\n\nI have paid the advance of ₹500 via UPI. Please confirm!`;
+    const waMsg = `Hello BSS Residency! 🙏\n\nI just submitted a booking request.\nBooking ID: ${bookingId}\nName: ${pendingBooking.name}\nRoom: ${pendingBooking.roomType}\nCheck-in: ${new Date(pendingBooking.checkIn).toLocaleDateString('en-IN')}\nCheck-out: ${new Date(pendingBooking.checkOut).toLocaleDateString('en-IN')}\n\nI have paid the advance of ₹510 via UPI. Please confirm!`;
 
     return (
       <>
