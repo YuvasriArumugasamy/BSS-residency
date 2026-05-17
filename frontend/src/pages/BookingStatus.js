@@ -2,8 +2,6 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import api from '../api/axios';
 import { waLink, CONTACT, ROOMS } from '../constants';
-import gpayLogo from '../assets/gpay.webp';
-import paytmLogo from '../assets/paytm.webp';
 import './BookingStatus.css';
 
 
@@ -289,40 +287,11 @@ export default function BookingStatus() {
               </div>
             </div>
 
-            {/* Payment options — only for confirmed bookings */}
+            {/* Confirmed booking actions (Print Receipt) */}
             {booking.status === 'Confirmed' && (
-              <div className="bstatus-confirmed-actions">
-                <h3>💳 Pay in Advance (Optional)</h3>
-                <p>You can pay at the property. If you wish to pay now, use the options below.</p>
-                <div className="payment-btns">
-                  <button
-                    className="btn-gpay"
-                    onClick={() => {
-                      const upiLink = `upi://pay?pa=9344989393@okaxis&pn=BSS%20Residency&am=${pricing.totalPrice}&cu=INR`;
-                      window.open(upiLink, '_blank');
-                    }}
-                  >
-                    <img
-                      src={gpayLogo}
-                      alt="Google Pay"
-                    />
-                  </button>
-                  <button
-                    className="btn-paytm"
-                    onClick={() => {
-                      const upiLink = `upi://pay?pa=9344989393@paytm&pn=BSS%20Residency&am=${pricing.totalPrice}&cu=INR`;
-                      window.open(upiLink, '_blank');
-                    }}
-                  >
-                    <img
-                      src={paytmLogo}
-                      alt="Paytm"
-                    />
-                  </button>
-                </div>
-
+              <div className="bstatus-confirmed-actions" style={{ textAlign: 'center', marginTop: '2rem' }}>
                 {/* Print receipt */}
-                <button className="btn-print" onClick={() => window.print()}>
+                <button className="btn-print" onClick={() => window.print()} style={{ width: '100%', maxWidth: '300px', margin: '0 auto' }}>
                   <i className="fa-solid fa-file-pdf" /> Save / Print Receipt
                 </button>
               </div>
