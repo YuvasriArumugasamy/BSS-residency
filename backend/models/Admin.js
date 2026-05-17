@@ -12,6 +12,10 @@ const AdminSchema = new mongoose.Schema({
   },
   lastLogin: {
     type: Date
+  },
+  fcmTokens: {
+    type: [String],
+    default: []
   }
 });
 

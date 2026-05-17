@@ -10,6 +10,26 @@ const bookingRoutes = require('./routes/bookings');
 const adminRoutes = require('./routes/admin');
 const galleryRoutes = require('./routes/gallery');
 
+// Firebase Admin Setup
+const admin = require('firebase-admin');
+const fs = require('fs');
+const path = require('path');
+
+try {
+  const serviceAccountPath = path.join(__dirname, 'bss-residency-firebase-adminsdk-fbsvc-206162d587.json');
+  if (fs.existsSync(serviceAccountPath)) {
+    const serviceAccount = require(serviceAccountPath);
+    admin.initializeApp({
+      credential: admin.credential.cert(serviceAccount)
+    });
+    console.log('Firebase Admin initialized successfully');
+  } else {
+    console.warn('Firebase Admin SDK JSON file not found at:', serviceAccountPath);
+  }
+} catch (error) {
+  console.error('Error initializing Firebase Admin:', error);
+}
+
 // Models (Pre-load for consistency)
 require('./models/Room');
 require('./models/Guest');

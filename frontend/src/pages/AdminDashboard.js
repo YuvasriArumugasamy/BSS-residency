@@ -571,12 +571,76 @@ const Reports = ({ stats, period, setPeriod, selectedMonth, setSelectedMonth }) 
   );
 };
 
-const SettingsView = ({ isSeason, onToggleSeason }) => (
+const SettingsView = ({ isSeason, onToggleSeason }) => {
+  const [fcmStatus, setFcmStatus] = useState('Checking...');
+
+  useEffect(() => {
+    if (!('Notification' in window)) {
+      setFcmStatus('Unsupported');
+    } else if (Notification.permission === 'granted') {
+      setFcmStatus('Enabled');
+    } else if (Notification.permission === 'denied') {
+      setFcmStatus('Denied');
+    } else {
+      setFcmStatus('Not Requested');
+    }
+  }, []);
+
+  const handleEnablePush = async () => {
+    try {
+      const { requestForToken } = await import('../firebase');
+      const token = await requestForToken();
+      if (token) {
+        const auth = JSON.parse(sessionStorage.getItem('bss_admin'));
+        const headers = { username: auth.username, password: auth.password };
+        await api.post('/api/admin/fcm-token', { token }, { headers });
+        setFcmStatus('Enabled');
+        alert('Push notifications enabled successfully!');
+      } else {
+        alert('Failed to get token. Please check browser permissions.');
+        setFcmStatus(Notification.permission === 'denied' ? 'Denied' : 'Not Requested');
+      }
+    } catch (e) {
+      console.error(e);
+      alert('Error enabling push notifications');
+    }
+  };
+
+  return (
   <div className="view-content fade-in">
     <div className="card" style={{ maxWidth: '800px', margin: '0 auto' }}>
       <div style={{ borderBottom: '1px solid #f1f5f9', paddingBottom: '1.5rem', marginBottom: '2rem' }}>
         <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#1e293b', margin: 0 }}>System Settings</h2>
         <p style={{ color: '#64748b', fontSize: '0.9rem', marginTop: '0.5rem' }}>Manage your lodge's global configuration and seasonal pricing.</p>
+      </div>
+
+      {/* Push Notifications Section */}
+      <div className="settings-section" style={{ marginBottom: '2.5rem', padding: '1.5rem', background: '#f0f9ff', borderRadius: '16px', border: '1px solid #bae6fd' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+          <div style={{ flex: 1, minWidth: '250px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
+              <Bell size={20} color="#0284c7" />
+              <h4 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700, color: '#0f172a' }}>Push Notifications</h4>
+            </div>
+            <p style={{ margin: 0, fontSize: '0.9rem', color: '#475569', lineHeight: '1.5' }}>
+              Receive instant alerts on this device when a new booking is requested or paid.
+            </p>
+            <div style={{ marginTop: '0.5rem', fontSize: '0.85rem', fontWeight: 600, color: fcmStatus === 'Enabled' ? '#16a34a' : (fcmStatus === 'Denied' ? '#dc2626' : '#ea580c') }}>
+              Status: {fcmStatus}
+            </div>
+          </div>
+          <div>
+            <button 
+              type="button"
+              className="admin-btn admin-btn-primary"
+              style={{ background: '#0284c7', padding: '0.5rem 1.5rem' }}
+              onClick={handleEnablePush}
+              disabled={fcmStatus === 'Enabled' || fcmStatus === 'Unsupported'}
+            >
+              {fcmStatus === 'Enabled' ? 'Alerts Active' : 'Enable Alerts'}
+            </button>
+          </div>
+        </div>
       </div>
 
       <div className="settings-section" style={{ marginBottom: '2.5rem', padding: '1.5rem', background: isSeason ? '#fffbeb' : '#f8fafc', borderRadius: '16px', border: '1px solid', borderColor: isSeason ? '#fef3c7' : '#e2e8f0', transition: 'all 0.3s ease' }}>

@@ -620,4 +620,28 @@ router.post('/rooms/reset-layout', adminAuth, async (req, res) => {
   }
 });
 
+// POST /api/admin/fcm-token — Register FCM device token
+router.post('/fcm-token', adminAuth, async (req, res) => {
+  try {
+    const { token } = req.body;
+    if (!token) return res.status(400).json({ success: false, message: 'Token is required' });
+
+    const username = req.headers.username || process.env.ADMIN_USERNAME || 'santhosh';
+    let admin = await Admin.findOne({ username });
+    
+    if (admin) {
+      if (!admin.fcmTokens) admin.fcmTokens = [];
+      if (!admin.fcmTokens.includes(token)) {
+        admin.fcmTokens.push(token);
+        await admin.save();
+      }
+      return res.json({ success: true, message: 'Token registered successfully' });
+    } else {
+      return res.status(404).json({ success: false, message: 'Admin not found' });
+    }
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 module.exports = router;

@@ -130,9 +130,14 @@ router.post('/verify-payment', async (req, res) => {
       }).save();
     } catch (e) {}
 
-    // Send Emails
+    // Send Emails & Push Notifications
     sendBookingReceivedEmail(booking).catch(e => console.error(e));
     sendNewBookingAdminAlert(booking).catch(e => console.error(e));
+    const { sendPushNotificationToAdmins } = require('../utils/fcmService');
+    sendPushNotificationToAdmins(
+      '💰 New Paid Booking!',
+      `${name} booked ${roomType} for ${guests} guests.`
+    );
 
     res.json({ success: true, bookingId: booking.bookingId, booking });
   } catch (err) {
@@ -246,9 +251,14 @@ router.post('/', async (req, res) => {
       console.error('Error creating notification:', notifErr);
     }
 
-    // 📧 Send Email Notifications (non-blocking)
+    // 📧 Send Email Notifications (non-blocking) & Push Notifications
     sendBookingReceivedEmail(booking).catch(err => console.error('Email to customer failed:', err));
     sendNewBookingAdminAlert(booking).catch(err => console.error('Email to admin failed:', err));
+    const { sendPushNotificationToAdmins } = require('../utils/fcmService');
+    sendPushNotificationToAdmins(
+      '🔔 New Booking Request',
+      `${name} requested ${roomType} for ${guests} guests.`
+    );
 
     // Automation: Update Guest database
     try {
