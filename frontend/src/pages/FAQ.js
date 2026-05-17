@@ -14,7 +14,7 @@ const FAQ_DATA = [
   {
     id: 2, category: 'Booking & Payment',
     q: 'How much advance payment is required to confirm a booking?',
-    a: 'An advance payment of ₹500 is required to confirm your room booking online. The remaining balance can be paid at check-out.',
+    a: 'An advance payment of ₹510 is required to confirm your room booking online. The remaining balance can be paid at check-out.',
   },
   {
     id: 3, category: 'Booking & Payment',
@@ -46,7 +46,7 @@ const FAQ_DATA = [
   {
     id: 8, category: 'Rooms & Facilities',
     q: 'Is Wi-Fi available in the rooms?',
-    a: 'Wi-Fi is not available at this time. However, Courtallam area has good 4G/5G mobile network coverage. Jio, Airtel, and BSNL all have good signal strength.',
+    a: 'Yes! We provide complimentary high-speed Wi-Fi access throughout the property for all our guests to stay connected.',
   },
   {
     id: 9, category: 'Rooms & Facilities',

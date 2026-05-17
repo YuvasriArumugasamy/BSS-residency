@@ -1337,9 +1337,23 @@
   }
 }
 
-/* Center reviews if there are only a few */
-.reviews-carousel:not(:has(> :nth-child(4))) {
-  justify-content: center;
+/* Center reviews if they fit within the viewport to prevent negative scroll clipping on mobile */
+@media (min-width: 1025px) {
+  .reviews-carousel:not(:has(> :nth-child(4))) {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 1024px) and (min-width: 769px) {
+  .reviews-carousel:not(:has(> :nth-child(3))) {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .reviews-carousel:not(:has(> :nth-child(2))) {
+    justify-content: center;
+  }
 }
 
 .reviews-carousel::-webkit-scrollbar {

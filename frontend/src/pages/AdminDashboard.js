@@ -777,7 +777,8 @@ const SettingsView = ({ isSeason, onToggleSeason }) => {
 
     </div>
   </div>
-);
+  );
+};
 
 const ReviewsView = ({ reviews, onDeleteReview, period, setPeriod, selectedMonth, setSelectedMonth }) => {
   return (
