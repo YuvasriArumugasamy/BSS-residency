@@ -2118,4 +2118,23 @@
     filter: brightness(0.85);
   }
 }
+
+/* Stats mobile alignment - 2x2 grid for clean spacing & no text cutoff */
+@media (max-width: 580px) {
+  .about-stats {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 0.85rem !important;
+  }
+  .stat {
+    min-width: 0 !important;
+    padding: 1rem 0.5rem !important;
+  }
+  .stat-n {
+    font-size: 1.55rem !important;
+  }
+  .stat-l {
+    font-size: 0.65rem !important;
+  }
+}
 
