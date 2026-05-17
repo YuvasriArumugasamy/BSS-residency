@@ -18,8 +18,16 @@ require('./models/Payment');
 
 const app = express();
 
+const compression = require('compression');
+app.use(compression());
+
 app.use(helmet({ contentSecurityPolicy: false }));
 app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" })); // Allow CORS images if needed
+app.use(helmet.hsts({
+  maxAge: 31536000,
+  includeSubDomains: true,
+  preload: true
+}));
 
 // Required for express-rate-limit behind proxies like Render/Railway
 app.set('trust proxy', 1);
