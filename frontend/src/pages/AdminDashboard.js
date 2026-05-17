@@ -264,7 +264,7 @@ const RoomManagement = ({ rooms, onAddClick, onDeleteRoom, onUpdateRoom, auth, f
   );
 };
 
-const BookingManagement = ({ bookings = [], rooms = [], period, setPeriod, onConfirm, onCancel, onWhatsApp, onCheckOut, onUpdateRoomNumber, onDelete, onAddPayment, onViewCheckin, formatDate }) => {
+const BookingManagement = ({ bookings = [], rooms = [], period, setPeriod, onConfirm, onCancel, onWhatsApp, onCheckOut, onUpdateRoomNumber, onDelete, onAddPayment, onViewCheckin, formatDate, onAddOfflineBookingClick }) => {
   const [filter, setFilter] = React.useState('All');
 
   const safeBookings = Array.isArray(bookings) ? bookings : [];
@@ -274,8 +274,15 @@ const BookingManagement = ({ bookings = [], rooms = [], period, setPeriod, onCon
 
   return (
     <div className="card">
-      <div className="card-header" style={{ marginBottom: '1rem' }}>
+      <div className="card-header" style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <h3 style={{ margin: 0 }}>Booking Management</h3>
+        <button 
+          onClick={onAddOfflineBookingClick}
+          className="admin-btn admin-btn-primary"
+          style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', fontSize: '0.85rem' }}
+        >
+          <Plus size={16} /> <span>Add Offline Booking</span>
+        </button>
       </div>
       
       <div className="filter-tabs-row" style={{ marginBottom: '1.5rem', padding: '0 1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -1080,6 +1087,23 @@ export default function AdminDashboard() {
   const [isCheckinModalOpen, setIsCheckinModalOpen] = useState(false);
   const [selectedCheckin, setSelectedCheckin] = useState(null);
 
+  // Offline Booking Modal State
+  const [isOfflineModalOpen, setIsOfflineModalOpen] = useState(false);
+  const [offlineForm, setOfflineForm] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    roomType: 'Double Bed A/C',
+    checkIn: '',
+    checkOut: '',
+    guests: 2,
+    rooms: 1,
+    message: '',
+    advancePaid: 0,
+    paymentMethod: 'Cash'
+  });
+  const [offlineLoading, setOfflineLoading] = useState(false);
+
   const fetchData = useCallback(async () => {
     if (!auth) return;
     // Only show loading spinner on initial load
@@ -1322,6 +1346,46 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleOfflineBookingSubmit = async (e) => {
+    e.preventDefault();
+    if (!offlineForm.name || !offlineForm.phone || !offlineForm.checkIn || !offlineForm.checkOut) {
+      alert('Please fill in all required fields.');
+      return;
+    }
+    if (new Date(offlineForm.checkIn) >= new Date(offlineForm.checkOut)) {
+      alert('Check-out date must be after check-in date.');
+      return;
+    }
+
+    setOfflineLoading(true);
+    const headers = { username: auth.username, password: auth.password };
+    try {
+      const res = await api.post('/api/admin/bookings/offline', offlineForm, { headers });
+      if (res.data.success) {
+        alert('Offline Booking Added Successfully!');
+        setIsOfflineModalOpen(false);
+        setOfflineForm({
+          name: '',
+          phone: '',
+          email: '',
+          roomType: 'Double Bed A/C',
+          checkIn: '',
+          checkOut: '',
+          guests: 2,
+          rooms: 1,
+          message: '',
+          advancePaid: 0,
+          paymentMethod: 'Cash'
+        });
+        fetchData();
+      }
+    } catch (err) {
+      alert('Error creating offline booking: ' + (err.response?.data?.message || err.message));
+    } finally {
+      setOfflineLoading(false);
+    }
+  };
+
   const handleDeleteGuest = async (id) => {
     if (!window.confirm('Are you sure you want to delete this guest record?')) return;
     const headers = { username: auth.username, password: auth.password };
@@ -1440,6 +1504,7 @@ export default function AdminDashboard() {
         onAddPayment={openAddPaymentModal}
         onViewCheckin={openCheckinModal}
         formatDate={formatDate}
+        onAddOfflineBookingClick={() => setIsOfflineModalOpen(true)}
       />;
       case 'guests':
         return (
@@ -1737,6 +1802,124 @@ export default function AdminDashboard() {
             </div>
           </div>
         )}
+      </Modal>
+
+      {/* Offline Booking Modal */}
+      <Modal
+        title="➕ Add Offline Booking"
+        isOpen={isOfflineModalOpen}
+        onClose={() => setIsOfflineModalOpen(false)}
+      >
+        <form onSubmit={handleOfflineBookingSubmit}>
+          <div className="form-group">
+            <label>Customer Name *</label>
+            <input
+              type="text" required
+              value={offlineForm.name}
+              onChange={e => setOfflineForm({ ...offlineForm, name: e.target.value })}
+              placeholder="e.g. Rajesh Kumar"
+            />
+          </div>
+          <div className="form-row">
+            <div className="form-group">
+              <label>Phone Number *</label>
+              <input
+                type="text" required
+                value={offlineForm.phone}
+                onChange={e => setOfflineForm({ ...offlineForm, phone: e.target.value })}
+                placeholder="e.g. 9876543210"
+              />
+            </div>
+            <div className="form-group">
+              <label>Email Address</label>
+              <input
+                type="email"
+                value={offlineForm.email}
+                onChange={e => setOfflineForm({ ...offlineForm, email: e.target.value })}
+                placeholder="e.g. guest@example.com"
+              />
+            </div>
+          </div>
+          <div className="form-row">
+            <div className="form-group">
+              <label>Room Type *</label>
+              <select value={offlineForm.roomType} onChange={e => setOfflineForm({ ...offlineForm, roomType: e.target.value })}>
+                <option>Double Bed</option>
+                <option>Double Bed A/C</option>
+                <option>Four Bed</option>
+                <option>Four Bed A/C</option>
+              </select>
+            </div>
+            <div className="form-group">
+              <label>Number of Rooms</label>
+              <input
+                type="number" min="1" max="10"
+                value={offlineForm.rooms}
+                onChange={e => setOfflineForm({ ...offlineForm, rooms: e.target.value })}
+              />
+            </div>
+          </div>
+          <div className="form-row">
+            <div className="form-group">
+              <label>Check-In Date *</label>
+              <input
+                type="date" required
+                value={offlineForm.checkIn}
+                onChange={e => setOfflineForm({ ...offlineForm, checkIn: e.target.value })}
+              />
+            </div>
+            <div className="form-group">
+              <label>Check-Out Date *</label>
+              <input
+                type="date" required
+                value={offlineForm.checkOut}
+                onChange={e => setOfflineForm({ ...offlineForm, checkOut: e.target.value })}
+              />
+            </div>
+          </div>
+          <div className="form-row">
+            <div className="form-group">
+              <label>Guests</label>
+              <input
+                type="number" min="1" max="40"
+                value={offlineForm.guests}
+                onChange={e => setOfflineForm({ ...offlineForm, guests: e.target.value })}
+              />
+            </div>
+            <div className="form-group">
+              <label>Advance Paid (₹)</label>
+              <input
+                type="number" min="0"
+                value={offlineForm.advancePaid}
+                onChange={e => setOfflineForm({ ...offlineForm, advancePaid: e.target.value })}
+                placeholder="e.g. 510 or 1000"
+              />
+            </div>
+          </div>
+          <div className="form-row">
+            <div className="form-group">
+              <label>Payment Method (for Advance)</label>
+              <select value={offlineForm.paymentMethod} onChange={e => setOfflineForm({ ...offlineForm, paymentMethod: e.target.value })}>
+                <option>Cash</option>
+                <option>UPI</option>
+                <option>Card</option>
+                <option>Net Banking</option>
+              </select>
+            </div>
+            <div className="form-group">
+              <label>Special Notes</label>
+              <input
+                type="text"
+                value={offlineForm.message}
+                onChange={e => setOfflineForm({ ...offlineForm, message: e.target.value })}
+                placeholder="e.g. Early check-in requested"
+              />
+            </div>
+          </div>
+          <button type="submit" className="admin-btn admin-btn-primary" style={{ width: '100%', marginTop: '1rem' }} disabled={offlineLoading}>
+            {offlineLoading ? 'Adding Offline Booking...' : '💾 Confirm Offline Booking'}
+          </button>
+        </form>
       </Modal>
     </div>
   );

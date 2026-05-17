@@ -218,6 +218,105 @@ router.delete('/bookings/:id', adminAuth, async (req, res) => {
   }
 });
 
+// POST /api/admin/bookings/offline — Add manual offline booking (no payment check)
+router.post('/bookings/offline', adminAuth, async (req, res) => {
+  try {
+    const { name, phone, email, roomType, checkIn, checkOut, guests, rooms, message, advancePaid, paymentMethod } = req.body;
+
+    if (!name || !phone || !roomType || !checkIn || !checkOut || !guests) {
+      return res.status(400).json({ success: false, message: 'Please fill all required fields.' });
+    }
+
+    if (new Date(checkIn) >= new Date(checkOut)) {
+      return res.status(400).json({ success: false, message: 'Check-out must be after check-in.' });
+    }
+
+    const roomCount = Math.max(1, Number(rooms) || 1);
+
+    // Generate unique 6-digit booking ID
+    let bookingId;
+    let isUnique = false;
+    while (!isUnique) {
+      bookingId = Math.floor(100000 + Math.random() * 900000).toString();
+      const existing = await Booking.findOne({ bookingId });
+      if (!existing) isUnique = true;
+    }
+
+    // Calculate Price details
+    const settings = await Setting.findOne({ key: 'isSeason' });
+    const isSeason = settings ? settings.value === true : false;
+    const ROOM_DATA = {
+      'Double Bed': { season: 1300, nonSeason: 1000 },
+      'Double Bed A/C': { season: 1600, nonSeason: 1300 },
+      'Four Bed': { season: 2500, nonSeason: 2000 },
+      'Four Bed A/C': { season: 2800, nonSeason: 2300 },
+    };
+    const roomPriceInfo = ROOM_DATA[roomType] || { season: 1000, nonSeason: 1000 };
+    const unitPrice = isSeason ? roomPriceInfo.season : roomPriceInfo.nonSeason;
+    const nights = Math.max(1, Math.round((new Date(checkOut) - new Date(checkIn)) / (1000 * 60 * 60 * 24)));
+    const roomCharges = unitPrice * nights * roomCount;
+    const gstAmount = Math.round(roomCharges * 0.12);
+    const totalPrice = roomCharges + gstAmount;
+
+    const booking = new Booking({
+      bookingId,
+      name,
+      phone,
+      email: email || '',
+      roomType,
+      checkIn,
+      checkOut,
+      guests,
+      rooms: roomCount,
+      message: message || '',
+      status: 'Confirmed', // Automatically confirm offline bookings
+      roomCharges,
+      gstAmount,
+      totalPrice,
+      advancePaid: Number(advancePaid) || 0,
+      paymentStatus: (Number(advancePaid) > 0) ? 'Completed' : 'Pending',
+    });
+
+    await booking.save();
+
+    // Create Payment record if advance was paid
+    if (Number(advancePaid) > 0) {
+      const payment = new Payment({
+        guestName: name,
+        bookingId: booking._id,
+        amount: Number(advancePaid),
+        method: paymentMethod || 'Cash',
+        status: 'Paid',
+        date: new Date(),
+      });
+      await payment.save();
+    }
+
+    // Send notification
+    try {
+      await new Notification({
+        title: '📞 Offline Booking Added',
+        message: `${name} booked ${roomType} directly. Advance: ₹${advancePaid || 0}`,
+        type: 'booking'
+      }).save();
+    } catch (e) {}
+
+    // Send push notification to admins
+    try {
+      const { sendPushNotificationToAdmins } = require('../utils/fcmService');
+      sendPushNotificationToAdmins(
+        '📞 Offline Booking Added',
+        `${name} booked ${roomType} for ${guests} guests.`
+      );
+    } catch (pushErr) {}
+
+    res.json({ success: true, message: 'Offline booking created successfully!', booking });
+  } catch (err) {
+    console.error('Offline Booking Creation Error:', err);
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 // GET /api/admin/stats — Dashboard stats
 router.get('/stats', adminAuth, async (req, res) => {
   try {
