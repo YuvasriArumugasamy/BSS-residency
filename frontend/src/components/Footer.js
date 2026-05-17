@@ -1,10 +1,27 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../assets/logo.webp';
 import { CONTACT, ROOMS, MAP, waLink } from '../constants';
+import api from '../api/axios';
 import './Footer.css';
 
 export default function Footer() {
+  const [isSeason, setIsSeason] = useState(false);
+
+  useEffect(() => {
+    const fetchSeasonStatus = async () => {
+      try {
+        const res = await api.get('/api/admin/settings/public');
+        if (res.data.success) {
+          setIsSeason(res.data.isSeason);
+        }
+      } catch (err) {
+        console.error('Failed to fetch season status in footer:', err);
+      }
+    };
+    fetchSeasonStatus();
+  }, []);
+
   return (
     <footer className="footer">
       <div className="footer-inner">
@@ -51,7 +68,7 @@ export default function Footer() {
             </span>
           ))}
           <p className="footer-price-note">
-            Starts from <span className="currency-symbol">₹</span>1,000 / night
+            Starts from <span className="currency-symbol">₹</span>{isSeason ? '1,300' : '1,000'} / night
           </p>
         </div>
 
