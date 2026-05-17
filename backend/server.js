@@ -16,15 +16,25 @@ const fs = require('fs');
 const path = require('path');
 
 try {
-  const serviceAccountPath = path.join(__dirname, 'bss-residency-firebase-adminsdk-fbsvc-206162d587.json');
-  if (fs.existsSync(serviceAccountPath)) {
-    const serviceAccount = require(serviceAccountPath);
+  if (process.env.FIREBASE_ADMIN_CREDENTIALS) {
+    // 1. Try to load from Environment Variable (For Production/Render)
+    const serviceAccount = JSON.parse(process.env.FIREBASE_ADMIN_CREDENTIALS);
     admin.initializeApp({
       credential: admin.credential.cert(serviceAccount)
     });
-    console.log('Firebase Admin initialized successfully');
+    console.log('Firebase Admin initialized successfully from Environment Variable');
   } else {
-    console.warn('Firebase Admin SDK JSON file not found at:', serviceAccountPath);
+    // 2. Fallback to Local JSON file (For Local Development)
+    const serviceAccountPath = path.join(__dirname, 'bss-residency-firebase-adminsdk-fbsvc-206162d587.json');
+    if (fs.existsSync(serviceAccountPath)) {
+      const serviceAccount = require(serviceAccountPath);
+      admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount)
+      });
+      console.log('Firebase Admin initialized successfully from local JSON file');
+    } else {
+      console.warn('Firebase Admin SDK JSON file not found and FIREBASE_ADMIN_CREDENTIALS is not set.');
+    }
   }
 } catch (error) {
   console.error('Error initializing Firebase Admin:', error);
