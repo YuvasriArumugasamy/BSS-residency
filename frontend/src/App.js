@@ -8,8 +8,9 @@ import ScrollObserver from './components/ScrollObserver';
 import ReactGA from 'react-ga4';
 import { useLocation } from 'react-router-dom';
 
-// ✅ Code Splitting — pages load only when visited
-const Home          = lazy(() => import('./pages/Home'));
+import Home from './pages/Home';
+
+// ✅ Code Splitting — other pages load only when visited
 const Rooms         = lazy(() => import('./pages/Rooms'));
 const Gallery       = lazy(() => import('./pages/Gallery'));
 const Booking       = lazy(() => import('./pages/Booking'));

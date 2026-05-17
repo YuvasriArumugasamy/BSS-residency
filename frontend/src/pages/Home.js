@@ -95,6 +95,8 @@ function ImageCarousel({ images, alt }) {
           alt={`${alt} ${i + 1}`}
           className={`carousel-img ${i === index ? 'active' : ''}`}
           loading={i === 0 ? 'eager' : 'lazy'}
+          width="800"
+          height="600"
         />
       ))}
       <div className="carousel-dots">
@@ -235,12 +237,12 @@ export default function Home() {
         {/* Hero */}
         <section className="hero">
           <div className="hero-img-wrap">
-            <img src={buildingImg} alt="BSS Residency Building" className="hero-bg-img" />
+            <img src={buildingImg} alt="BSS Residency Building" className="hero-bg-img" width="1200" height="800" />
             <div className="hero-overlay" />
           </div>
           <div className="hero-content fade-up">
             <span className="hero-logo-wrap">
-              <img src={logo} alt="BSS Residency" />
+              <img src={logo} alt="BSS Residency" width="150" height="150" />
             </span>
             <span className="hero-badge">✦ Courtallam's Premium Stay ✦</span>
             <h1>
@@ -287,7 +289,7 @@ export default function Home() {
         {/* About section */}
         <section className="home-about container">
           <div className="about-img-wrap fade-left">
-            <img src={buildingImg} alt="BSS Residency" />
+            <img src={buildingImg} alt="BSS Residency" width="800" height="600" loading="lazy" />
             <div className="about-badge-box">
               <span className="badge-icon">🏨</span>
               <span className="badge-txt">Premium Lodge</span>
