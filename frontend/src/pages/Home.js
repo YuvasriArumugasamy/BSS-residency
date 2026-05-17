@@ -251,7 +251,20 @@ export default function Home() {
             </h1>
             <p>Experience premium comfort steps away from the majestic Courtallam Falls</p>
             <div className="hero-btns">
-              <Link to="/booking" className="btn-primary"><span>Book Now</span></Link>
+              <Link to="/booking" style={{
+                background: '#e63946',
+                color: 'white',
+                fontSize: '18px',
+                padding: '14px 32px',
+                borderRadius: '8px',
+                fontWeight: 'bold',
+                boxShadow: '0 6px 15px rgba(230, 57, 70, 0.5)',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}>
+                📞 Book Now - Best Price!
+              </Link>
               <Link to="/rooms" className="btn-outline-light">Explore Rooms</Link>
             </div>
           </div>
@@ -542,7 +555,20 @@ export default function Home() {
             <h2>Ready to Experience Courtallam?</h2>
             <p>Book directly with us for the best rates. Instant confirmation via WhatsApp.</p>
             <div className="cta-btns">
-              <Link to="/booking" className="btn-primary"><span>Book Now</span></Link>
+              <Link to="/booking" style={{
+                background: '#e63946',
+                color: 'white',
+                fontSize: '18px',
+                padding: '14px 32px',
+                borderRadius: '8px',
+                fontWeight: 'bold',
+                boxShadow: '0 6px 15px rgba(230, 57, 70, 0.5)',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}>
+                📞 Book Now - Best Price!
+              </Link>
               <a href={`tel:${CONTACT.phonePrimary.replace(/\s/g, '')}`} className="btn-outline-light">
                 📞 {CONTACT.phonePrimary}
               </a>
