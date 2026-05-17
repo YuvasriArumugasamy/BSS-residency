@@ -363,6 +363,29 @@ router.get('/stats', adminAuth, async (req, res) => {
     const payments = await Payment.find(paymentFilter);
     const totalRevenue = payments.reduce((sum, p) => sum + p.amount, 0);
 
+    // --- Dynamic Self-Healing Room Sync ---
+    try {
+      // 1. Fetch all active confirmed bookings with assigned room numbers
+      const activeBookings = await Booking.find({ 
+        status: 'Confirmed', 
+        roomNumber: { $ne: null, $ne: '' } 
+      });
+      const occupiedRoomNumbers = activeBookings.map(b => b.roomNumber).filter(Boolean);
+
+      // 2. Reset occupied/available statuses (keeping Maintenance rooms intact)
+      await Room.updateMany({ status: { $ne: 'Maintenance' } }, { status: 'Available' });
+
+      // 3. Set currently occupied room numbers to 'Occupied'
+      if (occupiedRoomNumbers.length > 0) {
+        await Room.updateMany(
+          { roomNumber: { $in: occupiedRoomNumbers }, status: { $ne: 'Maintenance' } }, 
+          { status: 'Occupied' }
+        );
+      }
+    } catch (syncErr) {
+      console.error('Self-healing room status sync failed:', syncErr);
+    }
+
     // Occupancy (Current building state - usually not filtered by period)
     const totalRooms = await Room.countDocuments();
     const occupiedRooms = await Room.countDocuments({ status: 'Occupied' });
