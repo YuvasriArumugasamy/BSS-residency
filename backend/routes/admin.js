@@ -169,6 +169,11 @@ router.get('/bookings', adminAuth, async (req, res) => {
 router.patch('/bookings/:id', adminAuth, async (req, res) => {
   try {
     const { status, roomNumber, cancellationReason } = req.body;
+
+    // Fetch the booking BEFORE update to know the old room and old status
+    const oldBooking = await Booking.findById(req.params.id);
+    if (!oldBooking) return res.status(404).json({ success: false, message: 'Booking not found' });
+
     const updateFields = {};
     if (status) updateFields.status = status;
     if (roomNumber !== undefined) updateFields.roomNumber = roomNumber;
@@ -179,15 +184,20 @@ router.patch('/bookings/:id', adminAuth, async (req, res) => {
       { new: true }
     );
 
-    if (!booking) return res.status(404).json({ success: false, message: 'Booking not found' });
+    // --- Dynamic Room Status Automation ---
+    // 1. If old room exists and has changed (or removed), set old room to Available
+    if (oldBooking.roomNumber && oldBooking.roomNumber !== booking.roomNumber) {
+      await Room.findOneAndUpdate({ roomNumber: oldBooking.roomNumber }, { status: 'Available' });
+    }
 
-    // Automation: Update room status if roomNumber is assigned
-    if (booking.roomNumber) {
-      if (status === 'Confirmed') {
-        await Room.findOneAndUpdate({ roomNumber: booking.roomNumber }, { status: 'Occupied' });
-      } else if (status === 'Checked-out' || status === 'Cancelled') {
-        await Room.findOneAndUpdate({ roomNumber: booking.roomNumber }, { status: 'Available' });
-      }
+    // 2. If the current status is Confirmed, set the new room to Occupied
+    if (booking.status === 'Confirmed' && booking.roomNumber) {
+      await Room.findOneAndUpdate({ roomNumber: booking.roomNumber }, { status: 'Occupied' });
+    }
+
+    // 3. If the status is Checked-out or Cancelled, free up the room
+    if ((booking.status === 'Checked-out' || booking.status === 'Cancelled') && booking.roomNumber) {
+      await Room.findOneAndUpdate({ roomNumber: booking.roomNumber }, { status: 'Available' });
     }
 
     // Build WhatsApp link for admin to send to guest
@@ -204,6 +214,7 @@ router.patch('/bookings/:id', adminAuth, async (req, res) => {
 
     res.json({ success: true, booking, waLink });
   } catch (err) {
+    console.error('Error in PATCH /bookings/:id:', err);
     res.status(500).json({ success: false, error: err.message });
   }
 });
@@ -211,6 +222,11 @@ router.patch('/bookings/:id', adminAuth, async (req, res) => {
 // DELETE /api/admin/bookings/:id — Delete booking
 router.delete('/bookings/:id', adminAuth, async (req, res) => {
   try {
+    // Free up room if booking had a room assigned
+    const booking = await Booking.findById(req.params.id);
+    if (booking && booking.roomNumber) {
+      await Room.findOneAndUpdate({ roomNumber: booking.roomNumber }, { status: 'Available' });
+    }
     await Booking.findByIdAndDelete(req.params.id);
     res.json({ success: true, message: 'Booking deleted' });
   } catch (err) {
