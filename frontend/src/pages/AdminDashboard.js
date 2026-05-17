@@ -889,7 +889,7 @@ const GalleryManagement = ({ auth }) => {
 const NotificationsView = ({ notifications, period, setPeriod, selectedMonth, setSelectedMonth, onDelete, onClearAll }) => {
   return (
     <div className="view-content fade-in">
-      <div style={{ marginBottom: '1.5rem', display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
+      <div style={{ marginBottom: '1.5rem', display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-end', gap: '1rem' }}>
         {notifications.length > 0 && (
           <button 
             onClick={onClearAll} 
