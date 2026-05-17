@@ -1294,16 +1294,16 @@
   }
 
   .carousel-container {
-    padding: 0 40px;
+    padding: 0 20px;
   }
 
   .google-review-card {
-    flex: 0 0 100%;
-    /* Exactly 1 card on mobile */
+    flex: 0 0 85%;
+    /* 85% so users see a peek of the next card */
   }
 
   .reviews-carousel {
-    gap: 0;
+    gap: 1rem;
     padding: 1.5rem 0;
   }
 }
@@ -1644,6 +1644,7 @@
   font-size: 1.15rem;
   font-weight: 700;
   color: #202124;
+  word-break: break-word;
 }
 
 .modal-google-side {
