@@ -450,7 +450,7 @@
 }
 
 .hotel-logo-icon { font-size: 1.5rem; }
-.hotel-card-brand h3 { margin: 0; font-size: 1.1rem; }
+.hotel-card-brand h3 { margin: 0; font-size: 1.1rem; color: white; }
 .hotel-card-brand p { margin: 0; font-size: 0.8rem; opacity: 0.7; }
 
 .hotel-contact-grid {
