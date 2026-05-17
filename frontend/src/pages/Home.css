@@ -1314,26 +1314,17 @@
   }
 
   .carousel-container {
-    padding: 0 40px;
-    /* Keep enough space for buttons */
-  }
-
-  .google-review-card {
-    padding: 1.5rem;
+    padding: 0 15px; /* Give cards maximum room to display beautifully */
   }
 
   .carousel-nav {
-    width: 36px;
-    height: 36px;
-    font-size: 1.2rem;
+    display: none !important; /* Swiping is natural on mobile; hide navigation buttons to avoid clutter */
   }
 
-  .carousel-nav.prev {
-    left: 2px;
-  }
-
-  .carousel-nav.next {
-    right: 2px;
+  .google-review-card {
+    flex: 0 0 90%; /* 90% ensures the card displays fully and doesn't get clipped */
+    padding: 1.5rem;
+    scroll-snap-align: center;
   }
 }
 
