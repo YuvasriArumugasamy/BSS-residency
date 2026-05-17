@@ -2,8 +2,8 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import api from '../api/axios';
 import { waLink, CONTACT, ROOMS } from '../constants';
-import gpayLogo from '../assets/gpay.png';
-import paytmLogo from '../assets/paytm.png';
+import gpayLogo from '../assets/gpay.webp';
+import paytmLogo from '../assets/paytm.webp';
 import './BookingStatus.css';
 
 

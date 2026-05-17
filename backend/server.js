@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
 const rateLimit = require('express-rate-limit');
+const helmet = require('helmet');
 require('dotenv').config();
 
 const bookingRoutes = require('./routes/bookings');
@@ -16,6 +17,9 @@ require('./models/Booking');
 require('./models/Payment');
 
 const app = express();
+
+app.use(helmet());
+app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" })); // Allow CORS images if needed
 
 // Required for express-rate-limit behind proxies like Render/Railway
 app.set('trust proxy', 1);

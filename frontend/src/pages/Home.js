@@ -1,33 +1,33 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import buildingImg from '../assets/building.png';
-import roomImg from '../assets/room.jpg';
-import roomAcImg from '../assets/room-ac-2.jpg';
-import logo from '../assets/logo.png';
-import roomGal1 from '../assets/room-ac-1.jpg';
-import roomGal2 from '../assets/room-gallery-2.jpg';
-import roomGal3 from '../assets/room-gallery-3.jpg';
-import roomGal4 from '../assets/room-gallery-4.jpg';
-import mainFalls from '../assets/main-falls-user.jpg';
-import fiveFalls from '../assets/five falls.png';
-import oldFalls from '../assets/old falls.png';
-import chitraruvi from '../assets/Chitraruvi.png';
-import tigerFalls from '../assets/tiger falls.jpg';
-import palaruviFalls from '../assets/aruvi.png';
-import fruitGardenFalls from '../assets/Fruit Garden Falls.png';
-import honeyFalls from '../assets/Honey Falls.png';
-import shenbagadeviFalls from '../assets/Shenbagadevi Falls.png';
-import roomFamily from '../assets/room-family.jpg';
-import roomAc3 from '../assets/room-ac-3.jpg';
-import gundarDam from '../assets/gundar dam.jpg';
-import adaviNainarDam from '../assets/Adavi Nainar Dam.png';
-import gadananathiDam from '../assets/Gadananathi Dam.png';
-import karuppanadhiDam from '../assets/Karuppanadhi Dam.png';
-import ramanadhiDam from '../assets/Ramanadhi Dam.png';
-import kasiTemple from '../assets/kasi.png';
-import tirumalaiKovil from '../assets/Tirumalai Kovil.jpg';
-import kutralanatharTemple from '../assets/Kutralanathar Temple.png';
-import ariyankavuTemple from '../assets/Ariyankavu Iyappan Kovil.png';
+import buildingImg from '../assets/building.webp';
+import roomImg from '../assets/room.webp';
+import roomAcImg from '../assets/room-ac-2.webp';
+import logo from '../assets/logo.webp';
+import roomGal1 from '../assets/room-ac-1.webp';
+import roomGal2 from '../assets/room-gallery-2.webp';
+import roomGal3 from '../assets/room-gallery-3.webp';
+import roomGal4 from '../assets/room-gallery-4.webp';
+import mainFalls from '../assets/main-falls-user.webp';
+import fiveFalls from '../assets/five falls.webp';
+import oldFalls from '../assets/old falls.webp';
+import chitraruvi from '../assets/Chitraruvi.webp';
+import tigerFalls from '../assets/tiger falls.webp';
+import palaruviFalls from '../assets/aruvi.webp';
+import fruitGardenFalls from '../assets/Fruit Garden Falls.webp';
+import honeyFalls from '../assets/Honey Falls.webp';
+import shenbagadeviFalls from '../assets/Shenbagadevi Falls.webp';
+import roomFamily from '../assets/room-family.webp';
+import roomAc3 from '../assets/room-ac-3.webp';
+import gundarDam from '../assets/gundar dam.webp';
+import adaviNainarDam from '../assets/Adavi Nainar Dam.webp';
+import gadananathiDam from '../assets/Gadananathi Dam.webp';
+import karuppanadhiDam from '../assets/Karuppanadhi Dam.webp';
+import ramanadhiDam from '../assets/Ramanadhi Dam.webp';
+import kasiTemple from '../assets/kasi.webp';
+import tirumalaiKovil from '../assets/Tirumalai Kovil.webp';
+import kutralanatharTemple from '../assets/Kutralanathar Temple.webp';
+import ariyankavuTemple from '../assets/Ariyankavu Iyappan Kovil.webp';
 import { AMENITIES, ROOMS, CONTACT, waLink, WA_TEMPLATES } from '../constants';
 import api from '../api/axios';
 import SEO from '../components/SEO';
@@ -329,6 +329,7 @@ export default function Home() {
             <div className="carousel-container">
               <button 
                 className="carousel-nav prev" 
+                aria-label="Previous attractions"
                 onClick={() => attractionsRef.current?.scrollBy({ left: -380, behavior: 'smooth' })}
                 disabled={!canScrollLeft}
               >
@@ -352,6 +353,7 @@ export default function Home() {
 
               <button 
                 className="carousel-nav next" 
+                aria-label="Next attractions"
                 onClick={() => attractionsRef.current?.scrollBy({ left: 380, behavior: 'smooth' })}
                 disabled={!canScrollRight}
               >
@@ -452,6 +454,7 @@ export default function Home() {
             <div className="carousel-container">
               <button 
                 className="carousel-nav prev" 
+                aria-label="Previous reviews"
                 onClick={() => reviewsRef.current?.scrollBy({ left: -380, behavior: 'smooth' })}
                 disabled={!canScrollRevLeft}
               >
@@ -519,6 +522,7 @@ export default function Home() {
 
               <button 
                 className="carousel-nav next" 
+                aria-label="Next reviews"
                 onClick={() => reviewsRef.current?.scrollBy({ left: 380, behavior: 'smooth' })}
                 disabled={!canScrollRevRight}
               >
@@ -550,7 +554,7 @@ export default function Home() {
       {selectedReview && (
         <div className="review-modal-overlay" onClick={() => setSelectedReview(null)}>
           <div className="review-modal-content" onClick={e => e.stopPropagation()}>
-            <button className="modal-close-btn" onClick={() => setSelectedReview(null)}>×</button>
+            <button className="modal-close-btn" aria-label="Close modal" onClick={() => setSelectedReview(null)}>×</button>
             <div className="modal-header">
               <div className="modal-user-side">
                 <div className="modal-avatar" style={{
@@ -587,7 +591,7 @@ export default function Home() {
       {showNotice && (
         <div className="notice-overlay">
           <div className="notice-modal fade-up">
-            <button className="notice-close" onClick={closeNotice}>&times;</button>
+            <button className="notice-close" aria-label="Close notice" onClick={closeNotice}>&times;</button>
             <div className="notice-header">
               <h2 className="notice-title">BSS Residency Special</h2>
             </div>

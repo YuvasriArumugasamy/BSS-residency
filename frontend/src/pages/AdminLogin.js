@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/axios';
-import buildingImg from '../assets/building.png';
+import buildingImg from '../assets/building.webp';
 import { Eye, EyeOff, User, Lock, ArrowRight } from 'lucide-react';
 import './Admin.css';
 

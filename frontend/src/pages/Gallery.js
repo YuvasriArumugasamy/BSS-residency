@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import buildingImg from '../assets/building.png';
-import roomImg from '../assets/room.jpg';
-import roomAc1 from '../assets/room-ac-1.jpg';
-import roomAc2 from '../assets/room-ac-2.jpg';
-import roomAc3 from '../assets/room-ac-3.jpg';
-import roomFamily from '../assets/room-family.jpg';
+import buildingImg from '../assets/building.webp';
+import roomImg from '../assets/room.webp';
+import roomAc1 from '../assets/room-ac-1.webp';
+import roomAc2 from '../assets/room-ac-2.webp';
+import roomAc3 from '../assets/room-ac-3.webp';
+import roomFamily from '../assets/room-family.webp';
 import { waLink, CONTACT } from '../constants';
 import api from '../api/axios';
 import SEO from '../components/SEO';
