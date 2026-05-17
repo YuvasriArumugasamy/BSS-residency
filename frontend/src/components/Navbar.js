@@ -73,7 +73,19 @@ export default function Navbar() {
             >
               <i className="fa-solid fa-location-dot"></i> Map
             </a>
-            <Link to="/booking" className="nav-cta">
+            <Link to="/booking" className="nav-cta" style={{
+              background: '#e63946',
+              color: 'white',
+              fontSize: '16px',
+              padding: '10px 24px',
+              borderRadius: '8px',
+              fontWeight: 'bold',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              boxShadow: '0 4px 12px rgba(230, 57, 70, 0.4)',
+              border: 'none'
+            }}>
               <i className="fa-solid fa-phone"></i> Book Now
             </Link>
           </div>
