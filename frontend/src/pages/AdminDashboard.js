@@ -1817,7 +1817,7 @@ export default function AdminDashboard() {
               type="text" required
               value={offlineForm.name}
               onChange={e => setOfflineForm({ ...offlineForm, name: e.target.value })}
-              placeholder="e.g. Rajesh Kumar"
+              placeholder="Name"
             />
           </div>
           <div className="form-row">
