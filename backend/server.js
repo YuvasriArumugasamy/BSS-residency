@@ -18,7 +18,7 @@ require('./models/Payment');
 
 const app = express();
 
-app.use(helmet());
+app.use(helmet({ contentSecurityPolicy: false }));
 app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" })); // Allow CORS images if needed
 
 // Required for express-rate-limit behind proxies like Render/Railway
