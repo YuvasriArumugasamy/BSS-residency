@@ -13,7 +13,6 @@ const galleryRoutes = require('./routes/gallery');
 // Firebase Admin Setup
 const admin = require('firebase-admin');
 const fs = require('fs');
-const path = require('path');
 
 try {
   if (process.env.FIREBASE_ADMIN_CREDENTIALS) {
