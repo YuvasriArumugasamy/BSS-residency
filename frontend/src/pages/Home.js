@@ -197,7 +197,7 @@ export default function Home() {
     "@type": "Hotel",
     "name": "BSS Residency",
     "url": "https://bssresidency.com",
-    "image": "https://bssresidency.com/logo.png",
+    "image": "https://bssresidency.com/logo.webp",
     "description": "BSS Residency is the best hotel near Courtallam waterfalls. We offer A/C and Non-A/C rooms for families near Main Falls, Courtallam Bus Stand.",
     "address": {
       "@type": "PostalAddress",
