@@ -4,7 +4,7 @@ import axios from 'axios';
 // CRA proxy (configured in package.json) to http://localhost:5000.
 // In production, set REACT_APP_API_URL to the deployed backend origin
 const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-const baseURL = isLocal ? '' : 'https://bss-residency.onrender.com';
+const baseURL = isLocal ? '' : (process.env.REACT_APP_API_URL || 'https://bss-residency.onrender.com');
 
 const api = axios.create({ 
   baseURL,
