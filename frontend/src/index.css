@@ -1,0 +1,224 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* Premium Dark Theme Palette */
+  --bg-deep: #070706;
+  --bg-warm: #0f0e0c;
+  --bg-card: #151411;
+  --bg-card-hover: #1c1a17;
+  
+  /* Rich Gold Color System */
+  --gold: #d4af37;
+  --gold-light: #f3e5ab;
+  --gold-dark: #aa7c11;
+  --gold-glow: rgba(212, 175, 55, 0.25);
+  --gold-gradient: linear-gradient(135deg, #f5d77f 0%, #d4af37 50%, #9e7818 100%);
+  --gold-border: rgba(212, 175, 55, 0.15);
+  --gold-border-hover: rgba(212, 175, 55, 0.4);
+  
+  /* Functional Colors */
+  --white: #ffffff;
+  --text-primary: #f5f4f0;
+  --text-muted: #a6a49c;
+  --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  
+  /* Fonts */
+  --font-heading: 'Playfair Display', serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+  --font-decorative: 'Cinzel Decorative', serif;
+  
+  /* Shadows & Glassmorphism */
+  --shadow-premium: 0 20px 40px rgba(0, 0, 0, 0.6);
+  --shadow-gold-glow: 0 0 30px rgba(212, 175, 55, 0.15);
+  --glass-bg: rgba(15, 14, 12, 0.7);
+  --glass-blur: blur(12px);
+}
+
+/* Base Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--bg-deep);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: 0.5px;
+}
+
+.gold-text {
+  background: var(--gold-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+
+/* Layout Utilities */
+.container {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 0 30px;
+}
+
+.section-padding {
+  padding: 100px 0;
+}
+
+.grid {
+  display: grid;
+  gap: 30px;
+}
+
+.text-center {
+  text-align: center;
+}
+
+/* Luxury Buttons */
+.btn-primary {
+  background: var(--gold-gradient);
+  color: var(--bg-deep);
+  padding: 14px 34px;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  border-radius: 4px;
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+  transition: var(--transition-smooth);
+  border: 1px solid transparent;
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: 0.5s;
+}
+
+.btn-primary:hover::before {
+  left: 100%;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4), var(--shadow-gold-glow);
+  background: var(--white);
+  color: var(--bg-deep);
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--gold-border);
+  color: var(--text-primary);
+  padding: 14px 34px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  border-radius: 4px;
+  transition: var(--transition-smooth);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.btn-outline:hover {
+  border-color: var(--gold);
+  color: var(--gold-light);
+  transform: translateY(-2px);
+  background: rgba(212, 175, 55, 0.05);
+}
+
+/* Glassmorphism Classes */
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--gold-border);
+  border-radius: 12px;
+  box-shadow: var(--shadow-premium);
+  transition: var(--transition-smooth);
+}
+
+.glass-panel:hover {
+  border-color: var(--gold-border-hover);
+  box-shadow: var(--shadow-premium), var(--shadow-gold-glow);
+}
+
+/* Common Section Headers */
+.section-header {
+  margin-bottom: 60px;
+}
+
+.section-header .subtitle {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: var(--gold);
+  margin-bottom: 12px;
+  display: block;
+}
+
+.section-header h2 {
+  font-size: 3rem;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-deep);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gold-dark);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gold);
+}
+
+@media (max-width: 992px) {
+  .section-padding {
+    padding: 80px 0;
+  }
+  .section-header h2 {
+    font-size: 2.3rem;
+  }
+}
