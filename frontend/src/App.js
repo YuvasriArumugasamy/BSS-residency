@@ -1,5 +1,5 @@
 import React, { Suspense, lazy } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -74,6 +74,7 @@ function App() {
         <Suspense fallback={<PageLoader />}>
           <Routes>
             {/* Admin routes - no navbar/footer */}
+            <Route path="/admin"            element={<Navigate to="/admin/login" replace />} />
             <Route path="/admin/login"      element={<AdminLogin />} />
             <Route path="/admin/dashboard"  element={<AdminDashboard />} />
 
