@@ -1041,12 +1041,23 @@ const NotificationsView = ({ notifications, period, setPeriod, selectedMonth, se
   );
 };
 
-// --- MAIN DASHBOARD ---
-
 export default function AdminDashboard() {
   const navigate = useNavigate();
   const [auth, setAuth] = useState(null);
   const [activeTab, setActiveTab] = useState('overview');
+
+  useEffect(() => {
+    const manifestLink = document.querySelector('link[rel="manifest"]');
+    if (manifestLink) {
+      manifestLink.setAttribute('href', '/manifest-admin.json');
+    }
+    return () => {
+      if (manifestLink) {
+        manifestLink.setAttribute('href', '/manifest.json');
+      }
+    };
+  }, []);
+
   const [stats, setStats] = useState(null);
   const [bookings, setBookings] = useState([]);
   const [rooms, setRooms] = useState([]);
