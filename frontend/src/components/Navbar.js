@@ -42,7 +42,7 @@ export default function Navbar() {
         <div className="nav-inner">
           <Link to="/" className="nav-logo">
             <span className="nav-logo-circle">
-              <img src={logo} alt="BSS Residency" />
+              <img src={logo} alt="BSS Residency" width="48" height="48" />
             </span>
             <span className="nav-logo-text">
               <span className="logo-bss">BSS</span>

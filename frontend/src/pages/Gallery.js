@@ -88,7 +88,7 @@ export default function Gallery() {
               className="photo-card"
               onClick={() => setLightbox(photo)}
             >
-              <img src={photo.src} alt={photo.caption} loading="lazy" />
+              <img src={photo.src} alt={photo.caption} loading="lazy" width="400" height="300" />
               <div className="photo-overlay">
                 <span className="photo-zoom">🔍</span>
                 <p>{photo.caption}</p>

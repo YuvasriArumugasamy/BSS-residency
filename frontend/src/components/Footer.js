@@ -28,7 +28,7 @@ export default function Footer() {
         <div className="footer-brand">
           <div className="footer-logo-row">
             <span className="footer-logo-circle">
-              <img src={logo} alt="BSS Residency" />
+              <img src={logo} alt="BSS Residency" width="48" height="48" />
             </span>
             <div className="footer-logo-text">
               <span className="logo-bss">BSS</span>

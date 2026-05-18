@@ -85,7 +85,7 @@ export default function Rooms() {
         {ROOMS.map((room, i) => (
           <div key={room.key} className={`room-detail-card fade-up ${i % 2 === 1 ? 'reverse' : ''}`}>
             <div className="room-detail-img">
-              <img src={imgMap[room.key]} alt={room.name} loading="lazy" />
+              <img src={imgMap[room.key]} alt={room.name} loading="lazy" width="600" height="400" />
               <div className="room-type-badge">{room.type}</div>
               <div className="room-price-badge">
                 <span className="currency-symbol">₹</span>{getPrice(room).toLocaleString('en-IN')}<span>/ night</span>
