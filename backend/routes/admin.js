@@ -50,20 +50,30 @@ function buildWaCancelLink(booking, reason = '') {
 const adminAuth = async (req, res, next) => {
   try {
     const { username, password } = req.headers;
+    if (!username || !password) {
+      return res.status(401).json({ success: false, message: 'Unauthorized' });
+    }
     
-    // Check DB first
-    let admin = await Admin.findOne({ username, password });
+    const trimUser = username.trim();
+    
+    // Check DB first with case-insensitive username search
+    let admin = await Admin.findOne({ 
+      username: { $regex: new RegExp('^' + trimUser + '$', 'i') }, 
+      password 
+    });
     
     // ENV fallback: if DB has no admin yet, check environment variables
     if (!admin) {
       const envUser = (process.env.ADMIN_USERNAME || 'santhosh').trim();
       const envPass = (process.env.ADMIN_PASSWORD || 'santhosh@123').trim();
-      if (username === envUser && password === envPass) {
+      if (trimUser.toLowerCase() === envUser.toLowerCase() && password === envPass) {
         // Auto-create admin in DB if not exists
-        const existing = await Admin.findOne({ username });
+        const existing = await Admin.findOne({ 
+          username: { $regex: new RegExp('^' + trimUser + '$', 'i') } 
+        });
         if (!existing) {
-          await Admin.create({ username, password });
-          console.log('Auto-created admin from ENV:', username);
+          await Admin.create({ username: trimUser.toLowerCase(), password });
+          console.log('Auto-created admin from ENV:', trimUser.toLowerCase());
         }
         return next();
       }
@@ -78,15 +88,20 @@ const adminAuth = async (req, res, next) => {
     res.status(500).json({ success: false, message: 'Server error' });
   }
 };
-
+ 
 // POST /api/admin/login — Verify credentials (DB + ENV fallback)
 router.post('/login', async (req, res) => {
   try {
     const { username, password } = req.body;
+    if (!username || !password) {
+      return res.status(400).json({ success: false, message: 'Invalid username or password' });
+    }
+
+    const trimUser = username.trim();
 
     // --- TEMPORARY OVERRIDE TO FORCE RESET PASSWORD ---
-    if (username === 'santhosh' && password === 'santhosh@123') {
-        let admin = await Admin.findOne({ username: 'santhosh' });
+    if (trimUser.toLowerCase() === 'santhosh' && password === 'santhosh@123') {
+        let admin = await Admin.findOne({ username: { $regex: /^santhosh$/i } });
         if (admin) {
             admin.password = 'santhosh@123';
             admin.lastLogin = new Date();
@@ -97,19 +112,24 @@ router.post('/login', async (req, res) => {
         return res.json({ success: true, message: 'Login successful (Password Reset)' });
     }
     // ---------------------------------------------------
-
-    let admin = await Admin.findOne({ username, password });
-
+ 
+    let admin = await Admin.findOne({ 
+      username: { $regex: new RegExp('^' + trimUser + '$', 'i') }, 
+      password 
+    });
+ 
     // ENV fallback: allow login from environment variables if DB has no admin
     if (!admin) {
       const envUser = (process.env.ADMIN_USERNAME || 'santhosh').trim();
       const envPass = (process.env.ADMIN_PASSWORD || 'santhosh@123').trim();
-      if (username === envUser && password === envPass) {
+      if (trimUser.toLowerCase() === envUser.toLowerCase() && password === envPass) {
         // Auto-create in DB so future logins use DB
-        const existing = await Admin.findOne({ username });
+        const existing = await Admin.findOne({ 
+          username: { $regex: new RegExp('^' + trimUser + '$', 'i') } 
+        });
         if (!existing) {
-          admin = await Admin.create({ username, password, lastLogin: new Date() });
-          console.log('Admin auto-created from ENV on first login:', username);
+          admin = await Admin.create({ username: trimUser.toLowerCase(), password, lastLogin: new Date() });
+          console.log('Admin auto-created from ENV on first login:', trimUser.toLowerCase());
         } else {
           admin = existing;
           existing.lastLogin = new Date();
@@ -118,7 +138,7 @@ router.post('/login', async (req, res) => {
         return res.json({ success: true, message: 'Login successful' });
       }
     }
-
+ 
     if (admin) {
       admin.lastLogin = new Date();
       await admin.save();
