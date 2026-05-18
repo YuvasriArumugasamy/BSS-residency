@@ -486,7 +486,43 @@ router.delete('/rooms/:id', adminAuth, async (req, res) => {
 // --- GUEST ROUTES ---
 router.get('/guests', adminAuth, async (req, res) => {
   try {
-    const guests = await Guest.find().sort({ createdAt: -1 });
+    let guests = await Guest.find().sort({ createdAt: -1 });
+    
+    // Self-healing: If guests table is empty but there are bookings, auto-sync them!
+    if (guests.length === 0) {
+      const bookings = await Booking.find({});
+      if (bookings.length > 0) {
+        console.log(`Self-healing: Syncing ${bookings.length} bookings to Guests table...`);
+        const phoneToGuest = new Map();
+        
+        for (const b of bookings) {
+          if (!b.phone) continue;
+          if (phoneToGuest.has(b.phone)) {
+            const g = phoneToGuest.get(b.phone);
+            g.totalStays += 1;
+            if (g.totalStays >= 10) g.loyaltyLevel = 'VIP';
+            else if (g.totalStays >= 3) g.loyaltyLevel = 'Regular';
+          } else {
+            phoneToGuest.set(b.phone, {
+              name: b.name || 'Unknown Guest',
+              phone: b.phone,
+              email: b.email || '',
+              totalStays: 1,
+              loyaltyLevel: 'New'
+            });
+          }
+        }
+        
+        const guestsToInsert = Array.from(phoneToGuest.values());
+        if (guestsToInsert.length > 0) {
+          await Guest.insertMany(guestsToInsert, { ordered: false }).catch(err => {
+            console.error('Error during bulk guest insert (some duplicates might have been skipped):', err.message);
+          });
+          guests = await Guest.find().sort({ createdAt: -1 });
+        }
+      }
+    }
+    
     res.json({ success: true, guests });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
