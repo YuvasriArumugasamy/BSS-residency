@@ -17,8 +17,7 @@ const messaging = getMessaging(app);
 export const requestForToken = async () => {
   try {
     const currentToken = await getToken(messaging, { 
-        // VAPID key is optional if we use the default, but good to have. 
-        // We can just use the project default. 
+        vapidKey: "BAQycSciYxO2yk9z7I9P6OsonwsX43OsuMaJanG4ivZTGrAqEGc4xibegWwYq5UxjjxH2TA6LCx39sX626ORwpQ"
     });
     if (currentToken) {
       console.log("FCM Token:", currentToken);

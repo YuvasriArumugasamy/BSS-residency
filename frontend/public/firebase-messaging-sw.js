@@ -25,8 +25,8 @@ messaging.onBackgroundMessage((payload) => {
   const notificationTitle = payload.notification.title;
   const notificationOptions = {
     body: payload.notification.body,
-    icon: '/logo.png', // Ensure this exists in public/
-    badge: '/logo.png' // Ensure this exists in public/
+    icon: '/logo.webp', // Ensure this exists in public/
+    badge: '/logo.webp' // Ensure this exists in public/
   };
 
   self.registration.showNotification(notificationTitle, notificationOptions);
