@@ -580,6 +580,8 @@ const Reports = ({ stats, period, setPeriod, selectedMonth, setSelectedMonth }) 
 
 const SettingsView = ({ isSeason, onToggleSeason }) => {
   const [fcmStatus, setFcmStatus] = useState('Checking...');
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
 
   useEffect(() => {
     if (!('Notification' in window)) {
@@ -1106,8 +1108,6 @@ export default function AdminDashboard() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [roomForm, setRoomForm] = useState({ roomNumber: '', type: 'Double Bed A/C', nonSeasonPrice: '', seasonPrice: '', status: 'Available' });
   const [editingRoomId, setEditingRoomId] = useState(null);
-  const [showNewPassword, setShowNewPassword] = useState(false);
-  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
 
   // Payment Modal State
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
