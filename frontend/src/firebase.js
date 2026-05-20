@@ -27,8 +27,11 @@ export const requestForToken = async () => {
       throw new Error(`Permission ${permission}. Please allow notifications in Chrome settings.`);
     }
 
-    // Register the FCM worker explicitly (idempotent) then wait until active.
-    await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+    // Drop stale workers (cached old Firebase config) before registering.
+    const existing = await navigator.serviceWorker.getRegistrations();
+    await Promise.all(existing.map((r) => r.unregister()));
+
+    await navigator.serviceWorker.register('/firebase-messaging-sw.js?v=3');
     const swReg = await navigator.serviceWorker.ready;
     console.log('[FCM] Service worker ready:', swReg.scope);
 

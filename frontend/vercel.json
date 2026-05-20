@@ -5,6 +5,15 @@
   ],
   "headers": [
     {
+      "source": "/firebase-messaging-sw.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
+    },
+    {
       "source": "/(.*)\\.(webp|png|jpg|jpeg|svg|ico|css|js)$",
       "headers": [
         {
