@@ -8,6 +8,7 @@ const Review = require('../models/Review');
 const Notification = require('../models/Notification');
 const Setting = require('../models/Setting');
 const { sendBookingReceivedEmail, sendNewBookingAdminAlert } = require('../utils/emailService');
+const { upsertGuestFromBooking } = require('../utils/guestService');
 const Razorpay = require('razorpay');
 const crypto = require('crypto');
 
@@ -183,24 +184,8 @@ router.post('/verify-payment', async (req, res) => {
       `${name} booked ${roomType} for ${guests} guests.`
     );
 
-    // Update Guest database (loyalty tracking)
     try {
-      let guest = await Guest.findOne({ phone });
-      if (guest) {
-        guest.totalStays += 1;
-        if (guest.totalStays >= 10) guest.loyaltyLevel = 'VIP';
-        else if (guest.totalStays >= 3) guest.loyaltyLevel = 'Regular';
-        await guest.save();
-      } else {
-        guest = new Guest({
-          name,
-          phone,
-          email,
-          totalStays: 1,
-          loyaltyLevel: 'New'
-        });
-        await guest.save();
-      }
+      await upsertGuestFromBooking({ name, phone, email });
     } catch (guestErr) {
       console.error('Error updating guest record:', guestErr);
     }
@@ -326,28 +311,10 @@ router.post('/', async (req, res) => {
       `${name} requested ${roomType} for ${guests} guests.`
     );
 
-    // Automation: Update Guest database
     try {
-      let guest = await Guest.findOne({ phone });
-      if (guest) {
-        guest.totalStays += 1;
-        // Simple loyalty logic
-        if (guest.totalStays >= 10) guest.loyaltyLevel = 'VIP';
-        else if (guest.totalStays >= 3) guest.loyaltyLevel = 'Regular';
-        await guest.save();
-      } else {
-        guest = new Guest({
-          name,
-          phone,
-          email,
-          totalStays: 1,
-          loyaltyLevel: 'New'
-        });
-        await guest.save();
-      }
+      await upsertGuestFromBooking({ name, phone, email });
     } catch (guestErr) {
       console.error('Error updating guest record:', guestErr);
-      // Don't fail the booking if guest update fails
     }
 
     res.status(201).json({
