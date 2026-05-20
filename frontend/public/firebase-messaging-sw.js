@@ -19,9 +19,17 @@ firebase.initializeApp(firebaseConfig);
 // messages.
 const messaging = firebase.messaging();
 
+let unreadCount = 0;
+
 messaging.onBackgroundMessage((payload) => {
   console.log('[firebase-messaging-sw.js] Received background message ', payload);
-  // Customize notification here
+  
+  // Increment unread count and set badge
+  unreadCount++;
+  if (self.navigator && 'setAppBadge' in self.navigator) {
+    self.navigator.setAppBadge(unreadCount).catch(console.error);
+  }
+
   const notificationTitle = payload.notification.title;
   const notificationOptions = {
     body: payload.notification.body,
@@ -30,6 +38,28 @@ messaging.onBackgroundMessage((payload) => {
   };
 
   self.registration.showNotification(notificationTitle, notificationOptions);
+});
+
+// Clear badge when a notification is clicked
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  unreadCount = 0;
+  if (self.navigator && 'clearAppBadge' in self.navigator) {
+    self.navigator.clearAppBadge().catch(console.error);
+  }
+  
+  event.waitUntil(
+    clients.matchAll({ type: 'window' }).then((clientList) => {
+      for (const client of clientList) {
+        if (client.url.includes('/admin') && 'focus' in client) {
+          return client.focus();
+        }
+      }
+      if (clients.openWindow) {
+        return clients.openWindow('/admin/dashboard');
+      }
+    })
+  );
 });
 
 // A dummy fetch event handler to ensure PWA installability
