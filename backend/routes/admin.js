@@ -831,10 +831,38 @@ router.post('/fcm-token', adminAuth, async (req, res) => {
         admin.fcmTokens.push(token);
         await admin.save();
       }
-      return res.json({ success: true, message: 'Token registered successfully' });
+      console.log(`[FCM] Token saved for ${admin.username}. Total devices: ${admin.fcmTokens.length}`);
+      return res.json({
+        success: true,
+        message: 'Token registered successfully',
+        deviceCount: admin.fcmTokens.length,
+      });
     } else {
       return res.status(404).json({ success: false, message: 'Admin not found' });
     }
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// POST /api/admin/test-push — Send test notification to all registered devices
+router.post('/test-push', adminAuth, async (req, res) => {
+  try {
+    const { sendPushToAdminsInternal } = require('../utils/fcmService');
+    const result = await sendPushToAdminsInternal(
+      '🔔 BSS Test Alert',
+      'If you see this at the top of your phone, push notifications are working!'
+    );
+    res.json({
+      success: result.successCount > 0,
+      ...result,
+      message:
+        result.tokenCount === 0
+          ? 'No device registered. Tap Resync Alerts first.'
+          : result.successCount > 0
+            ? `Sent to ${result.successCount} device(s). Check your phone top bar.`
+            : `Failed to send. ${result.errors?.join(' ') || 'Unknown error'}`,
+    });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }

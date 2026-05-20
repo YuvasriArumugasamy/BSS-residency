@@ -596,6 +596,17 @@ const SettingsView = ({ isSeason, onToggleSeason }) => {
     }
   }, []);
 
+  const handleTestPush = async () => {
+    try {
+      const auth = JSON.parse(sessionStorage.getItem('bss_admin'));
+      const headers = { username: auth.username, password: auth.password };
+      const res = await api.post('/api/admin/test-push', {}, { headers });
+      alert(res.data?.message || (res.data?.success ? 'Test sent!' : 'Test failed'));
+    } catch (e) {
+      alert(e?.response?.data?.message || e?.message || 'Test push failed');
+    }
+  };
+
   const handleEnablePush = async () => {
     try {
       const { requestForToken } = await import('../firebase');
@@ -654,7 +665,7 @@ const SettingsView = ({ isSeason, onToggleSeason }) => {
               Status: {fcmStatus}
             </div>
           </div>
-          <div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
             <button 
               type="button"
               className="admin-btn admin-btn-primary"
@@ -663,6 +674,15 @@ const SettingsView = ({ isSeason, onToggleSeason }) => {
               disabled={fcmStatus === 'Unsupported'}
             >
               {fcmStatus === 'Enabled' ? 'Resync Alerts' : 'Enable Alerts'}
+            </button>
+            <button
+              type="button"
+              className="admin-btn"
+              style={{ background: '#0f172a', color: '#fff', padding: '0.45rem 1rem', fontSize: '0.85rem' }}
+              onClick={handleTestPush}
+              disabled={fcmStatus === 'Unsupported'}
+            >
+              Send Test Notification
             </button>
           </div>
         </div>
