@@ -222,7 +222,29 @@ export default function Booking() {
               }
             };
 
-            const verifyRes = await api.post('/api/bookings/verify-payment', payload);
+            // Retry logic — handles Render cold starts (up to 3 attempts)
+            let verifyRes = null;
+            let lastError = null;
+            for (let attempt = 1; attempt <= 3; attempt++) {
+              try {
+                console.log(`[Payment] Verify attempt ${attempt}/3...`);
+                verifyRes = await api.post('/api/bookings/verify-payment', payload, {
+                  timeout: attempt === 1 ? 30000 : 60000 // 30s first try, 60s for retries
+                });
+                break; // Success — exit loop
+              } catch (retryErr) {
+                lastError = retryErr;
+                console.warn(`[Payment] Attempt ${attempt} failed:`, retryErr.message);
+                if (attempt < 3) {
+                  // Wait before retry (2s, then 4s)
+                  await new Promise(r => setTimeout(r, attempt * 2000));
+                }
+              }
+            }
+
+            if (!verifyRes) {
+              throw lastError || new Error('Payment verification failed after 3 attempts. Please contact us with your payment ID: ' + response.razorpay_payment_id);
+            }
 
             if (verifyRes.data.success) {
               // Send email notification to admin

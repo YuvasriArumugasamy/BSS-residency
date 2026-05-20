@@ -164,7 +164,30 @@ mongoose.connection.on('disconnected', () => {
 });
 
 connectDB().then(() => {
-  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+
+    // --- Keep-Alive Self-Ping (Prevents Render Free Tier Cold Starts) ---
+    // Pings itself every 14 minutes to prevent the server from sleeping
+    const RENDER_URL = process.env.RENDER_EXTERNAL_URL || process.env.BACKEND_URL || `http://localhost:${PORT}`;
+    if (process.env.NODE_ENV !== 'development') {
+      setInterval(async () => {
+        try {
+          const https = require('https');
+          const http = require('http');
+          const client = RENDER_URL.startsWith('https') ? https : http;
+          client.get(RENDER_URL, (res) => {
+            console.log(`[Keep-Alive] Ping OK: ${res.statusCode}`);
+          }).on('error', (err) => {
+            console.error('[Keep-Alive] Ping failed:', err.message);
+          });
+        } catch (e) {
+          console.error('[Keep-Alive] Error:', e.message);
+        }
+      }, 14 * 60 * 1000); // Every 14 minutes
+      console.log(`[Keep-Alive] Self-ping enabled for: ${RENDER_URL}`);
+    }
+  });
 });
 
 // SECRET one-time endpoint to setup rooms in production
