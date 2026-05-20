@@ -601,6 +601,10 @@ const SettingsView = ({ isSeason, onToggleSeason }) => {
       const auth = JSON.parse(sessionStorage.getItem('bss_admin'));
       const headers = { username: auth.username, password: auth.password };
       const res = await api.post('/api/admin/test-push', {}, { headers });
+      if (res.data?.success) {
+        const { setAppBadgeCount } = await import('../utils/appBadge');
+        await setAppBadgeCount(1);
+      }
       alert(res.data?.message || (res.data?.success ? 'Test sent!' : 'Test failed'));
     } catch (e) {
       alert(e?.response?.data?.message || e?.message || 'Test push failed');

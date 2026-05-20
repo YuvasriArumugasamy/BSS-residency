@@ -54,15 +54,34 @@ function showPushNotification(title, body) {
   return self.registration.showNotification(notificationTitle, notificationOptions);
 }
 
-messaging.onBackgroundMessage(async (payload) => {
-  console.log('[firebase-messaging-sw.js] background message', payload);
-
-  const title = payload.notification?.title || payload.data?.title;
-  const body = payload.notification?.body || payload.data?.body;
-
+async function handleIncomingPush(title, body) {
   const count = (await getBadgeCount()) + 1;
   await setBadgeCount(count);
   await showPushNotification(title, body);
+}
+
+messaging.onBackgroundMessage(async (payload) => {
+  console.log('[firebase-messaging-sw.js] background message', payload);
+  const title = payload.notification?.title || payload.data?.title;
+  const body = payload.notification?.body || payload.data?.body;
+  await handleIncomingPush(title, body);
+});
+
+// Fallback: some Android builds deliver FCM via push event (not onBackgroundMessage)
+self.addEventListener('push', (event) => {
+  if (!event.data) return;
+  event.waitUntil(
+    (async () => {
+      try {
+        const payload = event.data.json();
+        const title = payload.notification?.title || payload.data?.title;
+        const body = payload.notification?.body || payload.data?.body;
+        if (title || body) await handleIncomingPush(title, body);
+      } catch (e) {
+        console.error('[SW] push handler', e);
+      }
+    })()
+  );
 });
 
 self.addEventListener('notificationclick', (event) => {
