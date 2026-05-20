@@ -644,9 +644,9 @@ const SettingsView = ({ isSeason, onToggleSeason }) => {
               className="admin-btn admin-btn-primary"
               style={{ background: '#0284c7', padding: '0.5rem 1.5rem' }}
               onClick={handleEnablePush}
-              disabled={fcmStatus === 'Enabled' || fcmStatus === 'Unsupported'}
+              disabled={fcmStatus === 'Unsupported'}
             >
-              {fcmStatus === 'Enabled' ? 'Alerts Active' : 'Enable Alerts'}
+              {fcmStatus === 'Enabled' ? 'Resync Alerts' : 'Enable Alerts'}
             </button>
           </div>
         </div>
