@@ -5,12 +5,12 @@ importScripts('https://www.gstatic.com/firebasejs/12.13.0/firebase-messaging-com
 // Initialize the Firebase app in the service worker by passing in
 // your app's Firebase config object.
 const firebaseConfig = {
-  apiKey: "AIzaSyDUeFX7vT7ZcvkKWqUU16Iixm0xV1PIjpU",
+  apiKey: "AIzaSyDUefX7uT7zcvkkWqUUl6i1xeOwXlFIJpU",
   authDomain: "bss-residency.firebaseapp.com",
   projectId: "bss-residency",
   storageBucket: "bss-residency.firebasestorage.app",
   messagingSenderId: "887756035594",
-  appId: "1:887756035594:web:8b600fd1477dff0cf431f2"
+  appId: "1:887756035594:web:8b608fd1477dff0cf431f3"
 };
 
 firebase.initializeApp(firebaseConfig);
