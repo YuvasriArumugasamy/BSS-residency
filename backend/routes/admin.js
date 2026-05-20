@@ -177,7 +177,7 @@ router.get('/bookings', adminAuth, async (req, res) => {
 
     const total = await Booking.countDocuments(filter);
     const bookings = await Booking.find(filter)
-      .sort({ checkIn: 1 }) // Sorted by stay date
+      .sort({ createdAt: -1 }) // Newest bookings first (Recent Bookings)
       .skip((page - 1) * limit)
       .limit(Number(limit));
 

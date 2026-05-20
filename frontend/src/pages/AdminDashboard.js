@@ -181,9 +181,15 @@ const DashboardOverview = ({ stats, bookings, period, setPeriod, selectedMonth, 
                 </tr>
               </thead>
               <tbody>
-                {bookings.slice(0, 5).map(b => (
+                {[...bookings]
+                  .sort((a, b) => new Date(b.createdAt || b.checkIn) - new Date(a.createdAt || a.checkIn))
+                  .slice(0, 5)
+                  .map(b => (
                   <tr key={b._id}>
-                    <td><div style={{ fontWeight: 600 }}>{b.name}</div><div style={{ fontSize: '0.7rem', color: '#888' }}>{formatDate(b.checkIn)}</div></td>
+                    <td>
+                      <div style={{ fontWeight: 600 }}>{b.name}</div>
+                      <div style={{ fontSize: '0.7rem', color: '#888' }}>Booked {formatDate(b.createdAt || b.checkIn)} · Stay {formatDate(b.checkIn)}</div>
+                    </td>
                     <td>{b.roomType}</td>
                     <td><span className={`status-pill status-${b.status}`}>{b.status}</span></td>
                   </tr>
