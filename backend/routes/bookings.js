@@ -26,7 +26,7 @@ router.post('/create-order', async (req, res) => {
     console.log(`[Razorpay] Creating order for amount: ${amount}`);
     
     const options = {
-      amount: 20 * 100, // Temporarily set to 20 for testing
+      amount: 1 * 100, // Temporarily set to 1 for testing
       currency: 'INR',
       receipt: `receipt_${Date.now()}`,
     };
@@ -158,7 +158,7 @@ router.post('/verify-payment', async (req, res) => {
       razorpayOrderId: razorpay_order_id,
       razorpayPaymentId: razorpay_payment_id,
       razorpaySignature: razorpay_signature,
-      advancePaid: 20, // Temporarily set to 20 for testing
+      advancePaid: 1, // Temporarily set to 1 for testing
       paymentStatus: 'Completed'
     });
 
