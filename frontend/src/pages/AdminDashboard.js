@@ -7,6 +7,7 @@ import {
   LayoutDashboard, Bed, CalendarCheck, Users, CreditCard, PieChart, Settings, MessageSquare, Bell, LogOut, ExternalLink, RefreshCcw, Plus, Trash2, Edit3, CheckCircle, XCircle, Clock, X, MessageCircle, ClipboardCheck, Calendar, Image, Lock, Eye, EyeOff
 } from 'lucide-react';
 import api from '../api/axios';
+import { setAppBadgeCount, clearAppBadge } from '../utils/appBadge';
 import './Admin.css';
 
 // --- SHARED COMPONENTS ---
@@ -1093,21 +1094,35 @@ export default function AdminDashboard() {
     };
   }, []);
 
-  // Show push alerts when admin dashboard is open (foreground)
+  // FCM push while dashboard is open → status bar alert + app icon badge
   useEffect(() => {
     if (!auth) return;
     let cancelled = false;
+
+    const showPushAlert = async (title, body, badgeCount) => {
+      await setAppBadgeCount(badgeCount);
+      if (Notification.permission === 'granted') {
+        new Notification(title || 'BSS Residency', {
+          body: body || 'New booking received',
+          icon: '/logo.webp',
+          tag: 'bss-new-booking',
+          renotify: true,
+        });
+      }
+      audioRef.current?.play().catch(() => {});
+    };
 
     const listen = async () => {
       while (!cancelled) {
         try {
           const { onMessageListener } = await import('../firebase');
           const payload = await onMessageListener();
-          if (cancelled || !payload?.notification) continue;
-          const { title, body } = payload.notification;
-          if (Notification.permission === 'granted') {
-            new Notification(title || 'BSS Residency', { body, icon: '/logo.webp' });
-          }
+          if (cancelled) break;
+          const title = payload?.notification?.title || payload?.data?.title;
+          const body = payload?.notification?.body || payload?.data?.body;
+          if (!title && !body) continue;
+          const seen = parseInt(localStorage.getItem('bss_seen_notifs_count') || '0', 10);
+          await showPushAlert(title, body, seen + 1);
         } catch {
           break;
         }
@@ -1208,28 +1223,40 @@ export default function AdminDashboard() {
       setReviews(finalReviews);
 
       const finalNotifs = notifRes.data.notifications;
-      const seenNotifs = parseInt(localStorage.getItem('bss_seen_notifs_count') || '0');
+      const seenNotifs = parseInt(localStorage.getItem('bss_seen_notifs_count') || '0', 10);
       if (activeTab !== 'notifications' && finalNotifs.length > seenNotifs) {
-        setUnreadCount(finalNotifs.length - seenNotifs);
+        const newCount = finalNotifs.length - seenNotifs;
+        setUnreadCount(newCount);
+        await setAppBadgeCount(newCount);
+        const latest = finalNotifs[0];
+        if (Notification.permission === 'granted') {
+          new Notification(latest?.title || 'New Booking 🔔', {
+            body: latest?.message || 'A new booking was received.',
+            icon: '/logo.webp',
+            tag: 'bss-new-booking',
+            renotify: true,
+          });
+        }
+        audioRef.current?.play().catch(() => {});
       } else if (activeTab === 'notifications') {
         localStorage.setItem('bss_seen_notifs_count', finalNotifs.length.toString());
+        await clearAppBadge();
       }
 
       setNotifications(finalNotifs);
 
-      // Check for new bookings to trigger alert
       const currentCount = bookingsRes.data.bookings.length;
       if (prevBookingCountRef.current > 0 && currentCount > prevBookingCountRef.current) {
-        // Play sound
-        audioRef.current.play().catch(e => console.log('Audio play blocked:', e));
-        // Browser Alert
+        const latestBooking = bookingsRes.data.bookings[0];
+        await setAppBadgeCount(Math.max(1, finalNotifs.length - seenNotifs));
+        audioRef.current?.play().catch(() => {});
         if (Notification.permission === 'granted') {
           new Notification('New Booking Received! 🔔', {
-            body: `You have a new booking from ${bookingsRes.data.bookings[0].name}`,
-            icon: '/favicon.ico'
+            body: `New booking from ${latestBooking?.name || 'a guest'}`,
+            icon: '/logo.webp',
+            tag: 'bss-new-booking',
+            renotify: true,
           });
-        } else {
-          alert('New Booking Received! 🔔 Check the bookings list.');
         }
       }
       prevBookingCountRef.current = currentCount;
@@ -1244,6 +1271,7 @@ export default function AdminDashboard() {
     if (activeTab === 'notifications') {
       setUnreadCount(0);
       localStorage.setItem('bss_seen_notifs_count', notifications.length.toString());
+      clearAppBadge();
     }
     if (activeTab === 'reviews') {
       setUnreadReviewCount(0);
@@ -1266,14 +1294,20 @@ export default function AdminDashboard() {
     }
   }, []);
 
-  // Silent Polling: Auto refresh every 30 seconds for alerts/sound
+  // Poll for new bookings + badge/alerts (works when app/tab is open)
   useEffect(() => {
-    fetchData(); // Initial fetch
-    const interval = setInterval(() => {
-      // Background fetch without showing loading spinner
-      fetchData();
-    }, 120000); // Refresh every 2 minutes instead of 30s
-    return () => clearInterval(interval);
+    fetchData();
+    const interval = setInterval(fetchData, 45000);
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') fetchData();
+    };
+    document.addEventListener('visibilitychange', onVisible);
+    window.addEventListener('focus', fetchData);
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener('visibilitychange', onVisible);
+      window.removeEventListener('focus', fetchData);
+    };
   }, [fetchData]);
 
   const handleRoomSubmit = async (e) => {

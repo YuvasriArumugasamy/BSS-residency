@@ -2,8 +2,6 @@
 importScripts('https://www.gstatic.com/firebasejs/12.13.0/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/12.13.0/firebase-messaging-compat.js');
 
-// Initialize the Firebase app in the service worker by passing in
-// your app's Firebase config object.
 const firebaseConfig = {
   apiKey: "AIzaSyDUefX7uT7zcvkkWqUUl6i1xeOwXlFIJpU",
   authDomain: "bss-residency.firebaseapp.com",
@@ -14,42 +12,65 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
-
-// Retrieve an instance of Firebase Messaging so that it can handle background
-// messages.
 const messaging = firebase.messaging();
 
-let unreadCount = 0;
+const BADGE_CACHE = 'bss-badge-v1';
 
-messaging.onBackgroundMessage((payload) => {
-  console.log('[firebase-messaging-sw.js] Received background message ', payload);
-  
-  // Increment unread count and set badge
-  unreadCount++;
-  if (self.navigator && 'setAppBadge' in self.navigator) {
-    self.navigator.setAppBadge(unreadCount).catch(console.error);
+async function getBadgeCount() {
+  try {
+    const cache = await caches.open(BADGE_CACHE);
+    const res = await cache.match('count');
+    if (!res) return 0;
+    return parseInt(await res.text(), 10) || 0;
+  } catch {
+    return 0;
   }
+}
 
-  const notificationTitle = payload.notification.title;
+async function setBadgeCount(count) {
+  try {
+    const cache = await caches.open(BADGE_CACHE);
+    await cache.put('count', new Response(String(Math.max(0, count))));
+    if (self.navigator && 'setAppBadge' in self.navigator) {
+      if (count > 0) await self.navigator.setAppBadge(Math.min(count, 99));
+      else if ('clearAppBadge' in self.navigator) await self.navigator.clearAppBadge();
+    }
+  } catch (e) {
+    console.error('[SW] badge error', e);
+  }
+}
+
+function showPushNotification(title, body) {
+  const notificationTitle = title || 'BSS Residency';
   const notificationOptions = {
-    body: payload.notification.body,
-    icon: '/logo.webp', // Ensure this exists in public/
-    badge: '/logo.webp' // Ensure this exists in public/
+    body: body || 'New booking received',
+    icon: '/logo.webp',
+    badge: '/logo.webp',
+    tag: 'bss-new-booking',
+    renotify: true,
+    requireInteraction: true,
+    data: { url: '/admin/dashboard' },
   };
+  return self.registration.showNotification(notificationTitle, notificationOptions);
+}
 
-  self.registration.showNotification(notificationTitle, notificationOptions);
+messaging.onBackgroundMessage(async (payload) => {
+  console.log('[firebase-messaging-sw.js] background message', payload);
+
+  const title = payload.notification?.title || payload.data?.title;
+  const body = payload.notification?.body || payload.data?.body;
+
+  const count = (await getBadgeCount()) + 1;
+  await setBadgeCount(count);
+  await showPushNotification(title, body);
 });
 
-// Clear badge when a notification is clicked
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
-  unreadCount = 0;
-  if (self.navigator && 'clearAppBadge' in self.navigator) {
-    self.navigator.clearAppBadge().catch(console.error);
-  }
-  
+  setBadgeCount(0);
+
   event.waitUntil(
-    clients.matchAll({ type: 'window' }).then((clientList) => {
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
       for (const client of clientList) {
         if (client.url.includes('/admin') && 'focus' in client) {
           return client.focus();
@@ -62,7 +83,4 @@ self.addEventListener('notificationclick', (event) => {
   );
 });
 
-// A dummy fetch event handler to ensure PWA installability
-self.addEventListener('fetch', (event) => {
-  // Can be left empty for now, just satisfies the PWA criteria for some browsers
-});
+self.addEventListener('fetch', () => {});

@@ -22,12 +22,23 @@ const sendPushNotificationToAdmins = async (title, body) => {
       return;
     }
 
+    const siteUrl = process.env.FRONTEND_URL || 'https://www.bssresidency.com';
+    const iconUrl = `${siteUrl.replace(/\/$/, '')}/logo.webp`;
+
     const response = await admin.messaging().sendEachForMulticast({
       notification: { title, body },
+      data: { title, body, click_action: '/admin/dashboard' },
       tokens: uniqueTokens,
       webpush: {
-        fcmOptions: { link: 'https://www.bssresidency.com/admin/dashboard' }
-      }
+        notification: {
+          title,
+          body,
+          icon: iconUrl,
+          badge: iconUrl,
+          requireInteraction: true,
+        },
+        fcmOptions: { link: `${siteUrl.replace(/\/$/, '')}/admin/dashboard` },
+      },
     });
 
     console.log(`[FCM] Push sent. Success: ${response.successCount}, Failed: ${response.failureCount}`);

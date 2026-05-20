@@ -12,5 +12,6 @@
   "display": "standalone",
   "theme_color": "#0f172a",
   "background_color": "#ffffff",
-  "description": "Admin Panel for BSS Residency Courtallam."
+  "description": "Admin Panel for BSS Residency Courtallam.",
+  "gcm_sender_id": "887756035594"
 }
