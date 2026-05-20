@@ -85,7 +85,7 @@ const adminAuth = async (req, res, next) => {
       res.status(401).json({ success: false, message: 'Unauthorized' });
     }
   } catch (err) {
-    res.status(500).json({ success: false, message: 'Server error' });
+    res.status(500).json({ success: false, message: 'Server error', error: err.message, stack: err.stack });
   }
 };
  
