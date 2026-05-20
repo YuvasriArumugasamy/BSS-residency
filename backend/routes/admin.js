@@ -820,9 +820,11 @@ router.post('/fcm-token', adminAuth, async (req, res) => {
     const { token } = req.body;
     if (!token) return res.status(400).json({ success: false, message: 'Token is required' });
 
-    const username = req.headers.username || process.env.ADMIN_USERNAME || 'santhosh';
-    let admin = await Admin.findOne({ username });
-    
+    const trimUser = (req.headers.username || process.env.ADMIN_USERNAME || 'santhosh').trim();
+    let admin = await Admin.findOne({
+      username: { $regex: new RegExp('^' + trimUser.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '$', 'i') }
+    });
+
     if (admin) {
       if (!admin.fcmTokens) admin.fcmTokens = [];
       if (!admin.fcmTokens.includes(token)) {

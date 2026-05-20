@@ -3,33 +3,52 @@ const Admin = require('../models/Admin');
 
 const sendPushNotificationToAdmins = async (title, body) => {
   try {
-    // Find all admins with fcmTokens
-    const admins = await Admin.find({ fcmTokens: { $exists: true, $not: { $size: 0 } } });
-    
-    let tokens = [];
-    admins.forEach(admin => {
-      tokens = tokens.concat(admin.fcmTokens);
-    });
-
-    if (tokens.length === 0) {
-      console.log('No FCM tokens found for any admin. Skipping push notification.');
+    if (!admin.apps.length) {
+      console.error('[FCM] Firebase Admin not initialized. Set FIREBASE_ADMIN_CREDENTIALS on Render.');
       return;
     }
 
-    const message = {
-      notification: {
-        title,
-        body
-      },
-      tokens: [...new Set(tokens)] // Remove duplicate tokens just in case
-    };
+    const admins = await Admin.find({ fcmTokens: { $exists: true, $not: { $size: 0 } } });
 
-    const response = await admin.messaging().sendMulticast(message);
-    console.log(`Push notification sent successfully. Success count: ${response.successCount}, Failure count: ${response.failureCount}`);
-    
-    // Optionally: Handle failed tokens and remove them from DB to keep it clean
+    let tokens = [];
+    admins.forEach((a) => {
+      tokens = tokens.concat(a.fcmTokens || []);
+    });
+
+    const uniqueTokens = [...new Set(tokens.filter(Boolean))];
+
+    if (uniqueTokens.length === 0) {
+      console.log('[FCM] No device tokens saved for any admin. Enable Alerts in Settings on each phone.');
+      return;
+    }
+
+    const response = await admin.messaging().sendEachForMulticast({
+      notification: { title, body },
+      tokens: uniqueTokens,
+      webpush: {
+        fcmOptions: { link: 'https://www.bssresidency.com/admin/dashboard' }
+      }
+    });
+
+    console.log(`[FCM] Push sent. Success: ${response.successCount}, Failed: ${response.failureCount}`);
+
+    if (response.failureCount > 0) {
+      const failedTokens = [];
+      response.responses.forEach((r, i) => {
+        if (!r.success) {
+          console.error(`[FCM] Token failed: ${r.error?.code} - ${r.error?.message}`);
+          failedTokens.push(uniqueTokens[i]);
+        }
+      });
+      if (failedTokens.length) {
+        await Admin.updateMany(
+          {},
+          { $pull: { fcmTokens: { $in: failedTokens } } }
+        );
+      }
+    }
   } catch (error) {
-    console.error('Error sending push notification:', error);
+    console.error('[FCM] Error sending push notification:', error);
   }
 };
 

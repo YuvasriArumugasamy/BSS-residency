@@ -602,7 +602,10 @@ const SettingsView = ({ isSeason, onToggleSeason }) => {
       if (token) {
         const auth = JSON.parse(sessionStorage.getItem('bss_admin'));
         const headers = { username: auth.username, password: auth.password };
-        await api.post('/api/admin/fcm-token', { token }, { headers });
+        const saveRes = await api.post('/api/admin/fcm-token', { token }, { headers });
+        if (!saveRes.data?.success) {
+          throw new Error(saveRes.data?.message || 'Server did not save your device token');
+        }
         setFcmStatus('Enabled');
         alert('Push notifications enabled successfully!');
       } else {
@@ -1089,6 +1092,31 @@ export default function AdminDashboard() {
       }
     };
   }, []);
+
+  // Show push alerts when admin dashboard is open (foreground)
+  useEffect(() => {
+    if (!auth) return;
+    let cancelled = false;
+
+    const listen = async () => {
+      while (!cancelled) {
+        try {
+          const { onMessageListener } = await import('../firebase');
+          const payload = await onMessageListener();
+          if (cancelled || !payload?.notification) continue;
+          const { title, body } = payload.notification;
+          if (Notification.permission === 'granted') {
+            new Notification(title || 'BSS Residency', { body, icon: '/logo.webp' });
+          }
+        } catch {
+          break;
+        }
+      }
+    };
+
+    listen();
+    return () => { cancelled = true; };
+  }, [auth]);
 
   const [stats, setStats] = useState(null);
   const [bookings, setBookings] = useState([]);
