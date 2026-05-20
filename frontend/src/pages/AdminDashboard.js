@@ -6,7 +6,7 @@ import {
 import {
   LayoutDashboard, Bed, CalendarCheck, Users, CreditCard, PieChart, Settings, MessageSquare, Bell, LogOut, ExternalLink, RefreshCcw, Plus, Trash2, Edit3, CheckCircle, XCircle, Clock, X, MessageCircle, ClipboardCheck, Calendar, Image, Lock, Eye, EyeOff
 } from 'lucide-react';
-import api from '../api/axios';
+import api, { API_BASE_URL } from '../api/axios';
 import { setAppBadgeCount, clearAppBadge } from '../utils/appBadge';
 import './Admin.css';
 
@@ -1018,9 +1018,15 @@ const GalleryManagement = ({ auth }) => {
   );
 };
 
-const NotificationsView = ({ notifications, period, setPeriod, selectedMonth, setSelectedMonth, onDelete, onClearAll }) => {
+const NotificationsView = ({ notifications, period, setPeriod, selectedMonth, setSelectedMonth, onDelete, onClearAll, fetchError, apiBase }) => {
   return (
     <div className="view-content fade-in">
+      {fetchError && (
+        <div className="card" style={{ marginBottom: '1rem', borderLeft: '4px solid #ef4444', color: '#b91c1c' }}>
+          {fetchError}
+          <div style={{ fontSize: '0.8rem', marginTop: '0.5rem', color: '#64748b' }}>API: {apiBase || 'unknown'}</div>
+        </div>
+      )}
       <div style={{ marginBottom: '1.5rem', display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-end', gap: '1rem' }}>
         {notifications.length > 0 && (
           <button 
@@ -1170,7 +1176,8 @@ export default function AdminDashboard() {
   const [statsPeriod, setStatsPeriod] = useState('all');
   const [bookingsPeriod, setBookingsPeriod] = useState('month');
   const [reviewsPeriod, setReviewsPeriod] = useState('month');
-  const [notificationsPeriod, setNotificationsPeriod] = useState('month');
+  const [notificationsPeriod, setNotificationsPeriod] = useState('all');
+  const [fetchError, setFetchError] = useState('');
   const [selectedMonth, setSelectedMonth] = useState(() => {
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
@@ -1220,8 +1227,9 @@ export default function AdminDashboard() {
     if (!stats) setLoading(true);
     const [year, month] = selectedMonth.split('-');
     const headers = { username: auth.username, password: auth.password };
+    setFetchError('');
     try {
-      const [statsRes, bookingsRes, roomsRes, guestsRes, paymentsRes, reviewsRes, notifRes, settingsRes] = await Promise.all([
+      const results = await Promise.allSettled([
         api.get('/api/admin/stats', { headers, params: { period: statsPeriod, month, year } }),
         api.get('/api/admin/bookings', { headers, params: { page: 1, limit: 100, period: bookingsPeriod, month, year } }),
         api.get('/api/admin/rooms', { headers }),
@@ -1231,13 +1239,35 @@ export default function AdminDashboard() {
         api.get('/api/admin/notifications', { headers, params: { period: notificationsPeriod, month, year } }),
         api.get('/api/admin/settings', { headers })
       ]);
-      setStats(statsRes.data.stats);
-      setBookings(bookingsRes.data.bookings);
-      setRooms(roomsRes.data.rooms);
-      setGuests(guestsRes.data.guests);
-      setPayments(paymentsRes.data.payments);
-      setIsSeason(settingsRes.data.settings.isSeason);
-      const finalReviews = reviewsRes.data.reviews;
+
+      const errMsg = results.find((r) => r.status === 'rejected');
+      if (errMsg) {
+        const e = errMsg.reason;
+        const msg = e?.response?.status === 401
+          ? 'Login expired or wrong password. Log out and login again (use Render ADMIN_USERNAME / ADMIN_PASSWORD).'
+          : (e?.response?.data?.message || e?.message || 'Could not load data from server');
+        setFetchError(msg);
+      }
+
+      const get = (i) => (results[i].status === 'fulfilled' ? results[i].value : null);
+
+      const statsRes = get(0);
+      const bookingsRes = get(1);
+      const roomsRes = get(2);
+      const guestsRes = get(3);
+      const paymentsRes = get(4);
+      const reviewsRes = get(5);
+      const notifRes = get(6);
+      const settingsRes = get(7);
+
+      if (statsRes) setStats(statsRes.data.stats);
+      if (bookingsRes) setBookings(bookingsRes.data.bookings);
+      if (roomsRes) setRooms(roomsRes.data.rooms);
+      if (guestsRes) setGuests(guestsRes.data.guests);
+      if (paymentsRes) setPayments(paymentsRes.data.payments);
+      if (settingsRes) setIsSeason(settingsRes.data.settings.isSeason);
+
+      const finalReviews = reviewsRes?.data?.reviews || [];
       const seenReviews = parseInt(localStorage.getItem('bss_seen_reviews_count') || '0');
       if (activeTab !== 'reviews' && finalReviews.length > seenReviews) {
         setUnreadReviewCount(finalReviews.length - seenReviews);
@@ -1246,7 +1276,10 @@ export default function AdminDashboard() {
       }
       setReviews(finalReviews);
 
-      const finalNotifs = notifRes.data.notifications;
+      const finalNotifs = notifRes?.data?.notifications || [];
+      if (!notifRes && errMsg) {
+        console.error('[Notifications] failed to load', errMsg.reason);
+      }
       const seenNotifs = parseInt(localStorage.getItem('bss_seen_notifs_count') || '0', 10);
       if (activeTab !== 'notifications' && finalNotifs.length > seenNotifs) {
         const newCount = finalNotifs.length - seenNotifs;
@@ -1269,9 +1302,9 @@ export default function AdminDashboard() {
 
       setNotifications(finalNotifs);
 
-      const currentCount = bookingsRes.data.bookings.length;
+      const currentCount = bookingsRes?.data?.bookings?.length || 0;
       if (prevBookingCountRef.current > 0 && currentCount > prevBookingCountRef.current) {
-        const latestBooking = bookingsRes.data.bookings[0];
+        const latestBooking = bookingsRes?.data?.bookings?.[0];
         await setAppBadgeCount(Math.max(1, finalNotifs.length - seenNotifs));
         audioRef.current?.play().catch(() => {});
         if (Notification.permission === 'granted') {
@@ -1694,8 +1727,10 @@ export default function AdminDashboard() {
         selectedMonth={selectedMonth}
         setSelectedMonth={setSelectedMonth}
       />;
-      case 'notifications': return <NotificationsView 
-        notifications={notifications} 
+      case 'notifications': return <NotificationsView
+        notifications={notifications}
+        fetchError={fetchError}
+        apiBase={API_BASE_URL}
         period={notificationsPeriod}
         setPeriod={setNotificationsPeriod}
         selectedMonth={selectedMonth}

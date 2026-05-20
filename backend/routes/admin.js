@@ -162,8 +162,10 @@ router.get('/bookings', adminAuth, async (req, res) => {
     if (period === 'month') {
       let start, end;
       if (month && year) {
-        start = new Date(year, month - 1, 1);
-        end = new Date(year, month, 0, 23, 59, 59, 999);
+        const y = parseInt(year, 10);
+        const m = parseInt(month, 10);
+        start = new Date(y, m - 1, 1);
+        end = new Date(y, m, 0, 23, 59, 59, 999);
       } else {
         const now = new Date();
         start = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -363,8 +365,10 @@ router.get('/stats', adminAuth, async (req, res) => {
     if (period === 'month') {
       let start, end;
       if (month && year) {
-        start = new Date(year, month - 1, 1);
-        end = new Date(year, month, 0, 23, 59, 59, 999);
+        const y = parseInt(year, 10);
+        const m = parseInt(month, 10);
+        start = new Date(y, m - 1, 1);
+        end = new Date(y, m, 0, 23, 59, 59, 999);
       } else {
         const now = new Date();
         start = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -609,8 +613,10 @@ router.get('/reviews', adminAuth, async (req, res) => {
     if (period === 'month') {
       let start, end;
       if (month && year) {
-        start = new Date(year, month - 1, 1);
-        end = new Date(year, month, 0, 23, 59, 59, 999);
+        const y = parseInt(year, 10);
+        const m = parseInt(month, 10);
+        start = new Date(y, m - 1, 1);
+        end = new Date(y, m, 0, 23, 59, 59, 999);
       } else {
         const now = new Date();
         start = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -722,8 +728,10 @@ router.get('/notifications', adminAuth, async (req, res) => {
     if (period === 'month') {
       let start, end;
       if (month && year) {
-        start = new Date(year, month - 1, 1);
-        end = new Date(year, month, 0, 23, 59, 59, 999);
+        const y = parseInt(year, 10);
+        const m = parseInt(month, 10);
+        start = new Date(y, m - 1, 1);
+        end = new Date(y, m, 0, 23, 59, 59, 999);
       } else {
         const now = new Date();
         start = new Date(now.getFullYear(), now.getMonth(), 1);
