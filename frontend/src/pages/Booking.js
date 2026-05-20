@@ -3,6 +3,7 @@ import api from '../api/axios';
 import { Link, useLocation } from 'react-router-dom';
 import { ROOMS, CONTACT, waLink } from '../constants';
 import SEO from '../components/SEO';
+import emailjs from '@emailjs/browser';
 import './Booking.css';
 
 const initForm = {
@@ -224,6 +225,26 @@ export default function Booking() {
             const verifyRes = await api.post('/api/bookings/verify-payment', payload);
 
             if (verifyRes.data.success) {
+              // Send email notification to admin
+              try {
+                await emailjs.send(
+                  'service_6ip9q9w',
+                  'template_ovzs1fn',
+                  {
+                    customer_name: fullName,
+                    customer_email: form.email,
+                    room_type: form.roomType,
+                    check_in: form.checkIn,
+                    check_out: form.checkOut,
+                  },
+                  'eiTGmay4Hcfbpa-4u'
+                );
+                console.log('Admin email notification sent successfully');
+              } catch (emailErr) {
+                console.error('Email notification failed:', emailErr);
+                // Don't block booking success if email fails
+              }
+
               setPendingBooking({
                 ...verifyRes.data.booking,
                 nights,

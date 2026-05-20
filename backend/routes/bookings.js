@@ -55,6 +55,8 @@ router.post('/verify-payment', async (req, res) => {
       bookingData 
     } = req.body;
 
+    console.log('[Verify Payment] Received request:', { razorpay_order_id, razorpay_payment_id, bookingData: bookingData?.name });
+
     // Verify signature
     const body = razorpay_order_id + "|" + razorpay_payment_id;
     const expectedSignature = crypto
@@ -65,11 +67,53 @@ router.post('/verify-payment', async (req, res) => {
     const isSignatureValid = expectedSignature === razorpay_signature;
 
     if (!isSignatureValid) {
+      console.error('[Verify Payment] Invalid signature!');
       return res.status(400).json({ success: false, message: 'Invalid payment signature' });
+    }
+
+    console.log('[Verify Payment] Signature valid ✅');
+
+    // Check if this payment was already processed (duplicate request protection)
+    const existingBooking = await Booking.findOne({ razorpayPaymentId: razorpay_payment_id });
+    if (existingBooking) {
+      console.log('[Verify Payment] Duplicate payment detected, returning existing booking');
+      return res.json({ success: true, bookingId: existingBooking.bookingId, booking: existingBooking });
     }
 
     // Payment is valid, now save the booking
     const { name, phone, email, roomType, checkIn, checkOut, guests, rooms, message } = bookingData;
+    const roomCount = Number(rooms) || 1;
+
+    // --- Availability Check ---
+    const totalRoomsCount = await Room.countDocuments({ type: roomType });
+    const start = new Date(checkIn);
+    const end = new Date(checkOut);
+    
+    const overlappingBookings = await Booking.find({
+      roomType,
+      status: { $in: ['Confirmed', 'Pending'] },
+      $or: [
+        { checkIn: { $lt: end }, checkOut: { $gt: start } }
+      ]
+    });
+
+    for (let d = new Date(start); d < end; d.setDate(d.getDate() + 1)) {
+      const occupiedOnDay = overlappingBookings.reduce((acc, b) => {
+        if (d >= new Date(b.checkIn) && d < new Date(b.checkOut)) {
+          return acc + (b.rooms || 1);
+        }
+        return acc;
+      }, 0);
+      
+      if (occupiedOnDay + roomCount > totalRoomsCount) {
+        console.warn('[Verify Payment] Room not available for selected dates');
+        return res.status(400).json({ 
+          success: false, 
+          message: `Sorry, rooms of type '${roomType}' are fully booked for some of your selected dates. Payment received — please contact us for a refund or alternate dates.` 
+        });
+      }
+    }
+    // --- End Availability Check ---
 
     // Generate unique 6-digit booking ID
     let bookingId;
@@ -92,7 +136,6 @@ router.post('/verify-payment', async (req, res) => {
     const roomPriceInfo = ROOM_DATA[roomType] || { season: 1000, nonSeason: 1000 };
     const unitPrice = isSeason ? roomPriceInfo.season : roomPriceInfo.nonSeason;
     const nights = Math.max(1, Math.round((new Date(checkOut) - new Date(checkIn)) / (1000 * 60 * 60 * 24)));
-    const roomCount = Number(rooms) || 1;
     const roomCharges = unitPrice * nights * roomCount;
     const gstAmount = Math.round(roomCharges * 0.12);
     const totalPrice = roomCharges + gstAmount;
@@ -120,6 +163,7 @@ router.post('/verify-payment', async (req, res) => {
     });
 
     await booking.save();
+    console.log(`[Verify Payment] Booking saved successfully: ${bookingId}`);
 
     // Create Notification
     try {
@@ -138,6 +182,28 @@ router.post('/verify-payment', async (req, res) => {
       '💰 New Paid Booking!',
       `${name} booked ${roomType} for ${guests} guests.`
     );
+
+    // Update Guest database (loyalty tracking)
+    try {
+      let guest = await Guest.findOne({ phone });
+      if (guest) {
+        guest.totalStays += 1;
+        if (guest.totalStays >= 10) guest.loyaltyLevel = 'VIP';
+        else if (guest.totalStays >= 3) guest.loyaltyLevel = 'Regular';
+        await guest.save();
+      } else {
+        guest = new Guest({
+          name,
+          phone,
+          email,
+          totalStays: 1,
+          loyaltyLevel: 'New'
+        });
+        await guest.save();
+      }
+    } catch (guestErr) {
+      console.error('Error updating guest record:', guestErr);
+    }
 
     res.json({ success: true, bookingId: booking.bookingId, booking });
   } catch (err) {
@@ -404,63 +470,6 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// GET /api/bookings/availability — Get availability by room type and month
-router.get('/availability', async (req, res) => {
-  try {
-    const { roomType, month, year } = req.query;
-
-    if (!roomType || !month || !year) {
-      // Backwards compatibility for initial load or legacy calls
-      const rooms = await Room.find({ status: 'Available' });
-      const simpleAvailability = {};
-      rooms.forEach(r => {
-        simpleAvailability[r.type] = (simpleAvailability[r.type] || 0) + 1;
-      });
-      return res.json({ success: true, availability: simpleAvailability });
-    }
-
-    // 1. Get total rooms of this type
-    const totalRoomsCount = await Room.countDocuments({ type: roomType });
-
-    // 2. Define month range
-    const startOfMonth = new Date(year, month - 1, 1);
-    const endOfMonth = new Date(year, month, 0, 23, 59, 59, 999);
-
-    // 3. Get bookings that overlap with this month
-    const bookings = await Booking.find({
-      roomType,
-      status: { $in: ['Confirmed', 'Pending'] },
-      $or: [
-        { checkIn: { $gte: startOfMonth, $lte: endOfMonth } },
-        { checkOut: { $gte: startOfMonth, $lte: endOfMonth } },
-        { checkIn: { $lte: startOfMonth }, checkOut: { $gte: endOfMonth } }
-      ]
-    });
-
-    // 4. Calculate availability for each day
-    const availability = {};
-    const daysInMonth = new Date(year, month, 0).getDate();
-
-    for (let day = 1; day <= daysInMonth; day++) {
-      const currentDay = new Date(year, month - 1, day);
-      const occupiedCount = bookings.reduce((count, b) => {
-        const ci = new Date(b.checkIn);
-        const co = new Date(b.checkOut);
-        // Occupied from checkIn up to (but not including) checkOut
-        if (currentDay >= ci && currentDay < co) {
-          return count + (b.rooms || 1);
-        }
-        return count;
-      }, 0);
-
-      availability[day] = Math.max(0, totalRoomsCount - occupiedCount);
-    }
-
-    res.json({ success: true, availability, totalRooms: totalRoomsCount });
-  } catch (err) {
-    res.status(500).json({ success: false, error: err.message });
-  }
-});
 
 // GET /api/bookings/reviews — Get all public reviews
 router.get('/public/reviews', async (req, res) => {
