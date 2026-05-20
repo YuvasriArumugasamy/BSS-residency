@@ -612,7 +612,18 @@ const SettingsView = ({ isSeason, onToggleSeason }) => {
     } catch (e) {
       console.error(e);
       const detail = e?.response?.data?.message || e?.message || String(e);
-      alert(`Push notification setup failed: ${detail}`);
+      if (detail.includes('token-subscribe-failed') || detail.includes('authentication credential')) {
+        alert(
+          'Push setup failed: VAPID key or FCM API issue.\n\n' +
+          '1) Firebase Console → bss-residency → Project settings → Cloud Messaging tab\n' +
+          '2) Web Push certificates → copy Key pair\n' +
+          '3) Vercel → Environment Variables → REACT_APP_FIREBASE_VAPID_KEY = that key → Redeploy\n' +
+          '4) Google Cloud → enable "FCM Registration API" and "Firebase Cloud Messaging API"\n\n' +
+          detail
+        );
+      } else {
+        alert(`Push notification setup failed: ${detail}`);
+      }
     }
   };
 

@@ -11,6 +11,11 @@ const firebaseConfig = {
   measurementId: "G-DYM98KYPL3"
 };
 
+// From Firebase Console → Project settings → Cloud Messaging → Web Push certificates (Key pair)
+const vapidKey =
+  process.env.REACT_APP_FIREBASE_VAPID_KEY ||
+  "BAQycSciYxO2yk9z7I9P6OsonwsX43OsuMaJAnG4ivZTGrAqEGc4xibegWwYq5UxjjxH2TA6LCx39sX626ORwpQ";
+
 const app = initializeApp(firebaseConfig);
 const messaging = getMessaging(app);
 
@@ -31,12 +36,18 @@ export const requestForToken = async () => {
     const existing = await navigator.serviceWorker.getRegistrations();
     await Promise.all(existing.map((r) => r.unregister()));
 
-    await navigator.serviceWorker.register('/firebase-messaging-sw.js?v=3');
+    await navigator.serviceWorker.register('/firebase-messaging-sw.js');
     const swReg = await navigator.serviceWorker.ready;
     console.log('[FCM] Service worker ready:', swReg.scope);
 
-    const currentToken = await getToken(messaging, { 
-        vapidKey: "BAQycSciYxO2yk9z7I9P6OsonwsX43OsuMaJanG4ivZTGrAqEGc4xibegWwYq5UxjjxH2TA6LCx39sX626ORwpQ",
+    if (!vapidKey?.trim()) {
+      throw new Error(
+        'Missing VAPID key. Firebase Console → Project settings → Cloud Messaging → Web Push certificates → copy Key pair into REACT_APP_FIREBASE_VAPID_KEY.'
+      );
+    }
+
+    const currentToken = await getToken(messaging, {
+        vapidKey: vapidKey.trim(),
         serviceWorkerRegistration: swReg
     });
     if (currentToken) {
