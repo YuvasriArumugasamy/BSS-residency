@@ -606,12 +606,13 @@ const SettingsView = ({ isSeason, onToggleSeason }) => {
         setFcmStatus('Enabled');
         alert('Push notifications enabled successfully!');
       } else {
-        alert('Failed to get token. Please check browser permissions.');
+        alert('Failed to get token (empty). If permissions are allowed, redeploy the site and hard-refresh, or check DevTools Console for [FCM].');
         setFcmStatus(Notification.permission === 'denied' ? 'Denied' : 'Not Requested');
       }
     } catch (e) {
       console.error(e);
-      alert('Error enabling push notifications');
+      const detail = e?.response?.data?.message || e?.message || String(e);
+      alert(`Push notification setup failed: ${detail}`);
     }
   };
 
