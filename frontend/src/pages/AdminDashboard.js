@@ -1348,8 +1348,6 @@ export default function AdminDashboard() {
     setAuth(JSON.parse(stored));
   }, [navigate]);
 
-  useEffect(() => { fetchData(); }, [fetchData]);
-
   // Request Notification Permission on mount
   useEffect(() => {
     if ('Notification' in window && Notification.permission === 'default') {
@@ -1365,11 +1363,9 @@ export default function AdminDashboard() {
       if (document.visibilityState === 'visible') fetchData();
     };
     document.addEventListener('visibilitychange', onVisible);
-    window.addEventListener('focus', fetchData);
     return () => {
       clearInterval(interval);
       document.removeEventListener('visibilitychange', onVisible);
-      window.removeEventListener('focus', fetchData);
     };
   }, [fetchData]);
 

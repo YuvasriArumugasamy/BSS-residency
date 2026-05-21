@@ -8,6 +8,11 @@ import roomGal1 from '../assets/room-ac-1.webp';
 import roomGal2 from '../assets/room-gallery-2.webp';
 import roomGal3 from '../assets/room-gallery-3.webp';
 import roomGal4 from '../assets/room-gallery-4.webp';
+
+import roomGal5 from '../assets/room-gallery-5.jpg';
+import roomGal6 from '../assets/room-gallery-6.jpg';
+import roomGal7 from '../assets/room-gallery-7.jpg';
+import roomGal8 from '../assets/room-gallery-8.jpg';
 import mainFalls from '../assets/main-falls-user.webp';
 import fiveFalls from '../assets/five falls.webp';
 import oldFalls from '../assets/old falls.webp';
@@ -32,6 +37,7 @@ import { AMENITIES, ROOMS, CONTACT, waLink, WA_TEMPLATES } from '../constants';
 import api from '../api/axios';
 import SEO from '../components/SEO';
 import './Home.css';
+import roomVideo from '../assets/room-video.mp4';
 
 const imgMap = {
   'double-bed': roomAcImg,       // Was 2nd, now 1st
@@ -257,11 +263,32 @@ export default function Home() {
               <Link to="/rooms" className="btn-outline-light">Explore Rooms</Link>
             </div>
           </div>
+          <style>{`
+            .hero-scroll {
+              position: absolute;
+              bottom: 2rem;
+              left: 50%;
+              transform: translateX(-50%);
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              gap: 0.4rem;
+              color: rgba(255, 255, 255, 0.55);
+              font-size: 0.7rem;
+              letter-spacing: 0.15em;
+              text-transform: uppercase;
+              animation: fadeIn 1s ease 1.5s both;
+            }
+
+
+          `}</style>
           <div className="hero-scroll">
             <div className="scroll-dot" />
             <span>Scroll to explore</span>
           </div>
         </section>
+
+
 
         {/* Amenities strip — infinite CSS marquee */}
         <section className="amenities-strip">
@@ -445,7 +472,7 @@ export default function Home() {
             <Link to="/booking" className="btn-primary" style={{ marginTop: '1.5rem', display: 'inline-block' }}><span>Book This Room</span></Link>
           </div>
           <div className="showcase-img">
-            <ImageCarousel images={[roomGal1, roomGal2, roomGal3, roomGal4]} alt="BSS Residency A/C Room" />
+            <ImageCarousel images={[roomGal1, roomGal2, roomGal3, roomGal4, roomGal5, roomGal6, roomGal7, roomGal8]} alt="BSS Residency A/C Room" />
           </div>
         </section>
 

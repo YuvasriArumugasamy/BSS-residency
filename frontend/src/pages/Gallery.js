@@ -5,6 +5,10 @@ import roomAc1 from '../assets/room-ac-1.webp';
 import roomAc2 from '../assets/room-ac-2.webp';
 import roomAc3 from '../assets/room-ac-3.webp';
 import roomFamily from '../assets/room-family.webp';
+import roomGal5 from '../assets/room-gallery-5.jpg';
+import roomGal6 from '../assets/room-gallery-6.jpg';
+import roomGal7 from '../assets/room-gallery-7.jpg';
+import roomGal8 from '../assets/room-gallery-8.jpg';
 import { waLink, CONTACT } from '../constants';
 import api from '../api/axios';
 import SEO from '../components/SEO';
@@ -18,6 +22,10 @@ const staticPhotos = [
   { id: 's5', src: roomFamily,  caption: 'Double Bed Room — Cosy Interiors', category: 'Rooms' },
   { id: 's6', src: roomAc3,     caption: 'Spacious Family Room',            category: 'Rooms' },
   { id: 's7', src: buildingImg, caption: 'Parking Area (Limited Space)',      category: 'Facilities' },
+  { id: 's8', src: roomGal5,    caption: 'Comfortable Triple Bed A/C Room',  category: 'Rooms' },
+  { id: 's9', src: roomGal6,    caption: 'Premium Four Bed A/C Suite',       category: 'Rooms' },
+  { id: 's10', src: roomGal7,   caption: 'Well-appointed Family Bed Room',   category: 'Rooms' },
+  { id: 's11', src: roomGal8,   caption: 'Elegant Double Bed Room Layout',   category: 'Rooms' },
 ];
 
 const categories = ['All', 'Exterior', 'Rooms', 'Facilities', 'Other'];
