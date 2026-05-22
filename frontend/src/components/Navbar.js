@@ -34,6 +34,7 @@ export default function Navbar() {
     { to: '/gallery', label: 'Gallery' },
     { to: '/booking/status', label: 'Manage Booking' },
     { to: '/contact', label: 'Contact' },
+    { to: '/faq', label: 'FAQ' },
   ];
 
   return (
@@ -100,27 +101,86 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* Mobile overlay */}
-      {menuOpen && (
-        <div className="mobile-menu">
-          <div className="mobile-menu-content">
-            {links.map((l) => (
-              <Link key={l.to} to={l.to} className={`mobile-link ${location.pathname === l.to ? 'active' : ''}`}>
-                {l.label}
-              </Link>
-            ))}
+      {/* Mobile Sidebar Overlay */}
+      <div className={`mobile-overlay ${menuOpen ? 'active' : ''}`} onClick={() => setMenuOpen(false)} />
+      
+      {/* Mobile Sidebar Panel */}
+      <div className={`mobile-sidebar ${menuOpen ? 'open' : ''}`}>
+        {/* Sidebar Header - Logo + Close */}
+        <div className="sidebar-header">
+          <Link to="/" className="sidebar-logo" onClick={() => setMenuOpen(false)}>
+            <span className="sidebar-logo-circle">
+              <img src={logo} alt="BSS Residency" width="48" height="48" />
+            </span>
+            <span className="sidebar-logo-text">
+              <span className="sidebar-bss">BSS</span>
+              <span className="sidebar-rest">Residency</span>
+            </span>
+          </Link>
+          <button className="sidebar-close" onClick={() => setMenuOpen(false)} aria-label="Close menu">
+            <i className="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        {/* Sidebar Navigation Links */}
+        <nav className="sidebar-nav">
+          {links.map((l, i) => (
+            <Link
+              key={l.to}
+              to={l.to}
+              className={`sidebar-link ${location.pathname === l.to ? 'active' : ''}`}
+              onClick={() => setMenuOpen(false)}
+              style={{ animationDelay: `${0.05 + i * 0.05}s` }}
+            >
+              {l.label}
+            </Link>
+          ))}
+        </nav>
+
+        {/* Sidebar Contact Info */}
+        <div className="sidebar-contact">
+          <h4 className="sidebar-contact-title">Contact Info</h4>
+          <p className="sidebar-contact-address">
+            {CONTACT.addressLine1},<br />
+            {CONTACT.addressLine2}
+          </p>
+          <a href={`tel:${CONTACT.phonePrimary.replace(/\s/g, '')}`} className="sidebar-contact-phone">
+            <i className="fa-solid fa-phone"></i> {CONTACT.phonePrimary}
+          </a>
+          <a href={`tel:${CONTACT.phoneSecondary.replace(/\s/g, '')}`} className="sidebar-contact-phone">
+            <i className="fa-solid fa-phone"></i> {CONTACT.phoneSecondary}
+          </a>
+          <div className="sidebar-social">
+            <a
+              href={waLink('Hello BSS Residency!')}
+              target="_blank"
+              rel="noreferrer"
+              className="sidebar-social-btn whatsapp"
+              title="WhatsApp"
+            >
+              <i className="fa-brands fa-whatsapp"></i>
+            </a>
+            <a
+              href={`https://instagram.com/${CONTACT.instagram}`}
+              target="_blank"
+              rel="noreferrer"
+              className="sidebar-social-btn instagram"
+              title="Instagram"
+            >
+              <i className="fa-brands fa-instagram"></i>
+            </a>
             <a
               href={MAP.directUrl}
               target="_blank"
               rel="noreferrer"
-              className="mobile-book-btn"
+              className="sidebar-social-btn maps"
+              title="Google Maps"
             >
-              📍 View on Google Maps
+              <i className="fa-solid fa-location-dot"></i>
             </a>
           </div>
         </div>
-      )}
+      </div>
     </>
   );
 }
-
