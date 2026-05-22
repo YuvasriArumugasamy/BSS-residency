@@ -1104,3 +1104,20 @@
 .admin-select:focus {
   border-color: var(--admin-primary);
 }
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .admin-sidebar { width: 250px; }
+  .admin-table-wrap { overflow-x: auto; }
+  .admin-table { min-width: 600px; }
+  .calendar-layout-grid { grid-template-columns: 1fr; }
+  .calendar-grid-table th, .calendar-grid-table td { white-space: nowrap; }
+}
+
+@media (max-width: 480px) {
+  .admin-sidebar { transform: translateX(-100%); }
+  .sidebar-backdrop { display: block; }
+  .admin-sidebar.open { transform: translateX(0); }
+  .admin-table { min-width: 100%; }
+  .stats-grid { grid-template-columns: 1fr; }
+  .calendar-main-section, .calendar-sidebar-section { padding: 1rem; }
+}
