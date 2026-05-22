@@ -512,7 +512,11 @@ export default function Home() {
                       style={{ cursor: 'pointer' }}
                     >
                       <div className="gr-header">
-                        <div className="gr-avatar" style={{ backgroundColor: bgColor }}>{initial}</div>
+                        {r.profileImage ? (
+                          <img src={r.profileImage} alt={r.guestName} className="gr-avatar-img" style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover' }} />
+                        ) : (
+                          <div className="gr-avatar" style={{ backgroundColor: bgColor }}>{initial}</div>
+                        )}
                         <div className="gr-name-wrap">
                           <span className="gr-name">{r.guestName}</span>
                           <svg className="gr-google-logo" viewBox="0 0 24 24" width="16" height="16" xmlns="http://www.w3.org/2000/svg">
@@ -595,11 +599,15 @@ export default function Home() {
             <button className="modal-close-btn" aria-label="Close modal" onClick={() => setSelectedReview(null)}>×</button>
             <div className="modal-header">
               <div className="modal-user-side">
-                <div className="modal-avatar" style={{
-                  backgroundColor: ['#1a73e8', '#d93025', '#188038', '#f29900'][(selectedReview.guestName || 'G').charCodeAt(0) % 4]
-                }}>
-                  {(selectedReview.guestName || 'G').charAt(0).toUpperCase()}
-                </div>
+                {selectedReview.profileImage ? (
+                  <img src={selectedReview.profileImage} alt={selectedReview.guestName} className="modal-avatar" style={{ width: '50px', height: '50px', borderRadius: '50%', objectFit: 'cover' }} />
+                ) : (
+                  <div className="modal-avatar" style={{
+                    backgroundColor: ['#1a73e8', '#d93025', '#188038', '#f29900'][(selectedReview.guestName || 'G').charCodeAt(0) % 4]
+                  }}>
+                    {(selectedReview.guestName || 'G').charAt(0).toUpperCase()}
+                  </div>
+                )}
                 <h3>{selectedReview.guestName || 'Guest'}</h3>
               </div>
               <div className="modal-google-side">

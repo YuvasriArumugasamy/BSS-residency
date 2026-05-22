@@ -451,11 +451,11 @@ router.get('/public/reviews', async (req, res) => {
 // POST /api/bookings/reviews — Submit a new review
 router.post('/public/reviews', async (req, res) => {
   try {
-    const { guestName, rating, comment } = req.body;
+    const { guestName, rating, comment, profileImage } = req.body;
     if (!guestName || !rating || !comment) {
       return res.status(400).json({ success: false, message: 'All fields are required.' });
     }
-    const review = new Review({ guestName, rating, comment });
+    const review = new Review({ guestName, rating, comment, profileImage: profileImage || '' });
     await review.save();
 
     // Create Notification
