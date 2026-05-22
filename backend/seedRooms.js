@@ -17,31 +17,31 @@ const seedRooms = async () => {
     console.log('Existing rooms cleared.');
 
     const newRooms = [
-      // First Floor (6 Rooms)
-      { roomNumber: '101', type: 'AC Double Bed', price: 1500, status: 'Available' },
-      { roomNumber: '102', type: 'Four Bed A/C', price: 2500, status: 'Available' },
-      { roomNumber: '103', type: 'AC Double Bed', price: 1500, status: 'Available' },
-      { roomNumber: '104', type: 'AC Double Bed', price: 1500, status: 'Available' },
-      { roomNumber: '105', type: 'AC Double Bed', price: 1500, status: 'Available' },
-      { roomNumber: '106', type: 'AC Double Bed', price: 1500, status: 'Available' },
+      // First Floor
+      { roomNumber: '101', type: 'Double Bed', price: 1000, nonSeasonPrice: 1000, seasonPrice: 1300, status: 'Available' },
+      { roomNumber: '102', type: 'Four Bed', price: 2000, nonSeasonPrice: 2000, seasonPrice: 2500, status: 'Available' },
+      { roomNumber: '103', type: 'Double Bed', price: 1000, nonSeasonPrice: 1000, seasonPrice: 1300, status: 'Available' },
+      { roomNumber: '104', type: 'Double Bed', price: 1000, nonSeasonPrice: 1000, seasonPrice: 1300, status: 'Available' },
+      { roomNumber: '105', type: 'Double Bed A/C', price: 1300, nonSeasonPrice: 1300, seasonPrice: 1600, status: 'Available' },
+      { roomNumber: '106', type: 'Double Bed', price: 1000, nonSeasonPrice: 1000, seasonPrice: 1300, status: 'Available' },
 
-      // Second Floor (7 Rooms)
-      { roomNumber: '201', type: 'Four Bed A/C', price: 2500, status: 'Available' },
-      { roomNumber: '202', type: 'Four Bed A/C', price: 2500, status: 'Available' },
-      { roomNumber: '203', type: 'AC Double Bed', price: 1500, status: 'Available' },
-      { roomNumber: '204', type: 'AC Double Bed', price: 1500, status: 'Available' },
-      { roomNumber: '205', type: 'AC Double Bed', price: 1500, status: 'Available' },
-      { roomNumber: '206', type: 'AC Double Bed', price: 1500, status: 'Available' },
-      { roomNumber: '207', type: 'Four Bed A/C', price: 2500, status: 'Available' },
+      // Second Floor
+      { roomNumber: '201', type: 'Four Bed', price: 2000, nonSeasonPrice: 2000, seasonPrice: 2500, status: 'Available' },
+      { roomNumber: '202', type: 'Four Bed', price: 2000, nonSeasonPrice: 2000, seasonPrice: 2500, status: 'Available' },
+      { roomNumber: '203', type: 'Double Bed', price: 1000, nonSeasonPrice: 1000, seasonPrice: 1300, status: 'Available' },
+      { roomNumber: '204', type: 'Double Bed', price: 1000, nonSeasonPrice: 1000, seasonPrice: 1300, status: 'Available' },
+      { roomNumber: '205', type: 'Double Bed', price: 1000, nonSeasonPrice: 1000, seasonPrice: 1300, status: 'Available' },
+      { roomNumber: '206', type: 'Double Bed', price: 1000, nonSeasonPrice: 1000, seasonPrice: 1300, status: 'Available' },
+      { roomNumber: '207', type: 'Four Bed', price: 2000, nonSeasonPrice: 2000, seasonPrice: 2500, status: 'Available' },
 
-      // Third Floor (7 Rooms)
-      { roomNumber: '301', type: 'AC Double Bed', price: 1500, status: 'Available' },
-      { roomNumber: '302', type: 'Four Bed A/C', price: 2500, status: 'Available' },
-      { roomNumber: '303', type: 'AC Double Bed', price: 1500, status: 'Available' },
-      { roomNumber: '304', type: 'AC Double Bed', price: 1500, status: 'Available' },
-      { roomNumber: '305', type: 'AC Double Bed', price: 1500, status: 'Available' },
-      { roomNumber: '306', type: 'AC Double Bed', price: 1500, status: 'Available' },
-      { roomNumber: '307', type: 'Four Bed A/C', price: 2500, status: 'Available' },
+      // Third Floor
+      { roomNumber: '301', type: 'Three Bed', price: 1500, nonSeasonPrice: 1500, seasonPrice: 1800, status: 'Available' },
+      { roomNumber: '302', type: 'Four Bed', price: 2000, nonSeasonPrice: 2000, seasonPrice: 2500, status: 'Available' },
+      { roomNumber: '303', type: 'Double Bed', price: 1000, nonSeasonPrice: 1000, seasonPrice: 1300, status: 'Available' },
+      { roomNumber: '304', type: 'Double Bed', price: 1000, nonSeasonPrice: 1000, seasonPrice: 1300, status: 'Available' },
+      { roomNumber: '305', type: 'Double Bed', price: 1000, nonSeasonPrice: 1000, seasonPrice: 1300, status: 'Available' },
+      { roomNumber: '306', type: 'Double Bed', price: 1000, nonSeasonPrice: 1000, seasonPrice: 1300, status: 'Available' },
+      { roomNumber: '307', type: 'Four Bed A/C', price: 2300, nonSeasonPrice: 2300, seasonPrice: 2800, status: 'Available' },
     ];
 
     await Room.insertMany(newRooms);
