@@ -231,9 +231,17 @@
 /* Stats Cards */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  /* Default: up to 4 columns on larger screens */
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 1.5rem;
   margin-bottom: 2.5rem;
+}
+
+/* Mobile: force two columns if space permits, otherwise fall back to single */
+@media (max-width: 480px) {
+  .stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  }
 }
 
 .stat-card {
@@ -810,7 +818,7 @@
     bottom: 0;
     background: rgba(0,0,0,0.4);
     backdrop-filter: blur(2px);
-    z-index: 1000;
+    z-index: 999;
     animation: fadeIn 0.3s ease;
   }
 
@@ -868,6 +876,17 @@
   font-size: 1.5rem;
   font-weight: 700;
   margin: 0;
+}
+
+/* Disable heavy backdrop blur on small/mobile screens to improve readability */
+@media (max-width: 700px) {
+  .modal-overlay,
+  .sidebar-backdrop,
+  .login-card,
+  .admin-login-page::before {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
 }
 
 .close-btn {
@@ -1115,8 +1134,8 @@
 
 @media (max-width: 480px) {
   .admin-sidebar { transform: translateX(-100%); }
-  .sidebar-backdrop { display: block; }
-  .admin-sidebar.open { transform: translateX(0); }
+  /* Sidebar backdrop visibility controlled by body.sidebar-open */
+  body.sidebar-open .admin-sidebar { transform: translateX(0); }
   .admin-table { min-width: 100%; }
   .stats-grid { grid-template-columns: 1fr; }
   .calendar-main-section, .calendar-sidebar-section { padding: 1rem; }
