@@ -1298,8 +1298,8 @@
   }
 
   .google-review-card {
-    flex: 0 0 85%;
-    /* 85% so users see a peek of the next card */
+    flex: 0 0 100%;
+    /* 100% so users see exactly 1 full card */
   }
 
   .reviews-carousel {
@@ -1318,11 +1318,11 @@
   }
 
   .carousel-nav {
-    display: none !important; /* Swiping is natural on mobile; hide navigation buttons to avoid clutter */
+    display: flex !important; /* Make nav buttons visible on mobile */
   }
 
   .google-review-card {
-    flex: 0 0 90%; /* 90% ensures the card displays fully and doesn't get clipped */
+    flex: 0 0 100%; /* 100% ensures exactly 1 full card displays */
     padding: 1.5rem;
     scroll-snap-align: center;
   }
@@ -1561,6 +1561,7 @@
   }
 
   .carousel-nav {
+    display: flex !important;
     width: 44px;
     height: 44px;
     font-size: 1.5rem;
@@ -2169,6 +2170,78 @@
 
 .btn-book-now-hero:active {
   transform: translateY(-1px) !important;
+}
+
+/* ==== Mobile Adjustments ==== */
+@media (max-width: 768px) {
+  /* Hero tweaks */
+  .hero {
+    height: auto;
+    min-height: 60vh;
+    padding: 2rem 1rem;
+  }
+  .hero-content h1 {
+    font-size: clamp(2rem, 8vw, 3rem);
+  }
+  .hero-content p {
+    font-size: 0.95rem;
+  }
+  .hero-btns {
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  /* Video showcase */
+  .video-section {
+    padding: 2rem 1rem;
+  }
+  .video-section video {
+    max-height: 200px;
+  }
+
+  /* Amenities strip – horizontal scroll */
+  .amenities-strip {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 0.5rem 0;
+  }
+  .amenities-track {
+    animation: none;
+    width: max-content;
+    gap: 0.8rem;
+  }
+  .amenity {
+    flex: 0 0 auto;
+    padding: 0.8rem 1.2rem;
+    font-size: 0.85rem;
+  }
+
+  /* About section – single column */
+  .home-about {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+    padding: 4rem 1.5rem;
+  }
+
+  /* Rooms grid */
+  .rooms-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .rooms-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* CTA button size reduction on mobile */
+@media (max-width: 768px) {
+  .btn-book-now-hero {
+    font-size: 16px !important;
+    padding: 12px 24px !important;
+  }
 }
 
 
