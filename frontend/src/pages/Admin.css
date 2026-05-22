@@ -880,10 +880,17 @@
 
 /* Disable heavy backdrop blur on small/mobile screens to improve readability */
 @media (max-width: 700px) {
+  /* Target known overlay elements first */
   .modal-overlay,
   .sidebar-backdrop,
   .login-card,
   .admin-login-page::before {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  /* Fallback: remove any remaining backdrop-filter on all elements on small screens */
+  * {
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
   }
