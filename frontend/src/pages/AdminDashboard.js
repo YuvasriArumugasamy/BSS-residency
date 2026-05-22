@@ -685,15 +685,6 @@ const SettingsView = ({ isSeason, onToggleSeason }) => {
             >
               {fcmStatus === 'Enabled' ? 'Resync Alerts' : 'Enable Alerts'}
             </button>
-            <button
-              type="button"
-              className="admin-btn"
-              style={{ background: '#0f172a', color: '#fff', padding: '0.45rem 1rem', fontSize: '0.85rem' }}
-              onClick={handleTestPush}
-              disabled={fcmStatus === 'Unsupported'}
-            >
-              Send Test Notification
-            </button>
           </div>
         </div>
       </div>
