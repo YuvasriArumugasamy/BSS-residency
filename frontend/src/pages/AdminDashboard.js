@@ -32,6 +32,7 @@ const Sidebar = ({ activeTab, setActiveTab, onLogout, username, unreadCount = 0,
     { id: 'overview', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
     { id: 'rooms', label: 'Rooms', icon: <Bed size={20} /> },
     { id: 'bookings', label: 'Bookings', icon: <CalendarCheck size={20} /> },
+    { id: 'calendar', label: 'Calendar', icon: <Calendar size={20} /> },
     { id: 'guests', label: 'Guests', icon: <Users size={20} /> },
     { id: 'payments', label: 'Payments', icon: <CreditCard size={20} /> },
     { id: 'reports', label: 'Reports', icon: <PieChart size={20} /> },
@@ -1104,6 +1105,486 @@ const NotificationsView = ({ notifications, period, setPeriod, selectedMonth, se
   );
 };
 
+// --- ROOM AVAILABILITY CALENDAR COMPONENT ---
+const RoomAvailabilityCalendar = ({ 
+  rooms, 
+  bookings, 
+  startDate, 
+  setStartDate, 
+  loading, 
+  onRefresh, 
+  onCellClick, 
+  onUpdateRoomNumber, 
+  formatDate 
+}) => {
+  const [selectedRoomType, setSelectedRoomType] = useState('All');
+  const [selectedBooking, setSelectedBooking] = useState(null);
+
+  // Generate 14 days starting from startDate
+  const dates = [];
+  for (let i = 0; i < 14; i++) {
+    const d = new Date(startDate);
+    d.setDate(d.getDate() + i);
+    dates.push(d);
+  }
+
+  // Filter rooms by type if filter is active
+  const filteredRooms = rooms.filter(r => selectedRoomType === 'All' || r.type === selectedRoomType);
+
+  // Filter unassigned bookings that overlap with our 14 day window
+  const endDate = new Date(startDate);
+  endDate.setDate(endDate.getDate() + 14);
+
+  const unassignedBookings = bookings.filter(b => {
+    if (b.roomNumber) return false;
+    if (b.status === 'Cancelled') return false;
+    const checkIn = new Date(b.checkIn);
+    const checkOut = new Date(b.checkOut);
+    return checkIn < endDate && checkOut > startDate;
+  });
+
+  const navigateDays = (days) => {
+    const nextD = new Date(startDate);
+    nextD.setDate(nextD.getDate() + days);
+    setStartDate(nextD);
+  };
+
+  const getDayLabel = (d) => {
+    return d.toLocaleDateString('en-IN', { weekday: 'short' });
+  };
+
+  const getDateLabel = (d) => {
+    return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short' });
+  };
+
+  const isToday = (d) => {
+    const today = new Date();
+    return d.getDate() === today.getDate() && 
+           d.getMonth() === today.getMonth() && 
+           d.getFullYear() === today.getFullYear();
+  };
+
+  // Find booking for a specific room and date
+  // Night belongs to date D if checkIn <= D and checkOut > D
+  const getBookingForCell = (roomNumber, date) => {
+    const dTime = new Date(date).setHours(0, 0, 0, 0);
+    return bookings.find(b => {
+      if (b.roomNumber !== roomNumber) return false;
+      if (b.status === 'Cancelled') return false;
+      const checkInTime = new Date(b.checkIn).setHours(0, 0, 0, 0);
+      const checkOutTime = new Date(b.checkOut).setHours(0, 0, 0, 0);
+      return dTime >= checkInTime && dTime < checkOutTime;
+    });
+  };
+
+  // Helper to find which rooms are free for a booking's dates
+  const getAvailableRoomsForBooking = (b) => {
+    const bStart = new Date(b.checkIn).setHours(0,0,0,0);
+    const bEnd = new Date(b.checkOut).setHours(0,0,0,0);
+
+    // Find rooms of requested type
+    const candidateRooms = rooms.filter(r => r.type === b.roomType);
+
+    // Filter out rooms that have overlapping bookings during this window (excluding this booking)
+    return candidateRooms.filter(room => {
+      const hasOverlap = bookings.some(ob => {
+        if (ob._id === b._id) return false;
+        if (ob.roomNumber !== room.roomNumber) return false;
+        if (ob.status === 'Cancelled') return false;
+        const obStart = new Date(ob.checkIn).setHours(0,0,0,0);
+        const obEnd = new Date(ob.checkOut).setHours(0,0,0,0);
+        return bStart < obEnd && bEnd > obStart;
+      });
+      return !hasOverlap;
+    });
+  };
+
+  const auth = JSON.parse(sessionStorage.getItem('bss_admin') || '{}');
+
+  return (
+    <div className="calendar-view-container fade-in">
+      <div className="calendar-layout-grid">
+        
+        {/* Main Grid Section */}
+        <div className="calendar-main-section card">
+          <div className="calendar-header-actions" style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
+            <div className="navigation-controls" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <button className="admin-btn admin-btn-outline" onClick={() => navigateDays(-14)}>◀ Prev 14 Days</button>
+              <button className="admin-btn admin-btn-outline" onClick={() => {
+                const today = new Date();
+                today.setHours(0,0,0,0);
+                setStartDate(today);
+              }}>Today</button>
+              <button className="admin-btn admin-btn-outline" onClick={() => navigateDays(14)}>Next 14 Days ▶</button>
+            </div>
+            
+            <div className="filter-controls" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#f8fafc', padding: '0.4rem 0.8rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                <span style={{ fontSize: '0.85rem', fontWeight: 600, color: '#64748b' }}>Start Date:</span>
+                <input 
+                  type="date" 
+                  value={startDate.toISOString().split('T')[0]} 
+                  onChange={(e) => {
+                    if (e.target.value) {
+                      const d = new Date(e.target.value);
+                      d.setHours(0,0,0,0);
+                      setStartDate(d);
+                    }
+                  }}
+                  style={{ border: 'none', background: 'transparent', fontWeight: 700, outline: 'none', color: '#1e293b', fontSize: '0.85rem', cursor: 'pointer' }}
+                />
+              </div>
+
+              <select 
+                value={selectedRoomType} 
+                onChange={(e) => setSelectedRoomType(e.target.value)}
+                className="admin-select"
+                style={{ padding: '0.45rem 1rem', fontSize: '0.85rem', fontWeight: 600, minWidth: '150px' }}
+              >
+                <option value="All">All Room Types</option>
+                <option value="Double Bed">Double Bed</option>
+                <option value="Double Bed A/C">Double Bed A/C</option>
+                <option value="Three Bed">Three Bed</option>
+                <option value="Four Bed">Four Bed</option>
+                <option value="Four Bed A/C">Four Bed A/C</option>
+                <option value="Deluxe AC">Deluxe AC</option>
+                <option value="Suite">Suite</option>
+              </select>
+            </div>
+          </div>
+
+          {loading ? (
+            <div style={{ display: 'flex', justifyContent: 'center', padding: '5rem' }}>
+              <div className="spinner" />
+            </div>
+          ) : (
+            <div className="calendar-grid-wrapper" style={{ overflowX: 'auto', borderRadius: '12px', border: '1px solid #e2e8f0', boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.02)' }}>
+              <table className="calendar-grid-table" style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                <thead>
+                  <tr>
+                    <th className="sticky-col header-cell" style={{ position: 'sticky', left: 0, zIndex: 11, background: '#f8fafc', padding: '1rem', borderBottom: '2px solid #e2e8f0', fontWeight: 700, color: '#475569', minWidth: '180px', borderRight: '2px solid #e2e8f0' }}>
+                      Rooms ({filteredRooms.length})
+                    </th>
+                    {dates.map((d, idx) => (
+                      <th key={idx} className={`header-cell ${isToday(d) ? 'today-col' : ''}`} style={{ 
+                        padding: '0.75rem 1rem', 
+                        borderBottom: '2px solid #e2e8f0', 
+                        borderRight: '1px solid #e2e8f0', 
+                        minWidth: '100px', 
+                        textAlign: 'center',
+                        background: isToday(d) ? '#fffbeb' : '#f8fafc',
+                        position: 'relative'
+                      }}>
+                        <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', fontWeight: 700, color: isToday(d) ? '#d4a857' : '#94a3b8' }}>
+                          {getDayLabel(d)}
+                        </div>
+                        <div style={{ fontSize: '0.9rem', fontWeight: 700, color: isToday(d) ? '#b45309' : '#475569' }}>
+                          {getDateLabel(d)}
+                        </div>
+                        {isToday(d) && (
+                          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '4px', background: '#d4a857' }} />
+                        )}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredRooms.map(room => (
+                    <tr key={room._id} className="room-row" style={{ borderBottom: '1px solid #edf2f7' }}>
+                      <td className="sticky-col room-info-cell" style={{ 
+                        position: 'sticky', 
+                        left: 0, 
+                        zIndex: 10, 
+                        background: '#ffffff', 
+                        padding: '1rem', 
+                        fontWeight: 700, 
+                        borderRight: '2px solid #e2e8f0',
+                        boxShadow: '4px 0 8px -4px rgba(0,0,0,0.08)'
+                      }}>
+                        <div style={{ fontSize: '1rem', color: '#1e293b', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          🏢 Room {room.roomNumber}
+                        </div>
+                        <span style={{ 
+                          display: 'inline-block', 
+                          fontSize: '0.68rem', 
+                          marginTop: '4px', 
+                          padding: '2px 6px', 
+                          borderRadius: '4px', 
+                          background: room.type.includes('A/C') || room.type.includes('AC') ? '#eff6ff' : '#f4f4f5', 
+                          color: room.type.includes('A/C') || room.type.includes('AC') ? '#2563eb' : '#71717a',
+                          fontWeight: 600
+                        }}>
+                          {room.type}
+                        </span>
+                      </td>
+
+                      {dates.map((date, idx) => {
+                        const booking = getBookingForCell(room.roomNumber, date);
+                        const isDateToday = isToday(date);
+                        
+                        if (booking) {
+                          // Cell is booked
+                          const isCheckinDay = new Date(booking.checkIn).toDateString() === date.toDateString();
+                          const isCheckoutDay = new Date(booking.checkOut).toDateString() === date.toDateString();
+                          
+                          // Determine status styling
+                          let bg = '#eff6ff'; // default blue (Confirmed)
+                          let color = '#1d4ed8';
+                          let border = '#bfdbfe';
+                          let statusLabel = 'Confirmed';
+
+                          if (booking.status === 'Pending') {
+                            bg = '#fffbeb'; // amber
+                            color = '#b45309';
+                            border = '#fef3c7';
+                            statusLabel = 'Pending';
+                          } else if (booking.status === 'Checked-out') {
+                            bg = '#f0fdf4'; // emerald
+                            color = '#15803d';
+                            border = '#bbf7d0';
+                            statusLabel = 'Stay Completed';
+                          }
+
+                          return (
+                            <td 
+                              key={idx} 
+                              className="booked-cell"
+                              onClick={() => setSelectedBooking(booking)}
+                              style={{ 
+                                padding: '6px', 
+                                borderRight: '1px solid #e2e8f0', 
+                                background: isDateToday ? '#fffbeb' : '#ffffff',
+                                cursor: 'pointer',
+                                transition: 'all 0.2s'
+                              }}
+                            >
+                              <div style={{ 
+                                background: bg, 
+                                color: color, 
+                                border: `1px solid ${border}`,
+                                borderRadius: '6px', 
+                                padding: '8px 6px', 
+                                fontSize: '0.8rem', 
+                                fontWeight: 600,
+                                textAlign: 'center',
+                                minHeight: '52px',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'center',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                whiteSpace: 'nowrap',
+                                boxShadow: '0 1px 2px rgba(0,0,0,0.03)'
+                              }}
+                               title={`${booking.name} (${statusLabel}) | Check-in: ${new Date(booking.checkIn).toLocaleDateString()} | Check-out: ${new Date(booking.checkOut).toLocaleDateString()}`}
+                              >
+                                <span style={{ fontSize: '0.82rem', display: 'block', fontWeight: 700 }}>{booking.name}</span>
+                                <span style={{ fontSize: '0.62rem', opacity: 0.8, textTransform: 'uppercase', letterSpacing: '0.02em', marginTop: '2px' }}>
+                                  {isCheckinDay ? '📥 In' : (isCheckoutDay ? '📤 Out' : '🔑 Occupied')}
+                                </span>
+                              </div>
+                            </td>
+                          );
+                        }
+
+                        // Cell is free/maintenance
+                        const isMaintenance = room.status === 'Maintenance';
+                        
+                        return (
+                          <td 
+                            key={idx} 
+                            className="available-cell"
+                            onClick={() => !isMaintenance && onCellClick(room, date)}
+                            style={{ 
+                              padding: '10px', 
+                              borderRight: '1px solid #e2e8f0', 
+                              background: isMaintenance ? '#f8fafc' : (isDateToday ? '#fffbeb' : '#ffffff'),
+                              textAlign: 'center',
+                              cursor: isMaintenance ? 'not-allowed' : 'pointer',
+                              position: 'relative'
+                            }}
+                          >
+                            {isMaintenance ? (
+                              <div style={{ color: '#94a3b8', fontSize: '0.75rem', fontWeight: 500 }}>
+                                🛠️ Blocked
+                              </div>
+                            ) : (
+                              <div className="hover-booking-badge" style={{ color: '#10b981', fontSize: '0.75rem', fontWeight: 700, opacity: 0.2 }}>
+                                + Book
+                              </div>
+                            )}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {/* Quick Active Booking Details Card */}
+          {selectedBooking && (
+            <div className="active-booking-details-card" style={{ marginTop: '2rem', padding: '1.5rem', background: '#f8fafc', borderRadius: '12px', border: '1px solid #e2e8f0', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap: '1.5rem', position: 'relative' }}>
+              <button 
+                onClick={() => setSelectedBooking(null)}
+                style={{ position: 'absolute', top: '12px', right: '12px', background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8' }}
+              >
+                <X size={20} />
+              </button>
+              
+              <div style={{ minWidth: '220px' }}>
+                <h4 style={{ margin: '0 0 6px 0', fontSize: '1.1rem', fontWeight: 700 }}>{selectedBooking.name}</h4>
+                <p style={{ margin: '0 0 10px 0', color: '#64748b', fontSize: '0.85rem' }}>📞 {selectedBooking.phone}</p>
+                <div style={{ display: 'flex', gap: '6px' }}>
+                  <span style={{ fontSize: '0.7rem', padding: '3px 8px', borderRadius: '12px', fontWeight: 700, background: selectedBooking.status === 'Pending' ? '#fff9db' : '#e7f5ff', color: selectedBooking.status === 'Pending' ? '#f08c00' : '#228be6', textTransform: 'uppercase' }}>
+                    {selectedBooking.status}
+                  </span>
+                  <span style={{ fontSize: '0.7rem', padding: '3px 8px', borderRadius: '12px', fontWeight: 700, background: '#f1f3f5', color: '#495057' }}>
+                    Room #{selectedBooking.roomNumber || 'Unassigned'}
+                  </span>
+                </div>
+              </div>
+
+              <div style={{ minWidth: '200px' }}>
+                <p style={{ margin: '0 0 4px 0', fontSize: '0.85rem', color: '#64748b' }}>Stay Duration</p>
+                <p style={{ margin: 0, fontWeight: 700 }}>
+                  📅 {formatDate(selectedBooking.checkIn)} — {formatDate(selectedBooking.checkOut)}
+                </p>
+                <p style={{ margin: '4px 0 0 0', fontSize: '0.8rem', color: '#868e96' }}>
+                  Requested: {selectedBooking.roomType} | {selectedBooking.guests} Guests
+                </p>
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+                {selectedBooking.status === 'Pending' && (
+                  <button 
+                    onClick={async () => {
+                      const headers = { username: auth.username, password: auth.password };
+                      if (window.confirm(`Confirm booking for ${selectedBooking.name}?`)) {
+                        try {
+                          const res = await api.patch(`/api/admin/bookings/${selectedBooking._id}`, { status: 'Confirmed' }, { headers });
+                          if (res.data?.waLink) window.open(res.data.waLink, '_blank');
+                          setSelectedBooking(null);
+                          onRefresh();
+                        } catch (e) { alert(e.message); }
+                      }
+                    }} 
+                    className="admin-btn admin-btn-primary" 
+                    style={{ background: '#10b981', color: 'white' }}
+                  >
+                    Confirm Booking
+                  </button>
+                )}
+                {selectedBooking.status === 'Confirmed' && (
+                  <button 
+                    onClick={async () => {
+                      const headers = { username: auth.username, password: auth.password };
+                      if (window.confirm(`Check-out guest ${selectedBooking.name}?`)) {
+                        try {
+                          await api.patch(`/api/admin/bookings/${selectedBooking._id}`, { status: 'Checked-out' }, { headers });
+                          setSelectedBooking(null);
+                          onRefresh();
+                        } catch (e) { alert(e.message); }
+                      }
+                    }} 
+                    className="admin-btn admin-btn-primary" 
+                    style={{ background: '#0284c7', color: 'white' }}
+                  >
+                    Check Out Room
+                  </button>
+                )}
+                <button 
+                  onClick={() => {
+                    const checkIn = new Date(selectedBooking.checkIn).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' });
+                    const checkOut = new Date(selectedBooking.checkOut).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' });
+                    const msg = `Hello ${selectedBooking.name}! 👋\n\nThis is BSS Residency, Courtallam. Regarding your stay in *Room ${selectedBooking.roomNumber}* from *${checkIn}* to *${checkOut}*:\n\nPlease let us know if you need any assistance! 🙏`;
+                    const guestPhone = selectedBooking.phone.replace(/[^0-9]/g, '');
+                    const formatted = guestPhone.startsWith('91') ? guestPhone : `91${guestPhone}`;
+                    window.open(`https://wa.me/${formatted}?text=${encodeURIComponent(msg)}`, '_blank');
+                  }} 
+                  className="admin-btn admin-btn-outline" 
+                  style={{ display: 'flex', alignItems: 'center', gap: '4px', borderColor: '#25D366', color: '#25D366', background: '#fff' }}
+                >
+                  <MessageCircle size={16} /> WhatsApp Guest
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Sidebar Panel for Room Assignment */}
+        <div className="calendar-sidebar-section card">
+          <h3 style={{ borderBottom: '1px solid #f1f5f9', paddingBottom: '0.75rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '1.2rem', fontWeight: 700 }}>
+            📌 Room Allocations
+          </h3>
+
+          <p style={{ color: '#64748b', fontSize: '0.85rem', lineHeight: '1.4', marginBottom: '1.25rem' }}>
+            Bookings in this 14-day window that are confirmed but do not have an assigned physical room number. Assign them below:
+          </p>
+
+          {unassignedBookings.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '2rem 1rem', background: '#f8fafc', borderRadius: '12px', border: '1px dashed #cbd5e1', color: '#94a3b8' }}>
+              <ClipboardCheck size={32} style={{ opacity: 0.5, marginBottom: '0.5rem' }} />
+              <div style={{ fontSize: '0.85rem', fontWeight: 600 }}>All Bookings Assigned!</div>
+              <div style={{ fontSize: '0.75rem' }}>No pending room allocations.</div>
+            </div>
+          ) : (
+            <div className="unassigned-bookings-list" style={{ display: 'grid', gap: '1rem' }}>
+              {unassignedBookings.map(b => {
+                const freeRooms = getAvailableRoomsForBooking(b);
+                return (
+                  <div key={b._id} className="unassigned-booking-card" style={{ padding: '1rem', background: '#fff', borderRadius: '10px', border: '1px solid #e2e8f0', boxShadow: '0 1px 3px rgba(0,0,0,0.02)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.5rem' }}>
+                      <div style={{ fontWeight: 700, fontSize: '0.9rem', color: '#1e293b' }}>{b.name}</div>
+                      <span style={{ fontSize: '0.65rem', padding: '2px 6px', borderRadius: '10px', fontWeight: 700, background: '#eff6ff', color: '#2563eb', textTransform: 'uppercase' }}>
+                        {b.roomType}
+                      </span>
+                    </div>
+                    
+                    <div style={{ fontSize: '0.78rem', color: '#64748b', display: 'grid', gap: '2px', marginBottom: '0.75rem' }}>
+                      <div>📅 {getDateLabel(new Date(b.checkIn))} — {getDateLabel(new Date(b.checkOut))}</div>
+                      <div>👥 {b.guests} Guests</div>
+                      <div>📞 {b.phone}</div>
+                    </div>
+
+                    <div className="room-assign-row" style={{ display: 'grid', gap: '0.35rem' }}>
+                      <label style={{ fontSize: '0.7rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase' }}>Available Rooms</label>
+                      <select 
+                        defaultValue=""
+                        onChange={async (e) => {
+                          const roomNum = e.target.value;
+                          if (roomNum) {
+                            if (window.confirm(`Assign Room #${roomNum} to ${b.name}?`)) {
+                              await onUpdateRoomNumber(b._id, roomNum);
+                              onRefresh();
+                            }
+                          }
+                        }}
+                        style={{ padding: '0.45rem', fontSize: '0.8rem', borderRadius: '6px', border: '1px solid #cbd5e1', cursor: 'pointer', outline: 'none' }}
+                      >
+                        <option value="" disabled>-- Select a Room --</option>
+                        {freeRooms.map(r => (
+                          <option key={r.roomNumber} value={r.roomNumber}>
+                            Room {r.roomNumber} (Available)
+                          </option>
+                        ))}
+                        {freeRooms.length === 0 && (
+                          <option disabled value="">No matching free rooms found!</option>
+                        )}
+                      </select>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export default function AdminDashboard() {
   const navigate = useNavigate();
   const [auth, setAuth] = useState(null);
@@ -1217,6 +1698,70 @@ export default function AdminDashboard() {
     paymentMethod: 'Cash'
   });
   const [offlineLoading, setOfflineLoading] = useState(false);
+
+  // Calendar State & Fetching
+  const [calendarStartDate, setCalendarStartDate] = useState(() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return today;
+  });
+  const [calendarBookings, setCalendarBookings] = useState([]);
+  const [calendarLoading, setCalendarLoading] = useState(false);
+
+  const handleCellClick = (room, date) => {
+    // Format check-in date correctly without timezone shifting
+    const checkInDateStr = new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().split('T')[0];
+    
+    // Set checkout date default to next day
+    const nextDay = new Date(date);
+    nextDay.setDate(nextDay.getDate() + 1);
+    const checkOutDateStr = new Date(nextDay.getTime() - nextDay.getTimezoneOffset() * 60000).toISOString().split('T')[0];
+
+    setOfflineForm({
+      name: '',
+      phone: '',
+      email: '',
+      roomType: room.type,
+      checkIn: checkInDateStr,
+      checkOut: checkOutDateStr,
+      guests: room.type.includes('Four') ? 4 : (room.type.includes('Three') ? 3 : 2),
+      rooms: 1,
+      message: `Offline Booking pre-filled for Room #${room.roomNumber}`,
+      advancePaid: 0,
+      paymentMethod: 'Cash'
+    });
+    setIsOfflineModalOpen(true);
+  };
+
+  const fetchCalendarData = useCallback(async () => {
+    if (!auth) return;
+    setCalendarLoading(true);
+    try {
+      const headers = { username: auth.username, password: auth.password };
+      const endDate = new Date(calendarStartDate);
+      endDate.setDate(endDate.getDate() + 14); // 14 days view
+      const res = await api.get('/api/admin/calendar-bookings', {
+        headers,
+        params: {
+          startDate: calendarStartDate.toISOString(),
+          endDate: endDate.toISOString()
+        }
+      });
+      if (res.data.success) {
+        setCalendarBookings(res.data.bookings);
+      }
+    } catch (err) {
+      console.error('Fetch calendar error:', err);
+    } finally {
+      setCalendarLoading(false);
+    }
+  }, [auth, calendarStartDate]);
+
+  useEffect(() => {
+    if (activeTab === 'calendar') {
+      fetchCalendarData();
+    }
+  }, [activeTab, fetchCalendarData]);
 
   const fetchData = useCallback(async () => {
     if (!auth) return;
@@ -1661,6 +2206,20 @@ export default function AdminDashboard() {
         formatDate={formatDate}
         onAddOfflineBookingClick={() => setIsOfflineModalOpen(true)}
       />;
+      case 'calendar':
+        return (
+          <RoomAvailabilityCalendar
+            rooms={rooms}
+            bookings={calendarBookings}
+            startDate={calendarStartDate}
+            setStartDate={setCalendarStartDate}
+            loading={calendarLoading}
+            onRefresh={fetchCalendarData}
+            onCellClick={handleCellClick}
+            onUpdateRoomNumber={handleUpdateRoomNumber}
+            formatDate={formatDate}
+          />
+        );
       case 'guests':
         return (
           <div className="card fade-in">
@@ -2003,8 +2562,11 @@ export default function AdminDashboard() {
               <select value={offlineForm.roomType} onChange={e => setOfflineForm({ ...offlineForm, roomType: e.target.value })}>
                 <option>Double Bed</option>
                 <option>Double Bed A/C</option>
+                <option>Three Bed</option>
                 <option>Four Bed</option>
                 <option>Four Bed A/C</option>
+                <option>Deluxe AC</option>
+                <option>Suite</option>
               </select>
             </div>
             <div className="form-group">

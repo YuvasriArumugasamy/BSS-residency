@@ -474,6 +474,28 @@ router.get('/stats', adminAuth, async (req, res) => {
   }
 });
 
+// GET /api/admin/calendar-bookings — Overlapping bookings for Calendar view
+router.get('/calendar-bookings', adminAuth, async (req, res) => {
+  try {
+    const { startDate, endDate } = req.query;
+    if (!startDate || !endDate) {
+      return res.status(400).json({ success: false, message: 'startDate and endDate are required' });
+    }
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    const bookings = await Booking.find({
+      status: { $in: ['Pending', 'Confirmed', 'Checked-out'] },
+      checkIn: { $lt: end },
+      checkOut: { $gt: start }
+    }).sort({ checkIn: 1 });
+
+    res.json({ success: true, bookings });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 // --- ROOM ROUTES ---
 
 router.get('/rooms', adminAuth, async (req, res) => {
