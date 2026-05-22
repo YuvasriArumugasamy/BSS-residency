@@ -1121,3 +1121,40 @@
   .stats-grid { grid-template-columns: 1fr; }
   .calendar-main-section, .calendar-sidebar-section { padding: 1rem; }
 }
+/* Additional mobile fixes for dashboard */
+@media (max-width: 480px) {
+  /* Ensure main content takes full width when sidebar is hidden */
+  .admin-wrapper {
+    margin-left: 0;
+    padding: 0.5rem;
+  }
+  /* Stats cards stack vertically with proper spacing */
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+  }
+  .stat-card {
+    padding: 1rem;
+    font-size: 0.9rem;
+  }
+  /* Reduce header font sizes */
+  .view-content h3 {
+    font-size: 1.2rem;
+  }
+  /* Ensure cards have sufficient padding */
+  .card {
+    padding: 1rem;
+  }
+  /* Calendar: make scrollable area full width */
+  .calendar-main-section,
+  .calendar-sidebar-section {
+    padding: 0.8rem;
+  }
+  .calendar-grid-wrapper {
+    overflow-x: auto;
+  }
+  /* Prevent horizontal overflow on body */
+  body {
+    overflow-x: hidden;
+  }
+}
