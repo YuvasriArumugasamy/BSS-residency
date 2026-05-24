@@ -158,15 +158,6 @@ export default function Home() {
   }, [reviews]);
 
   React.useEffect(() => {
-    if (!document.querySelector('script[src="https://elfsightcdn.com/platform.js"]')) {
-      const script = document.createElement('script');
-      script.src = 'https://elfsightcdn.com/platform.js';
-      script.async = true;
-      document.body.appendChild(script);
-    }
-  }, []);
-
-  React.useEffect(() => {
     // Show notice only once per session
     const hasSeenNotice = sessionStorage.getItem('bss_notice_seen');
     if (!hasSeenNotice) {
@@ -490,11 +481,50 @@ export default function Home() {
           <p className="section-label" style={{ textAlign: 'center' }}>Guest Experiences</p>
           <h2 style={{ textAlign: 'center', marginBottom: '3rem' }}>What Our <em>Guests Say</em></h2>
 
-          <div className="home-review-widget">
-            <div className="elfsight-app-08e831ad-a3ef-41b1-8975-543cc3147c48" data-elfsight-app-lazy />
-          </div>
-        </section>
+          {reviews.length > 0 ? (
+            <div className="reviews-grid">
+              {reviews.slice(0, 4).map((r) => {
+                const initial = r.guestName ? r.guestName.charAt(0).toUpperCase() : '?';
+                const colors = ['#1a73e8', '#d93025', '#188038', '#f29900', '#a142f4', '#00acc1'];
+                const bgColor = colors[(r.guestName || 'G').charCodeAt(0) % colors.length];
+                const formattedDate = r.date ? new Date(r.date).toLocaleDateString('en-GB') : 'Recently';
 
+                return (
+                  <article key={r._id || formattedDate + r.guestName} className="review-card">
+                    <div className="review-card-header">
+                      {r.profileImage ? (
+                        <img src={r.profileImage} alt={r.guestName} className="review-avatar" />
+                      ) : (
+                        <div className="review-avatar" style={{ backgroundColor: bgColor }}>
+                          {initial}
+                        </div>
+                      )}
+                      <div>
+                        <div className="review-author">{r.guestName || 'Guest'}</div>
+                        <div className="review-source">Google Review</div>
+                      </div>
+                    </div>
+                    <div className="review-body">
+                      <p>{r.comment?.length > 180 ? `${r.comment.substring(0, 180)}...` : r.comment}</p>
+                    </div>
+                    <div className="review-info">
+                      <span>{formattedDate}</span>
+                      <button
+                        type="button"
+                        className="review-read-more"
+                        onClick={() => setSelectedReview(r)}
+                      >
+                        Read More
+                      </button>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="review-empty">Loading reviews...</div>
+          )}
+        </section>
 
         {/* CTA Banner */}
         <section className="cta-banner">
