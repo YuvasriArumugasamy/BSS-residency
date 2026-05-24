@@ -693,12 +693,11 @@ export default function Booking() {
                         <span className="label-icon">🕐</span> Expected Check-in Time <span className="req">*</span>
                       </label>
                       <input
-                        type="text"
+                        type="time"
                         name="checkInTime"
                         value={form.checkInTime}
                         onChange={handleChange}
                         className="input-styled"
-                        placeholder="e.g. 10:30 AM"
                         required
                       />
                     </div>
@@ -707,12 +706,11 @@ export default function Booking() {
                         <span className="label-icon">🕐</span> Expected Check-out Time <span className="req">*</span>
                       </label>
                       <input
-                        type="text"
+                        type="time"
                         name="checkOutTime"
                         value={form.checkOutTime}
                         onChange={handleChange}
                         className="input-styled"
-                        placeholder="e.g. 11:00 AM"
                         required
                       />
                     </div>
