@@ -116,7 +116,7 @@ export default function BookingStatus() {
 
   const formatDate = (d) =>
     d
-      ? new Date(d).toLocaleDateString('en-IN', {
+      ? new Date(d).toLocaleDateString('ta-IN', {
           day: '2-digit', month: 'short', year: 'numeric',
         })
       : '—';
@@ -126,36 +126,36 @@ export default function BookingStatus() {
       color: '#f59e0b',
       bg: '#fffbeb',
       icon: '⏳',
-      label: 'Pending Confirmation',
-      desc: 'Your booking has been received. The hotel admin will confirm it via WhatsApp shortly.',
+      label: 'நிலுவை உறுதிப்படுத்தல்',
+      desc: 'உங்கள் முன்பதிவு பெற்றது. ஹோட்டல் நிர்வாகி விரைவில் வாட்ஸ்அப் மூலம் உறுதிப்படுத்துவார்.',
     },
     Confirmed: {
       color: '#10b981',
       bg: '#f0fdf4',
       icon: '✅',
-      label: 'Confirmed',
-      desc: 'Your booking is confirmed! Please present your Booking ID at reception.',
+      label: 'உறுதிப்படுத்தப்பட்டது',
+      desc: 'உங்கள் முன்பதிவு உறுதிப்படுத்தப்படுள்ளது! ரிசெப்ஷனில் உங்கள் Booking ID ஐ காட்டுங்கள்.',
     },
     Cancelled: {
       color: '#ef4444',
       bg: '#fef2f2',
       icon: '❌',
-      label: 'Cancelled',
-      desc: 'This booking has been cancelled. Please contact us to rebook.',
+      label: 'ரத்துசெய்யப்பட்டது',
+      desc: 'இந்த முன்பதிவு ரத்துசெய்யப்பட்டது. மீண்டும் முன்பதிவு செய்ய எங்களை தொடர்பு கொள்ளவும்.',
     },
     'Checked-out': {
       color: '#6b7280',
       bg: '#f9fafb',
       icon: '🏁',
-      label: 'Checked Out',
-      desc: 'Thank you for staying at BSS Residency! We hope to see you again.',
+      label: 'வெளியேற்றப்பட்டது',
+      desc: 'BSS Residency-யில் தங்கியதற்கு நன்றி! மீண்டும் வருவீர்கள் என்று நம்புகிறோம்.',
     },
   };
 
   const meta = booking ? (statusMeta[booking.status] || statusMeta['Pending']) : null;
 
   const waConfirmFollowUp = booking
-    ? `Hello BSS Residency! 🙏\n\nI'd like to follow up on my booking.\nBooking ID: ${booking._id}\nName: ${booking.name}\nRoom: ${booking.roomType}\nCheck-in: ${formatDate(booking.checkIn)}\n\nPlease confirm!`
+    ? `வணக்கம் BSS Residency! 🙏\n\nஎன் முன்பதிவை பற்றி தொடர்ந்து தொடர்பு கொள்ள விரும்புகிறேன்.\nBooking ID: ${booking._id}\nபெயர்: ${booking.name}\nஅறை: ${booking.roomType}\nசெக்-இன்: ${formatDate(booking.checkIn)}\n\nதயவுசெய்து உறுதிபடுத்துங்கள்!`
     : '';
 
   return (
@@ -249,11 +249,11 @@ export default function BookingStatus() {
               </div>
               <div className="bsd-item">
                 <span>Check-in</span>
-                <strong>{formatDate(booking.checkIn)}</strong>
+                <strong>{formatDate(booking.checkIn)} {booking.checkInTime ? ` (${booking.checkInTime})` : ''}</strong>
               </div>
               <div className="bsd-item">
                 <span>Check-out</span>
-                <strong>{formatDate(booking.checkOut)}</strong>
+                <strong>{formatDate(booking.checkOut)} {booking.checkOutTime ? ` (${booking.checkOutTime})` : ''}</strong>
               </div>
               <div className="bsd-item">
                 <span>Nights</span>

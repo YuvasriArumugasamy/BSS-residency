@@ -82,7 +82,7 @@ router.post('/verify-payment', async (req, res) => {
     }
 
     // Payment is valid, now save the booking
-    const { name, phone, email, roomType, checkIn, checkOut, guests, rooms, message } = bookingData;
+    const { name, phone, email, roomType, checkIn, checkOut, checkInTime, checkOutTime, guests, rooms, message } = bookingData;
     const roomCount = Number(rooms) || 1;
 
     // --- Availability Check ---
@@ -149,6 +149,8 @@ router.post('/verify-payment', async (req, res) => {
       roomType,
       checkIn,
       checkOut,
+      checkInTime: checkInTime || '12:00 PM',
+      checkOutTime: checkOutTime || '11:00 AM',
       guests,
       rooms: roomCount,
       message,
@@ -200,7 +202,7 @@ router.post('/verify-payment', async (req, res) => {
 // POST /api/bookings — Create new booking
 router.post('/', async (req, res) => {
   try {
-    const { name, phone, email, roomType, checkIn, checkOut, guests, rooms, message } = req.body;
+    const { name, phone, email, roomType, checkIn, checkOut, checkInTime, checkOutTime, guests, rooms, message } = req.body;
 
     if (!name || !phone || !roomType || !checkIn || !checkOut || !guests) {
       return res.status(400).json({ success: false, message: 'Please fill all required fields.' });
@@ -280,6 +282,8 @@ router.post('/', async (req, res) => {
       roomType,
       checkIn,
       checkOut,
+      checkInTime: checkInTime || '12:00 PM',
+      checkOutTime: checkOutTime || '11:00 AM',
       guests,
       rooms: roomCount,
       message,
@@ -418,6 +422,8 @@ router.get('/:id', async (req, res) => {
         roomNumber: booking.roomNumber,
         checkIn: booking.checkIn,
         checkOut: booking.checkOut,
+        checkInTime: booking.checkInTime || '12:00 PM',
+        checkOutTime: booking.checkOutTime || '11:00 AM',
         guests: booking.guests,
         rooms: booking.rooms,
         status: booking.status,

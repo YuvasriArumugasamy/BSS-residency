@@ -14,6 +14,8 @@ const initForm = {
   roomType: '',
   checkIn: '',
   checkOut: '',
+  checkInTime: '12:00 PM',
+  checkOutTime: '11:00 AM',
   guests: 1,
   rooms: 1,
   message: '',
@@ -215,6 +217,8 @@ export default function Booking() {
                 phone: form.phone,
                 checkIn: form.checkIn,
                 checkOut: form.checkOut,
+                checkInTime: form.checkInTime || '12:00 PM',
+                checkOutTime: form.checkOutTime || '11:00 AM',
                 roomType: form.roomType,
                 rooms: Number(form.rooms) || 1,
                 guests: Number(form.guests) || 1,
@@ -256,8 +260,8 @@ export default function Booking() {
                     customer_name: fullName,
                     customer_email: form.email,
                     room_type: form.roomType,
-                    check_in: form.checkIn,
-                    check_out: form.checkOut,
+                    check_in: `${form.checkIn} (${form.checkInTime || '12:00 PM'})`,
+                    check_out: `${form.checkOut} (${form.checkOutTime || '11:00 AM'})`,
                   },
                   'eiTGmay4Hcfbpa-4u'
                 );
@@ -329,7 +333,9 @@ export default function Booking() {
   if (pendingBooking) {
     const bookingId = pendingBooking.bookingId || (pendingBooking._id ? String(parseInt(pendingBooking._id.toString().slice(-6), 16)).padStart(6, '0').slice(-6) : '');
     const shortId = bookingId;
-    const waMsg = `Hello BSS Residency! 🙏\n\nI just submitted a booking request.\nBooking ID: ${bookingId}\nName: ${pendingBooking.name}\nRoom: ${pendingBooking.roomType}\nCheck-in: ${new Date(pendingBooking.checkIn).toLocaleDateString('en-IN')}\nCheck-out: ${new Date(pendingBooking.checkOut).toLocaleDateString('en-IN')}\n\nI have paid the advance of ₹510 via UPI. Please confirm!`;
+    const checkInTimeStr = pendingBooking.checkInTime ? ` (${pendingBooking.checkInTime})` : '';
+    const checkOutTimeStr = pendingBooking.checkOutTime ? ` (${pendingBooking.checkOutTime})` : '';
+    const waMsg = `Hello BSS Residency! 🙏\n\nI just submitted a booking request.\nBooking ID: ${bookingId}\nName: ${pendingBooking.name}\nRoom: ${pendingBooking.roomType}\nCheck-in: ${new Date(pendingBooking.checkIn).toLocaleDateString('en-IN')}${checkInTimeStr}\nCheck-out: ${new Date(pendingBooking.checkOut).toLocaleDateString('en-IN')}${checkOutTimeStr}\n\nI have paid the advance of ₹510 via UPI. Please confirm!`;
 
     return (
       <>
@@ -398,11 +404,11 @@ export default function Booking() {
                 </div>
                 <div className="pd-item">
                   <span>Check-in</span>
-                  <strong>{new Date(pendingBooking.checkIn).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</strong>
+                  <strong>{new Date(pendingBooking.checkIn).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}{checkInTimeStr}</strong>
                 </div>
                 <div className="pd-item">
                   <span>Check-out</span>
-                  <strong>{new Date(pendingBooking.checkOut).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</strong>
+                  <strong>{new Date(pendingBooking.checkOut).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}{checkOutTimeStr}</strong>
                 </div>
                 <div className="pd-item">
                   <span>Nights</span>
@@ -680,6 +686,57 @@ export default function Booking() {
                     </div>
                   </div>
 
+                  {/* Expected Arrival/Departure Times */}
+                  <div className="form-row-2">
+                    <div className="form-group">
+                      <label>
+                        <span className="label-icon">🕐</span> Expected Check-in Time <span className="req">*</span>
+                      </label>
+                      <select
+                        name="checkInTime"
+                        value={form.checkInTime}
+                        onChange={handleChange}
+                        className="input-styled"
+                        required
+                      >
+                        <option value="12:00 PM">12:00 PM (Standard)</option>
+                        <option value="06:00 AM">06:00 AM</option>
+                        <option value="08:00 AM">08:00 AM</option>
+                        <option value="10:00 AM">10:00 AM</option>
+                        <option value="02:00 PM">02:00 PM</option>
+                        <option value="04:00 PM">04:00 PM</option>
+                        <option value="06:00 PM">06:00 PM</option>
+                        <option value="08:00 PM">08:00 PM</option>
+                        <option value="10:00 PM">10:00 PM</option>
+                        <option value="12:00 AM">12:00 AM (Midnight)</option>
+                        <option value="02:00 AM">02:00 AM</option>
+                        <option value="04:00 AM">04:00 AM</option>
+                      </select>
+                    </div>
+                    <div className="form-group">
+                      <label>
+                        <span className="label-icon">🕐</span> Expected Check-out Time <span className="req">*</span>
+                      </label>
+                      <select
+                        name="checkOutTime"
+                        value={form.checkOutTime}
+                        onChange={handleChange}
+                        className="input-styled"
+                        required
+                      >
+                        <option value="11:00 AM">11:00 AM (Standard)</option>
+                        <option value="08:00 AM">08:00 AM</option>
+                        <option value="09:00 AM">09:00 AM</option>
+                        <option value="12:00 PM">12:00 PM</option>
+                        <option value="01:00 PM">01:00 PM</option>
+                        <option value="02:00 PM">02:00 PM</option>
+                        <option value="04:00 PM">04:00 PM</option>
+                        <option value="06:00 PM">06:00 PM</option>
+                        <option value="08:00 PM">08:00 PM</option>
+                      </select>
+                    </div>
+                  </div>
+
                   {/* Nights & Clear */}
                   <div className="dates-feedback-row">
                     {nights > 0 ? (
@@ -920,6 +977,7 @@ export default function Booking() {
                 <div className="summary-date-box">
                   <span className="sdb-label">Check-in</span>
                   <span className="sdb-value">{formatDate(form.checkIn)}</span>
+                  {form.checkIn && <small style={{ display: 'block', fontSize: '0.75rem', color: '#888', marginTop: '0.2rem' }}>🕒 {form.checkInTime}</small>}
                 </div>
                 <div className="summary-nights-badge">
                   {nights > 0 ? `${nights}N` : '—'}
@@ -927,6 +985,7 @@ export default function Booking() {
                 <div className="summary-date-box">
                   <span className="sdb-label">Check-out</span>
                   <span className="sdb-value">{formatDate(form.checkOut)}</span>
+                  {form.checkOut && <small style={{ display: 'block', fontSize: '0.75rem', color: '#888', marginTop: '0.2rem' }}>🕒 {form.checkOutTime}</small>}
                 </div>
               </div>
 

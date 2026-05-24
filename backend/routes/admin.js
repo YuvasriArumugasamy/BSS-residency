@@ -16,17 +16,19 @@ const WHATSAPP_NUMBER = process.env.WHATSAPP_NUMBER || '919344989393';
 function buildWaConfirmLink(booking) {
   const checkIn = new Date(booking.checkIn).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
   const checkOut = new Date(booking.checkOut).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+  const checkInTimeStr = booking.checkInTime ? ` (${booking.checkInTime})` : '';
+  const checkOutTimeStr = booking.checkOutTime ? ` (${booking.checkOutTime})` : '';
   const msg =
-    `✅ *BSS Residency – Booking Confirmed!*\n\n` +
-    `Dear ${booking.name},\n\n` +
-    `Your booking has been *confirmed*. Here are your details:\n\n` +
-    `🆔 Booking ID: *${booking.bookingId || booking._id}*\n` +
-    `🛏️ Room: *${booking.roomType}*${booking.roomNumber ? ` (Room #${booking.roomNumber})` : ''}\n` +
-    `📅 Check-in: *${checkIn}*\n` +
-    `📅 Check-out: *${checkOut}*\n` +
-    `👥 Guests: *${booking.guests}*\n\n` +
-    `📍 BSS Residency, Bus Stand, Near Anna Statue, Courtallam – 627 802\n\n` +
-    `We look forward to hosting you! 🙏`;
+    `✅ *BSS Residency – முன்பதிவு உறுதி செய்யப்பட்டது!*\n\n` +
+    `அன்புள்ள ${booking.name},\n\n` +
+    `உங்கள் முன்பதிவு *உறுதி செய்யப்பட்டது*. உங்கள் விவரங்கள் கீழே:\n\n` +
+    `🆔 முன்பதிவு எண்: *${booking.bookingId || booking._id}*\n` +
+    `🛏️ அறை: *${booking.roomType}*${booking.roomNumber ? ` (அறை #${booking.roomNumber})` : ''}\n` +
+    `📅 செக்-இன்: *${checkIn}${checkInTimeStr}*\n` +
+    `📅 செக்-அவுட்: *${checkOut}${checkOutTimeStr}*\n` +
+    `👥 விருந்தினர்கள்: *${booking.guests}*\n\n` +
+    `📍 BSS Residency, பஸ் ஸ்டாண்ட், அண்ணா சிலை அருகில், குற்றாலம் – 627 802\n\n` +
+    `தங்களை வரவேற்க காத்திருக்கிறோம்! 🙏`;
 
   // Build link to guest's number
   const guestPhone = booking.phone.replace(/[^0-9]/g, '');
@@ -190,7 +192,7 @@ router.get('/bookings', adminAuth, async (req, res) => {
 // PATCH /api/admin/bookings/:id — Update booking status / roomNumber
 router.patch('/bookings/:id', adminAuth, async (req, res) => {
   try {
-    const { status, roomNumber, cancellationReason } = req.body;
+    const { status, roomNumber, cancellationReason, checkInTime, checkOutTime } = req.body;
 
     // Fetch the booking BEFORE update to know the old room and old status
     const oldBooking = await Booking.findById(req.params.id);
@@ -199,6 +201,8 @@ router.patch('/bookings/:id', adminAuth, async (req, res) => {
     const updateFields = {};
     if (status) updateFields.status = status;
     if (roomNumber !== undefined) updateFields.roomNumber = roomNumber;
+    if (checkInTime !== undefined) updateFields.checkInTime = checkInTime;
+    if (checkOutTime !== undefined) updateFields.checkOutTime = checkOutTime;
 
     const booking = await Booking.findByIdAndUpdate(
       req.params.id,
@@ -259,7 +263,7 @@ router.delete('/bookings/:id', adminAuth, async (req, res) => {
 // POST /api/admin/bookings/offline — Add manual offline booking (no payment check)
 router.post('/bookings/offline', adminAuth, async (req, res) => {
   try {
-    const { name, phone, email, roomType, checkIn, checkOut, guests, rooms, message, advancePaid, paymentMethod } = req.body;
+    const { name, phone, email, roomType, checkIn, checkOut, checkInTime, checkOutTime, guests, rooms, message, advancePaid, paymentMethod } = req.body;
 
     if (!name || !phone || !roomType || !checkIn || !checkOut || !guests) {
       return res.status(400).json({ success: false, message: 'Please fill all required fields.' });
@@ -304,6 +308,8 @@ router.post('/bookings/offline', adminAuth, async (req, res) => {
       roomType,
       checkIn,
       checkOut,
+      checkInTime: checkInTime || '12:00 PM',
+      checkOutTime: checkOutTime || '11:00 AM',
       guests,
       rooms: roomCount,
       message: message || '',

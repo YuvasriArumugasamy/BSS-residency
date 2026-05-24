@@ -29,6 +29,8 @@ const bookingSchema = new mongoose.Schema(
     rooms: { type: Number, default: 1, min: 1 },
     checkIn: { type: Date, required: true },
     checkOut: { type: Date, required: true },
+    checkInTime: { type: String, default: '12:00 PM' },
+    checkOutTime: { type: String, default: '11:00 AM' },
     roomNumber: { type: String, default: '' },
     guests: { type: Number, required: true, min: 1 },
     message: { type: String, trim: true, default: '' },

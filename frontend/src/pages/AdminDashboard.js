@@ -405,7 +405,7 @@ const BookingManagement = ({ bookings = [], rooms = [], period, setPeriod, onCon
                   </div>
                 </td>
                 <td style={{ fontSize: '0.85rem' }}>
-                  {formatDate(b.checkIn)} -<br />{formatDate(b.checkOut)}
+                  {formatDate(b.checkIn)} {b.checkInTime ? ` (${b.checkInTime})` : ''} -<br />{formatDate(b.checkOut)} {b.checkOutTime ? ` (${b.checkOutTime})` : ''}
                 </td>
                 <td>
                   <span className={`status-pill status-${b.status?.replace(' ', '-') || 'Pending'}`}>{b.status || 'Pending'}</span>
@@ -1451,7 +1451,62 @@ const RoomAvailabilityCalendar = ({
                 <p style={{ margin: 0, fontWeight: 700 }}>
                   📅 {formatDate(selectedBooking.checkIn)} — {formatDate(selectedBooking.checkOut)}
                 </p>
-                <p style={{ margin: '4px 0 0 0', fontSize: '0.8rem', color: '#868e96' }}>
+                <div style={{ marginTop: '8px', display: 'flex', gap: '10px', fontSize: '0.8rem' }}>
+                  <div>
+                    <label style={{ display: 'block', color: '#888', fontSize: '0.7rem' }}>In Time</label>
+                    <select
+                      value={selectedBooking.checkInTime || '12:00 PM'}
+                      onChange={async (e) => {
+                        const headers = { username: auth.username, password: auth.password };
+                        try {
+                          await api.patch(`/api/admin/bookings/${selectedBooking._id}`, { checkInTime: e.target.value }, { headers });
+                          onRefresh();
+                          setSelectedBooking(prev => ({ ...prev, checkInTime: e.target.value }));
+                        } catch (err) { alert(err.message); }
+                      }}
+                      style={{ padding: '2px 4px', borderRadius: '4px', border: '1px solid #ccc', fontSize: '0.75rem', outline: 'none' }}
+                    >
+                      <option value="12:00 PM">12:00 PM</option>
+                      <option value="06:00 AM">06:00 AM</option>
+                      <option value="08:00 AM">08:00 AM</option>
+                      <option value="10:00 AM">10:00 AM</option>
+                      <option value="02:00 PM">02:00 PM</option>
+                      <option value="04:00 PM">04:00 PM</option>
+                      <option value="06:00 PM">06:00 PM</option>
+                      <option value="08:00 PM">08:00 PM</option>
+                      <option value="10:00 PM">10:00 PM</option>
+                      <option value="12:00 AM">12:00 AM</option>
+                      <option value="02:00 AM">02:00 AM</option>
+                      <option value="04:00 AM">04:00 AM</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', color: '#888', fontSize: '0.7rem' }}>Out Time</label>
+                    <select
+                      value={selectedBooking.checkOutTime || '11:00 AM'}
+                      onChange={async (e) => {
+                        const headers = { username: auth.username, password: auth.password };
+                        try {
+                          await api.patch(`/api/admin/bookings/${selectedBooking._id}`, { checkOutTime: e.target.value }, { headers });
+                          onRefresh();
+                          setSelectedBooking(prev => ({ ...prev, checkOutTime: e.target.value }));
+                        } catch (err) { alert(err.message); }
+                      }}
+                      style={{ padding: '2px 4px', borderRadius: '4px', border: '1px solid #ccc', fontSize: '0.75rem', outline: 'none' }}
+                    >
+                      <option value="11:00 AM">11:00 AM</option>
+                      <option value="08:00 AM">08:00 AM</option>
+                      <option value="09:00 AM">09:00 AM</option>
+                      <option value="12:00 PM">12:00 PM</option>
+                      <option value="01:00 PM">01:00 PM</option>
+                      <option value="02:00 PM">02:00 PM</option>
+                      <option value="04:00 PM">04:00 PM</option>
+                      <option value="06:00 PM">06:00 PM</option>
+                      <option value="08:00 PM">08:00 PM</option>
+                    </select>
+                  </div>
+                </div>
+                <p style={{ margin: '8px 0 0 0', fontSize: '0.8rem', color: '#868e96' }}>
                   Requested: {selectedBooking.roomType} | {selectedBooking.guests} Guests
                 </p>
               </div>
@@ -1691,6 +1746,8 @@ export default function AdminDashboard() {
     roomType: 'Double Bed A/C',
     checkIn: '',
     checkOut: '',
+    checkInTime: '12:00 PM',
+    checkOutTime: '11:00 AM',
     guests: 2,
     rooms: 1,
     message: '',
@@ -1724,6 +1781,8 @@ export default function AdminDashboard() {
       roomType: room.type,
       checkIn: checkInDateStr,
       checkOut: checkOutDateStr,
+      checkInTime: '12:00 PM',
+      checkOutTime: '11:00 AM',
       guests: room.type.includes('Four') ? 4 : (room.type.includes('Three') ? 3 : 2),
       rooms: 1,
       message: `Offline Booking pre-filled for Room #${room.roomNumber}`,
@@ -2071,6 +2130,8 @@ export default function AdminDashboard() {
           roomType: 'Double Bed A/C',
           checkIn: '',
           checkOut: '',
+          checkInTime: '12:00 PM',
+          checkOutTime: '11:00 AM',
           guests: 2,
           rooms: 1,
           message: '',
@@ -2588,12 +2649,53 @@ export default function AdminDashboard() {
               />
             </div>
             <div className="form-group">
+              <label>Check-In Time</label>
+              <select 
+                value={offlineForm.checkInTime} 
+                onChange={e => setOfflineForm({ ...offlineForm, checkInTime: e.target.value })}
+                style={{ padding: '0.45rem', fontSize: '0.85rem', borderRadius: '6px', border: '1px solid #cbd5e1', outline: 'none', backgroundColor: '#fff', width: '100%', boxSizing: 'border-box' }}
+              >
+                <option value="12:00 PM">12:00 PM (Standard)</option>
+                <option value="06:00 AM">06:00 AM</option>
+                <option value="08:00 AM">08:00 AM</option>
+                <option value="10:00 AM">10:00 AM</option>
+                <option value="02:00 PM">02:00 PM</option>
+                <option value="04:00 PM">04:00 PM</option>
+                <option value="06:00 PM">06:00 PM</option>
+                <option value="08:00 PM">08:00 PM</option>
+                <option value="10:00 PM">10:00 PM</option>
+                <option value="12:00 AM">12:00 AM</option>
+                <option value="02:00 AM">02:00 AM</option>
+                <option value="04:00 AM">04:00 AM</option>
+              </select>
+            </div>
+          </div>
+          <div className="form-row">
+            <div className="form-group">
               <label>Check-Out Date *</label>
               <input
                 type="date" required
                 value={offlineForm.checkOut}
                 onChange={e => setOfflineForm({ ...offlineForm, checkOut: e.target.value })}
               />
+            </div>
+            <div className="form-group">
+              <label>Check-Out Time</label>
+              <select 
+                value={offlineForm.checkOutTime} 
+                onChange={e => setOfflineForm({ ...offlineForm, checkOutTime: e.target.value })}
+                style={{ padding: '0.45rem', fontSize: '0.85rem', borderRadius: '6px', border: '1px solid #cbd5e1', outline: 'none', backgroundColor: '#fff', width: '100%', boxSizing: 'border-box' }}
+              >
+                <option value="11:00 AM">11:00 AM (Standard)</option>
+                <option value="08:00 AM">08:00 AM</option>
+                <option value="09:00 AM">09:00 AM</option>
+                <option value="12:00 PM">12:00 PM</option>
+                <option value="01:00 PM">01:00 PM</option>
+                <option value="02:00 PM">02:00 PM</option>
+                <option value="04:00 PM">04:00 PM</option>
+                <option value="06:00 PM">06:00 PM</option>
+                <option value="08:00 PM">08:00 PM</option>
+              </select>
             </div>
           </div>
           <div className="form-row">
