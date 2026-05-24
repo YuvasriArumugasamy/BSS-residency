@@ -361,6 +361,32 @@
   border-color: var(--accent);
 }
 
+.reviews-widget {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 1.5rem;
+  min-height: 320px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+  transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reviews-widget:hover {
+  border-color: var(--accent);
+  box-shadow: 0 10px 36px rgba(0, 0, 0, 0.12);
+}
+
+.reviews-widget h3 {
+  font-size: 1.05rem;
+  color: var(--primary);
+  font-family: 'Playfair Display', serif;
+  margin-bottom: 1rem;
+}
+
+.reviews-widget .elfsight-app-08e831ad-a3ef-41b1-8975-543cc3147c48 {
+  min-height: 260px;
+}
+
 .map-embed-wrap iframe {
   width: 100%;
   height: 100%;
