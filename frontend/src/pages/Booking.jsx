@@ -132,7 +132,7 @@ export default function Booking() {
   const gstAmount = useMemo(() => Math.round(roomCharges * 0.12), [roomCharges]);
   const totalPrice = useMemo(() => roomCharges + gstAmount, [roomCharges, gstAmount]);
 
-  const today = new Date().toISOString().split('T')[0];
+  const today = new Date().toISOString().slice(0,16); // "YYYY‑MM‑DDTHH:MM" for datetime‑local
 
   const validateStep1 = () => {
     if (!form.roomType || !form.checkIn || !form.checkOut) {
@@ -140,7 +140,7 @@ export default function Booking() {
       return false;
     }
     if (new Date(form.checkIn) >= new Date(form.checkOut)) {
-      setResult({ success: false, message: 'Your check-out date must be strictly after the check-in date.' });
+      setResult({ success: false, message: 'Your check‑out date & time must be strictly after the check‑in date & time.' });
       return false;
     }
     setResult(null);
@@ -473,9 +473,9 @@ export default function Booking() {
                 {/* Date Selection */}
                 <div className="grid-2-col">
                   <div className="form-group">
-                    <label><Calendar size={16} /> Check-in Date</label>
+                    <label><Calendar size={16} /> Check-in Date & Time</label>
                     <input 
-                      type="date" 
+                      type="datetime-local" 
                       name="checkIn" 
                       min={today}
                       value={form.checkIn} 
@@ -484,9 +484,9 @@ export default function Booking() {
                     />
                   </div>
                   <div className="form-group">
-                    <label><Calendar size={16} /> Check-out Date</label>
+                    <label><Calendar size={16} /> Check-out Date & Time</label>
                     <input 
-                      type="date" 
+                      type="datetime-local" 
                       name="checkOut" 
                       min={form.checkIn || today}
                       value={form.checkOut} 
