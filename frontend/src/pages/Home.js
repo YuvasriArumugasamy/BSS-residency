@@ -187,14 +187,15 @@ export default function Home() {
   const getPrice = (room) => isSeason ? room.seasonPrice : room.nonSeasonPrice;
 
   React.useEffect(() => {
-    const scriptId = 'elfsight-platform';
-    if (!document.getElementById(scriptId)) {
-      const script = document.createElement('script');
-      script.id = scriptId;
-      script.src = 'https://elfsightcdn.com/platform.js';
-      script.async = true;
-      document.body.appendChild(script);
-    }
+    const fetchReviews = async () => {
+      try {
+        const res = await api.get('/api/bookings/public/reviews');
+        setReviews(res.data.reviews);
+      } catch (err) {
+        console.error('Error fetching reviews:', err);
+      }
+    };
+    fetchReviews();
   }, []);
 
   const schemaMarkup = {
@@ -475,13 +476,11 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Reviews / Testimonials */}
+        {/* Google Reviews — Elfsight Widget */}
         <section className="testimonials">
           <p className="section-label" style={{ textAlign: 'center' }}>Guest Experiences</p>
-          <h2 style={{ textAlign: 'center', marginBottom: '3rem' }}>What Our <em>Guests Say</em></h2>
-          <div className="container" style={{ padding: '0 1rem' }}>
-            <div className="elfsight-app-08e831ad-a3ef-41b1-8975-543cc3147c48" data-elfsight-app-lazy="true"></div>
-          </div>
+          <h2 style={{ textAlign: 'center', marginBottom: '2rem' }}>What Our <em>Guests Say</em></h2>
+          <div className="elfsight-app-08e831ad-a3ef-41b1-8975-543cc3147c48" data-elfsight-app-lazy></div>
         </section>
 
 
