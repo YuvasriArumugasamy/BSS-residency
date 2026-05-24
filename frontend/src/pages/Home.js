@@ -190,18 +190,7 @@ export default function Home() {
     const fetchReviews = async () => {
       try {
         const res = await api.get('/api/bookings/public/reviews');
-        
-        // Premium Google Reviews (Hardcoded based on real Google reviews)
-        const googleReviews = [
-          { _id: 'g1', guestName: 'Ananya S', comment: 'Worth the price and definitely a great choice for families and travelers. Very near to Main falls and neatly maintained.', rating: 5, date: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString() },
-          { _id: 'g2', guestName: 'Karthikeyan P', comment: 'Excellent stay! The rooms were very neat and clean. The staff was very helpful. Highly recommended for a safe family stay in Courtallam.', rating: 5, date: new Date(Date.now() - 32 * 24 * 60 * 60 * 1000).toISOString() },
-          { _id: 'g3', guestName: 'Ramesh Krishnan', comment: 'Walkable distance to Main falls. We took the 4-bed AC room and it was very spacious and comfortable. Best budget friendly lodge.', rating: 5, date: new Date(Date.now() - 45 * 24 * 60 * 60 * 1000).toISOString() },
-          { _id: 'g4', guestName: 'Divya R', comment: 'Peaceful location and good amenities. Hot water was available and the A/C worked perfectly. Definitely will visit again.', rating: 5, date: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString() },
-          { _id: 'g5', guestName: 'Mohammed S', comment: 'One of the best residencies in Courtallam. Very safe for ladies and kids. Car parking space is also good. 5 stars!', rating: 5, date: new Date(Date.now() - 85 * 24 * 60 * 60 * 1000).toISOString() },
-        ];
-        
-        // Combine Google reviews with any reviews added from admin panel
-        setReviews([...googleReviews, ...res.data.reviews]);
+        setReviews(res.data.reviews);
       } catch (err) {
         console.error('Error fetching reviews:', err);
       }
