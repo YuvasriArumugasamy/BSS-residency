@@ -14,8 +14,8 @@ const initForm = {
   roomType: '',
   checkIn: '',
   checkOut: '',
-  checkInTime: '12:00 PM',
-  checkOutTime: '11:00 AM',
+  checkInTime: '',
+  checkOutTime: '',
   guests: 1,
   rooms: 1,
   message: '',
@@ -692,48 +692,27 @@ export default function Booking() {
                       <label>
                         <span className="label-icon">🕐</span> Expected Check-in Time <span className="req">*</span>
                       </label>
-                      <select
+                      <input
+                        type="time"
                         name="checkInTime"
                         value={form.checkInTime}
                         onChange={handleChange}
                         className="input-styled"
                         required
-                      >
-                        <option value="12:00 PM">12:00 PM (Standard)</option>
-                        <option value="06:00 AM">06:00 AM</option>
-                        <option value="08:00 AM">08:00 AM</option>
-                        <option value="10:00 AM">10:00 AM</option>
-                        <option value="02:00 PM">02:00 PM</option>
-                        <option value="04:00 PM">04:00 PM</option>
-                        <option value="06:00 PM">06:00 PM</option>
-                        <option value="08:00 PM">08:00 PM</option>
-                        <option value="10:00 PM">10:00 PM</option>
-                        <option value="12:00 AM">12:00 AM (Midnight)</option>
-                        <option value="02:00 AM">02:00 AM</option>
-                        <option value="04:00 AM">04:00 AM</option>
-                      </select>
+                      />
                     </div>
                     <div className="form-group">
                       <label>
                         <span className="label-icon">🕐</span> Expected Check-out Time <span className="req">*</span>
                       </label>
-                      <select
+                      <input
+                        type="time"
                         name="checkOutTime"
                         value={form.checkOutTime}
                         onChange={handleChange}
                         className="input-styled"
                         required
-                      >
-                        <option value="11:00 AM">11:00 AM (Standard)</option>
-                        <option value="08:00 AM">08:00 AM</option>
-                        <option value="09:00 AM">09:00 AM</option>
-                        <option value="12:00 PM">12:00 PM</option>
-                        <option value="01:00 PM">01:00 PM</option>
-                        <option value="02:00 PM">02:00 PM</option>
-                        <option value="04:00 PM">04:00 PM</option>
-                        <option value="06:00 PM">06:00 PM</option>
-                        <option value="08:00 PM">08:00 PM</option>
-                      </select>
+                      />
                     </div>
                   </div>
 
