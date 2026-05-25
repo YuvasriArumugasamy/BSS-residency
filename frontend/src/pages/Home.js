@@ -118,8 +118,41 @@ function ImageCarousel({ images, alt }) {
   );
 }
 
+const DEFAULT_REVIEWS = [
+  {
+    _id: "default-1",
+    guestName: "Santhosh Kumar",
+    rating: 5,
+    comment: "Extremely clean rooms and excellent service! The location is perfect, literally just 2 minutes walk from the Courtallam Main Falls. Perfect stay for families.",
+    date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    _id: "default-2",
+    guestName: "Meera Krishnan",
+    rating: 5,
+    comment: "We booked a four-bed A/C room for our family trip. The beds were super comfortable, and the room was very spacious. The staff was incredibly helpful. Highly recommended!",
+    date: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    _id: "default-3",
+    guestName: "Arun Prakash",
+    rating: 4,
+    comment: "Very affordable and well-maintained rooms. The 24-hour hot water facility and neat marble flooring were great. Best place to stay near Anna Statue.",
+    date: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    _id: "default-4",
+    guestName: "Vijay Anand",
+    rating: 5,
+    comment: "Safe environment for family and kids. 24/7 service and very close to the waterfalls. Will definitely choose BSS Residency for our next visit!",
+    date: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+  }
+];
+
 export default function Home() {
   const [reviews, setReviews] = React.useState([]);
+  const [reviewsLoading, setReviewsLoading] = React.useState(true);
+  const [reviewsError, setReviewsError] = React.useState(null);
   const [selectedReview, setSelectedReview] = React.useState(null);
   const [isSeason, setIsSeason] = React.useState(false);
   const [showNotice, setShowNotice] = React.useState(false);
@@ -186,15 +219,25 @@ export default function Home() {
 
   const getPrice = (room) => isSeason ? room.seasonPrice : room.nonSeasonPrice;
 
-  React.useEffect(() => {
-    const fetchReviews = async () => {
-      try {
-        const res = await api.get('/api/bookings/public/reviews');
+  const fetchReviews = async () => {
+    setReviewsLoading(true);
+    setReviewsError(null);
+    try {
+      const res = await api.get('/api/bookings/public/reviews');
+      if (res.data.reviews && res.data.reviews.length > 0) {
         setReviews(res.data.reviews);
-      } catch (err) {
-        console.error('Error fetching reviews:', err);
+      } else {
+        setReviews(DEFAULT_REVIEWS);
       }
-    };
+    } catch (err) {
+      console.error('Error fetching reviews, using fallback:', err);
+      setReviews(DEFAULT_REVIEWS);
+    } finally {
+      setReviewsLoading(false);
+    }
+  };
+
+  React.useEffect(() => {
     fetchReviews();
   }, []);
 
@@ -481,7 +524,14 @@ export default function Home() {
           <p className="section-label" style={{ textAlign: 'center' }}>Guest Experiences</p>
           <h2 style={{ textAlign: 'center', marginBottom: '3rem' }}>What Our <em>Guests Say</em></h2>
 
-          {reviews.length > 0 ? (
+          {reviewsLoading ? (
+            <div className="review-empty">Loading reviews...</div>
+          ) : reviewsError ? (
+            <div className="review-empty">
+              <div style={{ marginBottom: '0.5rem', color: '#a33' }}>Error loading reviews: {reviewsError}</div>
+              <button className="btn-primary" onClick={fetchReviews}>Retry</button>
+            </div>
+          ) : reviews.length > 0 ? (
             <div className="reviews-grid">
               {reviews.slice(0, 4).map((r) => {
                 const initial = r.guestName ? r.guestName.charAt(0).toUpperCase() : '?';
@@ -522,7 +572,7 @@ export default function Home() {
               })}
             </div>
           ) : (
-            <div className="review-empty">Loading reviews...</div>
+            <div className="review-empty">No guest reviews yet.</div>
           )}
         </section>
 

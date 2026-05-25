@@ -30,7 +30,7 @@ const staticPhotos = [
 
 const categories = ['All', 'Exterior', 'Rooms', 'Facilities', 'Other'];
 
-const API_BASE = process.env.REACT_APP_API_URL || 'https://bss-residency-2.onrender.com';
+const API_BASE = process.env.REACT_APP_API_URL || 'https://bss-residency.onrender.com';
 
 export default function Gallery() {
   const [active, setActive] = useState('All');

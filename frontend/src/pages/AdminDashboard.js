@@ -997,7 +997,7 @@ const GalleryManagement = ({ auth }) => {
         {images.map(img => (
           <div key={img._id} className="card" style={{ padding: '0.5rem', position: 'relative' }}>
             <img 
-              src={`${process.env.REACT_APP_API_URL || 'https://bss-residency-2.onrender.com'}${img.imageUrl}`} 
+              src={`${process.env.REACT_APP_API_URL || 'https://bss-residency.onrender.com'}${img.imageUrl}`} 
               alt={img.title} 
               style={{ width: '100%', height: '150px', objectFit: 'cover', borderRadius: '8px' }} 
             />
