@@ -128,6 +128,10 @@ export default function Home() {
   const [canScrollLeft, setCanScrollLeft] = React.useState(false);
   const [canScrollRight, setCanScrollRight] = React.useState(true);
 
+  const roomsRef = React.useRef(null);
+  const [canRoomsScrollLeft, setCanRoomsScrollLeft] = React.useState(false);
+  const [canRoomsScrollRight, setCanRoomsScrollRight] = React.useState(true);
+
   const checkScroll = () => {
     if (attractionsRef.current) {
       const { scrollLeft, scrollWidth, clientWidth } = attractionsRef.current;
@@ -136,9 +140,27 @@ export default function Home() {
     }
   };
 
+  const checkRoomsScroll = () => {
+    if (roomsRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = roomsRef.current;
+      setCanRoomsScrollLeft(scrollLeft > 0);
+      setCanRoomsScrollRight(scrollLeft + clientWidth < scrollWidth - 2);
+    }
+  };
+
   React.useEffect(() => {
     checkScroll();
   }, [activeTab]);
+
+  React.useEffect(() => {
+    checkRoomsScroll();
+    const timer = setTimeout(checkRoomsScroll, 500);
+    window.addEventListener('resize', checkRoomsScroll);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('resize', checkRoomsScroll);
+    };
+  }, []);
 
   
 
@@ -404,24 +426,44 @@ export default function Home() {
             <p className="rooms-preview-sub fade-up" style={{ animationDelay: '0.2s' }}>
               Best rates guaranteed when you book directly with us
             </p>
-            <div className="rooms-grid">
-              {ROOMS.map((r) => (
-                <div key={r.key} className="room-card-home">
-                  <div className="r-img-wrapper">
-                    <img src={imgMap[r.key]} alt={r.name} className="r-card-img" loading="lazy" width="400" height="260" />
+            <div className="rooms-carousel-container">
+              <button 
+                className="carousel-nav prev" 
+                aria-label="Previous rooms"
+                onClick={() => roomsRef.current?.scrollBy({ left: -320, behavior: 'smooth' })}
+                disabled={!canRoomsScrollLeft}
+              >
+                ‹
+              </button>
+
+              <div className="rooms-grid" ref={roomsRef} onScroll={checkRoomsScroll}>
+                {ROOMS.map((r) => (
+                  <div key={r.key} className="room-card-home">
+                    <div className="r-img-wrapper">
+                      <img src={imgMap[r.key]} alt={r.name} className="r-card-img" loading="lazy" width="400" height="260" />
+                    </div>
+                    <h3>{r.name}</h3>
+                    <span className="r-type-pill">{r.type}</span>
+                    <div className="r-price">
+                      <span className="r-price-currency">₹</span>
+                      <span className="r-price-amount">{getPrice(r).toLocaleString('en-IN')}</span>
+                      <span className="r-price-unit">/ night</span>
+                    </div>
+                    <div className="r-actions-home">
+                      <Link to={`/booking?room=${r.key}`} className="r-book-btn"><span>Book Now</span></Link>
+                    </div>
                   </div>
-                  <h3>{r.name}</h3>
-                  <span className="r-type-pill">{r.type}</span>
-                  <div className="r-price">
-                    <span className="r-price-currency">₹</span>
-                    <span className="r-price-amount">{getPrice(r).toLocaleString('en-IN')}</span>
-                    <span className="r-price-unit">/ night</span>
-                  </div>
-                  <div className="r-actions-home">
-                    <Link to={`/booking?room=${r.key}`} className="r-book-btn"><span>Book Now</span></Link>
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
+
+              <button 
+                className="carousel-nav next" 
+                aria-label="Next rooms"
+                onClick={() => roomsRef.current?.scrollBy({ left: 320, behavior: 'smooth' })}
+                disabled={!canRoomsScrollRight}
+              >
+                ›
+              </button>
             </div>
             <div className="tariff-foot fade-up">
               <Link to="/rooms" className="btn-primary"><span>View All Rooms</span></Link>
