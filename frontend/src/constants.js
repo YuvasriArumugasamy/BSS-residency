@@ -70,6 +70,24 @@ export const ROOMS = [
     ],
   },
   {
+    key: 'three-bed',
+    icon: '🛏️',
+    name: 'Three Bed',
+    type: 'Non-A/C',
+    seasonPrice: 1800,
+    nonSeasonPrice: 1500,
+    desc:
+      'Comfortable three-bed room with ample space — perfect for small families or a group of friends visiting Courtallam.',
+    features: [
+      'Three beds with premium mattresses',
+      'Ceiling fans',
+      '24hr hot water',
+      'LED TV',
+      'Attached bathroom',
+      'Daily housekeeping',
+    ],
+  },
+  {
     key: 'four-bed',
     icon: '👨‍👩‍👧‍👦',
     name: 'Four Bed',

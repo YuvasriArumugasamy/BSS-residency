@@ -5,6 +5,7 @@ import roomAc1 from '../assets/room-ac-1.webp';
 import roomAc2 from '../assets/room-ac-2.webp';
 import roomAc3 from '../assets/room-ac-3.webp';
 import roomFamily from '../assets/room-family.webp';
+import roomThreeBed from '../assets/room.webp';
 import { ROOMS, waLink, WA_TEMPLATES, CONTACT } from '../constants';
 import SEO from '../components/SEO';
 import './Rooms.css';
@@ -12,6 +13,7 @@ import './Rooms.css';
 const imgMap = {
   'double-bed': roomAc2,
   'double-bed-ac': roomAc3,
+  'three-bed': roomThreeBed,
   'four-bed': roomAc1,
   'four-bed-ac': roomFamily,
 };
@@ -42,7 +44,7 @@ export default function Rooms() {
         <div className="page-hero-content">
           <p className="section-label gold">Accommodations</p>
           <h1>Our <em>Rooms & Tariff</em></h1>
-          <p>Four room types — clean, comfortable, and priced right. Something for every guest.</p>
+          <p>Five room types — clean, comfortable, and priced right. Something for every guest.</p>
         </div>
       </section>
 

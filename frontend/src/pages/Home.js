@@ -24,6 +24,7 @@ import honeyFalls from '../assets/Honey Falls.webp';
 import shenbagadeviFalls from '../assets/Shenbagadevi Falls.webp';
 import roomFamily from '../assets/room-family.webp';
 import roomAc3 from '../assets/room-ac-3.webp';
+import roomThreeBed from '../assets/room.webp';
 import gundarDam from '../assets/gundar dam.webp';
 import adaviNainarDam from '../assets/Adavi Nainar Dam.webp';
 import gadananathiDam from '../assets/Gadananathi Dam.webp';
@@ -40,10 +41,11 @@ import './Home.css';
 import roomVideo from '../assets/room-video.mp4';
 
 const imgMap = {
-  'double-bed': roomAcImg,       // Was 2nd, now 1st
-  'double-bed-ac': roomAc3,      // Was 4th, now 2nd
-  'four-bed': roomGal1,          // Stays 3rd
-  'four-bed-ac': roomFamily,     // Was 1st, now 4th
+  'double-bed': roomAcImg,
+  'double-bed-ac': roomAc3,
+  'three-bed': roomThreeBed,
+  'four-bed': roomGal1,
+  'four-bed-ac': roomFamily,
 };
 
 const PEARLS_ITEMS = [
@@ -291,7 +293,7 @@ export default function Home() {
             <p>BSS Residency is the best <strong>hotel near Courtallam waterfalls</strong>, located just 100 metres from the legendary Main Falls — moments from the bus stand and Anna Statue. We offer modern <strong>Courtallam rooms for rent</strong> with premium amenities, ideal for families, pilgrims, and leisure travellers.</p>
             <p>From comfortable non-A/C doubles to spacious four-bed A/C rooms, our <strong>family hotel in Courtallam</strong> has the perfect accommodation for every guest and every budget. Looking for <strong>Kutralam lodging</strong>? BSS Residency is your best choice.</p>
             <div className="about-stats">
-              <div className="stat fade-up"><span className="stat-n">4</span><span className="stat-l">Room Types</span></div>
+              <div className="stat fade-up"><span className="stat-n">5</span><span className="stat-l">Room Types</span></div>
               <div className="stat fade-up" style={{ animationDelay: '0.2s' }}><span className="stat-n">4.6★</span><span className="stat-l">Rating</span></div>
               <div className="stat fade-up" style={{ animationDelay: '0.4s' }}><span className="stat-n">100m</span><span className="stat-l">to Main Falls</span></div>
               <div className="stat fade-up" style={{ animationDelay: '0.6s' }}><span className="stat-n">24/7</span><span className="stat-l">Service</span></div>
