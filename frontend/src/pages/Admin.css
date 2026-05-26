@@ -343,12 +343,13 @@
   margin-bottom: 1.5rem;
 }
 
-.login-form label {
+.admin-login-page .login-form label {
   display: block;
-  font-size: 0.9rem;
-  font-weight: 500;
+  font-size: 0.95rem;
+  font-weight: 600;
   margin-bottom: 0.75rem;
-  color: #ffffff;
+  color: #ffffff !important;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.8);
 }
 
 .input-container {
@@ -370,19 +371,20 @@
   z-index: 5;
 }
 
-.login-form .input-container input {
+.admin-login-page .login-form .input-container input {
   width: 100%;
   padding: 0.85rem 1rem 0.85rem 45px !important;
   border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(0, 0, 0, 0.3);
   font-size: 1rem;
-  color: white;
+  color: #ffffff !important;
+  font-weight: 500;
   transition: all 0.3s ease;
 }
 
-.login-form input::placeholder {
-  color: rgba(255, 255, 255, 0.3);
+.admin-login-page .login-form input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .login-form input:focus {
