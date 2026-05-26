@@ -1245,7 +1245,7 @@ const RoomAvailabilityCalendar = ({
                 <option value="Double Bed">Double Bed</option>
                 <option value="Double Bed A/C">Double Bed A/C</option>
                 <option value="Three Bed">Three Bed</option>
-                <option value="Four Bed">Four Bed</option>
+
                 <option value="Four Bed A/C">Four Bed A/C</option>
                 <option value="Deluxe AC">Deluxe AC</option>
                 <option value="Suite">Suite</option>

@@ -41,11 +41,12 @@ const seed = async () => {
     });
 
     // 6 Four Bed
+    // 6 Four Bed A/C
     for (let i = 0; i < 6; i++) {
         rooms.push({
             roomNumber: (roomNum++).toString(),
-            type: 'Four Bed',
-            price: 2500,
+            type: 'Four Bed A/C',
+            price: 2300,
             status: 'Available',
             amenities: ['TV', 'Hot Water', 'WiFi']
         });

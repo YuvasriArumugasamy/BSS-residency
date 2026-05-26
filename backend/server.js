@@ -206,14 +206,13 @@ app.get('/api/setup-rooms-bss2025', async (req, res) => {
     const pricing = {
       'Double Bed':     { non: 1000, sea: 1300 },
       'Double Bed A/C': { non: 1300, sea: 1600 },
-      'Four Bed':       { non: 2000, sea: 2500 },
       'Four Bed A/C':   { non: 2300, sea: 2800 },
     };
 
     // First Floor (101-106)
     const floor1 = [
       { num: 101, type: 'Double Bed' },
-      { num: 102, type: 'Four Bed' },
+      { num: 102, type: 'Four Bed A/C' },
       { num: 103, type: 'Double Bed' },
       { num: 104, type: 'Double Bed' },
       { num: 105, type: 'Double Bed A/C' },
@@ -222,8 +221,8 @@ app.get('/api/setup-rooms-bss2025', async (req, res) => {
 
     // Second Floor (201-207)
     const floor2 = [
-      { num: 201, type: 'Four Bed' },
-      { num: 202, type: 'Four Bed' },
+      { num: 201, type: 'Four Bed A/C' },
+      { num: 202, type: 'Four Bed A/C' },
       { num: 203, type: 'Double Bed' },
       { num: 204, type: 'Double Bed' },
       { num: 205, type: 'Double Bed A/C' },
@@ -234,12 +233,13 @@ app.get('/api/setup-rooms-bss2025', async (req, res) => {
     // Third Floor (301-307)
     const floor3 = [
       { num: 301, type: 'Double Bed' },
-      { num: 302, type: 'Four Bed' },
+      { num: 302, type: 'Four Bed A/C' },
       { num: 303, type: 'Double Bed' },
       { num: 304, type: 'Double Bed' },
       { num: 305, type: 'Double Bed A/C' },
       { num: 306, type: 'Double Bed A/C' },
-      { num: 307, type: 'Four Bed' },
+      { num: 307, type: 'Four Bed A/C' },
+      { num: 308, type: 'Four Bed A/C' },
     ];
 
     [...floor1, ...floor2, ...floor3].forEach(({ num, type }) => {

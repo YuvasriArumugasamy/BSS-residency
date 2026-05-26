@@ -88,24 +88,6 @@ export const ROOMS = [
     ],
   },
   {
-    key: 'four-bed',
-    icon: '👨‍👩‍👧‍👦',
-    name: 'Four Bed',
-    type: 'Non-A/C',
-    seasonPrice: 2500,
-    nonSeasonPrice: 2000,
-    desc:
-      'Spacious four-bed room — perfect for families and small groups travelling together.',
-    features: [
-      'Four beds with premium mattresses',
-      'Ceiling fans',
-      '24hr hot water',
-      'LED TV',
-      'Attached bathroom',
-      'Roomy layout for families',
-    ],
-  },
-  {
     key: 'four-bed-ac',
     icon: '👑',
     name: 'Four Bed A/C',
