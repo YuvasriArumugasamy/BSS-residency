@@ -131,7 +131,6 @@ router.post('/verify-payment', async (req, res) => {
     const ROOM_DATA = {
       'Double Bed': { season: 1300, nonSeason: 1000 },
       'Double Bed A/C': { season: 1600, nonSeason: 1300 },
-      'Four Bed': { season: 2500, nonSeason: 2000 },
       'Four Bed A/C': { season: 2800, nonSeason: 2300 },
     };
     const roomPriceInfo = ROOM_DATA[roomType] || { season: 1000, nonSeason: 1000 };
@@ -261,7 +260,6 @@ router.post('/', async (req, res) => {
     const ROOM_DATA = {
       'Double Bed': { season: 1300, nonSeason: 1000 },
       'Double Bed A/C': { season: 1600, nonSeason: 1300 },
-      'Four Bed': { season: 2500, nonSeason: 2000 },
       'Four Bed A/C': { season: 2800, nonSeason: 2300 },
     };
 

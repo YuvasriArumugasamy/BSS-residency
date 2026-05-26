@@ -290,7 +290,6 @@ router.post('/bookings/offline', adminAuth, async (req, res) => {
     const ROOM_DATA = {
       'Double Bed': { season: 1300, nonSeason: 1000 },
       'Double Bed A/C': { season: 1600, nonSeason: 1300 },
-      'Four Bed': { season: 2500, nonSeason: 2000 },
       'Four Bed A/C': { season: 2800, nonSeason: 2300 },
     };
     const roomPriceInfo = ROOM_DATA[roomType] || { season: 1000, nonSeason: 1000 };
@@ -782,54 +781,63 @@ router.delete('/notifications/:id', adminAuth, async (req, res) => {
 // POST /api/admin/rooms/reset-layout — Reset database to the specific 20-room floor layout
 router.post('/rooms/reset-layout', adminAuth, async (req, res) => {
   try {
-    const Settings = mongoose.model('Settings');
-    const settings = await Settings.findOne();
-    const isSeason = settings ? settings.isSeason : false;
+    const setting = await Setting.findOne({ key: 'isSeason' });
+    const isSeason = setting ? setting.value === true : false;
 
     await Room.deleteMany({});
     const roomsToCreate = [];
 
-    const getPrices = (type) => {
-      if (type === 'Four Bed') return { nonSeason: 2000, season: 2500 };
-      return { nonSeason: 1000, season: 1300 };
+    const pricing = {
+      'Double Bed':     { non: 1000, sea: 1300 },
+      'Double Bed A/C': { non: 1300, sea: 1600 },
+      'Four Bed A/C':   { non: 2300, sea: 2800 },
     };
 
     // 1st Floor (101-106)
     for (let i = 101; i <= 106; i++) {
-      const type = (i === 102) ? 'Four Bed' : 'Double Bed';
-      const prices = getPrices(type);
+      let type = 'Double Bed';
+      if (i === 102) type = 'Four Bed A/C';
+      if (i === 105 || i === 106) type = 'Double Bed A/C';
+      
+      const p = pricing[type];
       roomsToCreate.push({
         roomNumber: i.toString(),
         type,
-        nonSeasonPrice: prices.nonSeason,
-        seasonPrice: prices.season,
-        price: isSeason ? prices.season : prices.nonSeason,
+        nonSeasonPrice: p.non,
+        seasonPrice: p.sea,
+        price: isSeason ? p.sea : p.non,
         status: 'Available'
       });
     }
     // 2nd Floor (201-207)
     for (let i = 201; i <= 207; i++) {
-      const type = ([201, 202, 207].includes(i)) ? 'Four Bed' : 'Double Bed';
-      const prices = getPrices(type);
+      let type = 'Double Bed';
+      if ([201, 202, 207].includes(i)) type = 'Four Bed A/C';
+      if ([205, 206].includes(i)) type = 'Double Bed A/C';
+      
+      const p = pricing[type];
       roomsToCreate.push({
         roomNumber: i.toString(),
         type,
-        nonSeasonPrice: prices.nonSeason,
-        seasonPrice: prices.season,
-        price: isSeason ? prices.season : prices.nonSeason,
+        nonSeasonPrice: p.non,
+        seasonPrice: p.sea,
+        price: isSeason ? p.sea : p.non,
         status: 'Available'
       });
     }
     // 3rd Floor (301-307)
     for (let i = 301; i <= 307; i++) {
-      const type = ([302, 307].includes(i)) ? 'Four Bed' : 'Double Bed';
-      const prices = getPrices(type);
+      let type = 'Double Bed';
+      if ([302, 307].includes(i)) type = 'Four Bed A/C';
+      if (i === 305 || i === 306) type = 'Double Bed A/C';
+      
+      const p = pricing[type];
       roomsToCreate.push({
         roomNumber: i.toString(),
         type,
-        nonSeasonPrice: prices.nonSeason,
-        seasonPrice: prices.season,
-        price: isSeason ? prices.season : prices.nonSeason,
+        nonSeasonPrice: p.non,
+        seasonPrice: p.sea,
+        price: isSeason ? p.sea : p.non,
         status: 'Available'
       });
     }

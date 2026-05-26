@@ -1284,6 +1284,10 @@
   -ms-overflow-style: none;
 }
 
+.reviews-carousel::-webkit-scrollbar {
+  display: none;
+}
+
 .reviews-grid {
   width: 100%;
   display: grid;

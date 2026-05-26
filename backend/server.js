@@ -239,7 +239,6 @@ app.get('/api/setup-rooms-bss2025', async (req, res) => {
       { num: 305, type: 'Double Bed A/C' },
       { num: 306, type: 'Double Bed A/C' },
       { num: 307, type: 'Four Bed A/C' },
-      { num: 308, type: 'Four Bed A/C' },
     ];
 
     [...floor1, ...floor2, ...floor3].forEach(({ num, type }) => {
