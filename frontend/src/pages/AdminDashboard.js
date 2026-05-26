@@ -1190,7 +1190,7 @@ const RoomAvailabilityCalendar = ({
       const hasOverlap = bookings.some(ob => {
         if (ob._id === b._id) return false;
         if (ob.roomNumber !== room.roomNumber) return false;
-        if (ob.status === 'Cancelled') return false;
+        if (ob.status === 'Cancelled' || ob.status === 'Checked-out') return false;
         const obStart = new Date(ob.checkIn).setHours(0,0,0,0);
         const obEnd = new Date(ob.checkOut).setHours(0,0,0,0);
         return bStart < obEnd && bEnd > obStart;
