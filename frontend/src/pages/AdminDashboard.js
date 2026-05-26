@@ -1951,18 +1951,9 @@ export default function AdminDashboard() {
     }
   }, []);
 
-  // Poll for new bookings + badge/alerts (works when app/tab is open)
+  // Fetch data on initial load
   useEffect(() => {
     fetchData();
-    const interval = setInterval(fetchData, 45000);
-    const onVisible = () => {
-      if (document.visibilityState === 'visible') fetchData();
-    };
-    document.addEventListener('visibilitychange', onVisible);
-    return () => {
-      clearInterval(interval);
-      document.removeEventListener('visibilitychange', onVisible);
-    };
   }, [fetchData]);
 
   const handleRoomSubmit = async (e) => {
