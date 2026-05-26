@@ -5,7 +5,7 @@ import roomAc1 from '../assets/room-ac-1.webp';
 import roomAc2 from '../assets/room-ac-2.webp';
 import roomAc3 from '../assets/room-ac-3.webp';
 import roomFamily from '../assets/room-family.webp';
-import roomThreeBed from '../assets/room.webp';
+import roomThreeBed from '../assets/3bed.webp';
 import { ROOMS, waLink, WA_TEMPLATES, CONTACT } from '../constants';
 import SEO from '../components/SEO';
 import './Rooms.css';

@@ -24,7 +24,7 @@ import honeyFalls from '../assets/Honey Falls.webp';
 import shenbagadeviFalls from '../assets/Shenbagadevi Falls.webp';
 import roomFamily from '../assets/room-family.webp';
 import roomAc3 from '../assets/room-ac-3.webp';
-import roomThreeBed from '../assets/room.webp';
+import roomThreeBed from '../assets/3bed.webp';
 import gundarDam from '../assets/gundar dam.webp';
 import adaviNainarDam from '../assets/Adavi Nainar Dam.webp';
 import gadananathiDam from '../assets/Gadananathi Dam.webp';
