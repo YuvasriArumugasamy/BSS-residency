@@ -45,6 +45,7 @@ const imgMap = {
   'double-bed-ac': roomAc3,
   'three-bed': roomThreeBed,
   'four-bed': roomGal1,
+  'three-bed-ac': roomAc3,
   'four-bed-ac': roomFamily,
 };
 
