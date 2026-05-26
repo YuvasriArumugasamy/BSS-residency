@@ -428,15 +428,6 @@ export default function Home() {
               Best rates guaranteed when you book directly with us
             </p>
             <div className="rooms-carousel-container">
-              <button 
-                className="carousel-nav prev" 
-                aria-label="Previous rooms"
-                onClick={() => roomsRef.current?.scrollBy({ left: -320, behavior: 'smooth' })}
-                disabled={!canRoomsScrollLeft}
-              >
-                ‹
-              </button>
-
               <div className="rooms-grid" ref={roomsRef} onScroll={checkRoomsScroll}>
                 {ROOMS.map((r) => (
                   <div key={r.key} className="room-card-home">
@@ -456,15 +447,6 @@ export default function Home() {
                   </div>
                 ))}
               </div>
-
-              <button 
-                className="carousel-nav next" 
-                aria-label="Next rooms"
-                onClick={() => roomsRef.current?.scrollBy({ left: 320, behavior: 'smooth' })}
-                disabled={!canRoomsScrollRight}
-              >
-                ›
-              </button>
             </div>
             <div className="tariff-foot fade-up">
               <Link to="/rooms" className="btn-primary"><span>View All Rooms</span></Link>
