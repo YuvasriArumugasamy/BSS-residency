@@ -1746,14 +1746,15 @@ export default function AdminDashboard() {
     roomType: 'Double Bed A/C',
     checkIn: '',
     checkOut: '',
-    checkInTime: '12:00 PM',
-    checkOutTime: '11:00 AM',
+    checkInTime: '',
+    checkOutTime: '',
     guests: 2,
     rooms: 1,
     message: '',
     advancePaid: 0,
     paymentMethod: 'Cash'
   });
+  const today = new Date().toISOString().split('T')[0];
   const [offlineLoading, setOfflineLoading] = useState(false);
 
   // Calendar State & Fetching
@@ -1781,8 +1782,8 @@ export default function AdminDashboard() {
       roomType: room.type,
       checkIn: checkInDateStr,
       checkOut: checkOutDateStr,
-      checkInTime: '12:00 PM',
-      checkOutTime: '11:00 AM',
+      checkInTime: '',
+      checkOutTime: '',
       guests: room.type.includes('Four') ? 4 : (room.type.includes('Three') ? 3 : 2),
       rooms: 1,
       message: `Offline Booking pre-filled for Room #${room.roomNumber}`,
@@ -2130,8 +2131,8 @@ export default function AdminDashboard() {
           roomType: 'Double Bed A/C',
           checkIn: '',
           checkOut: '',
-          checkInTime: '12:00 PM',
-          checkOutTime: '11:00 AM',
+          checkInTime: '',
+          checkOutTime: '',
           guests: 2,
           rooms: 1,
           message: '',
@@ -2644,30 +2645,18 @@ export default function AdminDashboard() {
               <label>Check-In Date *</label>
               <input
                 type="date" required
+                min={today}
                 value={offlineForm.checkIn}
                 onChange={e => setOfflineForm({ ...offlineForm, checkIn: e.target.value })}
               />
             </div>
             <div className="form-group">
-              <label>Check-In Time</label>
-              <select 
+              <label>Check-In Time *</label>
+              <input
+                type="time" required
                 value={offlineForm.checkInTime} 
                 onChange={e => setOfflineForm({ ...offlineForm, checkInTime: e.target.value })}
-                style={{ padding: '0.45rem', fontSize: '0.85rem', borderRadius: '6px', border: '1px solid #cbd5e1', outline: 'none', backgroundColor: '#fff', width: '100%', boxSizing: 'border-box' }}
-              >
-                <option value="12:00 PM">12:00 PM (Standard)</option>
-                <option value="06:00 AM">06:00 AM</option>
-                <option value="08:00 AM">08:00 AM</option>
-                <option value="10:00 AM">10:00 AM</option>
-                <option value="02:00 PM">02:00 PM</option>
-                <option value="04:00 PM">04:00 PM</option>
-                <option value="06:00 PM">06:00 PM</option>
-                <option value="08:00 PM">08:00 PM</option>
-                <option value="10:00 PM">10:00 PM</option>
-                <option value="12:00 AM">12:00 AM</option>
-                <option value="02:00 AM">02:00 AM</option>
-                <option value="04:00 AM">04:00 AM</option>
-              </select>
+              />
             </div>
           </div>
           <div className="form-row">
@@ -2675,27 +2664,18 @@ export default function AdminDashboard() {
               <label>Check-Out Date *</label>
               <input
                 type="date" required
+                min={offlineForm.checkIn || today}
                 value={offlineForm.checkOut}
                 onChange={e => setOfflineForm({ ...offlineForm, checkOut: e.target.value })}
               />
             </div>
             <div className="form-group">
-              <label>Check-Out Time</label>
-              <select 
+              <label>Check-Out Time *</label>
+              <input
+                type="time" required
                 value={offlineForm.checkOutTime} 
                 onChange={e => setOfflineForm({ ...offlineForm, checkOutTime: e.target.value })}
-                style={{ padding: '0.45rem', fontSize: '0.85rem', borderRadius: '6px', border: '1px solid #cbd5e1', outline: 'none', backgroundColor: '#fff', width: '100%', boxSizing: 'border-box' }}
-              >
-                <option value="11:00 AM">11:00 AM (Standard)</option>
-                <option value="08:00 AM">08:00 AM</option>
-                <option value="09:00 AM">09:00 AM</option>
-                <option value="12:00 PM">12:00 PM</option>
-                <option value="01:00 PM">01:00 PM</option>
-                <option value="02:00 PM">02:00 PM</option>
-                <option value="04:00 PM">04:00 PM</option>
-                <option value="06:00 PM">06:00 PM</option>
-                <option value="08:00 PM">08:00 PM</option>
-              </select>
+              />
             </div>
           </div>
           <div className="form-row">
