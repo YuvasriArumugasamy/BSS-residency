@@ -17,7 +17,7 @@ async function setupClientRooms() {
     for (let i = 101; i <= 106; i++) {
       let type = 'Double Bed';
       if (i === 102) type = 'Four Bed A/C';
-      if (i === 105 || i === 106) type = 'Double Bed A/C';
+      if (i === 105) type = 'Double Bed A/C';
       
       const pricing = {
         'Double Bed': { non: 1000, sea: 1300 },
@@ -39,7 +39,7 @@ async function setupClientRooms() {
     for (let i = 201; i <= 207; i++) {
       let type = 'Double Bed';
       if ([201, 202, 207].includes(i)) type = 'Four Bed A/C';
-      if ([205, 206].includes(i)) type = 'Double Bed A/C';
+
       
       const pricing = {
         'Double Bed': { non: 1000, sea: 1300 },
@@ -62,7 +62,7 @@ async function setupClientRooms() {
       let type = 'Double Bed';
       if (i === 301) type = 'Three Bed';
       if ([302, 307].includes(i)) type = 'Four Bed A/C';
-      if (i === 305 || i === 306) type = 'Double Bed A/C';
+
       
       const pricing = {
         'Double Bed': { non: 1000, sea: 1300 },
