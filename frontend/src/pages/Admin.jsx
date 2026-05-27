@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import apiClient from '../utils/apiClient';
 import { 
   LogIn, RefreshCw, Calendar, Users, Phone, MapPin, DollarSign, CheckCircle2, 
   XCircle, Trash2, Home, Settings, MessageSquare, AlertCircle, PlusCircle, 
@@ -71,41 +71,41 @@ export default function Admin() {
     const headers = { username: adminCreds.username, password: adminCreds.password };
     try {
       // 1. Fetch Stats
-      const statsRes = await axios.get('http://localhost:5000/api/admin/stats', { headers });
+      const statsRes = await apiClient.get('http://localhost:5000/api/admin/stats', { headers });
       if (statsRes.data.success) {
         setStats(statsRes.data.stats);
       }
 
       // 2. Fetch Bookings
-      const bookingsRes = await axios.get('http://localhost:5000/api/admin/bookings?limit=250', { headers });
+      const bookingsRes = await apiClient.get('http://localhost:5000/api/admin/bookings?limit=250', { headers });
       if (bookingsRes.data.success) {
         setBookings(bookingsRes.data.bookings);
       }
 
       // 3. Fetch Rooms
-      const roomsRes = await axios.get('http://localhost:5000/api/admin/rooms', { headers });
+      const roomsRes = await apiClient.get('http://localhost:5000/api/admin/rooms', { headers });
       if (roomsRes.data.success) {
         setRooms(roomsRes.data.rooms);
       }
 
       // 4. Fetch settings
-      const settingsRes = await axios.get('http://localhost:5000/api/admin/settings', { headers });
+      const settingsRes = await apiClient.get('http://localhost:5000/api/admin/settings', { headers });
       if (settingsRes.data.success) {
         setSettings(settingsRes.data.settings);
       }
 
       // Fetch tab specific items
       if (activeTab === 'guests') {
-        const guestsRes = await axios.get('http://localhost:5000/api/admin/guests', { headers });
+        const guestsRes = await apiClient.get('http://localhost:5000/api/admin/guests', { headers });
         setGuests(guestsRes.data.guests || []);
       } else if (activeTab === 'payments') {
-        const paymentsRes = await axios.get('http://localhost:5000/api/admin/payments', { headers });
+        const paymentsRes = await apiClient.get('http://localhost:5000/api/admin/payments', { headers });
         setPayments(paymentsRes.data.payments || []);
       } else if (activeTab === 'reviews') {
-        const reviewsRes = await axios.get('http://localhost:5000/api/admin/reviews', { headers });
+        const reviewsRes = await apiClient.get('http://localhost:5000/api/admin/reviews', { headers });
         setReviews(reviewsRes.data.reviews || []);
       } else if (activeTab === 'notifications') {
-        const notifRes = await axios.get('http://localhost:5000/api/admin/notifications', { headers });
+        const notifRes = await apiClient.get('http://localhost:5000/api/admin/notifications', { headers });
         setNotifications(notifRes.data.notifications || []);
       }
     } catch (err) {
@@ -125,7 +125,7 @@ export default function Admin() {
     setError('');
     try {
       const payload = { username: usernameInput.trim(), password: passwordInput.trim() };
-      const res = await axios.post('http://localhost:5000/api/admin/login', payload);
+      const res = await apiClient.post('http://localhost:5000/api/admin/login', payload);
       
       if (res.data.success) {
         localStorage.setItem('sm_admin_user', payload.username);
@@ -155,7 +155,7 @@ export default function Admin() {
     const headers = { username: adminCreds.username, password: adminCreds.password };
     try {
       setLoading(true);
-      const res = await axios.patch('http://localhost:5000/api/admin/settings', { isSeason: nextVal }, { headers });
+      const res = await apiClient.patch('http://localhost:5000/api/admin/settings', { isSeason: nextVal }, { headers });
       if (res.data.success) {
         setSettings({ isSeason: nextVal });
         fetchDashboardData();
@@ -173,7 +173,7 @@ export default function Admin() {
     const headers = { username: adminCreds.username, password: adminCreds.password };
     try {
       setLoading(true);
-      const res = await axios.post('http://localhost:5000/api/admin/rooms/reset-layout', {}, { headers });
+      const res = await apiClient.post('http://localhost:5000/api/admin/rooms/reset-layout', {}, { headers });
       if (res.data.success) {
         alert(res.data.message);
         fetchDashboardData();
@@ -198,7 +198,7 @@ export default function Admin() {
           setLoading(false);
           return;
         }
-        const res = await axios.patch(`http://localhost:5000/api/admin/bookings/${booking._id}`, { status: 'Confirmed' }, { headers });
+        const res = await apiClient.patch(`http://localhost:5000/api/admin/bookings/${booking._id}`, { status: 'Confirmed' }, { headers });
         if (res.data.success) {
           if (res.data.waLink) window.open(res.data.waLink, '_blank');
           fetchDashboardData();
@@ -218,7 +218,7 @@ export default function Admin() {
     const headers = { username: adminCreds.username, password: adminCreds.password };
     try {
       setLoading(true);
-      const res = await axios.patch(
+      const res = await apiClient.patch(
         `http://localhost:5000/api/admin/bookings/${assignRoomModal.booking._id}`, 
         { status: 'Confirmed', roomNumber: assignRoomModal.selectedRoom }, 
         { headers }
@@ -245,7 +245,7 @@ export default function Admin() {
     const headers = { username: adminCreds.username, password: adminCreds.password };
     try {
       setLoading(true);
-      const res = await axios.patch(
+      const res = await apiClient.patch(
         `http://localhost:5000/api/admin/bookings/${cancellationModal.bookingId}`,
         { status: 'Cancelled', cancellationReason: cancellationModal.reason },
         { headers }
@@ -268,7 +268,7 @@ export default function Admin() {
     const headers = { username: adminCreds.username, password: adminCreds.password };
     try {
       setLoading(true);
-      const res = await axios.patch(`http://localhost:5000/api/admin/bookings/${id}`, { status: 'Checked-out' }, { headers });
+      const res = await apiClient.patch(`http://localhost:5000/api/admin/bookings/${id}`, { status: 'Checked-out' }, { headers });
       if (res.data.success) {
         fetchDashboardData();
       }
@@ -285,7 +285,7 @@ export default function Admin() {
     const headers = { username: adminCreds.username, password: adminCreds.password };
     try {
       setLoading(true);
-      const res = await axios.delete(`http://localhost:5000/api/admin/bookings/${id}`, { headers });
+      const res = await apiClient.delete(`http://localhost:5000/api/admin/bookings/${id}`, { headers });
       if (res.data.success) {
         fetchDashboardData();
       }
@@ -302,7 +302,7 @@ export default function Admin() {
     const headers = { username: adminCreds.username, password: adminCreds.password };
     try {
       setLoading(true);
-      const res = await axios.post('http://localhost:5000/api/admin/bookings/offline', offlineForm, { headers });
+      const res = await apiClient.post('http://localhost:5000/api/admin/bookings/offline', offlineForm, { headers });
       if (res.data.success) {
         alert('Direct stay booking logged successfully!');
         setShowOfflineModal(false);
@@ -326,7 +326,7 @@ export default function Admin() {
     const headers = { username: adminCreds.username, password: adminCreds.password };
     try {
       setLoading(true);
-      const res = await axios.patch(`http://localhost:5000/api/admin/rooms/${roomId}`, { status: nextStatus }, { headers });
+      const res = await apiClient.patch(`http://localhost:5000/api/admin/rooms/${roomId}`, { status: nextStatus }, { headers });
       if (res.data.success) {
         fetchDashboardData();
       }
@@ -348,7 +348,7 @@ export default function Admin() {
     if (!window.confirm('Delete all alerts history?')) return;
     const headers = { username: adminCreds.username, password: adminCreds.password };
     try {
-      await axios.delete('http://localhost:5000/api/admin/notifications/all', { headers });
+      await apiClient.delete('http://localhost:5000/api/admin/notifications/all', { headers });
       fetchDashboardData();
     } catch (err) {}
   };

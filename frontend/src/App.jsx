@@ -9,6 +9,8 @@ import CheckIn from './pages/CheckIn';
 import About from './pages/About';
 import Activities from './pages/Activities';
 import Contact from './pages/Contact';
+import Gallery from './pages/Gallery';
+import FAQ from './pages/FAQ';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 
@@ -25,6 +27,8 @@ function App() {
             <Route path="/admin" element={<Admin />} />
             <Route path="/about" element={<About />} />
             <Route path="/activities" element={<Activities />} />
+            <Route path="/gallery" element={<Gallery />} />
+            <Route path="/faq" element={<FAQ />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/booking/status/:id" element={<BookingStatus />} />
             <Route path="/booking/status" element={<BookingStatus />} />
