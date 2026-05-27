@@ -206,6 +206,7 @@ app.get('/api/setup-rooms-bss2025', async (req, res) => {
     const pricing = {
       'Double Bed':     { non: 1000, sea: 1300 },
       'Double Bed A/C': { non: 1300, sea: 1600 },
+      'Three Bed':       { non: 1500, sea: 1800 },
       'Four Bed A/C':   { non: 2300, sea: 2800 },
     };
 
@@ -232,7 +233,7 @@ app.get('/api/setup-rooms-bss2025', async (req, res) => {
 
     // Third Floor (301-307)
     const floor3 = [
-      { num: 301, type: 'Double Bed' },
+      { num: 301, type: 'Three Bed' },
       { num: 302, type: 'Four Bed A/C' },
       { num: 303, type: 'Double Bed' },
       { num: 304, type: 'Double Bed' },

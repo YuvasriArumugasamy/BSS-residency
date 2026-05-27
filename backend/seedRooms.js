@@ -35,7 +35,7 @@ const seedRooms = async () => {
       { roomNumber: '207', type: 'Four Bed A/C', price: 2300, nonSeasonPrice: 2300, seasonPrice: 2800, status: 'Available' },
 
       // Third Floor
-      { roomNumber: '301', type: 'Double Bed', price: 1000, nonSeasonPrice: 1000, seasonPrice: 1300, status: 'Available' },
+      { roomNumber: '301', type: 'Three Bed', price: 1500, nonSeasonPrice: 1500, seasonPrice: 1800, status: 'Available' },
       { roomNumber: '302', type: 'Four Bed A/C', price: 2300, nonSeasonPrice: 2300, seasonPrice: 2800, status: 'Available' },
       { roomNumber: '303', type: 'Double Bed', price: 1000, nonSeasonPrice: 1000, seasonPrice: 1300, status: 'Available' },
       { roomNumber: '304', type: 'Double Bed', price: 1000, nonSeasonPrice: 1000, seasonPrice: 1300, status: 'Available' },

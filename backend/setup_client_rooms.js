@@ -60,12 +60,14 @@ async function setupClientRooms() {
     // --- Third Floor (301-307) ---
     for (let i = 301; i <= 307; i++) {
       let type = 'Double Bed';
+      if (i === 301) type = 'Three Bed';
       if ([302, 307].includes(i)) type = 'Four Bed A/C';
       if (i === 305 || i === 306) type = 'Double Bed A/C';
       
       const pricing = {
         'Double Bed': { non: 1000, sea: 1300 },
         'Double Bed A/C': { non: 1300, sea: 1600 },
+        'Three Bed': { non: 1500, sea: 1800 },
         'Four Bed A/C': { non: 2300, sea: 2800 }
       }[type];
 
