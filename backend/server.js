@@ -217,7 +217,7 @@ app.get('/api/setup-rooms-bss2025', async (req, res) => {
       { num: 103, type: 'Double Bed' },
       { num: 104, type: 'Double Bed' },
       { num: 105, type: 'Double Bed A/C' },
-      { num: 106, type: 'Double Bed A/C' },
+      { num: 106, type: 'Double Bed' },
     ];
 
     // Second Floor (201-207)
@@ -226,8 +226,8 @@ app.get('/api/setup-rooms-bss2025', async (req, res) => {
       { num: 202, type: 'Four Bed A/C' },
       { num: 203, type: 'Double Bed' },
       { num: 204, type: 'Double Bed' },
-      { num: 205, type: 'Double Bed A/C' },
-      { num: 206, type: 'Double Bed A/C' },
+      { num: 205, type: 'Double Bed' },
+      { num: 206, type: 'Double Bed' },
       { num: 207, type: 'Four Bed A/C' },
     ];
 
@@ -237,8 +237,8 @@ app.get('/api/setup-rooms-bss2025', async (req, res) => {
       { num: 302, type: 'Four Bed A/C' },
       { num: 303, type: 'Double Bed' },
       { num: 304, type: 'Double Bed' },
-      { num: 305, type: 'Double Bed A/C' },
-      { num: 306, type: 'Double Bed A/C' },
+      { num: 305, type: 'Double Bed' },
+      { num: 306, type: 'Double Bed' },
       { num: 307, type: 'Four Bed A/C' },
     ];
 
