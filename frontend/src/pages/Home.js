@@ -128,11 +128,6 @@ export default function Home() {
   const attractionsRef = React.useRef(null);
   const [canScrollLeft, setCanScrollLeft] = React.useState(false);
   const [canScrollRight, setCanScrollRight] = React.useState(true);
-
-  const roomsRef = React.useRef(null);
-  const [canRoomsScrollLeft, setCanRoomsScrollLeft] = React.useState(false);
-  const [canRoomsScrollRight, setCanRoomsScrollRight] = React.useState(true);
-
   const checkScroll = () => {
     if (attractionsRef.current) {
       const { scrollLeft, scrollWidth, clientWidth } = attractionsRef.current;
@@ -141,28 +136,9 @@ export default function Home() {
     }
   };
 
-  const checkRoomsScroll = () => {
-    if (roomsRef.current) {
-      const { scrollLeft, scrollWidth, clientWidth } = roomsRef.current;
-      setCanRoomsScrollLeft(scrollLeft > 0);
-      setCanRoomsScrollRight(scrollLeft + clientWidth < scrollWidth - 2);
-    }
-  };
-
   React.useEffect(() => {
     checkScroll();
   }, [activeTab]);
-
-  React.useEffect(() => {
-    checkRoomsScroll();
-    const timer = setTimeout(checkRoomsScroll, 500);
-    window.addEventListener('resize', checkRoomsScroll);
-    return () => {
-      clearTimeout(timer);
-      window.removeEventListener('resize', checkRoomsScroll);
-    };
-  }, []);
-
   
 
   React.useEffect(() => {
@@ -428,7 +404,7 @@ export default function Home() {
               Best rates guaranteed when you book directly with us
             </p>
             <div className="rooms-carousel-container">
-              <div className="rooms-grid" ref={roomsRef} onScroll={checkRoomsScroll}>
+              <div className="rooms-grid">
                 {ROOMS.map((r) => (
                   <div key={r.key} className="room-card-home">
                     <div className="r-img-wrapper">

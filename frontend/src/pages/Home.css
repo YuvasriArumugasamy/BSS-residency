@@ -590,19 +590,13 @@
 
 .rooms-grid {
   display: flex;
-  overflow-x: auto;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 1.25rem;
   padding: 1rem 0;
-  margin: 0;
-  scroll-behavior: smooth;
-  scroll-snap-type: x mandatory;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+  margin: 0 auto;
 }
 
-.rooms-grid::-webkit-scrollbar {
-  display: none;
-}
 
 /* Room cards with staggered entrance */
 .room-card-home {
