@@ -192,8 +192,27 @@ export default function Home() {
       "latitude": "8.9333",
       "longitude": "77.2833"
     },
-    "telephone": "+918838599755",
-    "priceRange": "₹1000 - ₹2500",
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.6",
+      "reviewCount": "150"
+    },
+    "review": [
+      {
+        "@type": "Review",
+        "author": { "@type": "Person", "name": "Ramesh K" },
+        "datePublished": "2024-09-12",
+        "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" },
+        "reviewBody": "Excellent stay! Clean rooms, friendly staff, and perfect location near the falls."
+      },
+      {
+        "@type": "Review",
+        "author": { "@type": "Person", "name": "Anjali S" },
+        "datePublished": "2025-02-18",
+        "reviewRating": { "@type": "Rating", "ratingValue": "4", "bestRating": "5" },
+        "reviewBody": "Great value for money, friendly staff, and comfortable accommodation."
+      }
+    ],
     "amenityFeature": [
       { "@type": "LocationFeatureSpecification", "name": "Air Conditioning", "value": true },
       { "@type": "LocationFeatureSpecification", "name": "24-hour Front Desk", "value": true },
