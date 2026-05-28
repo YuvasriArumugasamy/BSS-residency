@@ -222,3 +222,27 @@ main {
 .divider-gold {
   animation: drawLine 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
+
+/* =========================================
+   SKIP LINK — Accessibility (WCAG 2.1 AA)
+   ========================================= */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 1rem;
+  z-index: 99999;
+  background: var(--accent);
+  color: var(--primary);
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 0.6rem 1.2rem;
+  border-radius: 0 0 6px 6px;
+  text-decoration: none;
+  transition: top 0.2s ease;
+}
+.skip-link:focus {
+  top: 0;
+  outline: 3px solid var(--primary);
+  outline-offset: 2px;
+}

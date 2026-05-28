@@ -197,6 +197,7 @@ export default function FAQ() {
 
   return (
     <>
+      <a href="#main" className="skip-link">Skip to main content</a>
       <SEO
         title="FAQ | BSS Residency Courtallam — Frequently Asked Questions"
         description="Get answers to common questions about BSS Residency Courtallam — check-in time, parking, waterfalls distance, room facilities, booking process and more."
@@ -204,7 +205,7 @@ export default function FAQ() {
         schemaMarkup={schemaFAQ}
       />
 
-      <main className="faq-page">
+      <main className="faq-page" id="main">
         {/* Hero */}
         <section className="page-hero faq-hero">
           <p className="section-label gold">Help Center</p>

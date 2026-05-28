@@ -213,7 +213,7 @@ export default function Home() {
         keywords="bss residency courtallam, courtallam hotel, hotel near courtallam waterfalls, courtallam rooms for rent, kutralam lodging, family hotel courtallam, best lodge courtallam, courtallam accommodation, lodge near main falls courtallam, kutralam hotel booking"
         schemaMarkup={schemaMarkup}
       />
-      <main className="home">
+      <main id="main" className="home">
         {/* Hero */}
         <section className="hero">
           <div className="hero-img-wrap">
