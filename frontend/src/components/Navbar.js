@@ -34,7 +34,7 @@ export default function Navbar() {
     { to: '/gallery', label: 'Gallery' },
     { to: '/booking/status', label: 'Manage Booking' },
     { to: '/contact', label: 'Contact' },
-    { to: '/faq', label: 'FAQ' },
+    { to: '/courtallam-lodges', label: 'Courtallam Lodges' },
   ];
 
   return (

@@ -11,15 +11,17 @@ import { useLocation } from 'react-router-dom';
 import Home from './pages/Home';
 
 // ✅ Code Splitting — other pages load only when visited
-const Rooms         = lazy(() => import('./pages/Rooms'));
-const Gallery       = lazy(() => import('./pages/Gallery'));
-const Booking       = lazy(() => import('./pages/Booking'));
-const Contact       = lazy(() => import('./pages/Contact'));
-const FAQ           = lazy(() => import('./pages/FAQ'));
+
+const Rooms = lazy(() => import('./pages/Rooms'));
+const Gallery = lazy(() => import('./pages/Gallery'));
+const Booking = lazy(() => import('./pages/Booking'));
+const Contact = lazy(() => import('./pages/Contact'));
+const FAQ = lazy(() => import('./pages/FAQ'));
 const BookingStatus = lazy(() => import('./pages/BookingStatus'));
-const AdminLogin    = lazy(() => import('./pages/AdminLogin'));
-const AdminDashboard= lazy(() => import('./pages/AdminDashboard'));
-const CheckIn       = lazy(() => import('./pages/CheckIn'));
+const CourtallamLodges = lazy(() => import('./pages/CourtallamLodges'));
+const AdminLogin = lazy(() => import('./pages/AdminLogin'));
+const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
+const CheckIn = lazy(() => import('./pages/CheckIn'));
 
 // Lightweight page-transition spinner
 function PageLoader() {
@@ -91,6 +93,7 @@ function App() {
                   <Route path="/booking/status/:id" element={<BookingStatus />} />
                   <Route path="/contact"            element={<Contact />} />
                   <Route path="/faq"                element={<FAQ />} />
+                  <Route path="/courtallam-lodges" element={<CourtallamLodges />} />
                   <Route path="/checkin"            element={<CheckIn />} />
                   <Route path="/checkin/:id"        element={<CheckIn />} />
                 </Routes>

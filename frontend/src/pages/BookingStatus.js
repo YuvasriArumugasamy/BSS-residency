@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import api from '../api/axios';
 import { waLink, CONTACT, ROOMS } from '../constants';
 import './BookingStatus.css';
+import SEO from '../components/SEO';
 
 
 export default function BookingStatus() {
@@ -159,7 +160,12 @@ export default function BookingStatus() {
     : '';
 
   return (
-    <main className="bstatus-page">
+    <SEO
+  title="Booking Status | BSS Residency"
+  description="Check your booking status, view details, and manage your stay at BSS Residency Courtallam."
+  keywords="courtallam booking status, BSS Residency booking, hotel booking courtallam"
+/>
+<main className="bstatus-page">
       <section className="page-hero">
         <p className="section-label gold">Manage Your Stay</p>
         <h1>Manage <em>Booking</em></h1>

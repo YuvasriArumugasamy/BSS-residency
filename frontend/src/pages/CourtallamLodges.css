@@ -1,0 +1,87 @@
+/* CourtallamLodges.css – Premium styling with glassmorphism and responsive design */
+
+.courtallam-hero {
+  position: relative;
+  color: #fff;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 1rem;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  /* subtle dark overlay for readability */
+  background-color: rgba(0, 0, 0, 0.4);
+  background-blend-mode: overlay;
+}
+
+.courtallam-hero h1 {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 800;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.6);
+}
+
+.courtallam-content {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 1rem 2rem;
+}
+
+.courtallam-content p {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: #2d3748;
+  margin-bottom: 1.5rem;
+}
+
+.courtallam-content h2 {
+  font-size: 1.8rem;
+  color: #1e293b;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.courtallam-content ul {
+  list-style: disc inside;
+  margin-left: 1rem;
+  color: #475569;
+  font-size: 1rem;
+}
+
+.courtallam-cta {
+  display: inline-block;
+  background: #d4a857;
+  color: #fff;
+  padding: 0.8rem 1.6rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  text-decoration: none;
+  box-shadow: 0 2px 6px rgba(212,168,87,0.3);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.courtallam-cta:hover {
+  background: #c9974e;
+  transform: translateY(-2px);
+}
+
+/* Glassmorphism card for feature list (optional) */
+.courtallam-card {
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 12px;
+  padding: 1.5rem;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  margin-top: 2rem;
+}
+
+@media (max-width: 768px) {
+  .courtallam-hero {
+    padding: 3rem 1rem;
+  }
+  .courtallam-content {
+    padding: 1rem;
+  }
+}

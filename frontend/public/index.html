@@ -25,33 +25,7 @@
   <meta property="og:description" content="Affordable A/C & Non-A/C rooms near Courtallam waterfalls" />
   <meta property="og:url" content="https://www.bssresidency.com" />
   <meta property="og:image" content="https://www.bssresidency.com/logo.webp" />
-
-  <!-- Structured Data (JSON-LD) for LocalBusiness -->
-  <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Hotel",
-      "name": "BSS Residency",
-      "url": "https://bssresidency.com",
-      "image": "https://bssresidency.com/logo.webp",
-      "description": "BSS Residency is the best hotel near Courtallam waterfalls. We offer A/C and Non-A/C rooms for families.",
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": "Bus Stand, Near Anna Statue",
-        "addressLocality": "Courtallam",
-        "addressRegion": "Tamil Nadu",
-        "postalCode": "627802",
-        "addressCountry": "IN"
-      },
-      "geo": {
-        "@type": "GeoCoordinates",
-        "latitude": "8.9333",
-        "longitude": "77.2833"
-      },
-      "telephone": "+918838599755",
-      "priceRange": "₹1000 - ₹2500"
-    }
-    </script>
+  <meta property="og:site_name" content="BSS Residency">
   <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
   <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
   <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com" />
@@ -75,6 +49,120 @@
   </noscript>
   <script defer src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <script src="https://elfsightcdn.com/platform.js" async></script>
+
+  <!-- Geo Meta Tags for Local SEO -->
+  <meta name="geo.region" content="IN-TN" />
+  <meta name="geo.placename" content="Courtallam" />
+  <meta name="geo.position" content="8.9307;77.2780" />
+  <meta name="ICBM" content="8.9307, 77.2780" />
+  <meta property="og:locale" content="en_IN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Hotel",
+        "@id": "https://www.bssresidency.com/#hotel",
+        "name": "BSS Residency Courtallam",
+        "description": "Best budget hotel in Courtallam near Main Falls. AC and Non-AC rooms, free parking, 24/7 service.",
+        "url": "https://www.bssresidency.com",
+        "telephone": "+91-88385-99755",
+        "priceRange": "₹1,000 - ₹2,300",
+        "currenciesAccepted": "INR",
+        "paymentAccepted": "Cash, UPI, Credit Card, Debit Card",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "Bus Stand, Near Anna Statue",
+          "addressLocality": "Courtallam",
+          "addressRegion": "Tamil Nadu",
+          "postalCode": "627802",
+          "addressCountry": "IN"
+        },
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": 8.9307,
+          "longitude": 77.2780
+        },
+        "starRating": { "@type": "Rating", "ratingValue": "4.6" },
+        "amenityFeature": [
+          { "@type": "LocationFeatureSpecification", "name": "Free Parking", "value": true },
+          { "@type": "LocationFeatureSpecification", "name": "24-hour Front Desk", "value": true },
+          { "@type": "LocationFeatureSpecification", "name": "Air Conditioning", "value": true },
+          { "@type": "LocationFeatureSpecification", "name": "Free WiFi", "value": true },
+          { "@type": "LocationFeatureSpecification", "name": "Hot Water", "value": true },
+          { "@type": "LocationFeatureSpecification", "name": "Room Service", "value": true }
+        ],
+        "checkinTime": "12:00",
+        "checkoutTime": "11:00",
+        "image": "https://www.bssresidency.com/social_preview.png"
+      },
+      {
+        "@type": "LocalBusiness",
+        "@id": "https://www.bssresidency.com/#business",
+        "name": "BSS Residency",
+        "image": "https://www.bssresidency.com/social_preview.png",
+        "telephone": "+91-88385-99755",
+        "priceRange": "₹₹",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "Bus Stand, Near Anna Statue",
+          "addressLocality": "Courtallam",
+          "addressRegion": "Tamil Nadu",
+          "postalCode": "627802",
+          "addressCountry": "IN"
+        },
+        "openingHoursSpecification": {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
+          "opens": "00:00",
+          "closes": "23:59"
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What are the room rates at BSS Residency Courtallam?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Double Bed Non-AC: ₹1,000/night, Double Bed A/C: ₹1,300/night, Three Bed Non-AC: ₹1,500/night, Four Bed A/C: ₹2,300/night."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How far is BSS Residency from Courtallam Main Falls?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "BSS Residency is just 100 metres (1-2 minutes walk) from Courtallam Main Falls."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is parking available at BSS Residency?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes, free parking is available for all guests at BSS Residency Courtallam."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What is the check-in and check-out time?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Check-in time is 12:00 PM and check-out time is 11:00 AM."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
 </head>
 
 <body>

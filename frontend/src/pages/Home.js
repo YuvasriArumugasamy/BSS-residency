@@ -37,6 +37,7 @@ import ariyankavuTemple from '../assets/Ariyankavu Iyappan Kovil.webp';
 import { AMENITIES, ROOMS, CONTACT, waLink, WA_TEMPLATES } from '../constants';
 import api from '../api/axios';
 import SEO from '../components/SEO';
+import schemaMarkup from '../seo/schema';
 import './Home.css';
 import roomVideo from '../assets/room-video.mp4';
 
@@ -169,60 +170,6 @@ export default function Home() {
   }, []);
 
   const getPrice = (room) => isSeason ? room.seasonPrice : room.nonSeasonPrice;
-
-  
-
-  const schemaMarkup = {
-    "@context": "https://schema.org",
-    "@type": "Hotel",
-    "name": "BSS Residency",
-    "url": "https://bssresidency.com",
-    "image": "https://bssresidency.com/logo.webp",
-    "description": "BSS Residency is the best hotel near Courtallam waterfalls. We offer A/C and Non-A/C rooms for families near Main Falls, Courtallam Bus Stand.",
-    "address": {
-      "@type": "PostalAddress",
-      "streetAddress": "Near Anna Statue, Old Bus Stand",
-      "addressLocality": "Courtallam",
-      "addressRegion": "Tamil Nadu",
-      "postalCode": "627802",
-      "addressCountry": "IN"
-    },
-    "geo": {
-      "@type": "GeoCoordinates",
-      "latitude": "8.9333",
-      "longitude": "77.2833"
-    },
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": "4.6",
-      "reviewCount": "150"
-    },
-    "review": [
-      {
-        "@type": "Review",
-        "author": { "@type": "Person", "name": "Ramesh K" },
-        "datePublished": "2024-09-12",
-        "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" },
-        "reviewBody": "Excellent stay! Clean rooms, friendly staff, and perfect location near the falls."
-      },
-      {
-        "@type": "Review",
-        "author": { "@type": "Person", "name": "Anjali S" },
-        "datePublished": "2025-02-18",
-        "reviewRating": { "@type": "Rating", "ratingValue": "4", "bestRating": "5" },
-        "reviewBody": "Great value for money, friendly staff, and comfortable accommodation."
-      }
-    ],
-    "amenityFeature": [
-      { "@type": "LocationFeatureSpecification", "name": "Air Conditioning", "value": true },
-      { "@type": "LocationFeatureSpecification", "name": "24-hour Front Desk", "value": true },
-      { "@type": "LocationFeatureSpecification", "name": "Free Parking", "value": true },
-      { "@type": "LocationFeatureSpecification", "name": "Hot Water", "value": true }
-    ],
-    "checkinTime": "12:00",
-    "checkoutTime": "11:00",
-    "starRating": { "@type": "Rating", "ratingValue": "4.6" }
-  };
 
   return (
     <>
