@@ -19,12 +19,16 @@ export default function BookingStatus() {
   const [reviewLoading, setReviewLoading] = useState(false);
   const [reviewSuccess, setReviewSuccess] = useState('');
   const [isSeason, setIsSeason] = useState(false);
+  const [isWeekendActive, setIsWeekendActive] = useState(true);
 
   useEffect(() => {
     const fetchSeason = async () => {
       try {
         const res = await api.get('/api/admin/settings/public');
-        if (res.data.success) setIsSeason(res.data.isSeason);
+        if (res.data.success) {
+          setIsSeason(res.data.isSeason);
+          setIsWeekendActive(res.data.isWeekendActive !== false);
+        }
       } catch (err) { console.error(err); }
     };
     fetchSeason();
@@ -105,15 +109,38 @@ export default function BookingStatus() {
 
     // 2. Fallback for older bookings (calculate based on type and season status)
     const room = ROOMS.find(r => r.name === booking.roomType);
-    const unitPrice = room ? (isSeason ? room.seasonPrice : room.nonSeasonPrice) : 1000;
-    const charges = unitPrice * nights * (booking.rooms || 1);
+    let charges = 0;
+    if (room) {
+      const roomCount = Math.max(1, Number(booking.rooms) || 1);
+      const ciParts = booking.checkIn.split('T')[0].split('-');
+      const coParts = booking.checkOut.split('T')[0].split('-');
+      let calcCurrent = new Date(Number(ciParts[0]), Number(ciParts[1]) - 1, Number(ciParts[2]));
+      const calcEnd = new Date(Number(coParts[0]), Number(coParts[1]) - 1, Number(coParts[2]));
+      
+      let nightsCount = 0;
+      while (calcCurrent < calcEnd) {
+        const day = calcCurrent.getDay(); // 0 = Sun, 5 = Fri, 6 = Sat
+        const isWeekend = isWeekendActive && (day === 0 || day === 5 || day === 6);
+        const price = isSeason ? room.seasonPrice : (isWeekend ? room.weekendPrice : room.weekdayPrice);
+        charges += price * roomCount;
+        nightsCount++;
+        calcCurrent.setDate(calcCurrent.getDate() + 1);
+      }
+      if (nightsCount === 0) {
+        const isWeekend = isWeekendActive && (calcCurrent.getDay() === 0 || calcCurrent.getDay() === 5 || calcCurrent.getDay() === 6);
+        const price = isSeason ? room.seasonPrice : (isWeekend ? room.weekendPrice : room.weekdayPrice);
+        charges = price * roomCount;
+      }
+    } else {
+      charges = 1000 * nights * (booking.rooms || 1);
+    }
     const gst = Math.round(charges * 0.12);
     return {
       roomCharges: charges,
       gstAmount: gst,
       totalPrice: charges + gst
     };
-  }, [booking, nights, isSeason]);
+  }, [booking, nights, isSeason, isWeekendActive]);
 
   const formatDate = (d) =>
     d

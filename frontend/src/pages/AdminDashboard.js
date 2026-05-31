@@ -586,7 +586,7 @@ const Reports = ({ stats, period, setPeriod, selectedMonth, setSelectedMonth }) 
   );
 };
 
-const SettingsView = ({ isSeason, onToggleSeason }) => {
+const SettingsView = ({ isSeason, onToggleSeason, isWeekendActive, onToggleWeekend }) => {
   const [fcmStatus, setFcmStatus] = useState('Checking...');
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
@@ -740,6 +740,60 @@ const SettingsView = ({ isSeason, onToggleSeason }) => {
           <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: isSeason ? '#d4a857' : '#64748b', animation: isSeason ? 'pulse 2s infinite' : 'none' }} />
           <span style={{ fontSize: '0.85rem', fontWeight: 700, color: isSeason ? '#92400e' : '#475569' }}>
             {isSeason ? 'PEAK SEASON RATES ARE LIVE' : 'REGULAR RATES ARE LIVE'}
+          </span>
+        </div>
+      </div>
+
+      <div className="settings-section" style={{ marginBottom: '2.5rem', padding: '1.5rem', background: isWeekendActive ? '#f0fdf4' : '#f8fafc', borderRadius: '16px', border: '1px solid', borderColor: isWeekendActive ? '#bbf7d0' : '#e2e8f0', transition: 'all 0.3s ease' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ flex: 1 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
+              <span style={{ fontSize: '1.25rem' }}>{isWeekendActive ? '📅' : '📆'}</span>
+              <h4 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700, color: '#1e293b' }}>Weekend Pricing (Fri–Sun)</h4>
+            </div>
+            <p style={{ margin: 0, fontSize: '0.9rem', color: '#64748b', lineHeight: '1.5' }}>
+              When activated, the website automatically applies higher weekend rates on Friday, Saturday, and Sunday.
+            </p>
+          </div>
+          <div
+            onClick={() => onToggleWeekend(!isWeekendActive)}
+            style={{
+              width: '64px',
+              height: '32px',
+              background: isWeekendActive ? '#16a34a' : '#cbd5e1',
+              borderRadius: '20px',
+              position: 'relative',
+              cursor: 'pointer',
+              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+              boxShadow: isWeekendActive ? '0 4px 12px rgba(22, 163, 74, 0.3)' : 'none'
+            }}
+          >
+            <div style={{
+              width: '26px',
+              height: '26px',
+              background: 'white',
+              borderRadius: '50%',
+              position: 'absolute',
+              top: '3px',
+              left: isWeekendActive ? '35px' : '3px',
+              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+              boxShadow: '0 2px 6px rgba(0,0,0,0.15)'
+            }} />
+          </div>
+        </div>
+        
+        <div style={{ 
+          marginTop: '1.25rem', 
+          padding: '10px 15px', 
+          background: isWeekendActive ? 'rgba(22, 163, 74, 0.1)' : 'rgba(107, 114, 128, 0.05)', 
+          borderRadius: '10px', 
+          display: 'flex', 
+          alignItems: 'center', 
+          gap: '10px' 
+        }}>
+          <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: isWeekendActive ? '#16a34a' : '#64748b', animation: isWeekendActive ? 'pulse 2s infinite' : 'none' }} />
+          <span style={{ fontSize: '0.85rem', fontWeight: 700, color: isWeekendActive ? '#166534' : '#475569' }}>
+            {isWeekendActive ? 'WEEKEND RATES (FRI–SUN) ARE ENABLED' : 'WEEKEND RATES ARE DISABLED (WEEKDAY RATES APPLY)'}
           </span>
         </div>
       </div>
@@ -1706,6 +1760,7 @@ export default function AdminDashboard() {
   const [unreadCount, setUnreadCount] = useState(0);
   const [unreadReviewCount, setUnreadReviewCount] = useState(0);
   const [isSeason, setIsSeason] = useState(false);
+  const [isWeekendActive, setIsWeekendActive] = useState(false);
   const [statsPeriod, setStatsPeriod] = useState('all');
   const [bookingsPeriod, setBookingsPeriod] = useState('month');
   const [reviewsPeriod, setReviewsPeriod] = useState('month');
@@ -1867,7 +1922,10 @@ export default function AdminDashboard() {
       if (roomsRes) setRooms(roomsRes.data.rooms);
       if (guestsRes) setGuests(guestsRes.data.guests);
       if (paymentsRes) setPayments(paymentsRes.data.payments);
-      if (settingsRes) setIsSeason(settingsRes.data.settings.isSeason);
+      if (settingsRes) {
+        setIsSeason(settingsRes.data.settings.isSeason || false);
+        setIsWeekendActive(settingsRes.data.settings.isWeekendActive !== false);
+      }
 
       const finalReviews = reviewsRes?.data?.reviews || [];
       const seenReviews = parseInt(localStorage.getItem('bss_seen_reviews_count') || '0');
@@ -2315,16 +2373,30 @@ export default function AdminDashboard() {
         );
       case 'payments': return <Payments payments={payments} totalRevenue={stats?.totalRevenue} />;
       case 'reports': return <Reports stats={stats} period={statsPeriod} setPeriod={setStatsPeriod} selectedMonth={selectedMonth} setSelectedMonth={setSelectedMonth} />;
-      case 'settings': return <SettingsView isSeason={isSeason} onToggleSeason={async (val) => {
-        const headers = { username: auth.username, password: auth.password };
-        try {
-          await api.patch('/api/admin/settings', { isSeason: val }, { headers });
-          setIsSeason(val);
-          fetchData();
-        } catch (err) {
-          alert('Error updating season mode');
-        }
-      }} />;
+      case 'settings': return <SettingsView 
+        isSeason={isSeason} 
+        onToggleSeason={async (val) => {
+          const headers = { username: auth.username, password: auth.password };
+          try {
+            await api.patch('/api/admin/settings', { isSeason: val }, { headers });
+            setIsSeason(val);
+            fetchData();
+          } catch (err) {
+            alert('Error updating season mode');
+          }
+        }}
+        isWeekendActive={isWeekendActive}
+        onToggleWeekend={async (val) => {
+          const headers = { username: auth.username, password: auth.password };
+          try {
+            await api.patch('/api/admin/settings', { isWeekendActive: val }, { headers });
+            setIsWeekendActive(val);
+            fetchData();
+          } catch (err) {
+            alert('Error updating weekend mode');
+          }
+        }}
+      />;
       case 'reviews': return <ReviewsView 
         reviews={reviews} 
         onDeleteReview={handleDeleteReview} 

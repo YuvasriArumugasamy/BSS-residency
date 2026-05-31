@@ -50,6 +50,7 @@ export default function Booking() {
   const [policyChecked, setPolicyChecked] = useState(false);
   const [copied, setCopied] = useState(false);
   const [isSeason, setIsSeason] = useState(false);
+  const [isWeekendActive, setIsWeekendActive] = useState(true);
 
   useEffect(() => {
     const fetchAvailability = async () => {
@@ -67,7 +68,10 @@ export default function Booking() {
     const fetchSeasonStatus = async () => {
       try {
         const res = await api.get('/api/admin/settings/public');
-        if (res.data.success) setIsSeason(res.data.isSeason);
+        if (res.data.success) {
+          setIsSeason(res.data.isSeason);
+          setIsWeekendActive(res.data.isWeekendActive !== false);
+        }
       } catch (err) {
         console.error('Failed to fetch season status', err);
       }
@@ -119,7 +123,7 @@ export default function Booking() {
     if (isSeason) return room.seasonPrice;
     const today = new Date();
     const day = today.getDay();
-    const isWeekend = day === 0 || day === 5 || day === 6;
+    const isWeekend = isWeekendActive && (day === 0 || day === 5 || day === 6);
     return isWeekend ? room.weekendPrice : room.weekdayPrice;
   };
 
@@ -135,13 +139,13 @@ export default function Booking() {
     const roomCount = Math.max(1, Number(form.rooms) || 1);
     while (current < end) {
       const day = current.getDay(); // 0 = Sun, 5 = Fri, 6 = Sat
-      const isWeekend = day === 0 || day === 5 || day === 6;
+      const isWeekend = isWeekendActive && (day === 0 || day === 5 || day === 6);
       const price = isSeason ? selectedRoom.seasonPrice : (isWeekend ? selectedRoom.weekendPrice : selectedRoom.weekdayPrice);
       total += price * roomCount;
       current.setDate(current.getDate() + 1);
     }
     return total;
-  }, [selectedRoom, nights, form.checkIn, form.checkOut, form.rooms, isSeason]);
+  }, [selectedRoom, nights, form.checkIn, form.checkOut, form.rooms, isSeason, isWeekendActive]);
 
   const gstAmount = useMemo(() => Math.round(roomCharges * 0.12), [roomCharges]);
   const totalPrice = useMemo(() => roomCharges + gstAmount, [roomCharges, gstAmount]);

@@ -124,6 +124,7 @@ function ImageCarousel({ images, alt }) {
 
 export default function Home() {
   const [isSeason, setIsSeason] = React.useState(false);
+  const [isWeekendActive, setIsWeekendActive] = React.useState(true);
   const [showNotice, setShowNotice] = React.useState(false);
   const [activeTab, setActiveTab] = React.useState('falls');
   const attractionsRef = React.useRef(null);
@@ -161,7 +162,10 @@ export default function Home() {
     const fetchPublicSettings = async () => {
       try {
         const res = await api.get('/api/admin/settings/public');
-        if (res.data.success) setIsSeason(res.data.isSeason);
+        if (res.data.success) {
+          setIsSeason(res.data.isSeason);
+          setIsWeekendActive(res.data.isWeekendActive !== false);
+        }
       } catch (err) {
         console.error('Error fetching season status:', err);
       }
@@ -173,7 +177,7 @@ export default function Home() {
     if (isSeason) return room.seasonPrice;
     const today = new Date();
     const day = today.getDay(); // 0 = Sun, 5 = Fri, 6 = Sat
-    const isWeekend = day === 0 || day === 5 || day === 6;
+    const isWeekend = isWeekendActive && (day === 0 || day === 5 || day === 6);
     return isWeekend ? room.weekendPrice : room.weekdayPrice;
   };
 

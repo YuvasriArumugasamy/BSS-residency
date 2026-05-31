@@ -128,6 +128,8 @@ router.post('/verify-payment', async (req, res) => {
     // Calculate Price
     const settings = await Setting.findOne({ key: 'isSeason' });
     const isSeason = settings ? settings.value === true : false;
+    const weekendSetting = await Setting.findOne({ key: 'isWeekendActive' });
+    const isWeekendActive = weekendSetting ? weekendSetting.value !== false : true;
     const ROOM_DATA = {
       'Double Bed': { weekday: 1000, weekend: 1000, season: 1300 },
       'Double Bed A/C': { weekday: 1300, weekend: 1600, season: 1600 },
@@ -146,7 +148,7 @@ router.post('/verify-payment', async (req, res) => {
     let nights = 0;
     while (calcCurrent < calcEnd) {
       const day = calcCurrent.getDay(); // 0 = Sun, 5 = Fri, 6 = Sat
-      const isWeekend = day === 0 || day === 5 || day === 6;
+      const isWeekend = isWeekendActive && (day === 0 || day === 5 || day === 6);
       const price = isSeason ? roomPriceInfo.season : (isWeekend ? roomPriceInfo.weekend : roomPriceInfo.weekday);
       roomCharges += price * roomCount;
       nights++;
@@ -154,7 +156,7 @@ router.post('/verify-payment', async (req, res) => {
     }
     if (nights === 0) {
       nights = 1;
-      const isWeekend = calcCurrent.getDay() === 0 || calcCurrent.getDay() === 5 || calcCurrent.getDay() === 6;
+      const isWeekend = isWeekendActive && (calcCurrent.getDay() === 0 || calcCurrent.getDay() === 5 || calcCurrent.getDay() === 6);
       const price = isSeason ? roomPriceInfo.season : (isWeekend ? roomPriceInfo.weekend : roomPriceInfo.weekday);
       roomCharges = price * roomCount;
     }
@@ -277,6 +279,8 @@ router.post('/', async (req, res) => {
     // --- Price Calculation ---
     const settings = await Setting.findOne({ key: 'isSeason' });
     const isSeason = settings ? settings.value === true : false;
+    const weekendSetting = await Setting.findOne({ key: 'isWeekendActive' });
+    const isWeekendActive = weekendSetting ? weekendSetting.value !== false : true;
     
     const ROOM_DATA = {
       'Double Bed': { weekday: 1000, weekend: 1000, season: 1300 },
@@ -297,7 +301,7 @@ router.post('/', async (req, res) => {
     let nights = 0;
     while (calcCurrent < calcEnd) {
       const day = calcCurrent.getDay(); // 0 = Sun, 5 = Fri, 6 = Sat
-      const isWeekend = day === 0 || day === 5 || day === 6;
+      const isWeekend = isWeekendActive && (day === 0 || day === 5 || day === 6);
       const price = isSeason ? roomPriceInfo.season : (isWeekend ? roomPriceInfo.weekend : roomPriceInfo.weekday);
       roomCharges += price * roomCount;
       nights++;
@@ -305,7 +309,7 @@ router.post('/', async (req, res) => {
     }
     if (nights === 0) {
       nights = 1;
-      const isWeekend = calcCurrent.getDay() === 0 || calcCurrent.getDay() === 5 || calcCurrent.getDay() === 6;
+      const isWeekend = isWeekendActive && (calcCurrent.getDay() === 0 || calcCurrent.getDay() === 5 || calcCurrent.getDay() === 6);
       const price = isSeason ? roomPriceInfo.season : (isWeekend ? roomPriceInfo.weekend : roomPriceInfo.weekday);
       roomCharges = price * roomCount;
     }

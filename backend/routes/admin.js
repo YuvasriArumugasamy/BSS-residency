@@ -287,6 +287,8 @@ router.post('/bookings/offline', adminAuth, async (req, res) => {
     // Calculate Price details
     const settings = await Setting.findOne({ key: 'isSeason' });
     const isSeason = settings ? settings.value === true : false;
+    const weekendSetting = await Setting.findOne({ key: 'isWeekendActive' });
+    const isWeekendActive = weekendSetting ? weekendSetting.value !== false : true;
     const ROOM_DATA = {
       'Double Bed': { weekday: 1000, weekend: 1000, season: 1300 },
       'Double Bed A/C': { weekday: 1300, weekend: 1600, season: 1600 },
@@ -305,7 +307,7 @@ router.post('/bookings/offline', adminAuth, async (req, res) => {
     let nights = 0;
     while (calcCurrent < calcEnd) {
       const day = calcCurrent.getDay(); // 0 = Sun, 5 = Fri, 6 = Sat
-      const isWeekend = day === 0 || day === 5 || day === 6;
+      const isWeekend = isWeekendActive && (day === 0 || day === 5 || day === 6);
       const price = isSeason ? roomPriceInfo.season : (isWeekend ? roomPriceInfo.weekend : roomPriceInfo.weekday);
       roomCharges += price * roomCount;
       nights++;
@@ -313,7 +315,7 @@ router.post('/bookings/offline', adminAuth, async (req, res) => {
     }
     if (nights === 0) {
       nights = 1;
-      const isWeekend = calcCurrent.getDay() === 0 || calcCurrent.getDay() === 5 || calcCurrent.getDay() === 6;
+      const isWeekend = isWeekendActive && (calcCurrent.getDay() === 0 || calcCurrent.getDay() === 5 || calcCurrent.getDay() === 6);
       const price = isSeason ? roomPriceInfo.season : (isWeekend ? roomPriceInfo.weekend : roomPriceInfo.weekday);
       roomCharges = price * roomCount;
     }
@@ -693,6 +695,10 @@ router.get('/settings', adminAuth, async (req, res) => {
     if (settingsObj.isSeason === undefined) {
       settingsObj.isSeason = false;
     }
+    // Ensure isWeekendActive exists
+    if (settingsObj.isWeekendActive === undefined) {
+      settingsObj.isWeekendActive = true;
+    }
     
     res.json({ success: true, settings: settingsObj });
   } catch (err) {
@@ -703,7 +709,7 @@ router.get('/settings', adminAuth, async (req, res) => {
 // PATCH /api/admin/settings — Update settings
 router.patch('/settings', adminAuth, async (req, res) => {
   try {
-    const { isSeason } = req.body;
+    const { isSeason, isWeekendActive } = req.body;
     if (isSeason !== undefined) {
       await Setting.findOneAndUpdate(
         { key: 'isSeason' },
@@ -719,6 +725,13 @@ router.patch('/settings', adminAuth, async (req, res) => {
           await room.save();
         }
       }
+    }
+    if (isWeekendActive !== undefined) {
+      await Setting.findOneAndUpdate(
+        { key: 'isWeekendActive' },
+        { value: isWeekendActive },
+        { upsert: true, new: true }
+      );
     }
     res.json({ success: true, message: 'Settings updated' });
   } catch (err) {
@@ -750,8 +763,13 @@ router.patch('/profile', adminAuth, async (req, res) => {
 // PUBLIC GET /api/admin/settings/public — Get public settings (no auth)
 router.get('/settings/public', async (req, res) => {
   try {
-    const setting = await Setting.findOne({ key: 'isSeason' });
-    res.json({ success: true, isSeason: setting ? setting.value : false });
+    const seasonSetting = await Setting.findOne({ key: 'isSeason' });
+    const weekendSetting = await Setting.findOne({ key: 'isWeekendActive' });
+    res.json({ 
+      success: true, 
+      isSeason: seasonSetting ? seasonSetting.value : false,
+      isWeekendActive: weekendSetting ? weekendSetting.value !== false : true 
+    });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
