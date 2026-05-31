@@ -115,12 +115,33 @@ export default function Booking() {
     return diff > 0 ? diff : 0;
   }, [form.checkIn, form.checkOut]);
 
-  const getPrice = (room) => isSeason ? room.seasonPrice : room.nonSeasonPrice;
+  const getPrice = (room) => {
+    if (isSeason) return room.seasonPrice;
+    const today = new Date();
+    const day = today.getDay();
+    const isWeekend = day === 0 || day === 5 || day === 6;
+    return isWeekend ? room.weekendPrice : room.weekdayPrice;
+  };
 
   const roomCharges = useMemo(() => {
-    if (!selectedRoom || !nights) return 0;
-    return getPrice(selectedRoom) * nights * Math.max(1, Number(form.rooms) || 1);
-  }, [selectedRoom, nights, form.rooms, isSeason]);
+    if (!selectedRoom || !nights || !form.checkIn || !form.checkOut) return 0;
+    
+    const ciParts = form.checkIn.split('-');
+    const coParts = form.checkOut.split('-');
+    let current = new Date(Number(ciParts[0]), Number(ciParts[1]) - 1, Number(ciParts[2]));
+    const end = new Date(Number(coParts[0]), Number(coParts[1]) - 1, Number(coParts[2]));
+    
+    let total = 0;
+    const roomCount = Math.max(1, Number(form.rooms) || 1);
+    while (current < end) {
+      const day = current.getDay(); // 0 = Sun, 5 = Fri, 6 = Sat
+      const isWeekend = day === 0 || day === 5 || day === 6;
+      const price = isSeason ? selectedRoom.seasonPrice : (isWeekend ? selectedRoom.weekendPrice : selectedRoom.weekdayPrice);
+      total += price * roomCount;
+      current.setDate(current.getDate() + 1);
+    }
+    return total;
+  }, [selectedRoom, nights, form.checkIn, form.checkOut, form.rooms, isSeason]);
 
   const gstAmount = useMemo(() => Math.round(roomCharges * 0.12), [roomCharges]);
   const totalPrice = useMemo(() => roomCharges + gstAmount, [roomCharges, gstAmount]);
@@ -989,7 +1010,14 @@ export default function Booking() {
                 <div className="price-breakdown">
                   <div className="pb-header">Price Breakdown</div>
                   <div className="pb-row">
-                    <span>₹ {getPrice(selectedRoom).toLocaleString('en-IN')} × {nights} night{nights > 1 ? 's' : ''} × {form.rooms} room{form.rooms > 1 ? 's' : ''}</span>
+                    <span>
+                      {isSeason ? (
+                        `₹ ${selectedRoom.seasonPrice.toLocaleString('en-IN')} (Peak)`
+                      ) : (
+                        `Weekday: ₹${selectedRoom.weekdayPrice.toLocaleString('en-IN')} | Weekend: ₹${selectedRoom.weekendPrice.toLocaleString('en-IN')}`
+                      )}
+                      {` × ${nights} night${nights > 1 ? 's' : ''} × ${form.rooms} room${form.rooms > 1 ? 's' : ''}`}
+                    </span>
                     <span>₹ {roomCharges.toLocaleString('en-IN')}</span>
                   </div>
                   <div className="pb-row">

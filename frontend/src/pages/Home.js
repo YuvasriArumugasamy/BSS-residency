@@ -169,7 +169,13 @@ export default function Home() {
     fetchPublicSettings();
   }, []);
 
-  const getPrice = (room) => isSeason ? room.seasonPrice : room.nonSeasonPrice;
+  const getPrice = (room) => {
+    if (isSeason) return room.seasonPrice;
+    const today = new Date();
+    const day = today.getDay(); // 0 = Sun, 5 = Fri, 6 = Sat
+    const isWeekend = day === 0 || day === 5 || day === 6;
+    return isWeekend ? room.weekendPrice : room.weekdayPrice;
+  };
 
   return (
     <>

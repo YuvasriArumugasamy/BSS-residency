@@ -246,7 +246,7 @@ const RoomManagement = ({ rooms, onAddClick, onDeleteRoom, onUpdateRoom, auth, f
             <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--admin-primary)', marginBottom: '1rem' }}>
               ₹{room.price}/night
               <div style={{ fontSize: '0.7rem', color: '#888', fontWeight: 400, marginTop: '2px' }}>
-                (Regular: ₹{room.nonSeasonPrice} | Peak: ₹{room.seasonPrice})
+                (Weekday: ₹{room.nonSeasonPrice} | Weekend: ₹{room.weekendPrice || room.nonSeasonPrice} | Peak: ₹{room.seasonPrice})
               </div>
             </div>
             <div style={{ display: 'flex', gap: '0.5rem' }}>
@@ -1725,7 +1725,7 @@ export default function AdminDashboard() {
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [roomForm, setRoomForm] = useState({ roomNumber: '', type: 'Double Bed A/C', nonSeasonPrice: '', seasonPrice: '', status: 'Available' });
+  const [roomForm, setRoomForm] = useState({ roomNumber: '', type: 'Double Bed A/C', nonSeasonPrice: '', weekendPrice: '', seasonPrice: '', status: 'Available' });
   const [editingRoomId, setEditingRoomId] = useState(null);
 
   // Payment Modal State
@@ -1977,7 +1977,7 @@ export default function AdminDashboard() {
   };
 
   const openAddModal = () => {
-    setRoomForm({ roomNumber: '', type: 'Double Bed A/C', nonSeasonPrice: '', seasonPrice: '', status: 'Available' });
+    setRoomForm({ roomNumber: '', type: 'Double Bed A/C', nonSeasonPrice: '', weekendPrice: '', seasonPrice: '', status: 'Available' });
     setEditingRoomId(null);
     setIsModalOpen(true);
   };
@@ -1987,6 +1987,7 @@ export default function AdminDashboard() {
       roomNumber: room.roomNumber, 
       type: room.type, 
       nonSeasonPrice: room.nonSeasonPrice || room.price, 
+      weekendPrice: room.weekendPrice || room.nonSeasonPrice || room.price,
       seasonPrice: room.seasonPrice || room.price, 
       status: room.status 
     });
@@ -2418,12 +2419,21 @@ export default function AdminDashboard() {
           </div>
           <div className="form-row">
             <div className="form-group">
-              <label>Regular Price (₹)</label>
+              <label>Weekday Price (Mon-Thu) (₹)</label>
               <input
                 type="number" required
                 value={roomForm.nonSeasonPrice}
                 onChange={e => setRoomForm({ ...roomForm, nonSeasonPrice: e.target.value })}
                 placeholder="e.g. 1300"
+              />
+            </div>
+            <div className="form-group">
+              <label>Weekend Price (Fri-Sun) (₹)</label>
+              <input
+                type="number" required
+                value={roomForm.weekendPrice}
+                onChange={e => setRoomForm({ ...roomForm, weekendPrice: e.target.value })}
+                placeholder="e.g. 1600"
               />
             </div>
             <div className="form-group">

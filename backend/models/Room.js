@@ -11,6 +11,7 @@ const roomSchema = new mongoose.Schema(
     price: { type: Number, required: true }, // Current active price
     nonSeasonPrice: { type: Number },
     seasonPrice: { type: Number },
+    weekendPrice: { type: Number },
     status: { 
       type: String, 
       enum: ['Available', 'Occupied', 'Maintenance'], 

@@ -38,6 +38,8 @@ export const ROOMS = [
     icon: '🛏️',
     name: 'Double Bed',
     type: 'Non-A/C',
+    weekdayPrice: 1000,
+    weekendPrice: 1000,
     seasonPrice: 1300,
     nonSeasonPrice: 1000,
     desc:
@@ -56,6 +58,8 @@ export const ROOMS = [
     icon: '❄️',
     name: 'Double Bed A/C',
     type: 'A/C',
+    weekdayPrice: 1300,
+    weekendPrice: 1600,
     seasonPrice: 1600,
     nonSeasonPrice: 1300,
     desc:
@@ -74,6 +78,8 @@ export const ROOMS = [
     icon: '🛏️',
     name: 'Three Bed',
     type: 'Non-A/C',
+    weekdayPrice: 1500,
+    weekendPrice: 1500,
     seasonPrice: 1800,
     nonSeasonPrice: 1500,
     desc:
@@ -92,8 +98,10 @@ export const ROOMS = [
     icon: '👑',
     name: 'Four Bed A/C',
     type: 'A/C',
+    weekdayPrice: 2500,
+    weekendPrice: 2800,
     seasonPrice: 2800,
-    nonSeasonPrice: 2300,
+    nonSeasonPrice: 2500,
     desc:
       'Our premium family choice. Large four-bed A/C room with modern furnishings and top-tier comfort.',
     features: [

@@ -129,14 +129,35 @@ router.post('/verify-payment', async (req, res) => {
     const settings = await Setting.findOne({ key: 'isSeason' });
     const isSeason = settings ? settings.value === true : false;
     const ROOM_DATA = {
-      'Double Bed': { season: 1300, nonSeason: 1000 },
-      'Double Bed A/C': { season: 1600, nonSeason: 1300 },
-      'Four Bed A/C': { season: 2800, nonSeason: 2300 },
+      'Double Bed': { weekday: 1000, weekend: 1000, season: 1300 },
+      'Double Bed A/C': { weekday: 1300, weekend: 1600, season: 1600 },
+      'Three Bed': { weekday: 1500, weekend: 1500, season: 1800 },
+      'Four Bed A/C': { weekday: 2500, weekend: 2800, season: 2800 },
     };
-    const roomPriceInfo = ROOM_DATA[roomType] || { season: 1000, nonSeason: 1000 };
-    const unitPrice = isSeason ? roomPriceInfo.season : roomPriceInfo.nonSeason;
-    const nights = Math.max(1, Math.round((new Date(checkOut) - new Date(checkIn)) / (1000 * 60 * 60 * 24)));
-    const roomCharges = unitPrice * nights * roomCount;
+    const roomPriceInfo = ROOM_DATA[roomType] || { weekday: 1000, weekend: 1000, season: 1000 };
+    
+    // Day-by-day timezone-safe calculation
+    const ciParts = checkIn.split('T')[0].split('-');
+    const coParts = checkOut.split('T')[0].split('-');
+    let calcCurrent = new Date(Number(ciParts[0]), Number(ciParts[1]) - 1, Number(ciParts[2]));
+    const calcEnd = new Date(Number(coParts[0]), Number(coParts[1]) - 1, Number(coParts[2]));
+    
+    let roomCharges = 0;
+    let nights = 0;
+    while (calcCurrent < calcEnd) {
+      const day = calcCurrent.getDay(); // 0 = Sun, 5 = Fri, 6 = Sat
+      const isWeekend = day === 0 || day === 5 || day === 6;
+      const price = isSeason ? roomPriceInfo.season : (isWeekend ? roomPriceInfo.weekend : roomPriceInfo.weekday);
+      roomCharges += price * roomCount;
+      nights++;
+      calcCurrent.setDate(calcCurrent.getDate() + 1);
+    }
+    if (nights === 0) {
+      nights = 1;
+      const isWeekend = calcCurrent.getDay() === 0 || calcCurrent.getDay() === 5 || calcCurrent.getDay() === 6;
+      const price = isSeason ? roomPriceInfo.season : (isWeekend ? roomPriceInfo.weekend : roomPriceInfo.weekday);
+      roomCharges = price * roomCount;
+    }
     const gstAmount = Math.round(roomCharges * 0.12);
     const totalPrice = roomCharges + gstAmount;
 
@@ -258,16 +279,36 @@ router.post('/', async (req, res) => {
     const isSeason = settings ? settings.value === true : false;
     
     const ROOM_DATA = {
-      'Double Bed': { season: 1300, nonSeason: 1000 },
-      'Double Bed A/C': { season: 1600, nonSeason: 1300 },
-      'Four Bed A/C': { season: 2800, nonSeason: 2300 },
+      'Double Bed': { weekday: 1000, weekend: 1000, season: 1300 },
+      'Double Bed A/C': { weekday: 1300, weekend: 1600, season: 1600 },
+      'Three Bed': { weekday: 1500, weekend: 1500, season: 1800 },
+      'Four Bed A/C': { weekday: 2500, weekend: 2800, season: 2800 },
     };
 
-    const roomPriceInfo = ROOM_DATA[roomType] || { season: 1000, nonSeason: 1000 };
-    const unitPrice = isSeason ? roomPriceInfo.season : roomPriceInfo.nonSeason;
-    const nights = Math.max(1, Math.round((new Date(checkOut) - new Date(checkIn)) / (1000 * 60 * 60 * 24)));
+    const roomPriceInfo = ROOM_DATA[roomType] || { weekday: 1000, weekend: 1000, season: 1000 };
     
-    const roomCharges = unitPrice * nights * roomCount;
+    // Day-by-day timezone-safe calculation
+    const ciParts = checkIn.split('T')[0].split('-');
+    const coParts = checkOut.split('T')[0].split('-');
+    let calcCurrent = new Date(Number(ciParts[0]), Number(ciParts[1]) - 1, Number(ciParts[2]));
+    const calcEnd = new Date(Number(coParts[0]), Number(coParts[1]) - 1, Number(coParts[2]));
+    
+    let roomCharges = 0;
+    let nights = 0;
+    while (calcCurrent < calcEnd) {
+      const day = calcCurrent.getDay(); // 0 = Sun, 5 = Fri, 6 = Sat
+      const isWeekend = day === 0 || day === 5 || day === 6;
+      const price = isSeason ? roomPriceInfo.season : (isWeekend ? roomPriceInfo.weekend : roomPriceInfo.weekday);
+      roomCharges += price * roomCount;
+      nights++;
+      calcCurrent.setDate(calcCurrent.getDate() + 1);
+    }
+    if (nights === 0) {
+      nights = 1;
+      const isWeekend = calcCurrent.getDay() === 0 || calcCurrent.getDay() === 5 || calcCurrent.getDay() === 6;
+      const price = isSeason ? roomPriceInfo.season : (isWeekend ? roomPriceInfo.weekend : roomPriceInfo.weekday);
+      roomCharges = price * roomCount;
+    }
     const gstAmount = Math.round(roomCharges * 0.12);
     const totalPrice = roomCharges + gstAmount;
     // --- End Price Calculation ---

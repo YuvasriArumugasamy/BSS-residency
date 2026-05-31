@@ -22,7 +22,7 @@ async function setupClientRooms() {
       const pricing = {
         'Double Bed': { non: 1000, sea: 1300 },
         'Double Bed A/C': { non: 1300, sea: 1600 },
-        'Four Bed A/C': { non: 2300, sea: 2800 }
+        'Four Bed A/C': { non: 2500, sea: 2800 }
       }[type];
 
       roomsToCreate.push({
@@ -44,7 +44,7 @@ async function setupClientRooms() {
       const pricing = {
         'Double Bed': { non: 1000, sea: 1300 },
         'Double Bed A/C': { non: 1300, sea: 1600 },
-        'Four Bed A/C': { non: 2300, sea: 2800 }
+        'Four Bed A/C': { non: 2500, sea: 2800 }
       }[type];
 
       roomsToCreate.push({
@@ -68,7 +68,7 @@ async function setupClientRooms() {
         'Double Bed': { non: 1000, sea: 1300 },
         'Double Bed A/C': { non: 1300, sea: 1600 },
         'Three Bed': { non: 1500, sea: 1800 },
-        'Four Bed A/C': { non: 2300, sea: 2800 }
+        'Four Bed A/C': { non: 2500, sea: 2800 }
       }[type];
 
       roomsToCreate.push({

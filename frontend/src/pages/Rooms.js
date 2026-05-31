@@ -29,7 +29,13 @@ export default function Rooms() {
       .catch(err => console.error('Error fetching season status:', err));
   }, []);
 
-  const getPrice = (room) => isSeason ? room.seasonPrice : room.nonSeasonPrice;
+  const getPrice = (room) => {
+    if (isSeason) return room.seasonPrice;
+    const today = new Date();
+    const day = today.getDay(); // 0 = Sun, 5 = Fri, 6 = Sat
+    const isWeekend = day === 0 || day === 5 || day === 6;
+    return isWeekend ? room.weekendPrice : room.weekdayPrice;
+  };
 
   return (
     <>
@@ -58,7 +64,9 @@ export default function Rooms() {
               <tr>
                 <th>Room Type</th>
                 <th>Category</th>
-                <th>Price / Night</th>
+                <th>Weekday (Mon-Thu)</th>
+                <th>Weekend (Fri-Sun)</th>
+                <th>Season (Peak)</th>
                 <th></th>
               </tr>
             </thead>
@@ -70,7 +78,9 @@ export default function Rooms() {
                     <strong>{r.name}</strong>
                   </td>
                   <td><span className="tt-pill">{r.type}</span></td>
-                  <td className="tt-price">₹{getPrice(r).toLocaleString('en-IN')}</td>
+                  <td className="tt-price">₹{r.weekdayPrice.toLocaleString('en-IN')}</td>
+                  <td className="tt-price">₹{r.weekendPrice.toLocaleString('en-IN')}</td>
+                  <td className="tt-price">₹{r.seasonPrice.toLocaleString('en-IN')}</td>
                   <td>
                     <Link to={`/booking?room=${r.key}`} className="btn-gold-sm"><span>Book Now</span></Link>
                   </td>
