@@ -10,6 +10,7 @@ export default function AdminLogin() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [serverStatus, setServerStatus] = useState('waking'); // 'waking' | 'ready' | 'error'
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,6 +25,27 @@ export default function AdminLogin() {
     };
   }, []);
 
+  // Wake up the Render server when the login page loads
+  useEffect(() => {
+    const wakeServer = async () => {
+      try {
+        await api.get('/api/admin/settings/public');
+        setServerStatus('ready');
+      } catch (err) {
+        // Retry once after 5 seconds if failed
+        setTimeout(async () => {
+          try {
+            await api.get('/api/admin/settings/public');
+            setServerStatus('ready');
+          } catch {
+            setServerStatus('error');
+          }
+        }, 5000);
+      }
+    };
+    wakeServer();
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true); setError('');
@@ -35,9 +57,9 @@ export default function AdminLogin() {
       }
     } catch (err) {
       if (!err.response) {
-        setError('Cannot connect to server. Please make sure your backend server is running (npm run dev)!');
+        setError('சர்வர் இணைப்பு இல்லை. சிறிது நேரம் காத்திருந்து மீண்டும் முயற்சிக்கவும். (Server is waking up, please wait 30 seconds and try again.)');
       } else {
-        setError('Invalid username or password.');
+        setError('தவறான username அல்லது password. (Invalid username or password.)');
       }
     } finally {
       setLoading(false);
@@ -54,6 +76,39 @@ export default function AdminLogin() {
         </div>
         <h2>Admin Panel</h2>
         <p className="login-sub">Sign in to manage bookings</p>
+
+        {/* Server Status Indicator */}
+        {serverStatus === 'waking' && (
+          <div style={{ 
+            background: 'rgba(251, 191, 36, 0.15)', 
+            border: '1px solid rgba(251, 191, 36, 0.4)',
+            borderRadius: '10px', padding: '10px 14px', marginBottom: '1rem',
+            display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.82rem', color: '#fbbf24'
+          }}>
+            <span style={{ animation: 'pulse 1.5s infinite' }}>⏳</span>
+            சர்வர் விழிக்கிறது... (Server waking up, please wait...)
+          </div>
+        )}
+        {serverStatus === 'ready' && (
+          <div style={{ 
+            background: 'rgba(34, 197, 94, 0.15)', 
+            border: '1px solid rgba(34, 197, 94, 0.4)',
+            borderRadius: '10px', padding: '10px 14px', marginBottom: '1rem',
+            display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.82rem', color: '#22c55e'
+          }}>
+            ✅ சர்வர் தயார் - Login செய்யலாம்! (Server ready)
+          </div>
+        )}
+        {serverStatus === 'error' && (
+          <div style={{ 
+            background: 'rgba(239, 68, 68, 0.15)', 
+            border: '1px solid rgba(239, 68, 68, 0.4)',
+            borderRadius: '10px', padding: '10px 14px', marginBottom: '1rem',
+            display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.82rem', color: '#ef4444'
+          }}>
+            ⚠️ சர்வர் தொடர்பு இல்லை. Page refresh செய்யுங்கள்.
+          </div>
+        )}
 
         {error && <div className="alert error">{error}</div>}
 
