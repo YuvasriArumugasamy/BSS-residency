@@ -10,7 +10,7 @@ const Setting = require('../models/Setting');
 const Admin = require('../models/Admin');
 const { sendBookingConfirmedEmail, sendBookingCancelledEmail } = require('../utils/emailService');
 
-const WHATSAPP_NUMBER = process.env.WHATSAPP_NUMBER || '919344989393';
+const WHATSAPP_NUMBER = process.env.WHATSAPP_NUMBER || '918838599755';
 
 // Helper: build a wa.me confirmation link for a booking
 function buildWaConfirmLink(booking) {

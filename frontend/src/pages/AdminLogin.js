@@ -33,8 +33,12 @@ export default function AdminLogin() {
         sessionStorage.setItem('bss_admin', JSON.stringify({ username: form.username, password: form.password }));
         navigate('/admin/dashboard');
       }
-    } catch {
-      setError('Invalid username or password.');
+    } catch (err) {
+      if (!err.response) {
+        setError('Cannot connect to server. Please make sure your backend server is running (npm run dev)!');
+      } else {
+        setError('Invalid username or password.');
+      }
     } finally {
       setLoading(false);
     }

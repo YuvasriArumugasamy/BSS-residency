@@ -5,7 +5,7 @@ export const CONTACT = {
   phoneSecondary: '+91 93449 89393',
   whatsapp1: '918838599755', // Primary
   whatsapp2: '919344989393', // Secondary
-  whatsapp: '919344989393', // Updated to 9344989393 as per user request
+  whatsapp: '918838599755', // Updated to 8838599755 as per user request
   instagram: 'coutrallam_bss_residency',
   addressLine1: 'Bus Stand, Near Anna Statue',
   addressLine2: 'Courtallam, Tamil Nadu – 627 802',
