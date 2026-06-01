@@ -18,7 +18,7 @@ const Booking = lazy(() => import('./pages/Booking'));
 const Contact = lazy(() => import('./pages/Contact'));
 const FAQ = lazy(() => import('./pages/FAQ'));
 const BookingStatus = lazy(() => import('./pages/BookingStatus'));
-const CourtallamLodges = lazy(() => import('./pages/CourtallamLodges'));
+const ManageBooking = lazy(() => import('./pages/ManageBooking'));
 const AdminLogin = lazy(() => import('./pages/AdminLogin'));
 const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
 const CheckIn = lazy(() => import('./pages/CheckIn'));
