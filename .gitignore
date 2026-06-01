@@ -1,6 +1,24 @@
+# Node modules
 node_modules/
+backend/node_modules/
+frontend/node_modules/
+
+# Environment variables
+.env
+backend/.env
+
+# Build outputs
 dist/
 build/
-.env
+frontend/build/
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
 .DS_Store
-*.log
+Thumbs.db
+
+# Firebase service account keys
+*-firebase-adminsdk-*.json

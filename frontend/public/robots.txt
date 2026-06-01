@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+# Disallow admin and API routes
+Disallow: /admin/
+Disallow: /admin/login
+Disallow: /admin/dashboard
+Disallow: /api/
+
+# Sitemap
+Sitemap: https://www.bssresidency.com/sitemap.xml
