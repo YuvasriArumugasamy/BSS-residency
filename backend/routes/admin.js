@@ -9,6 +9,7 @@ const Notification = require('../models/Notification');
 const Setting = require('../models/Setting');
 const Admin = require('../models/Admin');
 const { sendBookingConfirmedEmail, sendBookingCancelledEmail } = require('../utils/emailService');
+const { autoCheckOutPassedBookings } = require('../utils/bookingAutoCheckout');
 
 const WHATSAPP_NUMBER = process.env.WHATSAPP_NUMBER || '918838599755';
 
@@ -156,6 +157,9 @@ router.post('/login', async (req, res) => {
 // GET /api/admin/bookings — All bookings
 router.get('/bookings', adminAuth, async (req, res) => {
   try {
+    // Release rooms for bookings whose checkout date and time have passed
+    await autoCheckOutPassedBookings();
+
     const { status, roomType, page = 1, limit = 10, period = 'all', month, year } = req.query;
     const filter = {};
     if (status) filter.status = status;
@@ -392,6 +396,8 @@ router.post('/bookings/offline', adminAuth, async (req, res) => {
 // GET /api/admin/stats — Dashboard stats
 router.get('/stats', adminAuth, async (req, res) => {
   try {
+    // Release rooms for bookings whose checkout date and time have passed
+    await autoCheckOutPassedBookings();
     const { period = 'all', month, year } = req.query;
     let bookingFilter = {};
     let paymentFilter = { status: 'Paid' };
@@ -528,6 +534,8 @@ router.get('/calendar-bookings', adminAuth, async (req, res) => {
 
 router.get('/rooms', adminAuth, async (req, res) => {
   try {
+    // Release rooms for bookings whose checkout date and time have passed
+    await autoCheckOutPassedBookings();
     const rooms = await Room.find().sort({ roomNumber: 1 }).collation({ locale: 'en', numericOrdering: true });
     res.json({ success: true, rooms });
   } catch (err) {

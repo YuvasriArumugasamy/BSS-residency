@@ -9,6 +9,7 @@ const Notification = require('../models/Notification');
 const Setting = require('../models/Setting');
 const { sendBookingReceivedEmail, sendNewBookingAdminAlert } = require('../utils/emailService');
 const { upsertGuestFromBooking } = require('../utils/guestService');
+const { autoCheckOutPassedBookings } = require('../utils/bookingAutoCheckout');
 const Razorpay = require('razorpay');
 const crypto = require('crypto');
 
@@ -383,6 +384,8 @@ router.post('/', async (req, res) => {
 // GET /api/bookings/availability — Get availability by room type and month
 router.get('/availability', async (req, res) => {
   try {
+    // Automatically checkout passed bookings to ensure availability calculations are always accurate
+    await autoCheckOutPassedBookings();
     const { roomType, month, year } = req.query;
 
     if (!roomType || !month || !year) {
@@ -441,6 +444,8 @@ router.get('/availability', async (req, res) => {
 // GET /api/bookings/:id — Get booking status by ID (for guests)
 router.get('/:id', async (req, res) => {
   try {
+    // Automatically checkout passed bookings
+    await autoCheckOutPassedBookings();
     const id = req.params.id;
     // Search by custom bookingId first, then by MongoDB _id
     let booking = await Booking.findOne({ bookingId: id });
