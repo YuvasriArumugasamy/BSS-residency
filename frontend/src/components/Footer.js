@@ -55,7 +55,7 @@ export default function Footer() {
           <Link to="/rooms">Rooms</Link>
           <Link to="/gallery">Gallery</Link>
           <Link to="/booking">Book Now</Link>
-          <Link to="/booking/status">Manage Booking</Link>
+          <Link to="/booking/manage">Manage Booking</Link>
           <Link to="/contact">Contact</Link>
           <Link to="/faq">FAQ</Link>
         </div>

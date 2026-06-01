@@ -149,7 +149,7 @@ export default function Home() {
     if (!hasSeenNotice) {
       setTimeout(() => {
         setShowNotice(true);
-      }, 1500);
+      }, 5000);
     }
   }, []);
 
@@ -202,7 +202,7 @@ export default function Home() {
             </span>
             <span className="hero-badge">✦ Courtallam's Premium Stay ✦</span>
             <h1>
-              Welcome to<br />
+              Welcome to <br /> 
               <span className="hero-brand">BSS Residency</span>
             </h1>
             <p>Experience premium comfort steps away from the majestic Courtallam Falls</p>
