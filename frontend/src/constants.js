@@ -99,7 +99,7 @@ export const ROOMS = [
     name: 'Four Bed A/C',
     type: 'A/C',
     weekdayPrice: 2500,
-    weekendPrice: 2800,
+    weekendPrice: 3000,
     seasonPrice: 2800,
     nonSeasonPrice: 2500,
     desc:
