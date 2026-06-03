@@ -16,8 +16,6 @@ const bookingSchema = new mongoose.Schema(
         'Four Bed A/C',
         'AC Double Bed',
         'Non-AC Double Bed',
-        'Deluxe AC',
-        'Suite',
         // legacy values kept for backward compatibility
         'AC Room',
         'Non-AC Room',

@@ -1301,8 +1301,6 @@ const RoomAvailabilityCalendar = ({
                 <option value="Three Bed">Three Bed</option>
 
                 <option value="Four Bed A/C">Four Bed A/C</option>
-                <option value="Deluxe AC">Deluxe AC</option>
-                <option value="Suite">Suite</option>
               </select>
             </div>
           </div>
@@ -2482,10 +2480,7 @@ export default function AdminDashboard() {
                 <option>Double Bed A/C</option>
                 <option>Four Bed A/C</option>
                 <option>Double Bed</option>
-                <option>Four Bed</option>
                 <option>Three Bed</option>
-                <option>Deluxe AC</option>
-                <option>Suite</option>
               </select>
             </div>
           </div>
@@ -2698,10 +2693,7 @@ export default function AdminDashboard() {
                 <option>Double Bed</option>
                 <option>Double Bed A/C</option>
                 <option>Three Bed</option>
-                <option>Four Bed</option>
                 <option>Four Bed A/C</option>
-                <option>Deluxe AC</option>
-                <option>Suite</option>
               </select>
             </div>
             <div className="form-group">
