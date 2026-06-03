@@ -4,11 +4,13 @@
 
 .bstatus-page {
   min-height: 100vh;
+  padding-top: 6rem; /* Ensures page content is not hidden under the fixed navbar */
+  background: #fcfbf7;
 }
 
 /* ---- Search ---- */
 .bstatus-section {
-  padding: 3rem 1.5rem 5rem;
+  padding: 1rem 1.5rem 5rem;
   max-width: 860px;
   margin: 0 auto;
 }
