@@ -10,7 +10,7 @@ const SEO = ({
   schemaMarkup = null,
 }) => {
   const location = useLocation();
-  const currentUrl = `https://bssresidency.com${location.pathname}`;
+  const currentUrl = `https://www.bssresidency.com${location.pathname}`;
   const defaultSchema = {
     "@context": "https://schema.org",
     "@type": "Hotel",
