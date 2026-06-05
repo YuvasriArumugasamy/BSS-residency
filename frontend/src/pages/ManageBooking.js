@@ -26,46 +26,71 @@ export default function ManageBooking() {
   return (
     <>
       <SEO
-        title="Manage Booking | BSS Residency"
+        title="Manage Bookings | BSS Residency"
         description="View and manage your bookings at BSS Residency."
       />
       <main className="manage-booking-page">
-        <section className="hero">
-          <h1>Manage Your Bookings</h1>
-          <p>Here you can view, edit or cancel your existing bookings.</p>
+        <section className="page-hero">
+          <p className="section-label gold">Admin View</p>
+          <h1>Manage Your <em>Bookings</em></h1>
+          <p>Here you can view, track, or manage existing bookings in the system.</p>
         </section>
-        {loading && <p className="loading">Loading bookings...</p>}
-        {error && <p className="error">{error}</p>}
-        {!loading && !error && bookings.length === 0 && (
-          <p className="empty">No bookings found.</p>
-        )}
-        {!loading && !error && bookings.length > 0 && (
-          <table className="booking-table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Room</th>
-                <th>Check‑In</th>
-                <th>Check‑Out</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {bookings.map((b) => (
-                <tr key={b._id}>
-                  <td>{b.bookingId || b._id}</td>
-                  <td>{b.name}</td>
-                  <td>{b.roomType}{b.roomNumber ? ` #${b.roomNumber}` : ''}</td>
-                  <td>{new Date(b.checkIn).toLocaleDateString('en‑IN')}</td>
-                  <td>{new Date(b.checkOut).toLocaleDateString('en‑IN')}</td>
-                  <td>{b.status}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-        <Link to="/" className="back-home">← Back to Home</Link>
+
+        <div className="manage-booking-section container">
+          {loading && (
+            <div className="manage-loading">
+              <div className="spinner" />
+              <p>Loading bookings list...</p>
+            </div>
+          )}
+
+          {error && (
+            <div className="manage-error">
+              <p>⚠️ {error}</p>
+            </div>
+          )}
+
+          {!loading && !error && bookings.length === 0 && (
+            <div className="manage-empty">
+              <p>No bookings found in the system.</p>
+            </div>
+          )}
+
+          {!loading && !error && bookings.length > 0 && (
+            <div className="booking-table-wrap">
+              <table className="booking-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Room</th>
+                    <th>Check‑In</th>
+                    <th>Check‑Out</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {bookings.map((b) => (
+                    <tr key={b._id}>
+                      <td style={{ fontFamily: 'monospace', fontWeight: 600 }}>{b.bookingId || b._id}</td>
+                      <td style={{ fontWeight: 600 }}>{b.name}</td>
+                      <td>{b.roomType}{b.roomNumber ? ` #${b.roomNumber}` : ''}</td>
+                      <td>{new Date(b.checkIn).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</td>
+                      <td>{new Date(b.checkOut).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</td>
+                      <td>
+                        <span className={`status-badge ${(b.status || 'Pending').toLowerCase().replace(' ', '-')}`}>
+                          {b.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+          
+          <Link to="/" className="btn-back">← Back to Home</Link>
+        </div>
       </main>
     </>
   );
