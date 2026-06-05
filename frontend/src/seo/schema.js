@@ -1,6 +1,6 @@
 // src/seo/schema.js
-// JSON‑LD schema markup for BSS Residency (Hotel) and FAQPage.
-// This object will be injected via the <SEO> component.
+// JSON-LD schema markup for BSS Residency (Hotel) and LocalBusiness.
+// This object will be injected via the <SEO> component on the Home page.
 
 const schemaMarkup = {
   "@context": "https://schema.org",
@@ -9,7 +9,7 @@ const schemaMarkup = {
       "@type": "Hotel",
       "@id": "https://www.bssresidency.com/#hotel",
       "name": "BSS Residency Courtallam",
-      "description": "Best budget hotel in Courtallam near Main Falls. AC and Non‑AC rooms, free parking, 24/7 service.",
+      "description": "Best budget hotel in Courtallam near Main Falls. AC and Non-AC rooms, free parking, 24/7 service.",
       "url": "https://www.bssresidency.com",
       "telephone": "+91-88385-99755",
       "priceRange": "₹1,000 - ₹2,300",
@@ -31,33 +31,37 @@ const schemaMarkup = {
       "starRating": { "@type": "Rating", "ratingValue": "4.6" },
       "amenityFeature": [
         { "@type": "LocationFeatureSpecification", "name": "Free Parking", "value": true },
-        { "@type": "LocationFeatureSpecification", "name": "24‑hour Front Desk", "value": true },
+        { "@type": "LocationFeatureSpecification", "name": "24-hour Front Desk", "value": true },
         { "@type": "LocationFeatureSpecification", "name": "Air Conditioning", "value": true },
         { "@type": "LocationFeatureSpecification", "name": "Free WiFi", "value": true },
-        { "@type": "LocationFeatureSpecification", "name": "Hot Water", "value": true }
+        { "@type": "LocationFeatureSpecification", "name": "Hot Water", "value": true },
+        { "@type": "LocationFeatureSpecification", "name": "Room Service", "value": true }
       ],
       "checkinTime": "12:00",
-      "checkoutTime": "11:00"
+      "checkoutTime": "11:00",
+      "image": "https://www.bssresidency.com/social_preview.png"
     },
     {
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "What are the room rates at BSS Residency Courtallam?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Double Bed Non‑AC: ₹1,000/night, Double Bed A/C: ₹1,300/night, Three Bed Non‑AC: ₹1,500/night, Four Bed A/C: ₹2,300/night." }
-        },
-        {
-          "@type": "Question",
-          "name": "How far is BSS Residency from Courtallam Main Falls?",
-          "acceptedAnswer": { "@type": "Answer", "text": "BSS Residency is just 500 m (5 minutes walk) from the Main Falls." }
-        },
-        {
-          "@type": "Question",
-          "name": "Is parking available?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Yes, free parking is available for all guests." }
-        }
-      ]
+      "@type": "LocalBusiness",
+      "@id": "https://www.bssresidency.com/#business",
+      "name": "BSS Residency",
+      "image": "https://www.bssresidency.com/social_preview.png",
+      "telephone": "+91-88385-99755",
+      "priceRange": "₹₹",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Bus Stand, Near Anna Statue",
+        "addressLocality": "Courtallam",
+        "addressRegion": "Tamil Nadu",
+        "postalCode": "627802",
+        "addressCountry": "IN"
+      },
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
+        "opens": "00:00",
+        "closes": "23:59"
+      }
     }
   ]
 };
