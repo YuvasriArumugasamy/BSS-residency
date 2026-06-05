@@ -32,7 +32,7 @@ export default function Navbar() {
     { to: '/', label: 'Home' },
     { to: '/rooms', label: 'Rooms' },
     { to: '/gallery', label: 'Gallery' },
-    { to: '/booking/status', label: 'Manage Booking' },
+    { to: '/booking/manage', label: 'Manage Booking' },
     { to: '/contact', label: 'Contact' },
     { to: '/courtallam-lodges', label: 'Courtallam Lodges' },
   ];

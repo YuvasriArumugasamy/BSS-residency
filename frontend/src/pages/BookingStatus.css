@@ -4,8 +4,84 @@
 
 .bstatus-page {
   min-height: 100vh;
-  padding-top: 6rem; /* Ensures page content is not hidden under the fixed navbar */
+  padding-top: 0;
   background: #fcfbf7;
+}
+
+/* Page Hero - Premium Dark Grid Design */
+.bstatus-page .page-hero {
+  position: relative;
+  background-color: #121212;
+  background-image: 
+    radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1.5px);
+  background-size: 24px 24px;
+  background-position: center top;
+  padding: 8rem 2rem 4.5rem;
+  text-align: center;
+  color: #ffffff;
+  border-bottom: 3px solid #d4a857;
+  overflow: hidden;
+}
+
+/* Glowing background effect */
+.bstatus-page .page-hero::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(212, 168, 87, 0.07) 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.bstatus-page .page-hero * {
+  position: relative;
+  z-index: 2;
+}
+
+/* Section label "MANAGE YOUR STAY" */
+.bstatus-page .page-hero .section-label {
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.15em;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  display: inline-block;
+}
+
+.bstatus-page .page-hero .section-label.gold {
+  color: #d4a857;
+}
+
+/* Title "Manage Booking" */
+.bstatus-page .page-hero h1 {
+  font-size: clamp(2.2rem, 5vw, 3.2rem);
+  font-weight: 400;
+  color: #ffffff;
+  margin: 0 0 1rem;
+  letter-spacing: -0.01em;
+  font-family: 'Playfair Display', 'Didot', 'Georgia', serif;
+}
+
+.bstatus-page .page-hero h1 em {
+  font-family: 'Playfair Display', 'Didot', 'Georgia', serif;
+  font-style: italic;
+  color: #d4a857;
+  font-weight: 400;
+  margin-left: 0.3rem;
+}
+
+/* Subtitle description */
+.bstatus-page .page-hero p {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: clamp(0.95rem, 2vw, 1.1rem);
+  max-width: 600px;
+  margin: 0 auto;
+  font-weight: 300;
+  line-height: 1.5;
 }
 
 /* ---- Search ---- */
