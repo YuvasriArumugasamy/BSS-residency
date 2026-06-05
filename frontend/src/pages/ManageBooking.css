@@ -1,73 +1,143 @@
-/* Styles for ManageBooking page */
+/* ----------------------------------------------------------
+   ManageBooking Page – Premium Modern Design
+   ---------------------------------------------------------- */
+
+/* Page container – full‑screen gradient background */
 .manage-booking-page {
-  max-width: 1200px;
-  margin: 0 auto;
+  min-height: 100vh;
   padding: 8rem 1.5rem 4rem 1.5rem;
-  font-family: inherit;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  font-family: 'Inter', system-ui, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #1e293b;
 }
 
+/* Glass‑morphism hero section */
 .manage-booking-page .hero {
   text-align: center;
   margin-bottom: 3rem;
+  width: 100%;
+  max-width: 800px;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(12px);
+  border-radius: 16px;
+  padding: 2.5rem 1.5rem;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 }
 
 .manage-booking-page .hero h1 {
-  font-size: 2.5rem;
-  color: #1e293b;
+  font-size: 2.8rem;
+  color: #111827;
   margin-bottom: 0.5rem;
 }
 
 .manage-booking-page .hero p {
-  color: #64748b;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
+  color: #374151;
 }
 
+/* Loading / error / empty states */
+.loading,
+.error,
+.empty {
+  margin: 2rem 0;
+  font-size: 1.1rem;
+  color: #64748b;
+  text-align: center;
+}
+
+.error {
+  color: #dc2626;
+}
+
+.empty {
+  color: #6b7280;
+}
+
+/* Booking table – card style with subtle hover */
 .booking-table {
   width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 3rem;
-  background: #fff;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  max-width: 1000px;
+  border-collapse: separate;
+  border-spacing: 0 0.75rem;
+  margin: 2rem auto;
+  background: transparent;
 }
 
 .booking-table th,
 .booking-table td {
   padding: 1rem 1.5rem;
   text-align: left;
-  border-bottom: 1px solid #f1f5f9;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.95rem;
+  color: #1f2937;
 }
 
 .booking-table th {
-  background: #f8fafc;
+  background: #f3f4f6;
   font-weight: 600;
-  color: #475569;
+  color: #374151;
 }
 
-.booking-table tr:last-child td {
+.booking-table tbody tr:hover td {
+  background: #e5e7eb;
+}
+
+.booking-table tbody tr:last-child td {
   border-bottom: none;
 }
 
+/* Back to Home link – button‑like style */
 .back-home {
   display: inline-block;
-  color: #d4a857;
+  margin-top: 2rem;
+  padding: 0.75rem 1.5rem;
+  background: #c9a84c;
+  color: #fff;
+  border-radius: 8px;
   text-decoration: none;
   font-weight: 600;
-  transition: color 0.2s;
+  transition: background 0.2s, transform 0.1s;
 }
 
 .back-home:hover {
-  color: #c9974e;
+  background: #b8962f;
+  transform: translateY(-2px);
 }
 
-.loading, .error, .empty {
-  text-align: center;
-  padding: 3rem;
-  font-size: 1.1rem;
-  color: #64748b;
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .manage-booking-page {
+    padding: 6rem 1rem 3rem 1rem;
+  }
+
+  .manage-booking-page .hero {
+    padding: 2rem 1rem;
+  }
+
+  .manage-booking-page .hero h1 {
+    font-size: 2.2rem;
+  }
+
+  .booking-table th,
+  .booking-table td {
+    padding: 0.75rem 1rem;
+    font-size: 0.85rem;
+  }
 }
 
-.error {
-  color: #ef4444;
+@media (max-width: 480px) {
+  .manage-booking-page .hero h1 {
+    font-size: 1.8rem;
+  }
+
+  .booking-table {
+    border-spacing: 0 0.5rem;
+  }
 }
+
+/* ---------------------------------------------------------- */
