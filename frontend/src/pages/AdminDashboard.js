@@ -4,11 +4,32 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area
 } from 'recharts';
 import {
-  LayoutDashboard, Bed, CalendarCheck, Users, CreditCard, PieChart, Settings, MessageSquare, Bell, LogOut, ExternalLink, RefreshCcw, Plus, Trash2, Edit3, CheckCircle, XCircle, Clock, X, MessageCircle, ClipboardCheck, Calendar, Image, Lock, Eye, EyeOff
+  LayoutDashboard, Bed, CalendarCheck, Users, CreditCard, PieChart, Settings, MessageSquare, Bell, LogOut, ExternalLink, RefreshCcw, Plus, Trash2, Edit3, CheckCircle, XCircle, Clock, X, MessageCircle, ClipboardCheck, Calendar, Image, Lock, Eye, EyeOff, Globe
 } from 'lucide-react';
 import api, { API_BASE_URL } from '../api/axios';
 import { setAppBadgeCount, clearAppBadge } from '../utils/appBadge';
 import './Admin.css';
+
+// --- TRANSLATIONS ---
+const ADMIN_TEXT = {
+  en: {
+    dashboard: 'Dashboard', rooms: 'Rooms', bookings: 'Bookings', calendar: 'Calendar',
+    guests: 'Guests', payments: 'Payments', reports: 'Reports', settings: 'Settings',
+    reviews: 'Reviews', gallery: 'Gallery', notifications: 'Notifications',
+    logout: 'Logout', administrator: 'Administrator',
+    refresh: 'Refresh', viewSite: 'View Site',
+    workWith: 'Work with real occupancy and data logs',
+  },
+  ta: {
+    dashboard: 'அடுக்கல் பலகை', rooms: 'அறைகள்', bookings: 'முன்பதிவுகள்', calendar: 'நாட்காட்டம்',
+    guests: 'விருந்தினர்', payments: 'கொடுப்புகள்', reports: 'அறிக்கைகள்', settings: 'அமைப்புகள்',
+    reviews: 'மதிப்பீடுகள்', gallery: 'படங்கள்', notifications: 'அறிவிப்புகள்',
+    logout: 'வெளியேறு', administrator: 'நிர்வாகி',
+    refresh: 'புதுப்பிக்கவும்', viewSite: 'தளம் பார்க்கவும்',
+    workWith: 'மைய்மையான தகவல்களுடன் பணியாற்றுகிறீர்கள்',
+  }
+};
+
 
 // --- SHARED COMPONENTS ---
 
@@ -27,19 +48,20 @@ const Modal = ({ title, isOpen, onClose, children }) => {
   );
 };
 
-const Sidebar = ({ activeTab, setActiveTab, onLogout, username, unreadCount = 0, unreadReviewCount = 0 }) => {
+const Sidebar = ({ activeTab, setActiveTab, onLogout, username, unreadCount = 0, unreadReviewCount = 0, lang, onToggleLang }) => {
+  const t = ADMIN_TEXT[lang];
   const navItems = [
-    { id: 'overview', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
-    { id: 'rooms', label: 'Rooms', icon: <Bed size={20} /> },
-    { id: 'bookings', label: 'Bookings', icon: <CalendarCheck size={20} /> },
-    { id: 'calendar', label: 'Calendar', icon: <Calendar size={20} /> },
-    { id: 'guests', label: 'Guests', icon: <Users size={20} /> },
-    { id: 'payments', label: 'Payments', icon: <CreditCard size={20} /> },
-    { id: 'reports', label: 'Reports', icon: <PieChart size={20} /> },
-    { id: 'settings', label: 'Settings', icon: <Settings size={20} /> },
-    { id: 'reviews', label: 'Reviews', icon: <MessageSquare size={20} />, count: unreadReviewCount },
-    { id: 'gallery', label: 'Gallery', icon: <Image size={20} /> },
-    { id: 'notifications', label: 'Notifications', icon: <Bell size={20} />, count: unreadCount },
+    { id: 'overview', label: t.dashboard, icon: <LayoutDashboard size={20} /> },
+    { id: 'rooms', label: t.rooms, icon: <Bed size={20} /> },
+    { id: 'bookings', label: t.bookings, icon: <CalendarCheck size={20} /> },
+    { id: 'calendar', label: t.calendar, icon: <Calendar size={20} /> },
+    { id: 'guests', label: t.guests, icon: <Users size={20} /> },
+    { id: 'payments', label: t.payments, icon: <CreditCard size={20} /> },
+    { id: 'reports', label: t.reports, icon: <PieChart size={20} /> },
+    { id: 'settings', label: t.settings, icon: <Settings size={20} /> },
+    { id: 'reviews', label: t.reviews, icon: <MessageSquare size={20} />, count: unreadReviewCount },
+    { id: 'gallery', label: t.gallery, icon: <Image size={20} /> },
+    { id: 'notifications', label: t.notifications, icon: <Bell size={20} />, count: unreadCount },
   ];
 
   return (
@@ -68,21 +90,36 @@ const Sidebar = ({ activeTab, setActiveTab, onLogout, username, unreadCount = 0,
         ))}
       </nav>
       <div className="sidebar-footer">
+        {/* Language Toggle */}
+        <div
+          onClick={onToggleLang}
+          style={{
+            display: 'flex', alignItems: 'center', gap: '8px',
+            padding: '0.5rem 0.75rem', borderRadius: '8px', cursor: 'pointer',
+            background: 'rgba(212, 168, 87, 0.12)', border: '1px solid rgba(212, 168, 87, 0.3)',
+            marginBottom: '0.75rem', color: '#d4a857', fontSize: '0.8rem', fontWeight: 700,
+            transition: 'all 0.2s'
+          }}
+        >
+          <Globe size={15} />
+          <span>{lang === 'en' ? 'தமிழில் காட்டு' : 'Show in English'}</span>
+        </div>
         <div className="user-snippet">
           <div className="user-avatar">{username?.charAt(0).toUpperCase()}</div>
           <div className="user-info">
             <div className="user-name">{username}</div>
-            <div className="user-role">Administrator</div>
+            <div className="user-role">{t.administrator}</div>
           </div>
         </div>
         <div className="nav-item" onClick={onLogout} style={{ marginTop: '1rem', color: '#ff4d4d' }}>
           <LogOut size={18} />
-          <span>Logout</span>
+          <span>{t.logout}</span>
         </div>
       </div>
     </div>
   );
 };
+
 
 // --- VIEWS ---
 
@@ -1696,6 +1733,14 @@ export default function AdminDashboard() {
   const navigate = useNavigate();
   const [auth, setAuth] = useState(null);
   const [activeTab, setActiveTab] = useState('overview');
+  const [lang, setLang] = useState(() => localStorage.getItem('bss_admin_lang') || 'en');
+  const t = ADMIN_TEXT[lang];
+
+  const toggleLang = () => {
+    const next = lang === 'en' ? 'ta' : 'en';
+    setLang(next);
+    localStorage.setItem('bss_admin_lang', next);
+  };
 
   useEffect(() => {
     const manifestLink = document.querySelector('link[rel="manifest"]');
@@ -2422,7 +2467,16 @@ export default function AdminDashboard() {
   return (
     <div className="admin-dashboard">
       <div className="sidebar-backdrop" onClick={() => document.body.classList.remove('sidebar-open')}></div>
-      <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} onLogout={logout} username={auth?.username} unreadCount={unreadCount} unreadReviewCount={unreadReviewCount} />
+      <Sidebar
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        onLogout={logout}
+        username={auth?.username}
+        unreadCount={unreadCount}
+        unreadReviewCount={unreadReviewCount}
+        lang={lang}
+        onToggleLang={toggleLang}
+      />
 
       <main className="admin-main">
         {/* Mobile Header */}
@@ -2437,14 +2491,14 @@ export default function AdminDashboard() {
           <div className="view-header-flex">
             <div className="view-header-titles">
               <h1>{activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}</h1>
-              <p>Work with real occupancy and data logs</p>
+              <p>{t.workWith}</p>
             </div>
             <div className="view-header-actions">
               <button onClick={fetchData} className="admin-btn admin-btn-outline header-btn">
-                <RefreshCcw size={16} /> <span>Refresh</span>
+                <RefreshCcw size={16} /> <span>{t.refresh}</span>
               </button>
               <a href="/" target="_blank" rel="noreferrer" className="admin-btn admin-btn-primary header-btn">
-                <ExternalLink size={16} /> <span>View Site</span>
+                <ExternalLink size={16} /> <span>{t.viewSite}</span>
               </a>
             </div>
           </div>

@@ -2,8 +2,39 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import buildingImg from '../assets/building.webp';
-import { Eye, EyeOff, User, Lock, ArrowRight } from 'lucide-react';
+import { Eye, EyeOff, User, Lock, ArrowRight, Globe } from 'lucide-react';
 import './Admin.css';
+
+const ADMIN_LOGIN_TEXT = {
+  en: {
+    title: 'Admin Panel',
+    subtitle: 'Sign in to manage bookings',
+    username: 'Username',
+    usernamePlaceholder: 'Name',
+    password: 'Password',
+    signIn: 'Sign In',
+    signingIn: 'Signing in...',
+    waking: 'Server waking up, please wait...',
+    ready: 'Server ready - You can login now!',
+    error: 'Server not reachable. Please refresh the page.',
+    invalidCreds: 'Invalid username or password.',
+    serverDown: 'Server connection failed. Please wait 30 seconds and try again.',
+  },
+  ta: {
+    title: 'நிர்வாக பக்கம்',
+    subtitle: 'முன்பதிவுகளை நிர்வகிக்க உள்நுழையவும்',
+    username: 'பயனர் பெயர்',
+    usernamePlaceholder: 'பெயர்',
+    password: 'கடவுச்சொல்',
+    signIn: 'உள்நுழை',
+    signingIn: 'உள்நுழைகிறது...',
+    waking: 'சர்வர் விழிக்கிறது... காத்திருங்கள்...',
+    ready: 'சர்வர் தயார் - Login செய்யலாம்!',
+    error: '⚠️ சர்வர் தொடர்பு இல்லை. Page refresh செய்யுங்கள்.',
+    invalidCreds: 'தவறான username அல்லது password.',
+    serverDown: 'சர்வர் இணைப்பு இல்லை. சிறிது நேரம் காத்திருந்து மீண்டும் முயற்சிக்கவும்.',
+  }
+};
 
 export default function AdminLogin() {
   const [form, setForm] = useState({ username: '', password: '' });
@@ -11,7 +42,15 @@ export default function AdminLogin() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [serverStatus, setServerStatus] = useState('waking'); // 'waking' | 'ready' | 'error'
+  const [lang, setLang] = useState(() => localStorage.getItem('bss_admin_lang') || 'en');
   const navigate = useNavigate();
+  const t = ADMIN_LOGIN_TEXT[lang];
+
+  const toggleLang = () => {
+    const next = lang === 'en' ? 'ta' : 'en';
+    setLang(next);
+    localStorage.setItem('bss_admin_lang', next);
+  };
 
   useEffect(() => {
     const manifestLink = document.querySelector('link[rel="manifest"]');
@@ -57,9 +96,9 @@ export default function AdminLogin() {
       }
     } catch (err) {
       if (!err.response) {
-        setError('சர்வர் இணைப்பு இல்லை. சிறிது நேரம் காத்திருந்து மீண்டும் முயற்சிக்கவும். (Server is waking up, please wait 30 seconds and try again.)');
+        setError(t.serverDown);
       } else {
-        setError('தவறான username அல்லது password. (Invalid username or password.)');
+        setError(t.invalidCreds);
       }
     } finally {
       setLoading(false);
@@ -71,11 +110,28 @@ export default function AdminLogin() {
       backgroundImage: `url(${buildingImg})`
     }}>
       <div className="login-card">
-        <div className="login-logo">
-          BSS Residency
+        {/* Language Toggle */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
+          <div className="login-logo" style={{ margin: 0 }}>BSS Residency</div>
+          <button
+            type="button"
+            onClick={toggleLang}
+            style={{
+              display: 'flex', alignItems: 'center', gap: '6px',
+              background: 'rgba(212, 168, 87, 0.15)',
+              border: '1px solid rgba(212, 168, 87, 0.5)',
+              borderRadius: '8px', padding: '6px 12px',
+              color: '#d4a857', fontSize: '0.82rem', fontWeight: 700,
+              cursor: 'pointer', transition: 'all 0.2s'
+            }}
+          >
+            <Globe size={14} />
+            {lang === 'en' ? 'தமிழ்' : 'English'}
+          </button>
         </div>
-        <h2>Admin Panel</h2>
-        <p className="login-sub">Sign in to manage bookings</p>
+
+        <h2>{t.title}</h2>
+        <p className="login-sub">{t.subtitle}</p>
 
         {/* Server Status Indicator */}
         {serverStatus === 'waking' && (
@@ -86,7 +142,7 @@ export default function AdminLogin() {
             display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.82rem', color: '#fbbf24'
           }}>
             <span style={{ animation: 'pulse 1.5s infinite' }}>⏳</span>
-            சர்வர் விழிக்கிறது... (Server waking up, please wait...)
+            {t.waking}
           </div>
         )}
         {serverStatus === 'ready' && (
@@ -96,7 +152,7 @@ export default function AdminLogin() {
             borderRadius: '10px', padding: '10px 14px', marginBottom: '1rem',
             display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.82rem', color: '#22c55e'
           }}>
-            ✅ சர்வர் தயார் - Login செய்யலாம்! (Server ready)
+            ✅ {t.ready}
           </div>
         )}
         {serverStatus === 'error' && (
@@ -106,7 +162,7 @@ export default function AdminLogin() {
             borderRadius: '10px', padding: '10px 14px', marginBottom: '1rem',
             display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.82rem', color: '#ef4444'
           }}>
-            ⚠️ சர்வர் தொடர்பு இல்லை. Page refresh செய்யுங்கள்.
+            {t.error}
           </div>
         )}
 
@@ -114,7 +170,7 @@ export default function AdminLogin() {
 
         <form onSubmit={handleSubmit} className="login-form">
           <div className="form-group">
-            <label>Username</label>
+            <label>{t.username}</label>
             <div className="input-container">
               <span className="input-icon">
                 <User size={20} />
@@ -122,13 +178,13 @@ export default function AdminLogin() {
               <input
                 type="text" value={form.username}
                 onChange={e => setForm(p => ({ ...p, username: e.target.value }))}
-                placeholder="Name" required autoFocus
+                placeholder={t.usernamePlaceholder} required autoFocus
               />
             </div>
           </div>
 
           <div className="form-group">
-            <label>Password</label>
+            <label>{t.password}</label>
             <div className="input-container">
               <span className="input-icon">
                 <Lock size={20} />
@@ -151,9 +207,9 @@ export default function AdminLogin() {
           </div>
 
           <button type="submit" className="login-btn" disabled={loading}>
-            {loading ? 'Signing in...' : (
+            {loading ? t.signingIn : (
               <>
-                Sign In <ArrowRight size={20} />
+                {t.signIn} <ArrowRight size={20} />
               </>
             )}
           </button>
