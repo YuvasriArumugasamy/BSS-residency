@@ -31,6 +31,315 @@ const ADMIN_TEXT = {
 };
 
 
+
+// --- TRANSLATIONS FOR VIEWS ---
+const DASHBOARD_LANG = {
+  en: {
+    totalRooms: 'Total Rooms',
+    totalBookings: 'Total Bookings',
+    availableRooms: 'Available Rooms',
+    checkinsToday: 'Today Check-ins',
+    checkoutsToday: 'Today Check-outs',
+    realtime: 'Real-time update',
+    revenueSummary: 'Revenue Summary',
+    recentBookings: 'Recent Bookings',
+    guest: 'Guest',
+    room: 'Room',
+    status: 'Status',
+    booked: 'Booked',
+    stay: 'Stay',
+    monthView: 'Month View',
+    allTime: 'All Time',
+    manageInventory: 'Manage your inventory and pricing',
+    resetLayout: 'Reset Layout',
+    addRoom: 'Add Room',
+    noRooms: 'No rooms added yet.',
+    priceNight: 'price/night',
+    weekday: 'Weekday',
+    weekend: 'Weekend',
+    peak: 'Peak',
+    bookingManagement: 'Booking Management',
+    addOfflineBooking: 'Add Offline Booking',
+    filterAll: 'All',
+    filterPending: 'Pending',
+    filterConfirmed: 'Confirmed',
+    filterCheckedOut: 'Checked-out',
+    filterCancelled: 'Cancelled',
+    showingBookings: 'Showing',
+    bookingsFound: 'bookings',
+    assignRoom: 'Assign Room',
+    onlineCIDone: 'Online CI Done',
+    noBookingsFound: 'No bookings found.',
+    actionConfirm: 'Confirm Booking',
+    actionCheckout: 'Check-out',
+    actionWhatsapp: 'WhatsApp Guest',
+    actionCancel: 'Cancel Booking',
+    actionViewCheckin: 'View Check-in',
+    actionAddPayment: 'Add Payment',
+    actionDelete: 'Delete',
+    transactionHistory: 'Transaction History',
+    activePayments: 'Active Payments',
+    noPayments: 'No payment records.',
+    date: 'Date',
+    amount: 'Amount',
+    method: 'Method',
+    occupancyByType: 'Occupancy by Room Type',
+    keyMetrics: 'Key Metrics',
+    avgRev: 'Avg Rev / Booking',
+    confRate: 'Confirmation Rate',
+    systemSettings: 'System Settings',
+    manageLodge: "Manage your lodge's global configuration and seasonal pricing.",
+    pushNotif: 'Push Notifications',
+    receiveAlerts: 'Receive instant alerts on this device when a new booking is requested or paid.',
+    enableAlerts: 'Enable Alerts',
+    resyncAlerts: 'Resync Alerts',
+    peakSeasonPricing: 'Peak Season Pricing',
+    peakSeasonDesc: 'When activated, the website will automatically transition to peak season rates (₹1300 / ₹2500).',
+    weekendPricing: 'Weekend Pricing (Fri–Sun)',
+    weekendDesc: 'When activated, the website automatically applies higher weekend rates on Friday, Saturday, and Sunday.',
+    peakRatesLive: 'PEAK SEASON RATES ARE LIVE',
+    regularRatesLive: 'REGULAR RATES ARE LIVE',
+    weekendRatesEnabled: 'WEEKEND RATES (FRI–SUN) ARE ENABLED',
+    weekendRatesDisabled: 'WEEKEND RATES ARE DISABLED (WEEKDAY RATES APPLY)',
+    loginCredentials: 'Login Credentials',
+    updateLoginDesc: 'Update your admin credentials. You will be logged out after changing these.',
+    newUsername: 'New Username',
+    newPassword: 'New Password',
+    currentPassword: 'Current Password (Required to Save)',
+    updateLoginBtn: 'Update Login Details',
+    noReviews: 'No guest reviews yet for this period.',
+    uploadPhoto: 'Upload New Photo',
+    titleCaption: 'Title / Caption',
+    selectImage: 'Select Image File',
+    uploadBtn: 'Upload to Gallery',
+    uploading: 'Uploading...',
+    clearAll: 'Clear All',
+    noNotifications: 'No notifications yet for this period.',
+    prev14: '◀ Prev 14 Days',
+    next14: 'Next 14 Days ▶',
+    todayBtn: 'Today',
+    startDateLabel: 'Start Date:',
+    allRoomTypes: 'All Room Types',
+    doubleBed: 'Double Bed',
+    doubleBedAc: 'Double Bed A/C',
+    threeBed: 'Three Bed',
+    fourBedAc: 'Four Bed A/C',
+    roomAllocations: 'Room Allocations',
+    allocationsDesc: 'Bookings in this 14-day window that are confirmed but do not have an assigned physical room number. Assign them below:',
+    allAssigned: 'All Bookings Assigned!',
+    noPendingAlloc: 'No pending room allocations.',
+    availableRoomsCalendar: 'Available Rooms',
+    selectRoomCalendar: '-- Select a Room --',
+    noRoomsFoundCalendar: 'No matching free rooms found!',
+    blocked: 'Blocked',
+    bookCell: '+ Book',
+    modalRoomTitleEdit: 'Edit Room',
+    modalRoomTitleAdd: 'Add New Room',
+    modalRoomNumber: 'Room Number',
+    modalRoomType: 'Room Type',
+    modalWeekdayPrice: 'Weekday Price (Mon-Thu) (₹)',
+    modalWeekendPrice: 'Weekend Price (Fri-Sun) (₹)',
+    modalPeakPrice: 'Peak Season Price (₹)',
+    modalStatus: 'Status',
+    modalAvailable: 'Available',
+    modalOccupied: 'Occupied',
+    modalMaintenance: 'Maintenance',
+    modalUpdateRoomBtn: 'Update Room',
+    modalCreateRoomBtn: 'Create Room',
+    modalPaymentRecord: 'Record Payment',
+    modalGuestName: 'Guest Name',
+    modalPaymentAmount: 'Amount (₹)',
+    modalPaymentMethod: 'Payment Method',
+    modalPaymentStatus: 'Status',
+    modalSavePayment: 'Record Payment',
+    modalSaving: 'Saving...',
+    modalOfflineTitle: 'Add Offline Booking',
+    modalOfflineCustName: 'Customer Name *',
+    modalOfflinePhone: 'Phone Number *',
+    modalOfflineEmail: 'Email Address',
+    modalOfflineNumRooms: 'Number of Rooms',
+    modalOfflineCheckinDate: 'Check-In Date *',
+    modalOfflineCheckinTime: 'Check-In Time *',
+    modalOfflineCheckoutDate: 'Check-Out Date *',
+    modalOfflineCheckoutTime: 'Check-Out Time *',
+    modalOfflineGuests: 'Guests',
+    modalOfflineAdvance: 'Advance Paid (₹)',
+    modalOfflineSpecialNotes: 'Special Notes',
+    modalOfflineConfirmBtn: 'Confirm Offline Booking',
+    modalOfflineAdding: 'Adding Offline Booking...',
+    modalCheckinDetailsTitle: 'Online Check-in Details',
+    modalCheckinFullName: 'Full Name',
+    modalCheckinAgeGender: 'Age / Gender',
+    modalCheckinAddress: 'Address',
+    modalCheckinIdProof: 'ID Proof',
+    modalCheckinVehicle: 'Vehicle Number',
+    modalCheckinAddGuests: 'Additional Guests',
+    modalCheckinSpecialRequests: 'Special Requests',
+    modalCheckinIdImage: 'ID Proof Image',
+    modalCheckinClose: 'Close Details',
+    phone: 'Phone',
+    checkinCheckout: 'Check-in/out',
+    actions: 'Actions',
+    totalRevenue: 'Total Revenue',
+    guestName: 'Guest Name',
+    totalStays: 'Total Stays',
+    level: 'Level',
+    noGuests: 'No guest records.'
+  },
+  ta: {
+    totalRooms: 'மொத்த அறைகள்',
+    totalBookings: 'மொத்த முன்பதிவுகள்',
+    availableRooms: 'கிடைக்கும் அறைகள்',
+    checkinsToday: 'இன்றைய வருகைகள்',
+    checkoutsToday: 'இன்றைய வெளியேற்றங்கள்',
+    realtime: 'உடனடி புதுப்பிப்பு',
+    revenueSummary: 'வருவாய் சுருக்கம்',
+    recentBookings: 'சமீபத்திய முன்பதிவுகள்',
+    guest: 'விருந்தினர்',
+    room: 'அறை',
+    status: 'நிலை',
+    booked: 'பதிவு செய்யப்பட்டது',
+    stay: 'தங்குதல்',
+    monthView: 'மாதாந்திர பார்வை',
+    allTime: 'அனைத்து காலம்',
+    manageInventory: 'அறை இருப்பு மற்றும் விலையை நிர்வகிக்கவும்',
+    resetLayout: 'அமைப்பை மீட்டமை',
+    addRoom: 'அறை சேர்க்கவும்',
+    noRooms: 'அறைகள் எதுவும் சேர்க்கப்படவில்லை.',
+    priceNight: 'விலை/இரவு',
+    weekday: 'வார நாட்கள்',
+    weekend: 'வார இறுதி',
+    peak: 'சீசன் காலம்',
+    bookingManagement: 'முன்பதிவு மேலாண்மை',
+    addOfflineBooking: 'ஆஃப்லைன் பதிவு சேர்க்க',
+    filterAll: 'அனைத்தும்',
+    filterPending: 'நிலுவையில்',
+    filterConfirmed: 'உறுதி செய்யப்பட்டது',
+    filterCheckedOut: 'வெளியேறியது',
+    filterCancelled: 'ரத்து செய்யப்பட்டது',
+    showingBookings: 'காண்பிக்கப்படுகிறது',
+    bookingsFound: 'முன்பதிவுகள்',
+    assignRoom: 'அறை ஒதுக்குக',
+    onlineCIDone: 'ஆன்லைன் செக்-இன் முடிந்தது',
+    noBookingsFound: 'முன்பதிவுகள் எதுவும் இல்லை.',
+    actionConfirm: 'முன்பதிவை உறுதிசெய்',
+    actionCheckout: 'செக்-அவுட்',
+    actionWhatsapp: 'வாட்ஸ்அப் செய்தி',
+    actionCancel: 'முன்பதிவை ரத்துசெய்',
+    actionViewCheckin: 'செக்-இன் விபரம்',
+    actionAddPayment: 'வருவாய் சேர்க்க',
+    actionDelete: 'அழி',
+    transactionHistory: 'பரிவர்த்தனை வரலாறு',
+    activePayments: 'செயலில் உள்ள கொடுப்புகள்',
+    noPayments: 'பரிவர்த்தனைகள் எதுவும் இல்லை.',
+    date: 'தேதி',
+    amount: 'தொகை',
+    method: 'முறை',
+    occupancyByType: 'அறை வகை வாரியாக பயன்பாடு',
+    keyMetrics: 'முக்கிய அளவீடுகள்',
+    avgRev: 'சராசரி வருவாய் / பதிவு',
+    confRate: 'உறுதிப்படுத்தல் விகிதம்',
+    systemSettings: 'அமைப்புகள்',
+    manageLodge: 'விடுதியின் பொதுவான உள்ளமைவு மற்றும் விலையை நிர்வகிக்கவும்.',
+    pushNotif: 'புஷ் அறிவிப்புகள்',
+    receiveAlerts: 'புதிய முன்பதிவு அல்லது கட்டணம் செலுத்தப்படும் போது இந்த சாதனத்தில் உடனடி அறிவிப்புகளைப் பெறுங்கள்.',
+    enableAlerts: 'அறிவிப்புகளை இயக்கு',
+    resyncAlerts: 'மீண்டும் இணைக்கவும்',
+    peakSeasonPricing: 'உச்ச சீசன் விலை',
+    peakSeasonDesc: 'செயல்படுத்தப்படும் போது, இணையதளம் தானாகவே சீசன் விலைக்கு மாறும் (₹1300 / ₹2500).',
+    weekendPricing: 'வார இறுதி விலை (வெள்ளி–ஞாயிறு)',
+    weekendDesc: 'செயல்படுத்தப்படும் போது, இணையதளம் வெள்ளி, சனி மற்றும் ஞாயிற்றுக்கிழமைகளில் வார இறுதி விலையைப் பயன்படுத்தும்.',
+    peakRatesLive: 'உச்ச சீசன் கட்டணங்கள் அமலில் உள்ளன',
+    regularRatesLive: 'சாதாரண கட்டணங்கள் அமலில் உள்ளன',
+    weekendRatesEnabled: 'வார இறுதி கட்டணங்கள் அனுமதிக்கப்பட்டுள்ளன',
+    weekendRatesDisabled: 'வார இறுதி கட்டணங்கள் முடக்கப்பட்டுள்ளன (வார நாள் கட்டணங்கள் பொருந்தும்)',
+    loginCredentials: 'உள்நுழைவு சான்றுகள்',
+    updateLoginDesc: 'உங்கள் உள்நுழைவு விபரங்களை மாற்றவும். மாற்றிய பின் வெளியேற்றப்படுவீர்கள்.',
+    newUsername: 'புதிய பயனர் பெயர்',
+    newPassword: 'புதிய கடவுச்சொல்',
+    currentPassword: 'தற்போதைய கடவுச்சொல் (சேமிக்க அவசியம்)',
+    updateLoginBtn: 'விபரங்களை புதுப்பி',
+    noReviews: 'இந்த காலத்தில் மதிப்பீடுகள் எதுவும் இல்லை.',
+    uploadPhoto: 'புதிய படம் பதிவேற்றவும்',
+    titleCaption: 'தலைப்பு / விபரம்',
+    selectImage: 'படத்தைத் தேர்ந்தெடுக்கவும்',
+    uploadBtn: 'பதிவேற்றவும்',
+    uploading: 'பதிவேற்றப்படுகிறது...',
+    clearAll: 'அனைத்தையும் அழி',
+    noNotifications: 'இந்த காலத்தில் அறிவிப்புகள் எதுவும் இல்லை.',
+    prev14: '◀ முந்தைய 14 நாட்கள்',
+    next14: 'அடுத்த 14 நாட்கள் ▶',
+    todayBtn: 'இன்று',
+    startDateLabel: 'தொடக்க தேதி:',
+    allRoomTypes: 'அனைத்து அறை வகைகள்',
+    doubleBed: 'Double Bed',
+    doubleBedAc: 'Double Bed A/C',
+    threeBed: 'Three Bed',
+    fourBedAc: 'Four Bed A/C',
+    roomAllocations: 'அறை ஒதுக்கீடுகள்',
+    allocationsDesc: 'இந்த 14 நாட்களில் உறுதி செய்யப்பட்டு அறை எண் ஒதுக்கப்படாத பட்டியல்கள் கீழே உள்ளன. அவற்றை ஒதுக்கவும்:',
+    allAssigned: 'அனைத்து முன்பதிவுகளும் ஒதுக்கப்பட்டன!',
+    noPendingAlloc: 'நிலுவையில் உள்ள ஒதுக்கீடுகள் எதுவும் இல்லை.',
+    availableRoomsCalendar: 'கிடைக்கும் அறைகள்',
+    selectRoomCalendar: '-- அறையைத் தேர்ந்தெடுக்கவும் --',
+    noRoomsFoundCalendar: 'பொருந்தும் அறைகள் எதுவும் இல்லை!',
+    blocked: 'முடக்கப்பட்டது',
+    bookCell: '+ பதிவு செய்',
+    modalRoomTitleEdit: 'அறையைத் திருத்து',
+    modalRoomTitleAdd: 'புதிய அறை சேர்க்க',
+    modalRoomNumber: 'அறை எண்',
+    modalRoomType: 'அறை வகை',
+    modalWeekdayPrice: 'வார நாள் கட்டணம் (திங்கள்-வியாழன்) (₹)',
+    modalWeekendPrice: 'வார இறுதி கட்டணம் (வெள்ளி-ஞாயிறு) (₹)',
+    modalPeakPrice: 'உச்ச சீசன் கட்டணம் (₹)',
+    modalStatus: 'அறை நிலை',
+    modalAvailable: 'கிடைக்கிறது',
+    modalOccupied: 'நிறைந்துள்ளது',
+    modalMaintenance: 'பராமரிப்பு',
+    modalUpdateRoomBtn: 'அறையை புதுப்பி',
+    modalCreateRoomBtn: 'அறையை உருவாக்கு',
+    modalPaymentRecord: 'வருவாயை பதிவுசெய்',
+    modalGuestName: 'விருந்தினர் பெயர்',
+    modalPaymentAmount: 'தொகை (₹)',
+    modalPaymentMethod: 'செலுத்தும் முறை',
+    modalPaymentStatus: 'நிலை',
+    modalSavePayment: 'பதிவு செய்',
+    modalSaving: 'சேமிக்கப்படுகிறது...',
+    modalOfflineTitle: 'ஆஃப்லைன் பதிவு சேர்க்க',
+    modalOfflineCustName: 'விருந்தினர் பெயர் *',
+    modalOfflinePhone: 'தொலைபேசி எண் *',
+    modalOfflineEmail: 'மின்னஞ்சல் முகவரி',
+    modalOfflineNumRooms: 'அறைகளின் எண்ணிக்கை',
+    modalOfflineCheckinDate: 'செக்-இன் தேதி *',
+    modalOfflineCheckinTime: 'செக்-இன் நேரம் *',
+    modalOfflineCheckoutDate: 'செக்-அவுட் தேதி *',
+    modalOfflineCheckoutTime: 'செக்-அவுட் நேரம் *',
+    modalOfflineGuests: 'விருந்தினர்கள்',
+    modalOfflineAdvance: 'முன்பணம் (₹)',
+    modalOfflineSpecialNotes: 'குறிப்பு',
+    modalOfflineConfirmBtn: 'முன்பதிவை உறுதிசெய்',
+    modalOfflineAdding: 'முன்பதிவு செய்யப்படுகிறது...',
+    modalCheckinDetailsTitle: 'ஆன்லைன் செக்-இன் விபரங்கள்',
+    modalCheckinFullName: 'முழு பெயர்',
+    modalCheckinAgeGender: 'வயது / பாலினம்',
+    modalCheckinAddress: 'முகவரி',
+    modalCheckinIdProof: 'அடையாளச் சான்று',
+    modalCheckinVehicle: 'வாகன எண்',
+    modalCheckinAddGuests: 'கூடுதல் விருந்தினர்கள்',
+    modalCheckinSpecialRequests: 'சிறப்பு கோரிக்கைகள்',
+    modalCheckinIdImage: 'அடையாளச் சான்று படம்',
+    modalCheckinClose: 'மூடவும்',
+    phone: 'தொலைபேசி எண்',
+    checkinCheckout: 'செக்-இன் / செக்-அவுட்',
+    actions: 'செயல்கள்',
+    totalRevenue: 'மொத்த வருவாய்',
+    guestName: 'விருந்தினர் பெயர்',
+    totalStays: 'மொத்த தங்குதல்கள்',
+    level: 'நிலை',
+    noGuests: 'விருந்தினர் விபரங்கள் இல்லை.'
+  }
+};
+
 // --- SHARED COMPONENTS ---
 
 const Modal = ({ title, isOpen, onClose, children }) => {
@@ -123,15 +432,16 @@ const Sidebar = ({ activeTab, setActiveTab, onLogout, username, unreadCount = 0,
 
 // --- VIEWS ---
 
-const DashboardOverview = ({ stats, bookings, period, setPeriod, selectedMonth, setSelectedMonth }) => {
+const DashboardOverview = ({ stats, bookings, period, setPeriod, selectedMonth, setSelectedMonth, lang }) => {
+  const d_t = (key) => DASHBOARD_LANG[lang]?.[key] || DASHBOARD_LANG['en']?.[key] || key;
   if (!stats) return <div className="spinner" />;
 
   const statCards = [
-    { label: 'Total Rooms', value: stats.totalRooms, color: 'purple' },
-    { label: 'Total Bookings', value: stats.totalBookings, color: 'blue' },
-    { label: 'Available Rooms', value: stats.availableRooms, color: 'green' },
-    { label: 'Today Check-ins', value: stats.checkInsToday, color: 'orange' },
-    { label: 'Today Check-outs', value: stats.checkOutsToday, color: 'red' },
+    { label: d_t('totalRooms'), value: stats.totalRooms, color: 'purple' },
+    { label: d_t('totalBookings'), value: stats.totalBookings, color: 'blue' },
+    { label: d_t('availableRooms'), value: stats.availableRooms, color: 'green' },
+    { label: d_t('checkinsToday'), value: stats.checkInsToday, color: 'orange' },
+    { label: d_t('checkoutsToday'), value: stats.checkOutsToday, color: 'red' },
   ];
 
   const formatDate = (d) => new Date(d).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' });
@@ -146,8 +456,8 @@ const DashboardOverview = ({ stats, bookings, period, setPeriod, selectedMonth, 
             onChange={(e) => setPeriod(e.target.value)}
             style={{ border: 'none', fontWeight: 600, color: '#475569', outline: 'none', cursor: 'pointer', fontSize: '0.85rem' }}
           >
-            <option value="month">Month View</option>
-            <option value="all">All Time</option>
+            <option value="month">{d_t('monthView')}</option>
+            <option value="all">{d_t('allTime')}</option>
           </select>
           {period === 'month' && (
             <input
@@ -165,7 +475,7 @@ const DashboardOverview = ({ stats, bookings, period, setPeriod, selectedMonth, 
           <div key={s.label} className="stat-card">
             <span className="stat-label">{s.label}</span>
             <span className="stat-value">{s.value}</span>
-            <div style={{ fontSize: '0.75rem', color: '#68d391' }}>Real-time update</div>
+            <div style={{ fontSize: '0.75rem', color: '#68d391' }}>{d_t('realtime')}</div>
           </div>
         ))}
       </div>
@@ -173,7 +483,7 @@ const DashboardOverview = ({ stats, bookings, period, setPeriod, selectedMonth, 
       <div className="dash-layout">
         <div className="card">
           <div className="card-header">
-            <h3>Revenue Summary</h3>
+            <h3>{d_t('revenueSummary')}</h3>
             <span style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--admin-primary)' }}>
               ₹{stats.totalRevenue?.toLocaleString('en-IN')}
             </span>
@@ -207,15 +517,15 @@ const DashboardOverview = ({ stats, bookings, period, setPeriod, selectedMonth, 
 
         <div className="card">
           <div className="card-header">
-            <h3>Recent Bookings</h3>
+            <h3>{d_t('recentBookings')}</h3>
           </div>
           <div className="admin-table-wrap">
             <table className="admin-table">
               <thead>
                 <tr>
-                  <th>Guest</th>
-                  <th>Room</th>
-                  <th>Status</th>
+                  <th>{d_t('guest')}</th>
+                  <th>{d_t('room')}</th>
+                  <th>{d_t('status')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -226,7 +536,7 @@ const DashboardOverview = ({ stats, bookings, period, setPeriod, selectedMonth, 
                   <tr key={b._id}>
                     <td>
                       <div style={{ fontWeight: 600 }}>{b.name}</div>
-                      <div style={{ fontSize: '0.7rem', color: '#888' }}>Booked {formatDate(b.createdAt || b.checkIn)} · Stay {formatDate(b.checkIn)}</div>
+                      <div style={{ fontSize: '0.7rem', color: '#888' }}>{d_t('booked')} {formatDate(b.createdAt || b.checkIn)} · {d_t('stay')} {formatDate(b.checkIn)}</div>
                     </td>
                     <td>{b.roomType}</td>
                     <td><span className={`status-pill status-${b.status}`}>{b.status}</span></td>
@@ -241,36 +551,40 @@ const DashboardOverview = ({ stats, bookings, period, setPeriod, selectedMonth, 
   );
 };
 
-const RoomManagement = ({ rooms, onAddClick, onDeleteRoom, onUpdateRoom, auth, fetchData }) => {
+const RoomManagement = ({ rooms, onAddClick, onDeleteRoom, onUpdateRoom, auth, fetchData, lang }) => {
+  const d_t = (key) => DASHBOARD_LANG[lang]?.[key] || DASHBOARD_LANG['en']?.[key] || key;
   return (
     <div className="view-content fade-in">
       <div className="card-header" style={{ marginBottom: '1.5rem' }}>
-        <p style={{ color: '#666' }}>Manage your inventory and pricing</p>
+        <p style={{ color: '#666' }}>{d_t('manageInventory')}</p>
         <div style={{ display: 'flex', gap: '0.5rem' }}>
           <button 
             className="admin-btn admin-btn-outline" 
             onClick={async () => {
-              if(!window.confirm('Reset to default 20-room layout (101-307)? This will wipe existing room data!')) return;
+              const confirmMsg = lang === 'ta' 
+                ? 'இயல்புநிலை 20-அறை அமைப்பை (101-307) மீட்டமைக்கவா? இது இருக்கும் அறை தரவை அழிக்கும்!' 
+                : 'Reset to default 20-room layout (101-307)? This will wipe existing room data!';
+              if(!window.confirm(confirmMsg)) return;
               try {
                 const headers = { username: auth.username, password: auth.password };
                 await api.post('/api/admin/rooms/reset-layout', {}, { headers });
-                alert('Rooms reset successfully!');
+                alert(lang === 'ta' ? 'அறைகள் வெற்றிகரமாக மீட்டமைக்கப்பட்டன!' : 'Rooms reset successfully!');
                 fetchData();
-              } catch(e) { alert('Reset failed: ' + e.message); }
+              } catch(e) { alert((lang === 'ta' ? 'மீட்டமைக்கப்படவில்லை: ' : 'Reset failed: ') + e.message); }
             }}
             style={{ padding: '0.4rem 0.8rem', fontSize: '0.85rem' }}
           >
-            Reset Layout
+            {d_t('resetLayout')}
           </button>
           <button onClick={onAddClick} className="admin-btn admin-btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <Plus size={18} /> Add Room
+            <Plus size={18} /> {d_t('addRoom')}
           </button>
         </div>
       </div>
 
       <div className="stats-grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))' }}>
         {rooms.length === 0 ? (
-          <div style={{ padding: '2rem', textAlign: 'center', color: '#888' }}>No rooms added yet.</div>
+          <div style={{ padding: '2rem', textAlign: 'center', color: '#888' }}>{d_t('noRooms')}</div>
         ) : rooms.map(room => (
           <div key={room._id} className="card room-card">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
@@ -281,9 +595,9 @@ const RoomManagement = ({ rooms, onAddClick, onDeleteRoom, onUpdateRoom, auth, f
               <span className={`status-pill status-${room.status}`}>{room.status}</span>
             </div>
             <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--admin-primary)', marginBottom: '1rem' }}>
-              ₹{room.price}/night
+              ₹{room.price}/{d_t('priceNight')}
               <div style={{ fontSize: '0.7rem', color: '#888', fontWeight: 400, marginTop: '2px' }}>
-                (Weekday: ₹{room.nonSeasonPrice} | Weekend: ₹{room.weekendPrice || room.nonSeasonPrice} | Peak: ₹{room.seasonPrice})
+                ({d_t('weekday')}: ₹{room.nonSeasonPrice} | {d_t('weekend')}: ₹{room.weekendPrice || room.nonSeasonPrice} | {d_t('peak')}: ₹{room.seasonPrice})
               </div>
             </div>
             <div style={{ display: 'flex', gap: '0.5rem' }}>
@@ -309,7 +623,8 @@ const RoomManagement = ({ rooms, onAddClick, onDeleteRoom, onUpdateRoom, auth, f
   );
 };
 
-const BookingManagement = ({ bookings = [], rooms = [], period, setPeriod, onConfirm, onCancel, onWhatsApp, onCheckOut, onUpdateRoomNumber, onDelete, onAddPayment, onViewCheckin, formatDate, onAddOfflineBookingClick }) => {
+const BookingManagement = ({ bookings = [], rooms = [], period, setPeriod, onConfirm, onCancel, onWhatsApp, onCheckOut, onUpdateRoomNumber, onDelete, onAddPayment, onViewCheckin, formatDate, onAddOfflineBookingClick, lang }) => {
+  const d_t = (key) => DASHBOARD_LANG[lang]?.[key] || DASHBOARD_LANG['en']?.[key] || key;
   const [filter, setFilter] = React.useState('All');
 
   const safeBookings = Array.isArray(bookings) ? bookings : [];
@@ -317,16 +632,27 @@ const BookingManagement = ({ bookings = [], rooms = [], period, setPeriod, onCon
     ? safeBookings
     : safeBookings.filter(b => b && b.status === filter);
 
+  const getTabLabel = (tab) => {
+    switch (tab) {
+      case 'All': return d_t('filterAll');
+      case 'Pending': return d_t('filterPending');
+      case 'Confirmed': return d_t('filterConfirmed');
+      case 'Checked-out': return d_t('filterCheckedOut');
+      case 'Cancelled': return d_t('filterCancelled');
+      default: return tab;
+    }
+  };
+
   return (
     <div className="card">
       <div className="card-header" style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h3 style={{ margin: 0 }}>Booking Management</h3>
+        <h3 style={{ margin: 0 }}>{d_t('bookingManagement')}</h3>
         <button 
           onClick={onAddOfflineBookingClick}
           className="admin-btn admin-btn-primary"
           style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', fontSize: '0.85rem' }}
         >
-          <Plus size={16} /> <span>Add Offline Booking</span>
+          <Plus size={16} /> <span>{d_t('addOfflineBooking')}</span>
         </button>
       </div>
       
@@ -367,14 +693,14 @@ const BookingManagement = ({ bookings = [], rooms = [], period, setPeriod, onCon
                 flexShrink: 0
               }}
             >
-              {tab}
+              {getTabLabel(tab)}
             </button>
           ))}
           <div style={{ minWidth: '30px', height: '1px' }} />
         </div>
       </div>
         <div style={{ fontSize: '0.85rem', color: '#64748b', display: 'flex', alignItems: 'center', gap: '0.8rem', flexWrap: 'wrap' }}>
-          <div>Showing <strong>{filteredBookings.length}</strong> bookings</div>
+          <div>{d_t('showingBookings')} <strong>{filteredBookings.length}</strong> {d_t('bookingsFound')}</div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#fff', padding: '0.2rem 0.5rem', borderRadius: '6px', border: '1px solid #e2e8f0' }}>
             <select
@@ -382,8 +708,8 @@ const BookingManagement = ({ bookings = [], rooms = [], period, setPeriod, onCon
               onChange={(e) => setPeriod(e.target.value)}
               style={{ border: 'none', fontWeight: 600, color: '#475569', outline: 'none', cursor: 'pointer' }}
             >
-              <option value="month">Month View</option>
-              <option value="all">All Time</option>
+              <option value="month">{d_t('monthView')}</option>
+              <option value="all">{d_t('allTime')}</option>
             </select>
 
             {period === 'month' && (
@@ -402,17 +728,17 @@ const BookingManagement = ({ bookings = [], rooms = [], period, setPeriod, onCon
           <thead>
             <tr>
               <th>#</th>
-              <th>Guest</th>
-              <th>Phone</th>
-              <th>Room</th>
-              <th>Check-in/out</th>
-              <th>Status</th>
-              <th>Actions</th>
+              <th>{d_t('guest')}</th>
+              <th>{d_t('phone')}</th>
+              <th>{d_t('room')}</th>
+              <th>{d_t('checkinCheckout')}</th>
+              <th>{d_t('status')}</th>
+              <th>{d_t('actions')}</th>
             </tr>
           </thead>
           <tbody>
             {filteredBookings.length === 0 ? (
-              <tr><td colSpan="7" style={{ textAlign: 'center', padding: '2rem', color: '#888' }}>No {filter !== 'All' ? filter.toLowerCase() : ''} bookings found.</td></tr>
+              <tr><td colSpan="7" style={{ textAlign: 'center', padding: '2rem', color: '#888' }}>{d_t('noBookingsFound')}</td></tr>
             ) : filteredBookings.map((b, i) => (
               <tr key={b._id}>
                 <td>{i + 1}</td>
@@ -432,7 +758,7 @@ const BookingManagement = ({ bookings = [], rooms = [], period, setPeriod, onCon
                       onChange={(e) => onUpdateRoomNumber(b._id, e.target.value)}
                       style={{ width: '130px', fontSize: '0.8rem', padding: '4px 8px', borderRadius: '4px', border: '1px solid #ddd', backgroundColor: '#f9fafb', cursor: 'pointer' }}
                     >
-                      <option value="">Assign Room</option>
+                      <option value="">{d_t('assignRoom')}</option>
                       {rooms.map(r => (
                         <option key={r.roomNumber} value={r.roomNumber}>
                           {r.roomNumber} ({r.type.split(' ')[0]})
@@ -448,7 +774,7 @@ const BookingManagement = ({ bookings = [], rooms = [], period, setPeriod, onCon
                   <span className={`status-pill status-${b.status?.replace(' ', '-') || 'Pending'}`}>{b.status || 'Pending'}</span>
                   {b.checkedInOnline && (
                     <span style={{ display: 'block', marginTop: '4px', fontSize: '0.68rem', background: '#d1fae5', color: '#065f46', borderRadius: '4px', padding: '2px 6px', fontWeight: 700 }}>
-                      🧾 Online CI Done
+                      🧾 {d_t('onlineCIDone')}
                     </span>
                   )}
                 </td>
@@ -458,23 +784,23 @@ const BookingManagement = ({ bookings = [], rooms = [], period, setPeriod, onCon
                     <div className="action-stack">
                       {b.status === 'Pending' && (
                         <button className="action-btn-main confirm" onClick={() => onConfirm(b._id, b)}>
-                          <CheckCircle size={15} /> Confirm Booking
+                          <CheckCircle size={15} /> {d_t('actionConfirm')}
                         </button>
                       )}
 
                       {b.status === 'Confirmed' && (
                         <button className="action-btn-main confirm" onClick={() => onCheckOut(b._id, b)} style={{ background: '#6366f1', borderColor: '#6366f1', color: '#fff' }}>
-                          <LogOut size={15} /> Check-out
+                          <LogOut size={15} /> {d_t('actionCheckout')}
                         </button>
                       )}
 
                       <button className="action-btn-main whatsapp" onClick={() => onWhatsApp(b)}>
-                        <MessageSquare size={15} /> WhatsApp Guest
+                        <MessageSquare size={15} /> {d_t('actionWhatsapp')}
                       </button>
 
                       {(b.status === 'Pending' || b.status === 'Confirmed') && (
                         <button className="action-btn-main cancel" onClick={() => onCancel(b._id, b)}>
-                          <XCircle size={15} /> Cancel Booking
+                          <XCircle size={15} /> {d_t('actionCancel')}
                         </button>
                       )}
                     </div>
@@ -483,14 +809,14 @@ const BookingManagement = ({ bookings = [], rooms = [], period, setPeriod, onCon
                     <div className="action-footer">
                       {b.checkedInOnline && (
                         <button className="action-btn-main checkin" onClick={() => onViewCheckin(b)} style={{ background: '#065f46', borderColor: '#065f46', color: '#fff' }}>
-                          <ClipboardCheck size={15} /> View Check-in
+                          <ClipboardCheck size={15} /> {d_t('actionViewCheckin')}
                         </button>
                       )}
                       <button className="action-btn-main payment" onClick={() => onAddPayment(b)}>
-                        <CreditCard size={15} /> Add Payment
+                        <CreditCard size={15} /> {d_t('actionAddPayment')}
                       </button>
                       <button className="action-link delete" onClick={() => onDelete(b._id)}>
-                        <Trash2 size={14} /> Delete
+                        <Trash2 size={14} /> {d_t('actionDelete')}
                       </button>
                     </div>
                   </div>
@@ -504,35 +830,36 @@ const BookingManagement = ({ bookings = [], rooms = [], period, setPeriod, onCon
   );
 };
 
-const Payments = ({ payments, totalRevenue }) => {
+const Payments = ({ payments, totalRevenue, lang }) => {
+  const d_t = (key) => DASHBOARD_LANG[lang]?.[key] || DASHBOARD_LANG['en']?.[key] || key;
   return (
     <div className="view-content fade-in">
       <div className="stats-grid">
         <div className="stat-card">
-          <span className="stat-label">Total Revenue</span>
+          <span className="stat-label">{d_t('totalRevenue')}</span>
           <span className="stat-value">₹{totalRevenue?.toLocaleString('en-IN') || 0}</span>
         </div>
         <div className="stat-card">
-          <span className="stat-label">Active Payments</span>
+          <span className="stat-label">{d_t('activePayments')}</span>
           <span className="stat-value">{payments.length}</span>
         </div>
       </div>
       <div className="card">
-        <h3>Transaction History</h3>
+        <h3>{d_t('transactionHistory')}</h3>
         <div className="admin-table-wrap">
           <table className="admin-table">
             <thead>
               <tr>
-                <th>Guest</th>
-                <th>Date</th>
-                <th>Amount</th>
-                <th>Method</th>
-                <th>Status</th>
+                <th>{d_t('guest')}</th>
+                <th>{d_t('date')}</th>
+                <th>{d_t('amount')}</th>
+                <th>{d_t('method')}</th>
+                <th>{d_t('status')}</th>
               </tr>
             </thead>
             <tbody>
               {payments.length === 0 ? (
-                <tr><td colSpan="5" style={{ textAlign: 'center', padding: '2rem', color: '#888' }}>No payment records.</td></tr>
+                <tr><td colSpan="5" style={{ textAlign: 'center', padding: '2rem', color: '#888' }}>{d_t('noPayments')}</td></tr>
               ) : payments.map(p => (
                 <tr key={p._id}>
                   <td style={{ fontWeight: 600 }}>{p.guestName}</td>
@@ -550,7 +877,8 @@ const Payments = ({ payments, totalRevenue }) => {
   );
 };
 
-const Reports = ({ stats, period, setPeriod, selectedMonth, setSelectedMonth }) => {
+const Reports = ({ stats, period, setPeriod, selectedMonth, setSelectedMonth, lang }) => {
+  const d_t = (key) => DASHBOARD_LANG[lang]?.[key] || DASHBOARD_LANG['en']?.[key] || key;
   return (
     <div className="view-content fade-in">
       <div className="card-header" style={{ marginBottom: '1.5rem', justifyContent: 'flex-end' }}>
@@ -560,8 +888,8 @@ const Reports = ({ stats, period, setPeriod, selectedMonth, setSelectedMonth }) 
             onChange={(e) => setPeriod(e.target.value)}
             style={{ border: 'none', fontWeight: 600, color: '#475569', outline: 'none', cursor: 'pointer', fontSize: '0.85rem' }}
           >
-            <option value="month">Month View</option>
-            <option value="all">All Time</option>
+            <option value="month">{d_t('monthView')}</option>
+            <option value="all">{d_t('allTime')}</option>
           </select>
 
           {period === 'month' && (
@@ -578,9 +906,9 @@ const Reports = ({ stats, period, setPeriod, selectedMonth, setSelectedMonth }) 
       <div className="dash-layout">
         <div className="card">
           <div className="card-header">
-            <h3>Occupancy by Room Type</h3>
+            <h3>{d_t('occupancyByType')}</h3>
             <span style={{ fontSize: '0.75rem', color: '#64748b' }}>
-              {period === 'all' ? 'All bookings' : `Bookings in ${new Date(selectedMonth).toLocaleDateString('en-IN', { month: 'long', year: 'numeric' })}`}
+              {period === 'all' ? (lang === 'ta' ? 'அனைத்து முன்பதிவுகள்' : 'All bookings') : `${lang === 'ta' ? 'முன்பதிவுகள்: ' : 'Bookings in '} ${new Date(selectedMonth).toLocaleDateString(lang === 'ta' ? 'ta-IN' : 'en-IN', { month: 'long', year: 'numeric' })}`}
             </span>
           </div>
           <div style={{ width: '100%', height: 300 }}>
@@ -603,18 +931,22 @@ const Reports = ({ stats, period, setPeriod, selectedMonth, setSelectedMonth }) 
         </div>
         <div className="card">
           <div className="card-header">
-            <h3>Key Metrics</h3>
+            <h3>{d_t('keyMetrics')}</h3>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
             <div className="stat-card">
-              <span className="stat-label">Avg Rev / Booking</span>
+              <span className="stat-label">{d_t('avgRev')}</span>
               <span className="stat-value">₹{(stats?.totalRevenue / (stats?.totalBookings || 1)).toFixed(0)}</span>
-              <div style={{ fontSize: '0.7rem', color: '#888', marginTop: '4px' }}>Based on {stats?.totalBookings} bookings</div>
+              <div style={{ fontSize: '0.7rem', color: '#888', marginTop: '4px' }}>
+                {lang === 'ta' ? `${stats?.totalBookings} முன்பதிவுகளின் அடிப்படையில்` : `Based on ${stats?.totalBookings} bookings`}
+              </div>
             </div>
             <div className="stat-card">
-              <span className="stat-label">Confirmation Rate</span>
+              <span className="stat-label">{d_t('confRate')}</span>
               <span className="stat-value">{((stats?.confirmed / (stats?.totalBookings || 1)) * 100).toFixed(1)}%</span>
-              <div style={{ fontSize: '0.7rem', color: '#888', marginTop: '4px' }}>{stats?.confirmed} of {stats?.totalBookings} confirmed</div>
+              <div style={{ fontSize: '0.7rem', color: '#888', marginTop: '4px' }}>
+                {lang === 'ta' ? `${stats?.totalBookings}-ல் ${stats?.confirmed} உறுதி செய்யப்பட்டுள்ளது` : `${stats?.confirmed} of ${stats?.totalBookings} confirmed`}
+              </div>
             </div>
           </div>
         </div>
@@ -623,7 +955,8 @@ const Reports = ({ stats, period, setPeriod, selectedMonth, setSelectedMonth }) 
   );
 };
 
-const SettingsView = ({ isSeason, onToggleSeason, isWeekendActive, onToggleWeekend }) => {
+const SettingsView = ({ isSeason, onToggleSeason, isWeekendActive, onToggleWeekend, lang }) => {
+  const d_t = (key) => DASHBOARD_LANG[lang]?.[key] || DASHBOARD_LANG['en']?.[key] || key;
   const [fcmStatus, setFcmStatus] = useState('Checking...');
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
@@ -640,21 +973,6 @@ const SettingsView = ({ isSeason, onToggleSeason, isWeekendActive, onToggleWeeke
     }
   }, []);
 
-  const handleTestPush = async () => {
-    try {
-      const auth = JSON.parse(sessionStorage.getItem('bss_admin'));
-      const headers = { username: auth.username, password: auth.password };
-      const res = await api.post('/api/admin/test-push', {}, { headers });
-      if (res.data?.success) {
-        const { setAppBadgeCount } = await import('../utils/appBadge');
-        await setAppBadgeCount(1);
-      }
-      alert(res.data?.message || (res.data?.success ? 'Test sent!' : 'Test failed'));
-    } catch (e) {
-      alert(e?.response?.data?.message || e?.message || 'Test push failed');
-    }
-  };
-
   const handleEnablePush = async () => {
     try {
       const { requestForToken } = await import('../firebase');
@@ -667,26 +985,14 @@ const SettingsView = ({ isSeason, onToggleSeason, isWeekendActive, onToggleWeeke
           throw new Error(saveRes.data?.message || 'Server did not save your device token');
         }
         setFcmStatus('Enabled');
-        alert('Push notifications enabled successfully!');
+        alert(lang === 'ta' ? 'புஷ் அறிவிப்புகள் வெற்றிகரமாக இயக்கப்பட்டது!' : 'Push notifications enabled successfully!');
       } else {
-        alert('Failed to get token (empty). If permissions are allowed, redeploy the site and hard-refresh, or check DevTools Console for [FCM].');
+        alert(lang === 'ta' ? 'டோக்கன் பெறுவதில் தோல்வி.' : 'Failed to get token (empty).');
         setFcmStatus(Notification.permission === 'denied' ? 'Denied' : 'Not Requested');
       }
     } catch (e) {
       console.error(e);
-      const detail = e?.response?.data?.message || e?.message || String(e);
-      if (detail.includes('token-subscribe-failed') || detail.includes('authentication credential')) {
-        alert(
-          'Push setup failed: VAPID key or FCM API issue.\n\n' +
-          '1) Firebase Console → bss-residency → Project settings → Cloud Messaging tab\n' +
-          '2) Web Push certificates → copy Key pair\n' +
-          '3) Vercel → Environment Variables → REACT_APP_FIREBASE_VAPID_KEY = that key → Redeploy\n' +
-          '4) Google Cloud → enable "FCM Registration API" and "Firebase Cloud Messaging API"\n\n' +
-          detail
-        );
-      } else {
-        alert(`Push notification setup failed: ${detail}`);
-      }
+      alert('Error: ' + e.message);
     }
   };
 
@@ -694,8 +1000,8 @@ const SettingsView = ({ isSeason, onToggleSeason, isWeekendActive, onToggleWeeke
   <div className="view-content fade-in">
     <div className="card" style={{ maxWidth: '800px', margin: '0 auto' }}>
       <div style={{ borderBottom: '1px solid #f1f5f9', paddingBottom: '1.5rem', marginBottom: '2rem' }}>
-        <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#1e293b', margin: 0 }}>System Settings</h2>
-        <p style={{ color: '#64748b', fontSize: '0.9rem', marginTop: '0.5rem' }}>Manage your lodge's global configuration and seasonal pricing.</p>
+        <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#1e293b', margin: 0 }}>{d_t('systemSettings')}</h2>
+        <p style={{ color: '#64748b', fontSize: '0.9rem', marginTop: '0.5rem' }}>{d_t('manageLodge')}</p>
       </div>
 
       {/* Push Notifications Section */}
@@ -704,10 +1010,10 @@ const SettingsView = ({ isSeason, onToggleSeason, isWeekendActive, onToggleWeeke
           <div style={{ flex: 1, minWidth: '250px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
               <Bell size={20} color="#0284c7" />
-              <h4 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700, color: '#0f172a' }}>Push Notifications</h4>
+              <h4 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700, color: '#0f172a' }}>{d_t('pushNotif')}</h4>
             </div>
             <p style={{ margin: 0, fontSize: '0.9rem', color: '#475569', lineHeight: '1.5' }}>
-              Receive instant alerts on this device when a new booking is requested or paid.
+              {d_t('receiveAlerts')}
             </p>
             <div style={{ marginTop: '0.5rem', fontSize: '0.85rem', fontWeight: 600, color: fcmStatus === 'Enabled' ? '#16a34a' : (fcmStatus === 'Denied' ? '#dc2626' : '#ea580c') }}>
               Status: {fcmStatus}
@@ -721,7 +1027,7 @@ const SettingsView = ({ isSeason, onToggleSeason, isWeekendActive, onToggleWeeke
               onClick={handleEnablePush}
               disabled={fcmStatus === 'Unsupported'}
             >
-              {fcmStatus === 'Enabled' ? 'Resync Alerts' : 'Enable Alerts'}
+              {fcmStatus === 'Enabled' ? d_t('resyncAlerts') : d_t('enableAlerts')}
             </button>
           </div>
         </div>
@@ -732,10 +1038,10 @@ const SettingsView = ({ isSeason, onToggleSeason, isWeekendActive, onToggleWeeke
           <div style={{ flex: 1 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
               <span style={{ fontSize: '1.25rem' }}>{isSeason ? '🔥' : '❄️'}</span>
-              <h4 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700, color: '#1e293b' }}>Peak Season Pricing</h4>
+              <h4 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700, color: '#1e293b' }}>{d_t('peakSeasonPricing')}</h4>
             </div>
             <p style={{ margin: 0, fontSize: '0.9rem', color: '#64748b', lineHeight: '1.5' }}>
-              When activated, the website will automatically transition to peak season rates (₹1300 / ₹2500).
+              {d_t('peakSeasonDesc')}
             </p>
           </div>
           <div
@@ -776,7 +1082,7 @@ const SettingsView = ({ isSeason, onToggleSeason, isWeekendActive, onToggleWeeke
         }}>
           <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: isSeason ? '#d4a857' : '#64748b', animation: isSeason ? 'pulse 2s infinite' : 'none' }} />
           <span style={{ fontSize: '0.85rem', fontWeight: 700, color: isSeason ? '#92400e' : '#475569' }}>
-            {isSeason ? 'PEAK SEASON RATES ARE LIVE' : 'REGULAR RATES ARE LIVE'}
+            {isSeason ? d_t('peakRatesLive') : d_t('regularRatesLive')}
           </span>
         </div>
       </div>
@@ -786,10 +1092,10 @@ const SettingsView = ({ isSeason, onToggleSeason, isWeekendActive, onToggleWeeke
           <div style={{ flex: 1 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
               <span style={{ fontSize: '1.25rem' }}>{isWeekendActive ? '📅' : '📆'}</span>
-              <h4 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700, color: '#1e293b' }}>Weekend Pricing (Fri–Sun)</h4>
+              <h4 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700, color: '#1e293b' }}>{d_t('weekendPricing')}</h4>
             </div>
             <p style={{ margin: 0, fontSize: '0.9rem', color: '#64748b', lineHeight: '1.5' }}>
-              When activated, the website automatically applies higher weekend rates on Friday, Saturday, and Sunday.
+              {d_t('weekendDesc')}
             </p>
           </div>
           <div
@@ -830,7 +1136,7 @@ const SettingsView = ({ isSeason, onToggleSeason, isWeekendActive, onToggleWeeke
         }}>
           <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: isWeekendActive ? '#16a34a' : '#64748b', animation: isWeekendActive ? 'pulse 2s infinite' : 'none' }} />
           <span style={{ fontSize: '0.85rem', fontWeight: 700, color: isWeekendActive ? '#166534' : '#475569' }}>
-            {isWeekendActive ? 'WEEKEND RATES (FRI–SUN) ARE ENABLED' : 'WEEKEND RATES ARE DISABLED (WEEKDAY RATES APPLY)'}
+            {isWeekendActive ? d_t('weekendRatesEnabled') : d_t('weekendRatesDisabled')}
           </span>
         </div>
       </div>
@@ -838,27 +1144,27 @@ const SettingsView = ({ isSeason, onToggleSeason, isWeekendActive, onToggleWeeke
       <form className="settings-form" style={{ display: 'grid', gap: '1.5rem', borderTop: '1px solid #f1f5f9', paddingTop: '2rem', marginTop: '2rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
           <Lock size={20} color="var(--admin-primary)" />
-          <h4 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700, color: '#1e293b' }}>Login Credentials</h4>
+          <h4 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700, color: '#1e293b' }}>{d_t('loginCredentials')}</h4>
         </div>
-        <p style={{ color: '#64748b', fontSize: '0.85rem', margin: 0 }}>Update your admin credentials. You will be logged out after changing these.</p>
+        <p style={{ color: '#64748b', fontSize: '0.85rem', margin: 0 }}>{d_t('updateLoginDesc')}</p>
         
         <div className="form-row" style={{ marginBottom: 0 }}>
           <div className="form-group">
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, fontSize: '0.85rem', color: '#475569' }}>New Username</label>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, fontSize: '0.85rem', color: '#475569' }}>{d_t('newUsername')}</label>
             <input 
               type="text" 
               id="new-username"
-              placeholder="Leave blank to keep current"
+              placeholder={lang === 'ta' ? 'மாற்றாமல் இருக்க காலியாக விடவும்' : 'Leave blank to keep current'}
               style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #e2e8f0', background: '#fff', fontSize: '0.95rem' }} 
             />
           </div>
           <div className="form-group">
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, fontSize: '0.85rem', color: '#475569' }}>New Password</label>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, fontSize: '0.85rem', color: '#475569' }}>{d_t('newPassword')}</label>
             <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
               <input 
                 type={showNewPassword ? "text" : "password"} 
                 id="new-password"
-                placeholder="Minimum 6 characters"
+                placeholder={lang === 'ta' ? 'குறைந்தது 6 எழுத்துக்கள்' : 'Minimum 6 characters'}
                 style={{ width: '100%', padding: '0.75rem', paddingRight: '2.5rem', borderRadius: '8px', border: '1px solid #e2e8f0', background: '#fff', fontSize: '0.95rem' }} 
               />
               <button
@@ -873,7 +1179,7 @@ const SettingsView = ({ isSeason, onToggleSeason, isWeekendActive, onToggleWeeke
         </div>
 
         <div style={{ padding: '1rem', background: '#fef2f2', borderRadius: '8px', border: '1px solid #fee2e2' }}>
-          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 700, fontSize: '0.85rem', color: '#991b1b' }}>Current Password (Required to Save)</label>
+          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 700, fontSize: '0.85rem', color: '#991b1b' }}>{d_t('currentPassword')}</label>
           <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
             <input 
               type={showCurrentPassword ? "text" : "password"} 
@@ -903,10 +1209,13 @@ const SettingsView = ({ isSeason, onToggleSeason, isWeekendActive, onToggleWeeke
               
               if (!newU && !newP) return;
               
-              if (!currP) return alert('Current password is required to save changes');
-              if (newP && newP.length < 6) return alert('New password must be at least 6 characters');
+              if (!currP) return alert(lang === 'ta' ? 'சேமிக்க தற்போதைய கடவுச்சொல் தேவை' : 'Current password is required to save changes');
+              if (newP && newP.length < 6) return alert(lang === 'ta' ? 'புதிய கடவுச்சொல் குறைந்தபட்சம் 6 எழுத்துக்கள் இருக்க வேண்டும்' : 'New password must be at least 6 characters');
               
-              if (!window.confirm('Are you sure you want to change your login credentials? You will be logged out.')) return;
+              const confirmMsg = lang === 'ta'
+                ? 'உங்கள் உள்நுழைவு விபரங்களை மாற்ற விரும்புகிறீர்களா? நீங்கள் வெளியேற்றப்படுவீர்கள்.'
+                : 'Are you sure you want to change your login credentials? You will be logged out.';
+              if (!window.confirm(confirmMsg)) return;
               
               const auth = JSON.parse(sessionStorage.getItem('bss_admin'));
               try {
@@ -918,15 +1227,15 @@ const SettingsView = ({ isSeason, onToggleSeason, isWeekendActive, onToggleWeeke
                   newPassword: newP || undefined
                 }, { headers });
                 
-                alert('Success! Please login with your new credentials.');
+                alert(lang === 'ta' ? 'வெற்றி! புதிய விபரங்களுடன் உள்நுழையவும்.' : 'Success! Please login with your new credentials.');
                 sessionStorage.removeItem('bss_admin');
                 window.location.reload();
               } catch (err) {
-                alert(err.response?.data?.message || 'Error updating profile');
+                alert(err.response?.data?.message || (lang === 'ta' ? 'புதுப்பிப்பதில் தோல்வி' : 'Error updating profile'));
               }
             }}
           >
-            Update Login Details
+            {d_t('updateLoginBtn')}
           </button>
         </div>
       </form>
@@ -936,7 +1245,8 @@ const SettingsView = ({ isSeason, onToggleSeason, isWeekendActive, onToggleWeeke
   );
 };
 
-const ReviewsView = ({ reviews, onDeleteReview, period, setPeriod, selectedMonth, setSelectedMonth }) => {
+const ReviewsView = ({ reviews, onDeleteReview, period, setPeriod, selectedMonth, setSelectedMonth, lang }) => {
+  const d_t = (key) => DASHBOARD_LANG[lang]?.[key] || DASHBOARD_LANG['en']?.[key] || key;
   return (
     <div className="view-content fade-in">
       <div style={{ marginBottom: '1.5rem', display: 'flex', justifyContent: 'flex-end' }}>
@@ -947,8 +1257,8 @@ const ReviewsView = ({ reviews, onDeleteReview, period, setPeriod, selectedMonth
             onChange={(e) => setPeriod(e.target.value)}
             style={{ border: 'none', fontWeight: 600, color: '#475569', outline: 'none', cursor: 'pointer', fontSize: '0.85rem' }}
           >
-            <option value="month">Month View</option>
-            <option value="all">All Time</option>
+            <option value="month">{d_t('monthView')}</option>
+            <option value="all">{d_t('allTime')}</option>
           </select>
 
           {period === 'month' && (
@@ -963,7 +1273,7 @@ const ReviewsView = ({ reviews, onDeleteReview, period, setPeriod, selectedMonth
       </div>
 
       {reviews.length === 0 ? (
-        <div className="card">No guest reviews yet for this period.</div>
+        <div className="card">{d_t('noReviews')}</div>
       ) : reviews.map(r => (
         <div key={r._id} className="card" style={{ marginBottom: '1rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
@@ -984,7 +1294,7 @@ const ReviewsView = ({ reviews, onDeleteReview, period, setPeriod, selectedMonth
                   transition: 'background 0.2s'
                 }}
                 className="delete-review-btn"
-                title="Delete Review"
+                title={lang === 'ta' ? 'மதிப்பீட்டை நீக்கு' : 'Delete Review'}
               >
                 <Trash2 size={18} />
               </button>
@@ -998,7 +1308,8 @@ const ReviewsView = ({ reviews, onDeleteReview, period, setPeriod, selectedMonth
   );
 };
 
-const GalleryManagement = ({ auth }) => {
+const GalleryManagement = ({ auth, lang }) => {
+  const d_t = (key) => DASHBOARD_LANG[lang]?.[key] || DASHBOARD_LANG['en']?.[key] || key;
   const [images, setImages] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [form, setForm] = useState({ title: '', category: 'Room', image: null });
@@ -1020,7 +1331,7 @@ const GalleryManagement = ({ auth }) => {
 
   const handleUpload = async (e) => {
     e.preventDefault();
-    if (!form.image) return alert('Select an image');
+    if (!form.image) return alert(lang === 'ta' ? 'படத்தைத் தேர்ந்தெடுக்கவும்' : 'Select an image');
     setUploading(true);
     const formData = new FormData();
     formData.append('image', form.image);
@@ -1035,39 +1346,40 @@ const GalleryManagement = ({ auth }) => {
       await api.post('/api/gallery/upload', formData, { headers });
       setForm({ title: '', category: 'Room', image: null });
       fetchImages();
-      alert('Uploaded successfully!');
+      alert(lang === 'ta' ? 'வெற்றிகரமாக பதிவேற்றப்பட்டது!' : 'Uploaded successfully!');
     } catch (err) {
-      alert('Upload failed: ' + err.message);
+      alert((lang === 'ta' ? 'பதிவேற்றம் தோல்வி: ' : 'Upload failed: ') + err.message);
     } finally {
       setUploading(false);
     }
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Delete image?')) return;
+    const confirmMsg = lang === 'ta' ? 'படத்தை நீக்கவா?' : 'Delete image?';
+    if (!window.confirm(confirmMsg)) return;
     try {
       const headers = { username: auth.username, password: auth.password };
       await api.delete(`/api/gallery/${id}`, { headers });
       fetchImages();
     } catch (err) {
-      alert('Delete failed');
+      alert(lang === 'ta' ? 'நீக்குதல் தோல்வி' : 'Delete failed');
     }
   };
 
   return (
     <div className="view-content fade-in">
       <div className="card" style={{ marginBottom: '2rem' }}>
-        <h3>Upload New Photo</h3>
+        <h3>{d_t('uploadPhoto')}</h3>
         <form onSubmit={handleUpload} style={{ display: 'grid', gap: '1rem', marginTop: '1rem' }}>
           <div className="form-row">
             <div className="form-group">
-              <label>Title / Caption</label>
+              <label>{d_t('titleCaption')}</label>
               <input type="text" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} placeholder="e.g. Deluxe Room View" />
             </div>
             <div className="form-group">
               <label>Category</label>
               <select value={form.category} onChange={e => setForm({ ...form, category: e.target.value })}>
-                <option value="Room">Rooms</option>
+                <option value="Room">{d_t('rooms')}</option>
                 <option value="Exterior">Exterior</option>
                 <option value="Nearby">Nearby</option>
                 <option value="Other">Other</option>
@@ -1075,11 +1387,11 @@ const GalleryManagement = ({ auth }) => {
             </div>
           </div>
           <div className="form-group">
-            <label>Select Image File</label>
+            <label>{d_t('selectImage')}</label>
             <input type="file" accept="image/*" onChange={handleFileChange} style={{ border: '1px solid #ddd', padding: '0.5rem', borderRadius: '4px' }} />
           </div>
           <button type="submit" className="admin-btn admin-btn-primary" disabled={uploading}>
-            {uploading ? 'Uploading...' : 'Upload to Gallery'}
+            {uploading ? d_t('uploading') : d_t('uploadBtn')}
           </button>
         </form>
       </div>
@@ -1107,7 +1419,8 @@ const GalleryManagement = ({ auth }) => {
   );
 };
 
-const NotificationsView = ({ notifications, period, setPeriod, selectedMonth, setSelectedMonth, onDelete, onClearAll, fetchError, apiBase }) => {
+const NotificationsView = ({ notifications, period, setPeriod, selectedMonth, setSelectedMonth, onDelete, onClearAll, fetchError, apiBase, lang }) => {
+  const d_t = (key) => DASHBOARD_LANG[lang]?.[key] || DASHBOARD_LANG['en']?.[key] || key;
   return (
     <div className="view-content fade-in">
       {fetchError && (
@@ -1123,7 +1436,7 @@ const NotificationsView = ({ notifications, period, setPeriod, selectedMonth, se
             className="admin-btn admin-btn-outline" 
             style={{ color: '#ef4444', borderColor: '#fee2e2', background: '#fff', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
           >
-            <Trash2 size={16} /> Clear All
+            <Trash2 size={16} /> {d_t('clearAll')}
           </button>
         )}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#fff', padding: '0.4rem 0.8rem', borderRadius: '8px', border: '1px solid #e2e8f0', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
@@ -1133,8 +1446,8 @@ const NotificationsView = ({ notifications, period, setPeriod, selectedMonth, se
             onChange={(e) => setPeriod(e.target.value)}
             style={{ border: 'none', fontWeight: 600, color: '#475569', outline: 'none', cursor: 'pointer', fontSize: '0.85rem' }}
           >
-            <option value="month">Month View</option>
-            <option value="all">All Time</option>
+            <option value="month">{d_t('monthView')}</option>
+            <option value="all">{d_t('allTime')}</option>
           </select>
 
           {period === 'month' && (
@@ -1149,7 +1462,7 @@ const NotificationsView = ({ notifications, period, setPeriod, selectedMonth, se
       </div>
 
       {notifications.length === 0 ? (
-        <div className="card">No notifications yet for this period.</div>
+        <div className="card">{d_t('noNotifications')}</div>
       ) : notifications.map(a => (
         <div key={a._id} className="notification-card-container" style={{ position: 'relative', marginBottom: '1rem' }}>
           <div 
@@ -1185,7 +1498,7 @@ const NotificationsView = ({ notifications, period, setPeriod, selectedMonth, se
                 justifyContent: 'center',
                 transition: 'all 0.2s'
               }}
-              title="Delete Notification"
+              title={lang === 'ta' ? 'அறிவிப்பை நீக்கு' : 'Delete Notification'}
             >
               <Trash2 size={20} />
             </button>
@@ -1206,8 +1519,10 @@ const RoomAvailabilityCalendar = ({
   onRefresh, 
   onCellClick, 
   onUpdateRoomNumber, 
-  formatDate 
+  formatDate,
+  lang
 }) => {
+  const d_t = (key) => DASHBOARD_LANG[lang]?.[key] || DASHBOARD_LANG['en']?.[key] || key;
   const [selectedRoomType, setSelectedRoomType] = useState('All');
   const [selectedBooking, setSelectedBooking] = useState(null);
 
@@ -1241,11 +1556,11 @@ const RoomAvailabilityCalendar = ({
   };
 
   const getDayLabel = (d) => {
-    return d.toLocaleDateString('en-IN', { weekday: 'short' });
+    return d.toLocaleDateString(lang === 'ta' ? 'ta-IN' : 'en-IN', { weekday: 'short' });
   };
 
   const getDateLabel = (d) => {
-    return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short' });
+    return d.toLocaleDateString(lang === 'ta' ? 'ta-IN' : 'en-IN', { day: '2-digit', month: 'short' });
   };
 
   const isToday = (d) => {
@@ -1256,7 +1571,6 @@ const RoomAvailabilityCalendar = ({
   };
 
   // Find booking for a specific room and date
-  // Night belongs to date D if checkIn <= D and checkOut > D
   const getBookingForCell = (roomNumber, date) => {
     const dTime = new Date(date).setHours(0, 0, 0, 0);
     return bookings.find(b => {
@@ -1300,18 +1614,18 @@ const RoomAvailabilityCalendar = ({
         <div className="calendar-main-section card">
           <div className="calendar-header-actions" style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
             <div className="navigation-controls" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <button className="admin-btn admin-btn-outline" onClick={() => navigateDays(-14)}>◀ Prev 14 Days</button>
+              <button className="admin-btn admin-btn-outline" onClick={() => navigateDays(-14)}>{d_t('prev14')}</button>
               <button className="admin-btn admin-btn-outline" onClick={() => {
                 const today = new Date();
                 today.setHours(0,0,0,0);
                 setStartDate(today);
-              }}>Today</button>
-              <button className="admin-btn admin-btn-outline" onClick={() => navigateDays(14)}>Next 14 Days ▶</button>
+              }}>{d_t('todayBtn')}</button>
+              <button className="admin-btn admin-btn-outline" onClick={() => navigateDays(14)}>{d_t('next14')}</button>
             </div>
             
             <div className="filter-controls" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#f8fafc', padding: '0.4rem 0.8rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                <span style={{ fontSize: '0.85rem', fontWeight: 600, color: '#64748b' }}>Start Date:</span>
+                <span style={{ fontSize: '0.85rem', fontWeight: 600, color: '#64748b' }}>{d_t('startDateLabel')}</span>
                 <input 
                   type="date" 
                   value={startDate.toISOString().split('T')[0]} 
@@ -1332,12 +1646,11 @@ const RoomAvailabilityCalendar = ({
                 className="admin-select"
                 style={{ padding: '0.45rem 1rem', fontSize: '0.85rem', fontWeight: 600, minWidth: '150px' }}
               >
-                <option value="All">All Room Types</option>
-                <option value="Double Bed">Double Bed</option>
-                <option value="Double Bed A/C">Double Bed A/C</option>
-                <option value="Three Bed">Three Bed</option>
-
-                <option value="Four Bed A/C">Four Bed A/C</option>
+                <option value="All">{d_t('allRoomTypes')}</option>
+                <option value="Double Bed">{d_t('doubleBed')}</option>
+                <option value="Double Bed A/C">{d_t('doubleBedAc')}</option>
+                <option value="Three Bed">{d_t('threeBed')}</option>
+                <option value="Four Bed A/C">{d_t('fourBedAc')}</option>
               </select>
             </div>
           </div>
@@ -1352,7 +1665,7 @@ const RoomAvailabilityCalendar = ({
                 <thead>
                   <tr>
                     <th className="sticky-col header-cell" style={{ position: 'sticky', left: 0, zIndex: 11, background: '#f8fafc', padding: '1rem', borderBottom: '2px solid #e2e8f0', fontWeight: 700, color: '#475569', minWidth: '180px', borderRight: '2px solid #e2e8f0' }}>
-                      Rooms ({filteredRooms.length})
+                      {lang === 'ta' ? 'அறைகள்' : 'Rooms'} ({filteredRooms.length})
                     </th>
                     {dates.map((d, idx) => (
                       <th key={idx} className={`header-cell ${isToday(d) ? 'today-col' : ''}`} style={{ 
@@ -1391,7 +1704,7 @@ const RoomAvailabilityCalendar = ({
                         boxShadow: '4px 0 8px -4px rgba(0,0,0,0.08)'
                       }}>
                         <div style={{ fontSize: '1rem', color: '#1e293b', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                          🏢 Room {room.roomNumber}
+                          🏢 {lang === 'ta' ? 'அறை' : 'Room'} {room.roomNumber}
                         </div>
                         <span style={{ 
                           display: 'inline-block', 
@@ -1469,7 +1782,7 @@ const RoomAvailabilityCalendar = ({
                               >
                                 <span style={{ fontSize: '0.82rem', display: 'block', fontWeight: 700 }}>{booking.name}</span>
                                 <span style={{ fontSize: '0.62rem', opacity: 0.8, textTransform: 'uppercase', letterSpacing: '0.02em', marginTop: '2px' }}>
-                                  {isCheckinDay ? '📥 In' : (isCheckoutDay ? '📤 Out' : '🔑 Occupied')}
+                                  {isCheckinDay ? (lang === 'ta' ? '📥 வருகை' : '📥 In') : (isCheckoutDay ? (lang === 'ta' ? '📤 வெளியேற்றம்' : '📤 Out') : (lang === 'ta' ? '🔑 தங்கியுள்ளார்' : '🔑 Occupied'))}
                                 </span>
                               </div>
                             </td>
@@ -1485,21 +1798,21 @@ const RoomAvailabilityCalendar = ({
                             className="available-cell"
                             onClick={() => !isMaintenance && onCellClick(room, date)}
                             style={{ 
-                              padding: '10px', 
-                              borderRight: '1px solid #e2e8f0', 
-                              background: isMaintenance ? '#f8fafc' : (isDateToday ? '#fffbeb' : '#ffffff'),
-                              textAlign: 'center',
-                              cursor: isMaintenance ? 'not-allowed' : 'pointer',
-                              position: 'relative'
+                                padding: '10px', 
+                                borderRight: '1px solid #e2e8f0', 
+                                background: isMaintenance ? '#f8fafc' : (isDateToday ? '#fffbeb' : '#ffffff'),
+                                textAlign: 'center',
+                                cursor: isMaintenance ? 'not-allowed' : 'pointer',
+                                position: 'relative'
                             }}
                           >
                             {isMaintenance ? (
                               <div style={{ color: '#94a3b8', fontSize: '0.75rem', fontWeight: 500 }}>
-                                🛠️ Blocked
+                                🛠️ {d_t('blocked')}
                               </div>
                             ) : (
                               <div className="hover-booking-badge" style={{ color: '#10b981', fontSize: '0.75rem', fontWeight: 700, opacity: 0.2 }}>
-                                + Book
+                                {d_t('bookCell')}
                               </div>
                             )}
                           </td>
@@ -1530,19 +1843,19 @@ const RoomAvailabilityCalendar = ({
                     {selectedBooking.status}
                   </span>
                   <span style={{ fontSize: '0.7rem', padding: '3px 8px', borderRadius: '12px', fontWeight: 700, background: '#f1f3f5', color: '#495057' }}>
-                    Room #{selectedBooking.roomNumber || 'Unassigned'}
+                    {lang === 'ta' ? 'அறை #' : 'Room #'} {selectedBooking.roomNumber || (lang === 'ta' ? 'ஒதுக்கப்படவில்லை' : 'Unassigned')}
                   </span>
                 </div>
               </div>
 
               <div style={{ minWidth: '200px' }}>
-                <p style={{ margin: '0 0 4px 0', fontSize: '0.85rem', color: '#64748b' }}>Stay Duration</p>
+                <p style={{ margin: '0 0 4px 0', fontSize: '0.85rem', color: '#64748b' }}>{lang === 'ta' ? 'தங்கும் காலம்' : 'Stay Duration'}</p>
                 <p style={{ margin: 0, fontWeight: 700 }}>
                   📅 {formatDate(selectedBooking.checkIn)} — {formatDate(selectedBooking.checkOut)}
                 </p>
                 <div style={{ marginTop: '8px', display: 'flex', gap: '10px', fontSize: '0.8rem' }}>
                   <div>
-                    <label style={{ display: 'block', color: '#888', fontSize: '0.7rem' }}>In Time</label>
+                    <label style={{ display: 'block', color: '#888', fontSize: '0.7rem' }}>{lang === 'ta' ? 'வருகை நேரம்' : 'In Time'}</label>
                     <select
                       value={selectedBooking.checkInTime || '12:00 PM'}
                       onChange={async (e) => {
@@ -1570,7 +1883,7 @@ const RoomAvailabilityCalendar = ({
                     </select>
                   </div>
                   <div>
-                    <label style={{ display: 'block', color: '#888', fontSize: '0.7rem' }}>Out Time</label>
+                    <label style={{ display: 'block', color: '#888', fontSize: '0.7rem' }}>{lang === 'ta' ? 'வெளியேறும் நேரம்' : 'Out Time'}</label>
                     <select
                       value={selectedBooking.checkOutTime || '11:00 AM'}
                       onChange={async (e) => {
@@ -1596,7 +1909,7 @@ const RoomAvailabilityCalendar = ({
                   </div>
                 </div>
                 <p style={{ margin: '8px 0 0 0', fontSize: '0.8rem', color: '#868e96' }}>
-                  Requested: {selectedBooking.roomType} | {selectedBooking.guests} Guests
+                  {lang === 'ta' ? 'கோரப்பட்டது: ' : 'Requested: '} {selectedBooking.roomType} | {selectedBooking.guests} {lang === 'ta' ? 'விருந்தினர்கள்' : 'Guests'}
                 </p>
               </div>
 
@@ -1605,7 +1918,8 @@ const RoomAvailabilityCalendar = ({
                   <button 
                     onClick={async () => {
                       const headers = { username: auth.username, password: auth.password };
-                      if (window.confirm(`Confirm booking for ${selectedBooking.name}?`)) {
+                      const confirmMsg = lang === 'ta' ? `${selectedBooking.name}-க்கான பதிவை உறுதிப்படுத்தவா?` : `Confirm booking for ${selectedBooking.name}?`;
+                      if (window.confirm(confirmMsg)) {
                         try {
                           const res = await api.patch(`/api/admin/bookings/${selectedBooking._id}`, { status: 'Confirmed' }, { headers });
                           if (res.data?.waLink) window.open(res.data.waLink, '_blank');
@@ -1617,14 +1931,15 @@ const RoomAvailabilityCalendar = ({
                     className="admin-btn admin-btn-primary" 
                     style={{ background: '#10b981', color: 'white' }}
                   >
-                    Confirm Booking
+                    {d_t('actionConfirm')}
                   </button>
                 )}
                 {selectedBooking.status === 'Confirmed' && (
                   <button 
                     onClick={async () => {
                       const headers = { username: auth.username, password: auth.password };
-                      if (window.confirm(`Check-out guest ${selectedBooking.name}?`)) {
+                      const confirmMsg = lang === 'ta' ? `${selectedBooking.name} செக்-அவுட் செய்யவா?` : `Check-out guest ${selectedBooking.name}?`;
+                      if (window.confirm(confirmMsg)) {
                         try {
                           await api.patch(`/api/admin/bookings/${selectedBooking._id}`, { status: 'Checked-out' }, { headers });
                           setSelectedBooking(null);
@@ -1635,7 +1950,7 @@ const RoomAvailabilityCalendar = ({
                     className="admin-btn admin-btn-primary" 
                     style={{ background: '#0284c7', color: 'white' }}
                   >
-                    Check Out Room
+                    {d_t('actionCheckout')}
                   </button>
                 )}
                 <button 
@@ -1650,7 +1965,7 @@ const RoomAvailabilityCalendar = ({
                   className="admin-btn admin-btn-outline" 
                   style={{ display: 'flex', alignItems: 'center', gap: '4px', borderColor: '#25D366', color: '#25D366', background: '#fff' }}
                 >
-                  <MessageCircle size={16} /> WhatsApp Guest
+                  <MessageCircle size={16} /> {d_t('actionWhatsapp')}
                 </button>
               </div>
             </div>
@@ -1660,18 +1975,18 @@ const RoomAvailabilityCalendar = ({
         {/* Sidebar Panel for Room Assignment */}
         <div className="calendar-sidebar-section card">
           <h3 style={{ borderBottom: '1px solid #f1f5f9', paddingBottom: '0.75rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '1.2rem', fontWeight: 700 }}>
-            📌 Room Allocations
+            📌 {d_t('roomAllocations')}
           </h3>
 
           <p style={{ color: '#64748b', fontSize: '0.85rem', lineHeight: '1.4', marginBottom: '1.25rem' }}>
-            Bookings in this 14-day window that are confirmed but do not have an assigned physical room number. Assign them below:
+            {d_t('allocationsDesc')}
           </p>
 
           {unassignedBookings.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '2rem 1rem', background: '#f8fafc', borderRadius: '12px', border: '1px dashed #cbd5e1', color: '#94a3b8' }}>
               <ClipboardCheck size={32} style={{ opacity: 0.5, marginBottom: '0.5rem' }} />
-              <div style={{ fontSize: '0.85rem', fontWeight: 600 }}>All Bookings Assigned!</div>
-              <div style={{ fontSize: '0.75rem' }}>No pending room allocations.</div>
+              <div style={{ fontSize: '0.85rem', fontWeight: 600 }}>{d_t('allAssigned')}</div>
+              <div style={{ fontSize: '0.75rem' }}>{d_t('noPendingAlloc')}</div>
             </div>
           ) : (
             <div className="unassigned-bookings-list" style={{ display: 'grid', gap: '1rem' }}>
@@ -1688,18 +2003,19 @@ const RoomAvailabilityCalendar = ({
                     
                     <div style={{ fontSize: '0.78rem', color: '#64748b', display: 'grid', gap: '2px', marginBottom: '0.75rem' }}>
                       <div>📅 {getDateLabel(new Date(b.checkIn))} — {getDateLabel(new Date(b.checkOut))}</div>
-                      <div>👥 {b.guests} Guests</div>
+                      <div>👥 {b.guests} {lang === 'ta' ? 'விருந்தினர்கள்' : 'Guests'}</div>
                       <div>📞 {b.phone}</div>
                     </div>
 
                     <div className="room-assign-row" style={{ display: 'grid', gap: '0.35rem' }}>
-                      <label style={{ fontSize: '0.7rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase' }}>Available Rooms</label>
+                      <label style={{ fontSize: '0.7rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase' }}>{d_t('availableRoomsCalendar')}</label>
                       <select 
                         defaultValue=""
                         onChange={async (e) => {
                           const roomNum = e.target.value;
                           if (roomNum) {
-                            if (window.confirm(`Assign Room #${roomNum} to ${b.name}?`)) {
+                            const confirmMsg = lang === 'ta' ? `${b.name}-க்கு அறை #${roomNum} ஒதுக்கவா?` : `Assign Room #${roomNum} to ${b.name}?`;
+                            if (window.confirm(confirmMsg)) {
                               await onUpdateRoomNumber(b._id, roomNum);
                               onRefresh();
                             }
@@ -1707,14 +2023,14 @@ const RoomAvailabilityCalendar = ({
                         }}
                         style={{ padding: '0.45rem', fontSize: '0.8rem', borderRadius: '6px', border: '1px solid #cbd5e1', cursor: 'pointer', outline: 'none' }}
                       >
-                        <option value="" disabled>-- Select a Room --</option>
+                        <option value="" disabled>{d_t('selectRoomCalendar')}</option>
                         {freeRooms.map(r => (
                           <option key={r.roomNumber} value={r.roomNumber}>
-                            Room {r.roomNumber} (Available)
+                            {lang === 'ta' ? 'அறை' : 'Room'} {r.roomNumber} ({d_t('modalAvailable')})
                           </option>
                         ))}
                         {freeRooms.length === 0 && (
-                          <option disabled value="">No matching free rooms found!</option>
+                          <option disabled value="">{d_t('noRoomsFoundCalendar')}</option>
                         )}
                       </select>
                     </div>
@@ -2335,6 +2651,7 @@ export default function AdminDashboard() {
   const formatDate = (d) => d ? new Date(d).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
 
   const renderView = () => {
+    const d_t = (key) => DASHBOARD_LANG[lang]?.[key] || DASHBOARD_LANG['en']?.[key] || key;
     switch (activeTab) {
       case 'overview': return <DashboardOverview 
         stats={stats} 
@@ -2343,8 +2660,9 @@ export default function AdminDashboard() {
         setPeriod={setStatsPeriod}
         selectedMonth={selectedMonth}
         setSelectedMonth={setSelectedMonth}
+        lang={lang}
       />;
-      case 'rooms': return <RoomManagement rooms={rooms} onAddClick={openAddModal} onDeleteRoom={handleDeleteRoom} onUpdateRoom={openEditModal} auth={auth} fetchData={fetchData} />;
+      case 'rooms': return <RoomManagement rooms={rooms} onAddClick={openAddModal} onDeleteRoom={handleDeleteRoom} onUpdateRoom={openEditModal} auth={auth} fetchData={fetchData} lang={lang} />;
       case 'bookings': return <BookingManagement
         bookings={bookings}
         rooms={rooms}
@@ -2360,6 +2678,7 @@ export default function AdminDashboard() {
         onViewCheckin={openCheckinModal}
         formatDate={formatDate}
         onAddOfflineBookingClick={() => setIsOfflineModalOpen(true)}
+        lang={lang}
       />;
       case 'calendar':
         return (
@@ -2373,6 +2692,7 @@ export default function AdminDashboard() {
             onCellClick={handleCellClick}
             onUpdateRoomNumber={handleUpdateRoomNumber}
             formatDate={formatDate}
+            lang={lang}
           />
         );
       case 'guests':
@@ -2382,16 +2702,16 @@ export default function AdminDashboard() {
               <table className="admin-table">
                 <thead>
                   <tr>
-                    <th>Guest Name</th>
-                    <th>Phone</th>
-                    <th>Total Stays</th>
-                    <th>Level</th>
-                    <th>Actions</th>
+                    <th>{d_t('guestName')}</th>
+                    <th>{d_t('phone')}</th>
+                    <th>{d_t('totalStays')}</th>
+                    <th>{d_t('level')}</th>
+                    <th>{d_t('actions')}</th>
                   </tr>
                 </thead>
                 <tbody>
                   {guests.length === 0 ? (
-                    <tr><td colSpan="5" style={{ textAlign: 'center', padding: '2rem' }}>No guest records.</td></tr>
+                    <tr><td colSpan="5" style={{ textAlign: 'center', padding: '2rem' }}>{d_t('noGuests')}</td></tr>
                   ) : guests.map(g => (
                     <tr key={g._id}>
                       <td style={{ fontWeight: 600 }}>{g.name}</td>
@@ -2414,8 +2734,8 @@ export default function AdminDashboard() {
             </div>
           </div>
         );
-      case 'payments': return <Payments payments={payments} totalRevenue={stats?.totalRevenue} />;
-      case 'reports': return <Reports stats={stats} period={statsPeriod} setPeriod={setStatsPeriod} selectedMonth={selectedMonth} setSelectedMonth={setSelectedMonth} />;
+      case 'payments': return <Payments payments={payments} totalRevenue={stats?.totalRevenue} lang={lang} />;
+      case 'reports': return <Reports stats={stats} period={statsPeriod} setPeriod={setStatsPeriod} selectedMonth={selectedMonth} setSelectedMonth={setSelectedMonth} lang={lang} />;
       case 'settings': return <SettingsView 
         isSeason={isSeason} 
         onToggleSeason={async (val) => {
@@ -2439,6 +2759,7 @@ export default function AdminDashboard() {
             alert('Error updating weekend mode');
           }
         }}
+        lang={lang}
       />;
       case 'reviews': return <ReviewsView 
         reviews={reviews} 
@@ -2447,6 +2768,7 @@ export default function AdminDashboard() {
         setPeriod={setReviewsPeriod}
         selectedMonth={selectedMonth}
         setSelectedMonth={setSelectedMonth}
+        lang={lang}
       />;
       case 'notifications': return <NotificationsView
         notifications={notifications}
@@ -2458,8 +2780,9 @@ export default function AdminDashboard() {
         setSelectedMonth={setSelectedMonth}
         onDelete={handleDeleteNotification}
         onClearAll={handleClearAllNotifications}
+        lang={lang}
       />;
-      case 'gallery': return <GalleryManagement auth={auth} />;
+      case 'gallery': return <GalleryManagement auth={auth} lang={lang} />;
       default: return <div className="card">Coming Soon...</div>;
     }
   };
