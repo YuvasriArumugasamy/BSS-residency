@@ -20,7 +20,7 @@ const FAQ = lazy(() => import('./pages/FAQ'));
 const BookingStatus = lazy(() => import('./pages/BookingStatus'));
 const ManageBooking = lazy(() => import('./pages/ManageBooking'));
 const CourtallamLodges = lazy(() => import('./pages/CourtallamLodges'));
-const BestHotelCourtallam = lazy(() => import('./pages/BestHotelCourtallam'));
+// const BestHotelCourtallam = lazy(() => import('./pages/BestHotelCourtallam'));
 const AdminLogin = lazy(() => import('./pages/AdminLogin'));
 const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
 const CheckIn = lazy(() => import('./pages/CheckIn'));
@@ -97,7 +97,7 @@ function App() {
                   <Route path="/contact"            element={<Contact />} />
                   <Route path="/faq"                element={<FAQ />} />
                   <Route path="/courtallam-lodges"  element={<CourtallamLodges />} />
-                  <Route path="/best-hotel-courtallam-waterfalls" element={<BestHotelCourtallam />} />
+                  {/* <Route path="/best-hotel-courtallam-waterfalls" element={<BestHotelCourtallam />} /> */}
                   <Route path="/checkin"            element={<CheckIn />} />
                   <Route path="/checkin/:id"        element={<CheckIn />} />
                 </Routes>
