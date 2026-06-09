@@ -35,7 +35,7 @@ const SEO = ({
       {/* Primary Meta Tags */}
       <title>{title}</title>
       <meta name="title" content={title} />
-      <meta name="description" content={description} />
+      <meta name="robots" content="index, follow" />
       <meta name="keywords" content={keywords} />
 
       {/* Open Graph */}

@@ -64,6 +64,21 @@ export default function AdminLogin() {
     };
   }, []);
 
+  // Redirect to dashboard if already authenticated
+  useEffect(() => {
+    const stored = localStorage.getItem('bss_admin') || sessionStorage.getItem('bss_admin');
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        if (parsed.token || (parsed.username && parsed.password)) {
+          navigate('/admin/dashboard');
+        }
+      } catch (e) {
+        console.error('Error parsing stored auth in login redirect:', e);
+      }
+    }
+  }, [navigate]);
+
   // Wake up the Render server when the login page loads
   useEffect(() => {
     const wakeServer = async () => {
@@ -91,7 +106,15 @@ export default function AdminLogin() {
     try {
       const res = await api.post('/api/admin/login', form);
       if (res.data.success) {
-        sessionStorage.setItem('bss_admin', JSON.stringify({ username: form.username, password: form.password }));
+        // Clear sessionStorage to avoid conflicts
+        sessionStorage.removeItem('bss_admin');
+        
+        // Persist token in localStorage
+        const authData = {
+          username: res.data.username || form.username,
+          token: res.data.token
+        };
+        localStorage.setItem('bss_admin', JSON.stringify(authData));
         navigate('/admin/dashboard');
       }
     } catch (err) {

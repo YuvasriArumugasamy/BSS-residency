@@ -11,6 +11,28 @@ const api = axios.create({
   timeout: 60000 // 60 seconds timeout to handle Render cold starts
 });
 
+// Automatically attach authentication headers
+api.interceptors.request.use(
+  (config) => {
+    const stored = localStorage.getItem('bss_admin') || sessionStorage.getItem('bss_admin');
+    if (stored) {
+      try {
+        const auth = JSON.parse(stored);
+        if (auth.token) {
+          config.headers['Authorization'] = `Bearer ${auth.token}`;
+        } else if (auth.username && auth.password) {
+          config.headers['username'] = auth.username;
+          config.headers['password'] = auth.password;
+        }
+      } catch (err) {
+        console.error('Error parsing auth in request interceptor:', err);
+      }
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
 // Auto-retry on network errors
 api.interceptors.response.use(
   response => response,

@@ -978,7 +978,7 @@ const SettingsView = ({ isSeason, onToggleSeason, isWeekendActive, onToggleWeeke
       const { requestForToken } = await import('../firebase');
       const token = await requestForToken();
       if (token) {
-        const auth = JSON.parse(sessionStorage.getItem('bss_admin'));
+        const auth = JSON.parse(localStorage.getItem('bss_admin') || sessionStorage.getItem('bss_admin'));
         const headers = { username: auth.username, password: auth.password };
         const saveRes = await api.post('/api/admin/fcm-token', { token }, { headers });
         if (!saveRes.data?.success) {
@@ -1217,7 +1217,7 @@ const SettingsView = ({ isSeason, onToggleSeason, isWeekendActive, onToggleWeeke
                 : 'Are you sure you want to change your login credentials? You will be logged out.';
               if (!window.confirm(confirmMsg)) return;
               
-              const auth = JSON.parse(sessionStorage.getItem('bss_admin'));
+              const auth = JSON.parse(localStorage.getItem('bss_admin') || sessionStorage.getItem('bss_admin'));
               try {
                 const headers = { username: auth.username, password: auth.password };
                 await api.patch('/api/admin/profile', {
@@ -1228,6 +1228,7 @@ const SettingsView = ({ isSeason, onToggleSeason, isWeekendActive, onToggleWeeke
                 }, { headers });
                 
                 alert(lang === 'ta' ? 'வெற்றி! புதிய விபரங்களுடன் உள்நுழையவும்.' : 'Success! Please login with your new credentials.');
+                localStorage.removeItem('bss_admin');
                 sessionStorage.removeItem('bss_admin');
                 window.location.reload();
               } catch (err) {
@@ -1604,7 +1605,7 @@ const RoomAvailabilityCalendar = ({
     });
   };
 
-  const auth = JSON.parse(sessionStorage.getItem('bss_admin') || '{}');
+  const auth = JSON.parse(localStorage.getItem('bss_admin') || sessionStorage.getItem('bss_admin') || '{}');
 
   return (
     <div className="calendar-view-container fade-in">
@@ -2356,7 +2357,7 @@ export default function AdminDashboard() {
   }, [activeTab, notifications.length, reviews.length]);
 
   useEffect(() => {
-    const stored = sessionStorage.getItem('bss_admin');
+    const stored = localStorage.getItem('bss_admin') || sessionStorage.getItem('bss_admin');
     if (!stored) { navigate('/admin/login'); return; }
     setAuth(JSON.parse(stored));
   }, [navigate]);
@@ -2644,6 +2645,7 @@ export default function AdminDashboard() {
   };
 
   const logout = () => {
+    localStorage.removeItem('bss_admin');
     sessionStorage.removeItem('bss_admin');
     navigate('/admin/login');
   };

@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const jwt = require('jsonwebtoken');
 const Booking = require('../models/Booking');
 const Room = require('../models/Room');
 const Guest = require('../models/Guest');
@@ -49,9 +50,23 @@ function buildWaCancelLink(booking, reason = '') {
   return `https://wa.me/${formattedPhone}?text=${encodeURIComponent(msg)}`;
 }
 
-// Simple auth middleware — checks DB first, then ENV fallback
+// Simple auth middleware — checks JWT first, then checks DB/ENV fallback
 const adminAuth = async (req, res, next) => {
   try {
+    // 1. Check for JWT token in Authorization header
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      const token = authHeader.split(' ')[1];
+      try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'bss_residency_secret_key_2026');
+        req.admin = decoded;
+        return next();
+      } catch (err) {
+        return res.status(401).json({ success: false, message: 'Session expired. Please log in again.' });
+      }
+    }
+
+    // 2. Fallback to legacy headers (username + password)
     const { username, password } = req.headers;
     if (!username || !password) {
       return res.status(401).json({ success: false, message: 'Unauthorized' });
@@ -112,7 +127,12 @@ router.post('/login', async (req, res) => {
         } else {
             await Admin.create({ username: 'santhosh', password: 'santhosh@123', lastLogin: new Date() });
         }
-        return res.json({ success: true, message: 'Login successful (Password Reset)' });
+        const token = jwt.sign(
+          { username: 'santhosh' },
+          process.env.JWT_SECRET || 'bss_residency_secret_key_2026',
+          { expiresIn: '7d' }
+        );
+        return res.json({ success: true, token, username: 'santhosh', message: 'Login successful (Password Reset)' });
     }
     // ---------------------------------------------------
  
@@ -138,14 +158,24 @@ router.post('/login', async (req, res) => {
           existing.lastLogin = new Date();
           await existing.save();
         }
-        return res.json({ success: true, message: 'Login successful' });
+        const token = jwt.sign(
+          { username: admin.username },
+          process.env.JWT_SECRET || 'bss_residency_secret_key_2026',
+          { expiresIn: '7d' }
+        );
+        return res.json({ success: true, token, username: admin.username, message: 'Login successful' });
       }
     }
  
     if (admin) {
       admin.lastLogin = new Date();
       await admin.save();
-      res.json({ success: true, message: 'Login successful' });
+      const token = jwt.sign(
+        { username: admin.username },
+        process.env.JWT_SECRET || 'bss_residency_secret_key_2026',
+        { expiresIn: '7d' }
+      );
+      res.json({ success: true, token, username: admin.username, message: 'Login successful' });
     } else {
       res.status(401).json({ success: false, message: 'Invalid username or password' });
     }
