@@ -4,6 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { ROOMS, CONTACT, waLink } from '../constants';
 import SEO from '../components/SEO';
 import emailjs from '@emailjs/browser';
+import { requestForToken } from '../firebase';
 import './Booking.css';
 
 const initForm = {
@@ -77,6 +78,24 @@ export default function Booking() {
       }
     };
     fetchSeasonStatus();
+
+    // Client phone-ku notification varavaikka FCM token request pannurom
+    const initClientFcmToken = async () => {
+      try {
+        const existingToken = localStorage.getItem('bss_client_fcm');
+        if (!existingToken) {
+          const token = await requestForToken();
+          if (token) {
+            localStorage.setItem('bss_client_fcm', token);
+            console.log('[FCM] Client token saved to localStorage');
+          }
+        }
+      } catch (err) {
+        // Silent fail - notification not critical for booking flow
+        console.log('[FCM] Client token request skipped:', err.message);
+      }
+    };
+    initClientFcmToken();
   }, []);
 
   useEffect(() => {
@@ -257,8 +276,10 @@ export default function Booking() {
             for (let attempt = 1; attempt <= 3; attempt++) {
               try {
                 console.log(`[Payment] Verify attempt ${attempt}/3...`);
+                const clientFcmToken = localStorage.getItem('bss_client_fcm') || '';
                 verifyRes = await api.post('/api/bookings/verify-payment', payload, {
-                  timeout: attempt === 1 ? 30000 : 60000 // 30s first try, 60s for retries
+                  timeout: attempt === 1 ? 30000 : 60000, // 30s first try, 60s for retries
+                  headers: { 'x-fcm-token': clientFcmToken }
                 });
                 break; // Success — exit loop
               } catch (retryErr) {

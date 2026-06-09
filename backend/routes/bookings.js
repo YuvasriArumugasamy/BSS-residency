@@ -203,11 +203,19 @@ router.post('/verify-payment', async (req, res) => {
     // Send Emails & Push Notifications
     sendBookingReceivedEmail(booking).catch(e => console.error(e));
     sendNewBookingAdminAlert(booking).catch(e => console.error(e));
-    const { sendPushNotificationToAdmins } = require('../utils/fcmService');
+    const { sendPushNotificationToAdmins, sendPushToClient } = require('../utils/fcmService');
     sendPushNotificationToAdmins(
       '💰 New Paid Booking!',
       `${name} booked ${roomType} for ${guests} guests.`
     );
+    const clientToken = req.headers['x-fcm-token'];
+    if (clientToken) {
+      sendPushToClient(
+        clientToken,
+        '✅ Booking Confirmed!',
+        'Your room has been successfully booked at BSS Residency'
+      );
+    }
 
     try {
       await upsertGuestFromBooking({ name, phone, email });
