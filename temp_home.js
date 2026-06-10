@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Link } from 'react-router-dom';
 import buildingImg from '../assets/building.webp';
 import roomImg from '../assets/room.webp';
@@ -24,7 +24,6 @@ import honeyFalls from '../assets/Honey Falls.webp';
 import shenbagadeviFalls from '../assets/Shenbagadevi Falls.webp';
 import roomFamily from '../assets/room-family.webp';
 import roomAc3 from '../assets/room-ac-3.webp';
-import roomThreeBed from '../assets/3bed.webp';
 import gundarDam from '../assets/gundar dam.webp';
 import adaviNainarDam from '../assets/Adavi Nainar Dam.webp';
 import gadananathiDam from '../assets/Gadananathi Dam.webp';
@@ -37,17 +36,14 @@ import ariyankavuTemple from '../assets/Ariyankavu Iyappan Kovil.webp';
 import { AMENITIES, ROOMS, CONTACT, waLink, WA_TEMPLATES } from '../constants';
 import api from '../api/axios';
 import SEO from '../components/SEO';
-import schemaMarkup from '../seo/schema';
 import './Home.css';
 import roomVideo from '../assets/room-video.mp4';
 
 const imgMap = {
-  'double-bed': roomAcImg,
-  'double-bed-ac': roomAc3,
-  'three-bed': roomThreeBed,
-
-  'three-bed-ac': roomAc3,
-  'four-bed-ac': roomFamily,
+  'double-bed': roomAcImg,       // Was 2nd, now 1st
+  'double-bed-ac': roomAc3,      // Was 4th, now 2nd
+  'four-bed': roomGal1,          // Stays 3rd
+  'four-bed-ac': roomFamily,     // Was 1st, now 4th
 };
 
 const PEARLS_ITEMS = [
@@ -126,12 +122,12 @@ export default function Home() {
   const [reviews, setReviews] = React.useState([]);
   const [selectedReview, setSelectedReview] = React.useState(null);
   const [isSeason, setIsSeason] = React.useState(false);
-  const [isWeekendActive, setIsWeekendActive] = React.useState(true);
   const [showNotice, setShowNotice] = React.useState(false);
   const [activeTab, setActiveTab] = React.useState('falls');
   const attractionsRef = React.useRef(null);
   const [canScrollLeft, setCanScrollLeft] = React.useState(false);
   const [canScrollRight, setCanScrollRight] = React.useState(true);
+
   const checkScroll = () => {
     if (attractionsRef.current) {
       const { scrollLeft, scrollWidth, clientWidth } = attractionsRef.current;
@@ -157,10 +153,18 @@ export default function Home() {
   };
 
   React.useEffect(() => {
+    if (!document.querySelector('script[src="https://elfsightcdn.com/platform.js"]')) {
+      const script = document.createElement('script');
+      script.src = 'https://elfsightcdn.com/platform.js';
+      script.async = true;
+      document.body.appendChild(script);
+    }
+  }, []);
+
+  React.useEffect(() => {
     const timer = setTimeout(() => checkRevScroll(), 100);
     return () => clearTimeout(timer);
   }, [reviews]);
-
 
   React.useEffect(() => {
     // Show notice only once per session
@@ -168,7 +172,7 @@ export default function Home() {
     if (!hasSeenNotice) {
       setTimeout(() => {
         setShowNotice(true);
-      }, 5000);
+      }, 1500);
     }
   }, []);
 
@@ -181,16 +185,15 @@ export default function Home() {
     const fetchPublicSettings = async () => {
       try {
         const res = await api.get('/api/admin/settings/public');
-        if (res.data.success) {
-          setIsSeason(res.data.isSeason);
-          setIsWeekendActive(res.data.isWeekendActive !== false);
-        }
+        if (res.data.success) setIsSeason(res.data.isSeason);
       } catch (err) {
         console.error('Error fetching season status:', err);
       }
     };
     fetchPublicSettings();
   }, []);
+
+  const getPrice = (room) => isSeason ? room.seasonPrice : room.nonSeasonPrice;
 
   React.useEffect(() => {
     const fetchReviews = async () => {
@@ -204,12 +207,37 @@ export default function Home() {
     fetchReviews();
   }, []);
 
-  const getPrice = (room) => {
-    if (isSeason) return room.seasonPrice;
-    const today = new Date();
-    const day = today.getDay(); // 0 = Sun, 5 = Fri, 6 = Sat
-    const isWeekend = isWeekendActive && (day === 0 || day === 5 || day === 6);
-    return isWeekend ? room.weekendPrice : room.weekdayPrice;
+  const schemaMarkup = {
+    "@context": "https://schema.org",
+    "@type": "Hotel",
+    "name": "BSS Residency",
+    "url": "https://bssresidency.com",
+    "image": "https://bssresidency.com/logo.webp",
+    "description": "BSS Residency is the best hotel near Courtallam waterfalls. We offer A/C and Non-A/C rooms for families near Main Falls, Courtallam Bus Stand.",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Near Anna Statue, Old Bus Stand",
+      "addressLocality": "Courtallam",
+      "addressRegion": "Tamil Nadu",
+      "postalCode": "627802",
+      "addressCountry": "IN"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": "8.9333",
+      "longitude": "77.2833"
+    },
+    "telephone": "+918838599755",
+    "priceRange": "Ôé╣1000 - Ôé╣2500",
+    "amenityFeature": [
+      { "@type": "LocationFeatureSpecification", "name": "Air Conditioning", "value": true },
+      { "@type": "LocationFeatureSpecification", "name": "24-hour Front Desk", "value": true },
+      { "@type": "LocationFeatureSpecification", "name": "Free Parking", "value": true },
+      { "@type": "LocationFeatureSpecification", "name": "Hot Water", "value": true }
+    ],
+    "checkinTime": "12:00",
+    "checkoutTime": "11:00",
+    "starRating": { "@type": "Rating", "ratingValue": "4.6" }
   };
 
   return (
@@ -220,7 +248,7 @@ export default function Home() {
         keywords="bss residency courtallam, courtallam hotel, hotel near courtallam waterfalls, courtallam rooms for rent, kutralam lodging, family hotel courtallam, best lodge courtallam, courtallam accommodation, lodge near main falls courtallam, kutralam hotel booking"
         schemaMarkup={schemaMarkup}
       />
-      <main id="main" className="home">
+      <main className="home">
         {/* Hero */}
         <section className="hero">
           <div className="hero-img-wrap">
@@ -231,15 +259,15 @@ export default function Home() {
             <span className="hero-logo-wrap">
               <img src={logo} alt="BSS Residency" width="150" height="150" />
             </span>
-            <span className="hero-badge">✦ Courtallam's Premium Stay ✦</span>
+            <span className="hero-badge">Ô£ª Courtallam's Premium Stay Ô£ª</span>
             <h1>
-              Welcome to <br /> 
+              Welcome to<br />
               <span className="hero-brand">BSS Residency</span>
             </h1>
             <p>Experience premium comfort steps away from the majestic Courtallam Falls</p>
             <div className="hero-btns">
               <Link to="/booking" className="btn-book-now-hero">
-                📞 Book Now - Best Price!
+                ­ƒô× Book Now - Best Price!
               </Link>
               <Link to="/rooms" className="btn-outline-light">Explore Rooms</Link>
             </div>
@@ -271,7 +299,7 @@ export default function Home() {
 
 
 
-        {/* Amenities strip — infinite CSS marquee */}
+        {/* Amenities strip ÔÇö infinite CSS marquee */}
         <section className="amenities-strip">
           <div className="amenities-track">
             {[...AMENITIES, ...AMENITIES].map((a, i) => (
@@ -288,7 +316,7 @@ export default function Home() {
           <div className="about-img-wrap fade-left">
             <img src={buildingImg} alt="BSS Residency" width="800" height="600" loading="lazy" />
             <div className="about-badge-box">
-              <span className="badge-icon">🏨</span>
+              <span className="badge-icon">­ƒÅ¿</span>
               <span className="badge-txt">Premium Lodge</span>
             </div>
           </div>
@@ -296,11 +324,11 @@ export default function Home() {
             <p className="section-label">About Us</p>
             <h2>A Sanctuary in the<br /><em>Heart of Courtallam</em></h2>
             <div className="divider-gold" />
-            <p>BSS Residency is the best <strong>hotel near Courtallam waterfalls</strong>, located just 100 metres from the legendary Main Falls — moments from the bus stand and Anna Statue. We offer modern <strong>Courtallam rooms for rent</strong> with premium amenities, ideal for families, pilgrims, and leisure travellers.</p>
+            <p>BSS Residency is the best <strong>hotel near Courtallam waterfalls</strong>, located just 100 metres from the legendary Main Falls ÔÇö moments from the bus stand and Anna Statue. We offer modern <strong>Courtallam rooms for rent</strong> with premium amenities, ideal for families, pilgrims, and leisure travellers.</p>
             <p>From comfortable non-A/C doubles to spacious four-bed A/C rooms, our <strong>family hotel in Courtallam</strong> has the perfect accommodation for every guest and every budget. Looking for <strong>Kutralam lodging</strong>? BSS Residency is your best choice.</p>
             <div className="about-stats">
-              <div className="stat fade-up"><span className="stat-n">5</span><span className="stat-l">Room Types</span></div>
-              <div className="stat fade-up" style={{ animationDelay: '0.2s' }}><span className="stat-n">4.6★</span><span className="stat-l">Rating</span></div>
+              <div className="stat fade-up"><span className="stat-n">4</span><span className="stat-l">Room Types</span></div>
+              <div className="stat fade-up" style={{ animationDelay: '0.2s' }}><span className="stat-n">4.6Ôÿà</span><span className="stat-l">Rating</span></div>
               <div className="stat fade-up" style={{ animationDelay: '0.4s' }}><span className="stat-n">100m</span><span className="stat-l">to Main Falls</span></div>
               <div className="stat fade-up" style={{ animationDelay: '0.6s' }}><span className="stat-n">24/7</span><span className="stat-l">Service</span></div>
             </div>
@@ -322,19 +350,19 @@ export default function Home() {
                 className={`tab-btn ${activeTab === 'falls' ? 'active' : ''}`}
                 onClick={() => setActiveTab('falls')}
               >
-                🌊 Waterfalls
+                ­ƒîè Waterfalls
               </button>
               <button 
                 className={`tab-btn ${activeTab === 'dams' ? 'active' : ''}`}
                 onClick={() => setActiveTab('dams')}
               >
-                🏞️ Dams
+                ­ƒÅ×´©Å Dams
               </button>
               <button 
                 className={`tab-btn ${activeTab === 'temples' ? 'active' : ''}`}
                 onClick={() => setActiveTab('temples')}
               >
-                🙏 Temples
+                ­ƒÖÅ Temples
               </button>
             </div>
 
@@ -345,7 +373,7 @@ export default function Home() {
                 onClick={() => attractionsRef.current?.scrollBy({ left: -380, behavior: 'smooth' })}
                 disabled={!canScrollLeft}
               >
-                ‹
+                ÔÇ╣
               </button>
 
               <div className="attractions-grid" ref={attractionsRef} onScroll={checkScroll}>
@@ -353,7 +381,7 @@ export default function Home() {
                   <div key={att.name} className="attraction-card fade-up">
                     <div className="att-img-wrap">
                       <img src={att.img} alt={att.name} loading="lazy" width="400" height="260" />
-                      <div className="att-distance">📍 {att.distance}</div>
+                      <div className="att-distance">­ƒôì {att.distance}</div>
                     </div>
                     <div className="att-info">
                       <h3>{att.name}</h3>
@@ -369,7 +397,7 @@ export default function Home() {
                 onClick={() => attractionsRef.current?.scrollBy({ left: 380, behavior: 'smooth' })}
                 disabled={!canScrollRight}
               >
-                ›
+                ÔÇ║
               </button>
             </div>
           </div>
@@ -397,7 +425,7 @@ export default function Home() {
             </div>
 
             <div className="pearls-footer fade-up">
-              <h3>BSS RESIDENCY — <em>Premium Guesthouse</em></h3>
+              <h3>BSS RESIDENCY ÔÇö <em>Premium Guesthouse</em></h3>
             </div>
           </div>
         </section>
@@ -410,26 +438,24 @@ export default function Home() {
             <p className="rooms-preview-sub fade-up" style={{ animationDelay: '0.2s' }}>
               Best rates guaranteed when you book directly with us
             </p>
-            <div className="rooms-carousel-container">
-              <div className="rooms-grid">
-                {ROOMS.map((r) => (
-                  <div key={r.key} className="room-card-home">
-                    <div className="r-img-wrapper">
-                      <img src={imgMap[r.key]} alt={r.name} className="r-card-img" loading="lazy" width="400" height="260" />
-                    </div>
-                    <h3>{r.name}</h3>
-                    <span className="r-type-pill">{r.type}</span>
-                    <div className="r-price">
-                      <span className="r-price-currency">₹</span>
-                      <span className="r-price-amount">{getPrice(r).toLocaleString('en-IN')}</span>
-                      <span className="r-price-unit">/ night</span>
-                    </div>
-                    <div className="r-actions-home">
-                      <Link to={`/booking?room=${r.key}`} className="r-book-btn"><span>Book Now</span></Link>
-                    </div>
+            <div className="rooms-grid">
+              {ROOMS.map((r) => (
+                <div key={r.key} className="room-card-home">
+                  <div className="r-img-wrapper">
+                    <img src={imgMap[r.key]} alt={r.name} className="r-card-img" loading="lazy" width="400" height="260" />
                   </div>
-                ))}
-              </div>
+                  <h3>{r.name}</h3>
+                  <span className="r-type-pill">{r.type}</span>
+                  <div className="r-price">
+                    <span className="r-price-currency">Ôé╣</span>
+                    <span className="r-price-amount">{getPrice(r).toLocaleString('en-IN')}</span>
+                    <span className="r-price-unit">/ night</span>
+                  </div>
+                  <div className="r-actions-home">
+                    <Link to={`/booking?room=${r.key}`} className="r-book-btn"><span>Book Now</span></Link>
+                  </div>
+                </div>
+              ))}
             </div>
             <div className="tariff-foot fade-up">
               <Link to="/rooms" className="btn-primary"><span>View All Rooms</span></Link>
@@ -443,14 +469,14 @@ export default function Home() {
             <p className="section-label">Room Interior</p>
             <h2>Comfort in Every<br /><em>Detail</em></h2>
             <div className="divider-gold" />
-            <p>Our A/C rooms feature premium mattresses, clean marble tiles, branded pillows, and modern A/C units — all maintained to the highest standard of cleanliness and comfort.</p>
+            <p>Our A/C rooms feature premium mattresses, clean marble tiles, branded pillows, and modern A/C units ÔÇö all maintained to the highest standard of cleanliness and comfort.</p>
             <ul className="showcase-features">
-              <li><span className="tick">✓</span> DC Inverter A/C</li>
-              <li><span className="tick">✓</span> Premium mattress</li>
-              <li><span className="tick">✓</span> Marble tile flooring</li>
-              <li><span className="tick">✓</span> Attached bathroom</li>
-              <li><span className="tick">✓</span> 24hr hot water</li>
-              <li><span className="tick">✓</span> Daily housekeeping</li>
+              <li><span className="tick">Ô£ô</span> DC Inverter A/C</li>
+              <li><span className="tick">Ô£ô</span> Premium mattress</li>
+              <li><span className="tick">Ô£ô</span> Marble tile flooring</li>
+              <li><span className="tick">Ô£ô</span> Attached bathroom</li>
+              <li><span className="tick">Ô£ô</span> 24hr hot water</li>
+              <li><span className="tick">Ô£ô</span> Daily housekeeping</li>
             </ul>
             <Link to="/booking" className="btn-primary" style={{ marginTop: '1.5rem', display: 'inline-block' }}><span>Book This Room</span></Link>
           </div>
@@ -465,6 +491,11 @@ export default function Home() {
             <p className="section-label" style={{ textAlign: 'center' }}>Guest Experiences</p>
             <h2 style={{ textAlign: 'center', marginBottom: '3rem' }}>What Our <em>Guests Say</em></h2>
 
+            <div className="home-review-widget">
+              <h3 className="widget-title">Real Google Reviews</h3>
+              <div className="elfsight-app-08e831ad-a3ef-41b1-8975-543cc3147c48" data-elfsight-app-lazy />
+            </div>
+
             <div className="carousel-container">
               <button 
                 className="carousel-nav prev" 
@@ -472,7 +503,7 @@ export default function Home() {
                 onClick={() => reviewsRef.current?.scrollBy({ left: -380, behavior: 'smooth' })}
                 disabled={!canScrollRevLeft}
               >
-                ‹
+                ÔÇ╣
               </button>
 
               <div className="reviews-carousel" ref={reviewsRef} onScroll={checkRevScroll}>
@@ -533,7 +564,7 @@ export default function Home() {
                       <div className="gr-footer">
                         <div className="gr-stars">
                           {[...Array(5)].map((_, i) => (
-                            <span key={i} className={i < r.rating ? 'gr-star filled' : 'gr-star'}>★</span>
+                            <span key={i} className={i < r.rating ? 'gr-star filled' : 'gr-star'}>Ôÿà</span>
                           ))}
                         </div>
                         <div className="gr-time">{formattedDate} on Google</div>
@@ -549,11 +580,13 @@ export default function Home() {
                 onClick={() => reviewsRef.current?.scrollBy({ left: 380, behavior: 'smooth' })}
                 disabled={!canScrollRevRight}
               >
-                ›
+                ÔÇ║
               </button>
             </div>
+
           </section>
         )}
+
 
         {/* CTA Banner */}
         <section className="cta-banner">
@@ -562,10 +595,10 @@ export default function Home() {
             <p>Book directly with us for the best rates. Instant confirmation via WhatsApp.</p>
             <div className="cta-btns">
               <Link to="/booking" className="btn-book-now-hero">
-                📞 Book Now - Best Price!
+                ­ƒô× Book Now - Best Price!
               </Link>
               <a href={`tel:${CONTACT.phonePrimary.replace(/\s/g, '')}`} className="btn-outline-light">
-                📞 {CONTACT.phonePrimary}
+                ­ƒô× {CONTACT.phonePrimary}
               </a>
             </div>
           </div>
@@ -573,11 +606,11 @@ export default function Home() {
 
       </main>
 
-      {/* Review Modal Popup */}
+      {/* Review Modal Popup - Moved outside main to avoid transform issues */}
       {selectedReview && (
         <div className="review-modal-overlay" onClick={() => setSelectedReview(null)}>
           <div className="review-modal-content" onClick={e => e.stopPropagation()}>
-            <button className="modal-close-btn" aria-label="Close modal" onClick={() => setSelectedReview(null)}>×</button>
+            <button className="modal-close-btn" aria-label="Close modal" onClick={() => setSelectedReview(null)}>├ù</button>
             <div className="modal-header">
               <div className="modal-user-side">
                 {selectedReview.profileImage ? (
@@ -606,7 +639,7 @@ export default function Home() {
             <div className="modal-meta-row">
               <div className="modal-stars">
                 {[...Array(5)].map((_, i) => (
-                  <span key={i} className={i < (selectedReview.rating || 5) ? 'filled' : ''}>★</span>
+                  <span key={i} className={i < (selectedReview.rating || 5) ? 'filled' : ''}>Ôÿà</span>
                 ))}
               </div>
               <div className="modal-date-text">
@@ -628,7 +661,7 @@ export default function Home() {
               <h2 className="notice-title">BSS Residency Special</h2>
             </div>
             <div className="notice-body">
-              <h3 className="notice-sub">Enjoy the Best of Courtallam! 🌊</h3>
+              <h3 className="notice-sub">Enjoy the Best of Courtallam! ­ƒîè</h3>
               <p className="notice-main">Premium facilities at the most affordable prices. Visit <strong>BSS Residency</strong> to make your stay truly memorable and happy!</p>
               
               <div className="notice-footer-small">
