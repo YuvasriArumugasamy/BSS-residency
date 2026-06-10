@@ -207,8 +207,8 @@ router.get('/bookings', adminAuth, async (req, res) => {
         start = new Date(now.getFullYear(), now.getMonth(), 1);
         end = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
       }
-      // Filter by checkIn date for stays in that month
-      filter.checkIn = { $gte: start, $lte: end };
+      // Filter by createdAt date (when the booking was made) for that month
+      filter.createdAt = { $gte: start, $lte: end };
     }
 
     const total = await Booking.countDocuments(filter);
