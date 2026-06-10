@@ -36,7 +36,12 @@
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
+  <url>
+    <loc>https://www.bssresidency.com/courtallam-lodges</loc>
+    <lastmod>2026-05-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
   <url>
     <loc>https://www.bssresidency.com/checkin</loc>
     <lastmod>2026-05-30</lastmod>
