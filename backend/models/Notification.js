@@ -6,7 +6,8 @@ const notificationSchema = new mongoose.Schema(
     message: { type: String, required: true },
     type: { type: String, enum: ['booking', 'system', 'wa', 'reminder'], default: 'system' },
     isRead: { type: Boolean, default: false },
-    date: { type: Date, default: Date.now }
+    date: { type: Date, default: Date.now },
+    fcmTokens: { type: [String], default: [] },
   },
   { timestamps: true }
 );

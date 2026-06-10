@@ -28,15 +28,13 @@ export default function Navbar() {
     return () => { document.body.style.overflow = ''; };
   }, [menuOpen]);
 
-    const links = [
-      { to: '/', label: 'Home' },
-      { to: '/rooms', label: 'Rooms' },
-      { to: '/gallery', label: 'Gallery' },
-      { to: '/booking/manage', label: 'Manage Booking' },
-      { to: '/contact', label: 'Contact' },
-      { to: '/courtallam-lodges', label: 'Courtallam Lodges' },
-      { to: '/best-hotel-courtallam-waterfalls', label: 'Courtallam Blog' },
-    ];
+  const links = [
+    { to: '/', label: 'Home' },
+    { to: '/rooms', label: 'Rooms' },
+    { to: '/gallery', label: 'Gallery' },
+    { to: '/booking/manage', label: 'Manage Booking' },
+    { to: '/contact', label: 'Contact' },
+  ];
 
   return (
     <>

@@ -77,7 +77,28 @@ const sendPushToAdminsInternal = async (title, body) => {
   }
 };
 
+const sendPushToClient = async (token, title, body) => {
+  try {
+    if (!token) return;
+    await admin.messaging().send({
+      token,
+      notification: { title, body },
+      webpush: {
+        notification: {
+          title,
+          body,
+          icon: '/logo.webp',
+        },
+      },
+    });
+    console.log('[FCM] Client notification sent');
+  } catch (err) {
+    console.error('[FCM] Client notification error:', err.message);
+  }
+};
+
 module.exports = {
   sendPushNotificationToAdmins,
   sendPushToAdminsInternal,
+  sendPushToClient,
 };
