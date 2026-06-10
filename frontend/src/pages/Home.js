@@ -428,14 +428,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Reviews / Testimonials */}
-        <section className="testimonials">
-          <p className="section-label" style={{ textAlign: 'center' }}>Guest Experiences</p>
-          <h2 style={{ textAlign: 'center', marginBottom: '3rem' }}>What Our <em>Guests Say</em></h2>
-
-          <div className="elfsight-app-08e831ad-a3ef-41b1-8975-543cc3147c48" data-elfsight-app-lazy></div>
-        </section>
-
         {/* CTA Banner */}
         <section className="cta-banner">
           <div className="cta-inner container">
