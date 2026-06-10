@@ -4,6 +4,15 @@ import SEO from '../components/SEO';
 import './Contact.css';
 
 export default function Contact() {
+  useEffect(() => {
+    if (!document.querySelector('script[src="https://elfsightcdn.com/platform.js"]')) {
+      const script = document.createElement('script');
+      script.src = 'https://elfsightcdn.com/platform.js';
+      script.async = true;
+      document.body.appendChild(script);
+    }
+  }, []);
+
   return (
     <>
       <SEO 
@@ -122,7 +131,10 @@ export default function Contact() {
               </a>
             </div>
 
-
+            <div className="reviews-widget">
+              <h3>Google Reviews</h3>
+              <div className="elfsight-app-08e831ad-a3ef-41b1-8975-543cc3147c48" data-elfsight-app-lazy />
+            </div>
 
             <div className="nearby-card">
               <div className="nearby-head">
