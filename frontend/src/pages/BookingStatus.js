@@ -144,7 +144,7 @@ export default function BookingStatus() {
 
   const formatDate = (d) =>
     d
-      ? new Date(d).toLocaleDateString('ta-IN', {
+      ? new Date(d).toLocaleDateString('en-IN', {
           day: '2-digit', month: 'short', year: 'numeric',
         })
       : '—';
@@ -154,36 +154,36 @@ export default function BookingStatus() {
       color: '#f59e0b',
       bg: '#fffbeb',
       icon: '⏳',
-      label: 'நிலுவை உறுதிப்படுத்தல்',
-      desc: 'உங்கள் முன்பதிவு பெற்றது. ஹோட்டல் நிர்வாகி விரைவில் வாட்ஸ்அப் மூலம் உறுதிப்படுத்துவார்.',
+      label: 'Pending Confirmation',
+      desc: 'We have received your booking request. The hotel administrator will confirm it shortly via WhatsApp.',
     },
     Confirmed: {
       color: '#10b981',
       bg: '#f0fdf4',
       icon: '✅',
-      label: 'உறுதிப்படுத்தப்பட்டது',
-      desc: 'உங்கள் முன்பதிவு உறுதிப்படுத்தப்படுள்ளது! ரிசெப்ஷனில் உங்கள் Booking ID ஐ காட்டுங்கள்.',
+      label: 'Confirmed',
+      desc: 'Your booking has been confirmed! Please show your Booking ID at reception.',
     },
     Cancelled: {
       color: '#ef4444',
       bg: '#fef2f2',
       icon: '❌',
-      label: 'ரத்துசெய்யப்பட்டது',
-      desc: 'இந்த முன்பதிவு ரத்துசெய்யப்பட்டது. மீண்டும் முன்பதிவு செய்ய எங்களை தொடர்பு கொள்ளவும்.',
+      label: 'Cancelled',
+      desc: 'This booking has been cancelled. Please contact us to book again.',
     },
     'Checked-out': {
       color: '#6b7280',
       bg: '#f9fafb',
       icon: '🏁',
-      label: 'வெளியேற்றப்பட்டது',
-      desc: 'BSS Residency-யில் தங்கியதற்கு நன்றி! மீண்டும் வருவீர்கள் என்று நம்புகிறோம்.',
+      label: 'Checked-out',
+      desc: 'Thank you for staying at BSS Residency! We hope to see you again.',
     },
   };
 
   const meta = booking ? (statusMeta[booking.status] || statusMeta['Pending']) : null;
 
   const waConfirmFollowUp = booking
-    ? `வணக்கம் BSS Residency! 🙏\n\nஎன் முன்பதிவை பற்றி தொடர்ந்து தொடர்பு கொள்ள விரும்புகிறேன்.\nBooking ID: ${booking._id}\nபெயர்: ${booking.name}\nஅறை: ${booking.roomType}\nசெக்-இன்: ${formatDate(booking.checkIn)}\n\nதயவுசெய்து உறுதிபடுத்துங்கள்!`
+    ? `Hello BSS Residency! 🙏\n\nI would like to follow up on my booking request.\nBooking ID: ${booking._id}\nName: ${booking.name}\nRoom: ${booking.roomType}\nCheck-in: ${formatDate(booking.checkIn)}\n\nPlease confirm my booking!`
     : '';
 
   return (

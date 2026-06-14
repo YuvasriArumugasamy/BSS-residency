@@ -21,16 +21,16 @@ function buildWaConfirmLink(booking) {
   const checkInTimeStr = booking.checkInTime ? ` (${booking.checkInTime})` : '';
   const checkOutTimeStr = booking.checkOutTime ? ` (${booking.checkOutTime})` : '';
   const msg =
-    `✅ *BSS Residency – முன்பதிவு உறுதி செய்யப்பட்டது!*\n\n` +
-    `அன்புள்ள ${booking.name},\n\n` +
-    `உங்கள் முன்பதிவு *உறுதி செய்யப்பட்டது*. உங்கள் விவரங்கள் கீழே:\n\n` +
-    `🆔 முன்பதிவு எண்: *${booking.bookingId || booking._id}*\n` +
-    `🛏️ அறை: *${booking.roomType}*${booking.roomNumber ? ` (அறை #${booking.roomNumber})` : ''}\n` +
-    `📅 செக்-இன்: *${checkIn}${checkInTimeStr}*\n` +
-    `📅 செக்-அவுட்: *${checkOut}${checkOutTimeStr}*\n` +
-    `👥 விருந்தினர்கள்: *${booking.guests}*\n\n` +
-    `📍 BSS Residency, பஸ் ஸ்டாண்ட், அண்ணா சிலை அருகில், குற்றாலம் – 627 802\n\n` +
-    `தங்களை வரவேற்க காத்திருக்கிறோம்! 🙏`;
+    `✅ *BSS Residency – Booking Confirmed!*\n\n` +
+    `Dear ${booking.name},\n\n` +
+    `Your booking has been *confirmed*. Here are your details:\n\n` +
+    `🆔 Booking ID: *${booking.bookingId || booking._id}*\n` +
+    `🛏️ Room Type: *${booking.roomType}*${booking.roomNumber ? ` (Room #${booking.roomNumber})` : ''}\n` +
+    `📅 Check-in: *${checkIn}${checkInTimeStr}*\n` +
+    `📅 Check-out: *${checkOut}${checkOutTimeStr}*\n` +
+    `👥 Guests: *${booking.guests}*\n\n` +
+    `📍 BSS Residency, near Anna Statue, Courtallam Bus Stand, Courtallam - 627 802\n\n` +
+    `We look forward to welcoming you! 🙏`;
 
   // Build link to guest's number
   const guestPhone = booking.phone.replace(/[^0-9]/g, '');
