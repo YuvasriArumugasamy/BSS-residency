@@ -34,7 +34,7 @@ export default function Navbar() {
       { to: '/gallery', label: 'Gallery' },
       { to: '/booking/manage', label: 'Manage Booking' },
       { to: '/contact', label: 'Contact' },
-      { to: '/courtallam-lodges', label: 'Courtallam Lodges' },
+      { to: '/courtallam-lodges', label: 'Explore Courtallam' },
       { to: '/best-hotel-courtallam-waterfalls', label: 'Courtallam Blog' },
     ];
 
