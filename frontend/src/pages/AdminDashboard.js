@@ -1029,6 +1029,28 @@ const SettingsView = ({ isSeason, onToggleSeason, isWeekendActive, onToggleWeeke
             >
               {fcmStatus === 'Enabled' ? d_t('resyncAlerts') : d_t('enableAlerts')}
             </button>
+            <button
+              type="button"
+              className="admin-btn"
+              style={{ background: '#16a34a', color: '#fff', padding: '0.5rem 1.5rem', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 600 }}
+              onClick={async () => {
+                try {
+                  const auth = JSON.parse(localStorage.getItem('bss_admin') || sessionStorage.getItem('bss_admin'));
+                  const headers = { username: auth.username, password: auth.password };
+                  const res = await api.post('/api/admin/test-notification', {}, { headers });
+                  if (res.data?.success) {
+                    alert('✅ Test notification sent! Check your phone.');
+                  } else {
+                    alert('❌ Failed: ' + (res.data?.error || 'Unknown error'));
+                  }
+                } catch (e) {
+                  alert('❌ Error: ' + e.message);
+                }
+              }}
+              disabled={fcmStatus !== 'Enabled'}
+            >
+              🔔 Test Notification
+            </button>
           </div>
         </div>
       </div>
