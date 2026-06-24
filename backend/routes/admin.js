@@ -982,7 +982,7 @@ router.post('/test-push', adminAuth, async (req, res) => {
 });
 
 // POST /api/admin/test-notification — Send a test push notification to all admin devices
-router.post('/test-notification', authenticateAdmin, async (req, res) => {
+router.post('/test-notification', adminAuth, async (req, res) => {
   try {
     const { sendPushNotificationToAdmins } = require('../utils/fcmService');
     const result = await sendPushNotificationToAdmins(
