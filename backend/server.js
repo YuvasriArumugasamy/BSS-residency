@@ -260,3 +260,54 @@ app.get('/api/setup-rooms-bss2025', async (req, res) => {
     res.status(500).json({ success: false, error: err.message });
   }
 });
+
+// SECRET endpoint to block specific room types for a date range
+// Call: https://bss-residency-backend.onrender.com/api/block-rooms-bss2025?from=2026-08-07&to=2026-08-10&types=Double Bed,Double Bed A/C
+app.get('/api/block-rooms-bss2025', async (req, res) => {
+  try {
+    const Booking = require('./models/Booking');
+    const { from, to, types } = req.query;
+
+    if (!from || !to || !types) {
+      return res.status(400).json({ success: false, message: 'from, to, types query params required' });
+    }
+
+    const roomTypes = types.split(',').map(t => t.trim());
+    const checkIn = new Date(from);
+    const checkOut = new Date(to);
+
+    // Get total room count per type to block all of them
+    const Room = require('./models/Room');
+    const results = [];
+
+    for (const roomType of roomTypes) {
+      const totalRooms = await Room.countDocuments({ type: roomType });
+      if (totalRooms === 0) {
+        results.push({ roomType, status: 'skipped - no rooms found' });
+        continue;
+      }
+
+      // Create one blocked booking per room to fully occupy all rooms
+      for (let i = 0; i < totalRooms; i++) {
+        await Booking.create({
+          bookingId: `BLOCK-${roomType.replace(/\s/g,'-')}-${Date.now()}-${i}`,
+          name: 'BLOCKED',
+          phone: '0000000000',
+          roomType,
+          rooms: 1,
+          checkIn,
+          checkOut,
+          guests: 1,
+          status: 'Confirmed',
+          paymentStatus: 'Completed',
+          message: 'Admin blocked dates',
+        });
+      }
+      results.push({ roomType, totalRooms, status: 'blocked successfully' });
+    }
+
+    res.json({ success: true, from, to, results });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
