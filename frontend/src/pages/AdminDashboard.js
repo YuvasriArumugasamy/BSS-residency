@@ -1036,7 +1036,10 @@ const SettingsView = ({ isSeason, onToggleSeason, isWeekendActive, onToggleWeeke
               onClick={async () => {
                 try {
                   const auth = JSON.parse(localStorage.getItem('bss_admin') || sessionStorage.getItem('bss_admin'));
-                  const headers = { username: auth.username, password: auth.password };
+                  const token = auth?.token;
+                  const headers = token 
+                    ? { Authorization: `Bearer ${token}` }
+                    : { username: auth?.username, password: auth?.password };
                   const res = await api.post('/api/admin/test-notification', {}, { headers });
                   if (res.data?.success) {
                     alert('✅ Test notification sent! Check your phone.');
