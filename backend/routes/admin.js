@@ -737,6 +737,10 @@ router.get('/settings', adminAuth, async (req, res) => {
     if (settingsObj.isWeekendActive === undefined) {
       settingsObj.isWeekendActive = true;
     }
+    // Ensure closedDates exists
+    if (settingsObj.closedDates === undefined) {
+      settingsObj.closedDates = [];
+    }
     
     res.json({ success: true, settings: settingsObj });
   } catch (err) {
@@ -747,7 +751,7 @@ router.get('/settings', adminAuth, async (req, res) => {
 // PATCH /api/admin/settings — Update settings
 router.patch('/settings', adminAuth, async (req, res) => {
   try {
-    const { isSeason, isWeekendActive } = req.body;
+    const { isSeason, isWeekendActive, closedDates } = req.body;
     if (isSeason !== undefined) {
       await Setting.findOneAndUpdate(
         { key: 'isSeason' },
@@ -768,6 +772,16 @@ router.patch('/settings', adminAuth, async (req, res) => {
       await Setting.findOneAndUpdate(
         { key: 'isWeekendActive' },
         { value: isWeekendActive },
+        { upsert: true, new: true }
+      );
+    }
+    if (closedDates !== undefined) {
+      if (!Array.isArray(closedDates)) {
+        return res.status(400).json({ success: false, message: 'closedDates must be an array of dates' });
+      }
+      await Setting.findOneAndUpdate(
+        { key: 'closedDates' },
+        { value: closedDates },
         { upsert: true, new: true }
       );
     }

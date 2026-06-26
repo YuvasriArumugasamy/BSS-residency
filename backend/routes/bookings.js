@@ -13,11 +13,16 @@ const { autoCheckOutPassedBookings } = require('../utils/bookingAutoCheckout');
 const Razorpay = require('razorpay');
 const crypto = require('crypto');
 
-// Initialize Razorpay
-const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID,
-  key_secret: process.env.RAZORPAY_KEY_SECRET,
-});
+// Initialize Razorpay lazily so missing env vars don't crash the server on startup
+const getRazorpay = () => {
+  if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
+    throw new Error('Razorpay credentials are not configured in environment variables');
+  }
+  return new Razorpay({
+    key_id: process.env.RAZORPAY_KEY_ID,
+    key_secret: process.env.RAZORPAY_KEY_SECRET,
+  });
+};
 
 // --- NEW RAZORPAY ROUTES ---
 
@@ -33,7 +38,7 @@ router.post('/create-order', async (req, res) => {
       receipt: `receipt_${Date.now()}`,
     };
 
-    const order = await razorpay.orders.create(options);
+    const order = await getRazorpay().orders.create(options);
     console.log(`[Razorpay] Order created successfully: ${order.id}`);
     
     res.json({
@@ -87,6 +92,9 @@ router.post('/verify-payment', async (req, res) => {
     const roomCount = Number(rooms) || 1;
 
     // --- Availability Check ---
+    const closedSetting = await Setting.findOne({ key: 'closedDates' });
+    const closedDates = closedSetting ? closedSetting.value : [];
+    
     const totalRoomsCount = await Room.countDocuments({ type: roomType });
     const start = new Date(checkIn);
     const end = new Date(checkOut);
@@ -100,6 +108,19 @@ router.post('/verify-payment', async (req, res) => {
     });
 
     for (let d = new Date(start); d < end; d.setDate(d.getDate() + 1)) {
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
+      const dd = String(d.getDate()).padStart(2, '0');
+      const dateString = `${yyyy}-${mm}-${dd}`;
+      
+      if (closedDates.includes(dateString)) {
+        console.warn('[Verify Payment] Date is closed:', dateString);
+        return res.status(400).json({ 
+          success: false, 
+          message: `Sorry, BSS Residency is fully booked/closed on ${dd}-${mm}-${yyyy}. Payment received — please contact us for a refund or alternate dates.` 
+        });
+      }
+
       const occupiedOnDay = overlappingBookings.reduce((acc, b) => {
         if (d >= new Date(b.checkIn) && d < new Date(b.checkOut)) {
           return acc + (b.rooms || 1);
@@ -246,6 +267,9 @@ router.post('/', async (req, res) => {
     const roomCount = Math.max(1, Number(rooms) || 1);
 
     // --- Availability Check ---
+    const closedSetting = await Setting.findOne({ key: 'closedDates' });
+    const closedDates = closedSetting ? closedSetting.value : [];
+    
     const totalRoomsCount = await Room.countDocuments({ type: roomType });
     const start = new Date(checkIn);
     const end = new Date(checkOut);
@@ -260,6 +284,18 @@ router.post('/', async (req, res) => {
 
     // Check each day of the stay
     for (let d = new Date(start); d < end; d.setDate(d.getDate() + 1)) {
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
+      const dd = String(d.getDate()).padStart(2, '0');
+      const dateString = `${yyyy}-${mm}-${dd}`;
+
+      if (closedDates.includes(dateString)) {
+        return res.status(400).json({ 
+          success: false, 
+          message: `Sorry, BSS Residency is fully booked/closed on ${dd}-${mm}-${yyyy}. Please select other dates.` 
+        });
+      }
+
       const occupiedOnDay = existingBookings.reduce((acc, b) => {
         if (d >= new Date(b.checkIn) && d < new Date(b.checkOut)) {
           return acc + (b.rooms || 1);
@@ -425,11 +461,26 @@ router.get('/availability', async (req, res) => {
     });
 
     // 4. Calculate availability for each day
+    const closedSetting = await Setting.findOne({ key: 'closedDates' });
+    const closedDates = closedSetting ? closedSetting.value : [];
+
     const availability = {};
     const daysInMonth = new Date(year, month, 0).getDate();
 
     for (let day = 1; day <= daysInMonth; day++) {
       const currentDay = new Date(year, month - 1, day);
+      
+      // Format currentDay as YYYY-MM-DD
+      const yyyy = currentDay.getFullYear();
+      const mm = String(currentDay.getMonth() + 1).padStart(2, '0');
+      const dd = String(currentDay.getDate()).padStart(2, '0');
+      const dateString = `${yyyy}-${mm}-${dd}`;
+
+      if (closedDates.includes(dateString)) {
+        availability[day] = 0;
+        continue;
+      }
+
       const occupiedCount = bookings.reduce((count, b) => {
         const ci = new Date(b.checkIn);
         const co = new Date(b.checkOut);

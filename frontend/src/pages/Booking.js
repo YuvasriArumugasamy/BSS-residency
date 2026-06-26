@@ -52,6 +52,7 @@ export default function Booking() {
   const [copied, setCopied] = useState(false);
   const [isSeason, setIsSeason] = useState(false);
   const [isWeekendActive, setIsWeekendActive] = useState(true);
+  const [closedDates, setClosedDates] = useState([]);
 
   useEffect(() => {
     const fetchAvailability = async () => {
@@ -72,6 +73,7 @@ export default function Booking() {
         if (res.data.success) {
           setIsSeason(res.data.isSeason);
           setIsWeekendActive(res.data.isWeekendActive !== false);
+          setClosedDates(res.data.closedDates || []);
         }
       } catch (err) {
         console.error('Failed to fetch season status', err);
@@ -206,6 +208,24 @@ export default function Booking() {
       setResult({ success: false, message: 'Check-out must be after check-in.' });
       return;
     }
+    
+    // Check if any date in the range is closed
+    const start = new Date(form.checkIn);
+    const end = new Date(form.checkOut);
+    for (let d = new Date(start); d < end; d.setDate(d.getDate() + 1)) {
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
+      const dd = String(d.getDate()).padStart(2, '0');
+      const ds = `${yyyy}-${mm}-${dd}`;
+      if (closedDates.includes(ds)) {
+        setResult({ 
+          success: false, 
+          message: `BSS Residency is fully booked/closed on ${dd}-${mm}-${yyyy}. Please choose other dates.` 
+        });
+        return;
+      }
+    }
+
     setResult(null);
     setStep(2);
     window.scrollTo({ top: 0, behavior: 'smooth' });
