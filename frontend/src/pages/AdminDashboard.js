@@ -955,6 +955,129 @@ const Reports = ({ stats, period, setPeriod, selectedMonth, setSelectedMonth, la
   );
 };
 
+const RoomBlockingCenter = ({ lang }) => {
+  const [rooms, setRooms] = useState([]);
+  const [selectedRoom, setSelectedRoom] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [blockedList, setBlockedList] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const getAuth = () => JSON.parse(localStorage.getItem('bss_admin') || sessionStorage.getItem('bss_admin'));
+
+  const getHeaders = () => {
+    const auth = getAuth();
+    return auth?.token
+      ? { Authorization: `Bearer ${auth.token}` }
+      : { username: auth?.username, password: auth?.password };
+  };
+
+  useEffect(() => {
+    api.get('/api/admin/rooms', { headers: getHeaders() }).then(res => {
+      if (res.data?.rooms) setRooms(res.data.rooms);
+    }).catch(() => {});
+    fetchBlocked();
+  }, []);
+
+  const fetchBlocked = async () => {
+    try {
+      const res = await api.get('/api/admin/blocked-dates', { headers: getHeaders() });
+      if (res.data?.blocked) setBlockedList(res.data.blocked);
+    } catch (e) {}
+  };
+
+  const handleBlock = async () => {
+    if (!selectedRoom || !startDate || !endDate) return alert('Please fill all fields');
+    setLoading(true);
+    try {
+      const res = await api.post('/api/admin/block-dates', {
+        roomNumber: selectedRoom,
+        startDate,
+        endDate,
+      }, { headers: getHeaders() });
+      if (res.data?.success) {
+        alert('✅ Room blocked successfully!');
+        setSelectedRoom(''); setStartDate(''); setEndDate('');
+        fetchBlocked();
+      } else {
+        alert('❌ ' + (res.data?.message || 'Failed'));
+      }
+    } catch (e) {
+      alert('❌ Error: ' + e.message);
+    }
+    setLoading(false);
+  };
+
+  const handleUnblock = async (id) => {
+    if (!window.confirm('Remove this block?')) return;
+    try {
+      await api.delete(`/api/admin/blocked-dates/${id}`, { headers: getHeaders() });
+      fetchBlocked();
+    } catch (e) { alert('Error: ' + e.message); }
+  };
+
+  return (
+    <div style={{ marginTop: '2rem', padding: '1.5rem', background: '#fff5f5', borderRadius: '16px', border: '1px solid #fecaca' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
+        <div style={{ background: '#fee2e2', borderRadius: '12px', padding: '0.75rem', display: 'flex' }}>
+          <span style={{ fontSize: '1.5rem' }}>📅</span>
+        </div>
+        <div>
+          <h4 style={{ margin: 0, fontWeight: 700, fontSize: '1.1rem', color: '#1e293b' }}>Room Blocking Center</h4>
+          <p style={{ margin: 0, fontSize: '0.85rem', color: '#64748b' }}>Block rooms for maintenance or custom bookings</p>
+        </div>
+      </div>
+
+      <div style={{ marginBottom: '1rem' }}>
+        <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#64748b', marginBottom: '0.5rem', letterSpacing: '0.05em' }}>SELECT ROOM</label>
+        <select
+          value={selectedRoom}
+          onChange={e => setSelectedRoom(e.target.value)}
+          style={{ width: '100%', padding: '0.85rem 1rem', borderRadius: '12px', border: '1.5px solid #e2e8f0', fontSize: '0.95rem', background: '#fff' }}
+        >
+          <option value="">-- Choose Room --</option>
+          {rooms.map(r => (
+            <option key={r._id} value={r.roomNumber}>Room {r.roomNumber} — {r.type}</option>
+          ))}
+        </select>
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+        <div>
+          <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#64748b', marginBottom: '0.5rem', letterSpacing: '0.05em' }}>START DATE</label>
+          <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)}
+            style={{ width: '100%', padding: '0.85rem 1rem', borderRadius: '12px', border: '1.5px solid #e2e8f0', fontSize: '0.95rem', background: '#fff', boxSizing: 'border-box' }} />
+        </div>
+        <div>
+          <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#64748b', marginBottom: '0.5rem', letterSpacing: '0.05em' }}>END DATE</label>
+          <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)}
+            style={{ width: '100%', padding: '0.85rem 1rem', borderRadius: '12px', border: '1.5px solid #e2e8f0', fontSize: '0.95rem', background: '#fff', boxSizing: 'border-box' }} />
+        </div>
+      </div>
+
+      <button
+        onClick={handleBlock}
+        disabled={loading}
+        style={{ width: '100%', padding: '1rem', background: '#dc2626', color: '#fff', border: 'none', borderRadius: '12px', fontSize: '1rem', fontWeight: 700, cursor: 'pointer' }}
+      >
+        {loading ? 'Blocking...' : '+ Block Room'}
+      </button>
+
+      <div style={{ marginTop: '1.5rem' }}>
+        <h5 style={{ fontWeight: 700, color: '#1e293b', marginBottom: '0.75rem' }}>BLOCKED DATES</h5>
+        {blockedList.length === 0 ? (
+          <p style={{ color: '#94a3b8', fontSize: '0.9rem', fontStyle: 'italic' }}>No blocked dates currently.</p>
+        ) : blockedList.map(b => (
+          <div key={b._id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.75rem 1rem', background: '#fff', borderRadius: '8px', border: '1px solid #fee2e2', marginBottom: '0.5rem' }}>
+            <span style={{ fontSize: '0.9rem', fontWeight: 600 }}>Room {b.roomNumber} — {new Date(b.startDate).toLocaleDateString('en-IN')} to {new Date(b.endDate).toLocaleDateString('en-IN')}</span>
+            <button onClick={() => handleUnblock(b._id)} style={{ background: '#fee2e2', color: '#dc2626', border: 'none', borderRadius: '6px', padding: '0.3rem 0.75rem', cursor: 'pointer', fontWeight: 600 }}>Remove</button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 const SettingsView = ({ isSeason, onToggleSeason, isWeekendActive, onToggleWeekend, lang }) => {
   const d_t = (key) => DASHBOARD_LANG[lang]?.[key] || DASHBOARD_LANG['en']?.[key] || key;
   const [fcmStatus, setFcmStatus] = useState('Checking...');
@@ -1265,6 +1388,9 @@ const SettingsView = ({ isSeason, onToggleSeason, isWeekendActive, onToggleWeeke
           </button>
         </div>
       </form>
+
+      {/* Room Blocking Center */}
+      <RoomBlockingCenter lang={lang} />
 
     </div>
   </div>

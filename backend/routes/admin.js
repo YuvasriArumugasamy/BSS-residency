@@ -995,6 +995,43 @@ router.post('/test-push', adminAuth, async (req, res) => {
   }
 });
 
+// POST /api/admin/block-dates — Block a room for a date range
+router.post('/block-dates', adminAuth, async (req, res) => {
+  try {
+    const BlockedDate = require('../models/BlockedDate');
+    const { roomNumber, startDate, endDate } = req.body;
+    if (!roomNumber || !startDate || !endDate) {
+      return res.status(400).json({ success: false, message: 'roomNumber, startDate, endDate required' });
+    }
+    const blocked = await BlockedDate.create({ roomNumber, startDate: new Date(startDate), endDate: new Date(endDate) });
+    res.json({ success: true, blocked });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// GET /api/admin/blocked-dates — Get all blocked dates
+router.get('/blocked-dates', adminAuth, async (req, res) => {
+  try {
+    const BlockedDate = require('../models/BlockedDate');
+    const blocked = await BlockedDate.find().sort({ startDate: 1 });
+    res.json({ success: true, blocked });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// DELETE /api/admin/blocked-dates/:id — Remove a blocked date
+router.delete('/blocked-dates/:id', adminAuth, async (req, res) => {
+  try {
+    const BlockedDate = require('../models/BlockedDate');
+    await BlockedDate.findByIdAndDelete(req.params.id);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 // POST /api/admin/test-notification — Send a test push notification to all admin devices
 router.post('/test-notification', adminAuth, async (req, res) => {
   try {
