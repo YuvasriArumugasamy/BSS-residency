@@ -259,7 +259,7 @@ export default function Booking() {
 
       // 2. Configure Razorpay Options
       const options = {
-        key: 'rzp_live_SptqBPCmbCGB7n', // Your Live Key ID
+        key: 'rzp_live_T93qcmEQCwqEm2', // Live Key ID
         amount: advanceToPay * 100,
         currency: "INR",
         name: "BSS Residency",
