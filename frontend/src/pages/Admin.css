@@ -1174,7 +1174,7 @@
   .admin-table tbody td {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     padding: 0.65rem 0;
     border: none;
     border-bottom: 1px dashed #f0e6d6;

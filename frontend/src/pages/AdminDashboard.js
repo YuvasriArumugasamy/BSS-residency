@@ -743,11 +743,13 @@ const BookingManagement = ({ bookings = [], rooms = [], period, setPeriod, onCon
               <tr key={b._id}>
                 <td data-label="#">{i + 1}</td>
                 <td data-label={d_t('guest')}>
-                  <div style={{ fontWeight: 600 }}>{b.name || 'Unknown'}</div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--admin-primary)', fontWeight: 600 }}>
-                    #{b.bookingId || (b._id ? String(parseInt(b._id.toString().slice(-6), 16)).padStart(6, '0').slice(-6) : 'N/A')}
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', textAlign: 'right' }}>
+                    <div style={{ fontWeight: 700, color: '#1e293b' }}>{b.name || 'Unknown'}</div>
+                    <div style={{ fontSize: '0.75rem', color: 'var(--admin-primary)', fontWeight: 600, marginTop: '2px' }}>
+                      #{b.bookingId || (b._id ? String(parseInt(b._id.toString().slice(-6), 16)).padStart(6, '0').slice(-6) : 'N/A')}
+                    </div>
+                    {b.email && <div style={{ fontSize: '0.7rem', color: '#888', wordBreak: 'break-all' }}>{b.email}</div>}
                   </div>
-                  <div style={{ fontSize: '0.7rem', color: '#888' }}>{b.email || ''}</div>
                 </td>
                 <td data-label={d_t('phone')}>{b.phone}</td>
                 <td data-label={d_t('room')}>
