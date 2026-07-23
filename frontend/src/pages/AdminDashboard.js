@@ -647,7 +647,7 @@ const BookingManagement = ({ bookings = [], rooms = [], period, setPeriod, onCon
     <div className="card">
       <div className="card-header" style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <h3 style={{ margin: 0 }}>{d_t('bookingManagement')}</h3>
-        <button 
+        <button
           onClick={onAddOfflineBookingClick}
           className="admin-btn admin-btn-primary"
           style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', fontSize: '0.85rem' }}
@@ -655,18 +655,18 @@ const BookingManagement = ({ bookings = [], rooms = [], period, setPeriod, onCon
           <Plus size={16} /> <span>{d_t('addOfflineBooking')}</span>
         </button>
       </div>
-      
+
       <div className="filter-tabs-row" style={{ marginBottom: '1.5rem', padding: '0 1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-        <div className="filter-tabs" style={{ 
-          display: 'flex', 
-          gap: '0.6rem', 
-          background: '#f1f5f9', 
-          padding: '0.5rem', 
-          borderRadius: '10px', 
-          overflowX: 'auto', 
-          flexWrap: 'nowrap', 
-          msOverflowStyle: 'none', 
-          scrollbarWidth: 'none', 
+        <div className="filter-tabs" style={{
+          display: 'flex',
+          gap: '0.6rem',
+          background: '#f1f5f9',
+          padding: '0.5rem',
+          borderRadius: '10px',
+          overflowX: 'auto',
+          flexWrap: 'nowrap',
+          msOverflowStyle: 'none',
+          scrollbarWidth: 'none',
           width: '100%',
           justifyContent: 'flex-start',
           alignItems: 'center',
@@ -699,29 +699,29 @@ const BookingManagement = ({ bookings = [], rooms = [], period, setPeriod, onCon
           <div style={{ minWidth: '30px', height: '1px' }} />
         </div>
       </div>
-        <div style={{ fontSize: '0.85rem', color: '#64748b', display: 'flex', alignItems: 'center', gap: '0.8rem', flexWrap: 'wrap' }}>
-          <div>{d_t('showingBookings')} <strong>{filteredBookings.length}</strong> {d_t('bookingsFound')}</div>
+      <div style={{ fontSize: '0.85rem', color: '#64748b', display: 'flex', alignItems: 'center', gap: '0.8rem', flexWrap: 'wrap' }}>
+        <div>{d_t('showingBookings')} <strong>{filteredBookings.length}</strong> {d_t('bookingsFound')}</div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#fff', padding: '0.2rem 0.5rem', borderRadius: '6px', border: '1px solid #e2e8f0' }}>
-            <select
-              value={period}
-              onChange={(e) => setPeriod(e.target.value)}
-              style={{ border: 'none', fontWeight: 600, color: '#475569', outline: 'none', cursor: 'pointer' }}
-            >
-              <option value="month">{d_t('monthView')}</option>
-              <option value="all">{d_t('allTime')}</option>
-            </select>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#fff', padding: '0.2rem 0.5rem', borderRadius: '6px', border: '1px solid #e2e8f0' }}>
+          <select
+            value={period}
+            onChange={(e) => setPeriod(e.target.value)}
+            style={{ border: 'none', fontWeight: 600, color: '#475569', outline: 'none', cursor: 'pointer' }}
+          >
+            <option value="month">{d_t('monthView')}</option>
+            <option value="all">{d_t('allTime')}</option>
+          </select>
 
-            {period === 'month' && (
-              <input
-                type="month"
-                value={window.selectedMonthGlobal || ''}
-                onChange={(e) => window.setSelectedMonthGlobal(e.target.value)}
-                style={{ border: 'none', borderLeft: '1px solid #eee', paddingLeft: '0.5rem', fontWeight: 600, color: 'var(--admin-primary)', outline: 'none' }}
-              />
-            )}
-          </div>
+          {period === 'month' && (
+            <input
+              type="month"
+              value={window.selectedMonthGlobal || ''}
+              onChange={(e) => window.setSelectedMonthGlobal(e.target.value)}
+              style={{ border: 'none', borderLeft: '1px solid #eee', paddingLeft: '0.5rem', fontWeight: 600, color: 'var(--admin-primary)', outline: 'none' }}
+            />
+          )}
         </div>
+      </div>
 
       <div className="admin-table-wrap">
         <table className="admin-table">
@@ -741,16 +741,16 @@ const BookingManagement = ({ bookings = [], rooms = [], period, setPeriod, onCon
               <tr><td colSpan="7" style={{ textAlign: 'center', padding: '2rem', color: '#888' }}>{d_t('noBookingsFound')}</td></tr>
             ) : filteredBookings.map((b, i) => (
               <tr key={b._id}>
-                <td>{i + 1}</td>
-                <td>
+                <td data-label="#">{i + 1}</td>
+                <td data-label={d_t('guest')}>
                   <div style={{ fontWeight: 600 }}>{b.name || 'Unknown'}</div>
                   <div style={{ fontSize: '0.75rem', color: 'var(--admin-primary)', fontWeight: 600 }}>
                     #{b.bookingId || (b._id ? String(parseInt(b._id.toString().slice(-6), 16)).padStart(6, '0').slice(-6) : 'N/A')}
                   </div>
                   <div style={{ fontSize: '0.7rem', color: '#888' }}>{b.email || ''}</div>
                 </td>
-                <td>{b.phone}</td>
-                <td>
+                <td data-label={d_t('phone')}>{b.phone}</td>
+                <td data-label={d_t('room')}>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
                     <div style={{ fontWeight: 600 }}>{b.roomType}</div>
                     <select
@@ -767,10 +767,10 @@ const BookingManagement = ({ bookings = [], rooms = [], period, setPeriod, onCon
                     </select>
                   </div>
                 </td>
-                <td style={{ fontSize: '0.85rem' }}>
+                <td data-label={d_t('checkinCheckout')} style={{ fontSize: '0.85rem' }}>
                   {formatDate(b.checkIn)} {b.checkInTime ? ` (${b.checkInTime})` : ''} -<br />{formatDate(b.checkOut)} {b.checkOutTime ? ` (${b.checkOutTime})` : ''}
                 </td>
-                <td>
+                <td data-label={d_t('status')}>
                   <span className={`status-pill status-${b.status?.replace(' ', '-') || 'Pending'}`}>{b.status || 'Pending'}</span>
                   {b.checkedInOnline && (
                     <span style={{ display: 'block', marginTop: '4px', fontSize: '0.68rem', background: '#d1fae5', color: '#065f46', borderRadius: '4px', padding: '2px 6px', fontWeight: 700 }}>
@@ -778,7 +778,7 @@ const BookingManagement = ({ bookings = [], rooms = [], period, setPeriod, onCon
                     </span>
                   )}
                 </td>
-                <td>
+                <td data-label={d_t('actions')}>
                   <div className="admin-actions-container">
                     {/* Status Management */}
                     <div className="action-stack">
@@ -862,11 +862,11 @@ const Payments = ({ payments, totalRevenue, lang }) => {
                 <tr><td colSpan="5" style={{ textAlign: 'center', padding: '2rem', color: '#888' }}>{d_t('noPayments')}</td></tr>
               ) : payments.map(p => (
                 <tr key={p._id}>
-                  <td style={{ fontWeight: 600 }}>{p.guestName}</td>
-                  <td>{new Date(p.date).toLocaleDateString()}</td>
-                  <td style={{ fontWeight: 700 }}>₹{p.amount}</td>
-                  <td>{p.method}</td>
-                  <td><span className={`status-pill status-${p.status === 'Paid' ? 'Confirmed' : (p.status === 'Pending' ? 'Pending' : 'Cancelled')}`}>{p.status}</span></td>
+                  <td data-label={d_t('guest')} style={{ fontWeight: 600 }}>{p.guestName}</td>
+                  <td data-label={d_t('date')}>{new Date(p.date).toLocaleDateString()}</td>
+                  <td data-label={d_t('amount')} style={{ fontWeight: 700 }}>₹{p.amount}</td>
+                  <td data-label={d_t('method')}>{p.method}</td>
+                  <td data-label={d_t('status')}><span className={`status-pill status-${p.status === 'Paid' ? 'Confirmed' : (p.status === 'Pending' ? 'Pending' : 'Cancelled')}`}>{p.status}</span></td>
                 </tr>
               ))}
             </tbody>
@@ -2752,7 +2752,7 @@ export default function AdminDashboard() {
       // WhatsApp Feedback Message Link
       const guestPhone = booking.phone.replace(/[^0-9]/g, '');
       const formattedPhone = guestPhone.startsWith('91') ? guestPhone : `91${guestPhone}`;
-      const msg = `Hello ${booking.name}! 👋\n\nThank you for staying at *BSS Residency*. We hope you had a pleasant stay!\n\nWe would love to hear about your experience. Please share your valuable feedback/review here:\n🔗 https://g.page/r/YOUR_GOOGLE_REVIEW_ID/review\n\nWe look forward to hosting you again! 😊`;
+      const msg = `Hello ${booking.name}! 👋\n\nThank you for staying at *BSS Residency*. We hope you had a pleasant stay!\n\nWe would love to hear about your experience. Please share your valuable feedback/review here:\n🔗 https://maps.app.goo.gl/HoVrP5LYitnw8qJ1A\n\nWe look forward to hosting you again! 😊`;
       const waUrl = `https://wa.me/${formattedPhone}?text=${encodeURIComponent(msg)}`;
       
       window.open(waUrl, '_blank');
@@ -2867,11 +2867,11 @@ export default function AdminDashboard() {
                     <tr><td colSpan="5" style={{ textAlign: 'center', padding: '2rem' }}>{d_t('noGuests')}</td></tr>
                   ) : guests.map(g => (
                     <tr key={g._id}>
-                      <td style={{ fontWeight: 600 }}>{g.name}</td>
-                      <td>{g.phone}</td>
-                      <td>{g.totalStays}</td>
-                      <td><span style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: 'var(--admin-primary)', fontWeight: 700 }}>{g.loyaltyLevel}</span></td>
-                      <td>
+                      <td data-label={d_t('guestName')} style={{ fontWeight: 600 }}>{g.name}</td>
+                      <td data-label={d_t('phone')}>{g.phone}</td>
+                      <td data-label={d_t('totalStays')}>{g.totalStays}</td>
+                      <td data-label={d_t('level')}><span style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: 'var(--admin-primary)', fontWeight: 700 }}>{g.loyaltyLevel}</span></td>
+                      <td data-label={d_t('actions')}>
                         <button
                           className="action-link delete"
                           onClick={() => handleDeleteGuest(g._id)}

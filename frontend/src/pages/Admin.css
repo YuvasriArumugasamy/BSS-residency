@@ -1132,31 +1132,134 @@
 .admin-select:focus {
   border-color: var(--admin-primary);
 }
-/* Mobile adjustments */
+/* Mobile adjustments - Table to Card Transformation */
 @media (max-width: 768px) {
   .admin-sidebar { width: 250px; }
-  .admin-table-wrap { overflow-x: auto; }
-  .admin-table { min-width: 600px; }
   .calendar-layout-grid { grid-template-columns: 1fr; }
   .calendar-grid-table th, .calendar-grid-table td { white-space: nowrap; }
+
+  .admin-table-wrap {
+    overflow-x: visible;
+    padding: 0;
+  }
+
+  .admin-table, 
+  .admin-table tbody, 
+  .admin-table tr, 
+  .admin-table td {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .admin-table thead {
+    display: none; /* Hide standard header row on mobile */
+  }
+
+  .admin-table tbody tr {
+    background: #ffffff;
+    border: 1px solid #e8e1d5;
+    border-radius: 14px;
+    padding: 1.1rem 1.25rem;
+    margin-bottom: 1.25rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+    position: relative;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .admin-table tbody tr:hover {
+    box-shadow: 0 8px 24px rgba(212, 168, 87, 0.15);
+  }
+
+  .admin-table tbody td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.65rem 0;
+    border: none;
+    border-bottom: 1px dashed #f0e6d6;
+    font-size: 0.9rem;
+    text-align: right;
+    word-break: break-word;
+  }
+
+  .admin-table tbody td:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+    flex-direction: column;
+    align-items: stretch;
+    text-align: left;
+    margin-top: 0.5rem;
+  }
+
+  .admin-table tbody td::before {
+    content: attr(data-label);
+    font-weight: 700;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #64748b;
+    margin-right: 0.75rem;
+    flex-shrink: 0;
+    text-align: left;
+  }
+
+  .admin-table tbody td[data-label="#"] {
+    background: #fdfaf4;
+    margin: -1.1rem -1.25rem 0.8rem -1.25rem;
+    padding: 0.6rem 1.25rem;
+    border-top-left-radius: 13px;
+    border-top-right-radius: 13px;
+    border-bottom: 1px solid #e8e1d5;
+    font-weight: 700;
+    color: var(--admin-primary-dark);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .admin-actions-container {
+    width: 100%;
+    margin-top: 0.25rem;
+  }
+
+  .action-stack, .action-footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    width: 100%;
+  }
+
+  .action-btn-main {
+    flex: 1 1 calc(50% - 0.5rem);
+    min-width: 120px;
+    justify-content: center;
+    padding: 0.6rem 0.8rem;
+    font-size: 0.82rem;
+    border-radius: 8px;
+  }
+
+  .action-link.delete {
+    flex: 1 1 100%;
+    justify-content: center;
+    padding: 0.5rem;
+  }
+
+  .admin-table select {
+    width: 100% !important;
+    max-width: 180px;
+  }
 }
 
 @media (max-width: 480px) {
   .admin-sidebar { transform: translateX(-100%); }
-  /* Sidebar backdrop visibility controlled by body.sidebar-open */
   body.sidebar-open .admin-sidebar { transform: translateX(0); }
-  .admin-table { min-width: 100%; }
   .stats-grid { grid-template-columns: 1fr; }
   .calendar-main-section, .calendar-sidebar-section { padding: 1rem; }
-}
-/* Additional mobile fixes for dashboard */
-@media (max-width: 480px) {
-  /* Ensure main content takes full width when sidebar is hidden */
+
   .admin-wrapper {
     margin-left: 0;
     padding: 0.5rem;
   }
-  /* Stats cards stack vertically with proper spacing */
   .stats-grid {
     grid-template-columns: 1fr;
     gap: 0.8rem;
@@ -1165,15 +1268,12 @@
     padding: 1rem;
     font-size: 0.9rem;
   }
-  /* Reduce header font sizes */
   .view-content h3 {
     font-size: 1.2rem;
   }
-  /* Ensure cards have sufficient padding */
   .card {
     padding: 1rem;
   }
-  /* Calendar: make scrollable area full width */
   .calendar-main-section,
   .calendar-sidebar-section {
     padding: 0.8rem;
@@ -1181,7 +1281,6 @@
   .calendar-grid-wrapper {
     overflow-x: auto;
   }
-  /* Prevent horizontal overflow on body */
   body {
     overflow-x: hidden;
   }
