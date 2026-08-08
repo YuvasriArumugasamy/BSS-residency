@@ -68,8 +68,6 @@ export default function Rooms() {
               <tr>
                 <th>Room Type</th>
                 <th>Category</th>
-                <th>Weekday (Mon-Thu)</th>
-                <th>Weekend (Fri-Sun)</th>
                 <th>Season (Peak)</th>
                 <th></th>
               </tr>
@@ -82,8 +80,6 @@ export default function Rooms() {
                     <strong>{r.name}</strong>
                   </td>
                   <td><span className="tt-pill">{r.type}</span></td>
-                  <td className="tt-price">₹{r.weekdayPrice.toLocaleString('en-IN')}</td>
-                  <td className="tt-price">₹{r.weekendPrice.toLocaleString('en-IN')}</td>
                   <td className="tt-price">₹{r.seasonPrice.toLocaleString('en-IN')}</td>
                   <td>
                     <Link to={`/booking?room=${r.key}`} className="btn-gold-sm"><span>Book Now</span></Link>
