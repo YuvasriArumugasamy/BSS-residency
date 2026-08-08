@@ -64,16 +64,16 @@
   box-shadow: 0 8px 35px rgba(0,0,0,0.08);
 }
 .tariff-table {
-  width: 100%; border-collapse: collapse; min-width: 540px;
+  width: 100%; border-collapse: collapse; min-width: 100%;
 }
 .tariff-table th {
-  text-align: left; padding: 1rem 1.25rem;
+  text-align: left; padding: 1rem 1rem;
   background: var(--primary); color: var(--secondary);
   font-size: 0.78rem; font-weight: 700;
-  letter-spacing: 0.12em; text-transform: uppercase;
+  letter-spacing: 0.08em; text-transform: uppercase;
 }
 .tariff-table td {
-  padding: 1.1rem 1.25rem; border-top: 1px solid var(--line);
+  padding: 1rem 1rem; border-top: 1px solid var(--line);
   font-size: 0.95rem; color: var(--text-dark);
   vertical-align: middle;
   transition: all 0.3s;
@@ -314,6 +314,42 @@
   }
   .room-detail-info { padding: 0; }
   .room-detail-img img { height: 260px; }
+}
+
+@media (max-width: 600px) {
+  .tariff-summary.container {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+  .tariff-table-wrap {
+    border-radius: 8px;
+  }
+  .tariff-table th {
+    padding: 0.65rem 0.35rem;
+    font-size: 0.65rem;
+    letter-spacing: 0.02em;
+  }
+  .tariff-table td {
+    padding: 0.65rem 0.35rem;
+    font-size: 0.8rem;
+  }
+  .tt-icon {
+    font-size: 0.95rem;
+    margin-right: 0.2rem;
+  }
+  .tt-pill {
+    font-size: 0.62rem;
+    padding: 0.18rem 0.4rem;
+    letter-spacing: 0;
+  }
+  .tt-price {
+    font-size: 0.88rem;
+    white-space: nowrap;
+  }
+  .btn-gold-sm {
+    padding: 0.35rem 0.5rem;
+    font-size: 0.68rem;
+  }
 }
 
 @media (max-width: 480px) {
