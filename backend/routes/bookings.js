@@ -431,20 +431,23 @@ router.get('/availability', async (req, res) => {
     // Automatically checkout passed bookings to ensure availability calculations are always accurate
     await autoCheckOutPassedBookings();
     const { roomType, month, year } = req.query;
+    console.log(`[Availability] Request params - roomType: "${roomType}", month: ${month}, year: ${year}`);
 
     if (!roomType || !month || !year) {
+      console.log('[Availability] Missing params, returning simple availability');
       // Backwards compatibility for initial load or legacy calls
       const rooms = await Room.find({ status: 'Available' });
       const simpleAvailability = {};
       rooms.forEach(r => {
         simpleAvailability[r.type] = (simpleAvailability[r.type] || 0) + 1;
       });
+      console.log('[Availability] Simple availability:', simpleAvailability);
       return res.json({ success: true, availability: simpleAvailability });
     }
 
     // 1. Get total rooms of this type
     const totalRoomsCount = await Room.countDocuments({ type: roomType });
-    console.log(`[Availability] roomType: ${roomType}, totalRooms: ${totalRoomsCount}, month: ${month}, year: ${year}`);
+    console.log(`[Availability] Total rooms for "${roomType}": ${totalRoomsCount}`);
 
     // 2. Define month range
     const startOfMonth = new Date(year, month - 1, 1);
@@ -460,6 +463,7 @@ router.get('/availability', async (req, res) => {
         { checkIn: { $lte: startOfMonth }, checkOut: { $gte: endOfMonth } }
       ]
     });
+    console.log(`[Availability] Found ${bookings.length} bookings for "${roomType}" in ${month}/${year}`);
 
     // 4. Calculate availability for each day
     const closedSetting = await Setting.findOne({ key: 'closedDates' });
