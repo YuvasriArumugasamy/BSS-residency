@@ -13,13 +13,14 @@ root.render(
   </React.StrictMode>
 );
 
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/firebase-messaging-sw.js')
-      .then((registration) => {
-        console.log('ServiceWorker registration successful with scope: ', registration.scope);
-      }, (err) => {
-        console.log('ServiceWorker registration failed: ', err);
-      });
-  });
-}
+// Service Worker temporarily disabled to fix navigation errors
+// if ('serviceWorker' in navigator) {
+//   window.addEventListener('load', () => {
+//     navigator.serviceWorker.register('/firebase-messaging-sw.js')
+//       .then((registration) => {
+//         console.log('ServiceWorker registration successful with scope: ', registration.scope);
+//       }, (err) => {
+//         console.log('ServiceWorker registration failed: ', err);
+//       });
+//   });
+// }
