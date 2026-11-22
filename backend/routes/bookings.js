@@ -469,6 +469,8 @@ router.get('/availability', async (req, res) => {
 
     for (let day = 1; day <= daysInMonth; day++) {
       const currentDay = new Date(year, month - 1, day);
+      // Set to start of day for consistent comparison
+      currentDay.setHours(0, 0, 0, 0);
       
       // Format currentDay as YYYY-MM-DD
       const yyyy = currentDay.getFullYear();
@@ -483,7 +485,9 @@ router.get('/availability', async (req, res) => {
 
       const occupiedCount = bookings.reduce((count, b) => {
         const ci = new Date(b.checkIn);
+        ci.setHours(0, 0, 0, 0); // Normalize to start of day
         const co = new Date(b.checkOut);
+        co.setHours(0, 0, 0, 0); // Normalize to start of day
         // Occupied from checkIn up to (but not including) checkOut
         if (currentDay >= ci && currentDay < co) {
           return count + (b.rooms || 1);
