@@ -444,6 +444,7 @@ router.get('/availability', async (req, res) => {
 
     // 1. Get total rooms of this type
     const totalRoomsCount = await Room.countDocuments({ type: roomType });
+    console.log(`[Availability] roomType: ${roomType}, totalRooms: ${totalRoomsCount}, month: ${month}, year: ${year}`);
 
     // 2. Define month range
     const startOfMonth = new Date(year, month - 1, 1);
@@ -498,6 +499,7 @@ router.get('/availability', async (req, res) => {
       availability[day] = Math.max(0, totalRoomsCount - occupiedCount);
     }
 
+    console.log(`[Availability] Final availability:`, availability);
     res.json({ success: true, availability, totalRooms: totalRoomsCount });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
