@@ -22,6 +22,10 @@ export default function Footer() {
     fetchSeasonStatus();
   }, []);
 
+  const startingPrice = Math.min(
+    ...ROOMS.map((room) => (isSeason ? room.seasonPrice : room.nonSeasonPrice))
+  );
+
   return (
     <footer className="footer">
       <div className="footer-inner">
@@ -68,7 +72,7 @@ export default function Footer() {
             </span>
           ))}
           <p className="footer-price-note">
-            Starts from <span className="currency-symbol">₹</span>{isSeason ? '1,300' : '1,000'} / night
+            Starts from <span className="currency-symbol">₹</span>{startingPrice.toLocaleString('en-IN')} / night
           </p>
         </div>
 
