@@ -1678,6 +1678,8 @@ const RoomAvailabilityCalendar = ({
                 <option value="Double Bed">{d_t('doubleBed')}</option>
                 <option value="Double Bed A/C">{d_t('doubleBedAc')}</option>
                 <option value="Three Bed">{d_t('threeBed')}</option>
+                <option value="Three Bed A/C">Three Bed A/C</option>
+                <option value="Four Bed">Four Bed</option>
                 <option value="Four Bed A/C">{d_t('fourBedAc')}</option>
               </select>
             </div>
@@ -2887,6 +2889,8 @@ export default function AdminDashboard() {
                 <option>Four Bed A/C</option>
                 <option>Double Bed</option>
                 <option>Three Bed</option>
+                <option>Three Bed A/C</option>
+                <option>Four Bed</option>
               </select>
             </div>
           </div>
@@ -3099,6 +3103,8 @@ export default function AdminDashboard() {
                 <option>Double Bed</option>
                 <option>Double Bed A/C</option>
                 <option>Three Bed</option>
+                <option>Three Bed A/C</option>
+                <option>Four Bed</option>
                 <option>Four Bed A/C</option>
               </select>
             </div>

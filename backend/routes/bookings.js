@@ -153,12 +153,14 @@ router.post('/verify-payment', async (req, res) => {
     const weekendSetting = await Setting.findOne({ key: 'isWeekendActive' });
     const isWeekendActive = weekendSetting ? weekendSetting.value !== false : true;
     const ROOM_DATA = {
-      'Double Bed': { weekday: 1000, weekend: 1000, season: 1300 },
-      'Double Bed A/C': { weekday: 1300, weekend: 1600, season: 1600 },
-      'Three Bed': { weekday: 1500, weekend: 1500, season: 1800 },
-      'Four Bed A/C': { weekday: 2500, weekend: 2800, season: 2800 },
+      'Double Bed': { weekday: 2000, weekend: 2000, season: 2000 },
+      'Double Bed A/C': { weekday: 2500, weekend: 2500, season: 2500 },
+      'Three Bed': { weekday: 2500, weekend: 2500, season: 2500 },
+      'Three Bed A/C': { weekday: 3000, weekend: 3000, season: 3000 },
+      'Four Bed': { weekday: 4000, weekend: 4000, season: 4000 },
+      'Four Bed A/C': { weekday: 4500, weekend: 4500, season: 4500 },
     };
-    const roomPriceInfo = ROOM_DATA[roomType] || { weekday: 1000, weekend: 1000, season: 1000 };
+    const roomPriceInfo = ROOM_DATA[roomType] || { weekday: 2000, weekend: 2000, season: 2000 };
     
     // Day-by-day timezone-safe calculation
     const ciParts = checkIn.split('T')[0].split('-');
@@ -328,13 +330,15 @@ router.post('/', async (req, res) => {
     const isWeekendActive = weekendSetting ? weekendSetting.value !== false : true;
     
     const ROOM_DATA = {
-      'Double Bed': { weekday: 1000, weekend: 1000, season: 1300 },
-      'Double Bed A/C': { weekday: 1300, weekend: 1600, season: 1600 },
-      'Three Bed': { weekday: 1500, weekend: 1500, season: 1800 },
-      'Four Bed A/C': { weekday: 2500, weekend: 2800, season: 2800 },
+      'Double Bed': { weekday: 2000, weekend: 2000, season: 2000 },
+      'Double Bed A/C': { weekday: 2500, weekend: 2500, season: 2500 },
+      'Three Bed': { weekday: 2500, weekend: 2500, season: 2500 },
+      'Three Bed A/C': { weekday: 3000, weekend: 3000, season: 3000 },
+      'Four Bed': { weekday: 4000, weekend: 4000, season: 4000 },
+      'Four Bed A/C': { weekday: 4500, weekend: 4500, season: 4500 },
     };
 
-    const roomPriceInfo = ROOM_DATA[roomType] || { weekday: 1000, weekend: 1000, season: 1000 };
+    const roomPriceInfo = ROOM_DATA[roomType] || { weekday: 2000, weekend: 2000, season: 2000 };
     
     // Day-by-day timezone-safe calculation
     const ciParts = checkIn.split('T')[0].split('-');

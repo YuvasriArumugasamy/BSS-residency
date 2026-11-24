@@ -25,7 +25,7 @@ const seed = async () => {
         rooms.push({
             roomNumber: (roomNum++).toString(),
             type: 'AC Double Bed',
-            price: 1500,
+            price: 2500,
             status: 'Available',
             amenities: ['TV', 'Hot Water', 'WiFi']
         });

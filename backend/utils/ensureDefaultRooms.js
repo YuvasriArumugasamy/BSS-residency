@@ -13,10 +13,12 @@ const DEFAULT_ROOMS = [
 ];
 
 const PRICES = {
-  'Double Bed': { regular: 1000, season: 1300 },
-  'Double Bed A/C': { regular: 1300, season: 1600 },
-  'Three Bed': { regular: 1500, season: 1800 },
-  'Four Bed A/C': { regular: 2500, season: 2800 },
+  'Double Bed': { regular: 2000, season: 2000 },
+  'Double Bed A/C': { regular: 2500, season: 2500 },
+  'Three Bed': { regular: 2500, season: 2500 },
+  'Three Bed A/C': { regular: 3000, season: 3000 },
+  'Four Bed': { regular: 4000, season: 4000 },
+  'Four Bed A/C': { regular: 4500, season: 4500 },
 };
 
 async function ensureDefaultRooms() {

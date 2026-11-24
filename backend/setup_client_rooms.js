@@ -20,9 +20,9 @@ async function setupClientRooms() {
       if (i === 105) type = 'Double Bed A/C';
       
       const pricing = {
-        'Double Bed': { non: 1000, sea: 1300 },
-        'Double Bed A/C': { non: 1300, sea: 1600 },
-        'Four Bed A/C': { non: 2500, sea: 2800 }
+        'Double Bed': { non: 2000, sea: 2000 },
+        'Double Bed A/C': { non: 2500, sea: 2500 },
+        'Four Bed A/C': { non: 4500, sea: 4500 }
       }[type];
 
       roomsToCreate.push({
@@ -42,9 +42,9 @@ async function setupClientRooms() {
 
       
       const pricing = {
-        'Double Bed': { non: 1000, sea: 1300 },
-        'Double Bed A/C': { non: 1300, sea: 1600 },
-        'Four Bed A/C': { non: 2500, sea: 2800 }
+        'Double Bed': { non: 2000, sea: 2000 },
+        'Double Bed A/C': { non: 2500, sea: 2500 },
+        'Four Bed A/C': { non: 4500, sea: 4500 }
       }[type];
 
       roomsToCreate.push({
@@ -65,10 +65,10 @@ async function setupClientRooms() {
 
       
       const pricing = {
-        'Double Bed': { non: 1000, sea: 1300 },
-        'Double Bed A/C': { non: 1300, sea: 1600 },
-        'Three Bed': { non: 1500, sea: 1800 },
-        'Four Bed A/C': { non: 2500, sea: 2800 }
+        'Double Bed': { non: 2000, sea: 2000 },
+        'Double Bed A/C': { non: 2500, sea: 2500 },
+        'Three Bed': { non: 2500, sea: 2500 },
+        'Four Bed A/C': { non: 4500, sea: 4500 }
       }[type];
 
       roomsToCreate.push({
