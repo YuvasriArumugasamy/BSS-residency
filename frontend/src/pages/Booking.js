@@ -614,8 +614,6 @@ export default function Booking() {
                               <div className="rc-badge-wrap">
                                 {isSoldOut ? (
                                   <span className="rc-badge sold-out">Sold Out</span>
-                                ) : count > 0 ? (
-                                  <span className="rc-badge available">{count} Available</span>
                                 ) : (
                                   <span className="rc-badge available">Available</span>
                                 )}
