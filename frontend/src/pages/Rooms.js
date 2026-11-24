@@ -6,6 +6,7 @@ import roomAc2 from '../assets/room-ac-2.webp';
 import roomAc3 from '../assets/room-ac-3.webp';
 import roomFamily from '../assets/room-family.webp';
 import roomThreeBed from '../assets/3bed.webp';
+import roomThreeBedAc from '../assets/room-gallery-5.jpg';
 import { ROOMS, waLink, WA_TEMPLATES, CONTACT } from '../constants';
 import SEO from '../components/SEO';
 import './Rooms.css';
@@ -14,7 +15,8 @@ const imgMap = {
   'double-bed': roomAc2,
   'double-bed-ac': roomAc3,
   'three-bed': roomThreeBed,
-
+  'three-bed-ac': roomThreeBedAc,
+  'four-bed': roomAc1,
   'four-bed-ac': roomFamily,
 };
 
@@ -97,7 +99,7 @@ export default function Rooms() {
         {ROOMS.map((room, i) => (
           <div key={room.key} className={`room-detail-card fade-up ${i % 2 === 1 ? 'reverse' : ''}`}>
             <div className="room-detail-img">
-              <img src={imgMap[room.key]} alt={room.name} loading="lazy" width="600" height="400" />
+              <img src={imgMap[room.key] || roomAc2} alt={room.name} loading="lazy" width="600" height="400" />
               <div className="room-type-badge">{room.type}</div>
               <div className="room-price-badge">
                 <span className="currency-symbol">₹</span>{getPrice(room).toLocaleString('en-IN')}<span>/ night</span>
