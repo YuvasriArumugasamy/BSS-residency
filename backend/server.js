@@ -140,12 +140,18 @@ if (!process.env.MONGO_URI) {
 const connectDB = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI, {
+      // Render's current URI ends in /test. Keep the app on the real inventory DB
+      // unless an explicit database name is configured.
+      dbName: process.env.MONGO_DB_NAME || 'bss_residency',
       maxPoolSize: 50,      // Up to 50 concurrent connections
       minPoolSize: 10,       // Keep 10 connections always ready
       serverSelectionTimeoutMS: 5000,
       socketTimeoutMS: 45000,
     });
-    console.log('MongoDB Connected');
+    console.log(`MongoDB Connected (database: ${mongoose.connection.name})`);
+
+    // Restore the standard room inventory only when this database is empty.
+    await require('./utils/ensureDefaultRooms')();
     
     // Auto-seed admin if not exists
     const Admin = require('./models/Admin');
@@ -192,73 +198,6 @@ connectDB().then(() => {
       console.log(`[Keep-Alive] Self-ping enabled for: ${RENDER_URL}`);
     }
   });
-});
-
-// SECRET one-time endpoint to setup rooms in production
-// Call this ONCE: https://bss-residency-2.onrender.com/api/setup-rooms-bss2025
-app.get('/api/setup-rooms-bss2025', async (req, res) => {
-  try {
-    const Room = require('./models/Room');
-    await Room.deleteMany({});
-
-    const roomsToCreate = [];
-
-    const pricing = {
-      'Double Bed':     { non: 1000, sea: 1300 },
-      'Double Bed A/C': { non: 1300, sea: 1600 },
-      'Three Bed':       { non: 1500, sea: 1800 },
-      'Four Bed A/C':   { non: 2300, sea: 2800 },
-    };
-
-    // First Floor (101-106)
-    const floor1 = [
-      { num: 101, type: 'Double Bed' },
-      { num: 102, type: 'Four Bed A/C' },
-      { num: 103, type: 'Double Bed' },
-      { num: 104, type: 'Double Bed' },
-      { num: 105, type: 'Double Bed A/C' },
-      { num: 106, type: 'Double Bed' },
-    ];
-
-    // Second Floor (201-207)
-    const floor2 = [
-      { num: 201, type: 'Four Bed A/C' },
-      { num: 202, type: 'Four Bed A/C' },
-      { num: 203, type: 'Double Bed' },
-      { num: 204, type: 'Double Bed' },
-      { num: 205, type: 'Double Bed' },
-      { num: 206, type: 'Double Bed' },
-      { num: 207, type: 'Four Bed A/C' },
-    ];
-
-    // Third Floor (301-307)
-    const floor3 = [
-      { num: 301, type: 'Three Bed' },
-      { num: 302, type: 'Four Bed A/C' },
-      { num: 303, type: 'Double Bed' },
-      { num: 304, type: 'Double Bed' },
-      { num: 305, type: 'Double Bed' },
-      { num: 306, type: 'Double Bed' },
-      { num: 307, type: 'Four Bed A/C' },
-    ];
-
-    [...floor1, ...floor2, ...floor3].forEach(({ num, type }) => {
-      const p = pricing[type];
-      roomsToCreate.push({
-        roomNumber: num.toString(),
-        type,
-        price: p.non,
-        nonSeasonPrice: p.non,
-        seasonPrice: p.sea,
-        status: 'Available',
-      });
-    });
-
-    await Room.insertMany(roomsToCreate);
-    res.json({ success: true, message: `${roomsToCreate.length} rooms setup successfully!`, rooms: roomsToCreate.map(r => ({ roomNumber: r.roomNumber, type: r.type })) });
-  } catch (err) {
-    res.status(500).json({ success: false, error: err.message });
-  }
 });
 
 // SECRET endpoint to block specific room types for a date range

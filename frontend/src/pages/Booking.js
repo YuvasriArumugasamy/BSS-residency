@@ -84,6 +84,9 @@ export default function Booking() {
     // Client phone-ku notification varavaikka FCM token request pannurom
     const initClientFcmToken = async () => {
       try {
+        // Do not trigger a browser permission prompt just because someone opened booking.
+        // Ask for a token only after the guest has already enabled notifications.
+        if (typeof Notification === 'undefined' || Notification.permission !== 'granted') return;
         const existingToken = localStorage.getItem('bss_client_fcm');
         if (!existingToken) {
           const token = await requestForToken();
