@@ -4,9 +4,17 @@ const Room = require('./models/Room');
 const Guest = require('./models/Guest');
 require('dotenv').config();
 
+const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/bss_residency';
+const isLocalMongo = /^mongodb:\/\/(localhost|127\.0\.0\.1)(:\d+)?(?:\/|$)/i.test(mongoUri);
+
+if (process.env.NODE_ENV === 'production' || !isLocalMongo || process.env.ALLOW_DESTRUCTIVE_SEED !== 'true') {
+    console.error('[Seed] Refusing to run. This script clears data and is restricted to local development with ALLOW_DESTRUCTIVE_SEED=true.');
+    process.exit(1);
+}
+
 const seed = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/bss_residency');
+    await mongoose.connect(mongoUri);
     console.log('Connected to MongoDB for seeding...');
 
     // Clear existing
