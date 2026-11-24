@@ -46,7 +46,8 @@ const imgMap = {
   'double-bed-ac': roomAc3,
   'three-bed': roomThreeBed,
 
-  'three-bed-ac': roomAc3,
+  'three-bed-ac': roomGal5,
+  'four-bed': roomGal1,
   'four-bed-ac': roomFamily,
 };
 
@@ -384,7 +385,7 @@ export default function Home() {
                 {ROOMS.map((r) => (
                   <div key={r.key} className="room-card-home">
                     <div className="r-img-wrapper">
-                      <img src={imgMap[r.key]} alt={r.name} className="r-card-img" loading="lazy" width="400" height="260" />
+                      <img src={imgMap[r.key] || roomImg} alt={r.name} className="r-card-img" loading="lazy" width="400" height="260" />
                     </div>
                     <h3>{r.name}</h3>
                     <span className="r-type-pill">{r.type}</span>
